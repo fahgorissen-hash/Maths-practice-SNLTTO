@@ -861,7 +861,7 @@ if(!hasLessons)st.mode='para';
 if(!st.modeSet&&st.prog&&Object.keys(st.prog).length&&hasLessons)st.mode='para';
 ['secs','done','stat','best','res','badges'].forEach(k=>{st[k]=st[k]||{}});st.tests=st.tests||[];st.log=st.log||[];st.prog=st.prog||{};st.lvl=st.lvl||{};
 if(!st.sec||!items().some(x=>x.id===st.sec))st.sec=defaultFor(st.mode);
-const save=()=>{try{localStorage.setItem(KEY,JSON.stringify({mode:st.mode,modeSet:1,secs:st.secs,sec:st.sec,prog:st.prog,lvl:st.lvl,done:st.done,stat:st.stat,best:st.best,tests:st.tests,res:st.res,log:st.log,badges:st.badges,bestRow:st.bestRow,goalsAll:st.goalsAll}))}catch(e){}};
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify({mode:st.mode,modeSet:1,secs:st.secs,sec:st.sec,prog:st.prog,lvl:st.lvl,done:st.done,stat:st.stat,best:st.best,tests:st.tests,res:st.res,log:st.log,badges:st.badges,bestRow:st.bestRow,goalsAll:st.goalsAll,auto:st.auto}))}catch(e){}};
 let protoAngle=null;let cur=null,tries=0,done=false,streak=0,wrongRun=0,recent=[],clicked=[],choiceSel=null,hintUsed=false,attempts=[],stepLines=[],row=0;
 let test=null;      // {qs,i,score,log}
 let free=null;      // free practice level (0..3) or null = adaptive
@@ -1193,7 +1193,7 @@ function restore(ev){
 }
 function startAgain(){
   if(!confirm('Delete all your progress on this page and start again?'))return;
-  st={mode:st.mode,secs:{},done:{},stat:{},best:{},tests:[],sec:st.sec,prog:{},lvl:{},res:{},log:[],badges:{},bestRow:0,goalsAll:st.goalsAll};mix=false;free=null;focus=null;save();test=null;renderNav();next(true);
+  st={mode:st.mode,secs:{},done:{},stat:{},best:{},tests:[],sec:st.sec,prog:{},lvl:{},res:{},log:[],badges:{},bestRow:0,goalsAll:st.goalsAll,auto:st.auto};mix=false;free=null;focus=null;save();test=null;renderNav();next(true);
 }
 document.getElementById('pbtn').onclick=showProgress;
 window.__dbg=()=>cur;renderNav();next(true);
