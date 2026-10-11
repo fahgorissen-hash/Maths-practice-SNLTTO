@@ -81,6 +81,7 @@ svg.fig{max-width:430px;width:100%;height:auto;display:block;margin:6px 0 10px}
 .filebtn{display:inline-block;cursor:pointer}.btn.danger{color:var(--bad);border-color:var(--bad)}.rname{font:inherit;font-size:18px;padding:3px 8px;border:1px solid #9fb0bf;border-radius:8px}
 .ws .wq{display:flex;gap:12px;padding:10px 0;border-bottom:1px solid var(--line);break-inside:avoid}.ws .wn{font-weight:700;color:var(--brand);min-width:26px}.ws .wl{margin-top:10px;color:var(--mut)}.ws .wo{margin:4px 0}.ws .wa{padding:6px 0;border-bottom:1px solid #eef2f6;font-size:16px}.pbreak{page-break-before:always;break-before:page}
 @media print{body.printing header,body.printing nav,body.printing .noprint,body.printing .goals{display:none!important}body.printing .wrap{display:block;margin:0;padding:0}body.printing main{border:0;padding:0}body{background:#fff}}
+.autoc{display:block;margin:.6rem 0 0;font-size:.9rem;color:var(--mut,#556)}.autoc input{margin-right:.4rem}
 </style>
 </head>
 <body>
@@ -1054,8 +1055,9 @@ function makeFromGoal(g,level){
   }
   return E.make(st.sec,level,recent);
 }
+let autoT=null;
 function next(reset){
-  view=null;
+  clearTimeout(autoT);view=null;
   if(reset){streak=0;wrongRun=0;recent=[]}
   if(focus){const g=goalById(focus.ids[focus.i%focus.ids.length]);focus.i++;const sec=g.sec;cur=makeFromGoal(g,st.lvl[sec]||0)}
   else cur=E.make(st.sec,curLevel(),recent);
@@ -1090,7 +1092,7 @@ function renderQ(){
   const m=$('#main'),q=cur;
   const lvLabel=free!==null?'Free practice · '+LV[q.lvl]:LV[q.lvl];
   m.innerHTML='<div class="top">'+(q.mix?'<span class="badge lm">Master Mix</span> ':'')+'<span class="badge l'+q.lvl+'">'+lvLabel+'</span><span class="streak">'+(free!==null||focus?'Free practice':'In a row: '+[0,1,2].map(i=>'<span class="dot'+(i<streak?' on':'')+'"></span>').join('')+' &nbsp; Done: '+Math.min(GOAL,st.prog[st.sec]||0)+'/'+GOAL)+'</span></div>'+modeBar()+goalsPanel(q)+
-   qHTML(q)+'<div class="btns"><button class="btn" id="chk">Check</button><button class="btn alt" id="hnt">Hint</button><button class="btn alt" id="sol" style="display:none">Show solution</button><button class="btn alt" id="nxt" style="display:none">Next question</button></div><div class="fb" id="fb"></div><div id="hist"></div>'+logPanel();
+   qHTML(q)+'<div class="btns"><button class="btn" id="chk">Check</button><button class="btn alt" id="hnt">Hint</button><button class="btn alt" id="sol" style="display:none">Show solution</button><button class="btn alt" id="nxt" style="display:none">Next question</button></div><label class="autoc"><input type="checkbox" id="autoc"'+(st.auto===false?'':' checked')+'> Go to the next question automatically after a correct answer</label><div class="fb" id="fb"></div><div id="hist"></div>'+logPanel();
   wire();wireChrome();
   const f=$('#in0');if(f)f.focus();
 }
@@ -1117,7 +1119,7 @@ function helpCard(g){
 }
 /* ---------- question wiring ---------- */
 function wire(){
-  wireProto();$('#chk').onclick=check;$('#hnt').onclick=hint;$('#sol').onclick=showSolution;$('#nxt').onclick=()=>test?testNext():next(false);
+  wireProto();$('#chk').onclick=check;$('#hnt').onclick=hint;$('#sol').onclick=showSolution;$('#nxt').onclick=()=>test?testNext():next(false);{const ac=$('#autoc');if(ac)ac.onchange=()=>{st.auto=ac.checked;if(!ac.checked)clearTimeout(autoT);save()}}
   document.querySelectorAll('.choice').forEach(b=>b.onclick=()=>{if(done)return;choiceSel=+b.dataset.i;document.querySelectorAll('.choice').forEach(x=>x.setAttribute('aria-pressed',String(x===b)))});
   document.querySelectorAll('#ans input').forEach(i=>i.addEventListener('keydown',e=>{if(e.key==='Enter')check()}));
   wireExpr();wireGrid();
@@ -1171,6 +1173,10 @@ function check(){
   if(done)return;const q=cur,u=userAns(q);
   if(empty(q,u)){fb('hint','Fill in your answer first.');return}
   if(test){return testCheck(q,u)}
+  let calcWrong=false;
+  if(q.type==='num'&&isNaN(E.parseNum(u))&&E.parse){let calc=false;try{E.parse(String(u),{noVars:true});calc=true}catch(e){}
+    if(calc){const rr=E.check({type:'expr',ans:String(q.ans),form:'any',noVars:true},u);
+      if(rr.ok){fb('hint','<b class="h">✓ That calculation is right.</b>Now work it out and type the <b>final number</b> as your answer.');const i0=$('#in0');i0.value='';i0.focus();const pv=$('#pv');if(pv)pv.innerHTML='';return}calcWrong=true}}
   const R_=chk(q,u),ok=R_.ok;tries++;
   logAnswer(q,u,ok);
   const S=st.stat[st.sec]=st.stat[st.sec]||{n:0,ok:0};
@@ -1185,10 +1191,11 @@ function check(){
       else if(!st.done[st.sec]){st.done[st.sec]=true;up+=' <b>Extra spicy completed! ★ Master Mix is now unlocked for this section (see the menu).</b>'+award('mm')}}
     const g=goalOfQ(q);if(g&&goalScore(g).key==='mastered')up+=award('goal');
     save();fb('ok','<b class="h">Correct!'+(tries>1?' (second try)':'')+'</b>'+q.steps+up);finish();
+    if(st.auto!==false){clearTimeout(autoT);autoT=setTimeout(()=>{if(done&&cur===q&&!test&&!view)next(false)},1000)}
   }else if(tries===1){
     row=0;if(counts)streak=0;
     $('#sol').style.display='';
-    fb('no','<b class="h">Not yet. Try again.</b>'+(R_.why==='form'?(R_.msg||'That has the right value, but it is not in the form asked for.')+' ':R_.why==='parse'?'I could not read that answer. ':'')+(q.hint?q.hint:''));
+    fb('no','<b class="h">Not yet. Try again.</b>'+(R_.why==='form'?(R_.msg||'That has the right value, but it is not in the form asked for.')+' ':calcWrong?'That calculation does not give the right answer. ':R_.why==='parse'?'I could not read that answer. ':'')+(q.hint?q.hint:''));
   }else{
     done=true;row=0;wrongRun+=counts?1:0;S.n++;record(q,0);let dn='';
     if(counts&&!mix&&wrongRun>=2&&lvl()>0){st.lvl[st.sec]=lvl()-1;wrongRun=0;dn=' <i>Next questions will be a bit easier.</i>'}
