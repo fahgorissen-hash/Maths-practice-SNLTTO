@@ -1033,9 +1033,9 @@ function check(){
   if(q.type==='num'&&isNaN(E.parseNum(u))&&E.parse){let calc=false;try{E.parse(String(u),{noVars:true});calc=true}catch(e){}
     if(calc){let rr;if(q.tol&&E.evalNum){let vv=NaN;try{vv=E.evalNum(u)}catch(e){}rr={ok:Math.abs(vv-q.ans)<=q.tol}}else rr=E.check({type:'expr',ans:String(q.ans),form:'any',noVars:true},u);
       if(rr.ok){fb('hint','<b class="h">✓ That calculation is right.</b>Now work it out and type the <b>final number</b> as your answer.');stepLines.push(String(u).trim());drawSteps();const i0=$('#in0');i0.value='';i0.focus();const pv=$('#pv');if(pv)pv.innerHTML='';return}calcWrong=true}}
-  if(sm==='enforce'&&q.type==='expr'&&!stepLines.length){const r0=E.check(q,u);
-    if(r0.ok){{fb('hint','<b class="h">Show your working first.</b>Showing your steps is part of a correct answer. Type an in-between step first (for example before you simplify or add things up), then type your final answer.');return}}
-    else if(r0.why==='form'){stepLines.push(String(u).trim());drawSteps();fb('hint','<b class="h">✓ Good step.</b>That is equal to the answer, but it is not finished yet. Now type the final answer.');const i0=$('#in0');i0.value='';i0.focus();const pv=$('#pv');if(pv)pv.innerHTML='';return}}
+  if(q.type==='expr'&&E.check){const r0=E.check(q,u);
+    if(r0.ok){if(sm==='enforce'&&!stepLines.length){fb('hint','<b class="h">Show your working first.</b>Showing your steps is part of a correct answer. Type an in-between step first (for example before you simplify or add things up), then type your final answer.');return}}
+    else if(r0.why==='form'&&stepLines.length<4){stepLines.push(String(u).trim());drawSteps();fb('hint','<b class="h">✓ Good step.</b>That has the right value, but it is not finished yet. Now work it out and type the final answer'+(r0.msg?' ('+esc(r0.msg)+')':'')+'.');const i0=$('#in0');i0.value='';i0.focus();const pv=$('#pv');if(pv)pv.innerHTML='';return}}
   const R_=chk(q,u),ok=R_.ok;tries++;
   logAnswer(q,u,ok);
   const S=st.stat[st.sec]=st.stat[st.sec]||{n:0,ok:0};
