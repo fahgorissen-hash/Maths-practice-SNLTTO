@@ -25,7 +25,8 @@ main{background:var(--card);border:1px solid var(--line);border-radius:12px;padd
 header{display:flex;align-items:center;gap:14px;flex-wrap:wrap}header .hd{flex:1;min-width:240px}.pbtn{font:inherit;font-weight:700;background:#fff;color:var(--brand);border:0;border-radius:10px;padding:8px 16px;cursor:pointer;font-size:16px}
 nav button.mm{margin-left:14px;width:calc(100% - 14px);background:#f1edfb;border-color:#cbbdf0;font-weight:700;color:#40318a;font-size:16px}
 .pg h2{margin-top:0}.pg table{border-collapse:collapse;width:100%;font-size:16px;margin:8px 0 14px}.pg th,.pg td{border-bottom:1px solid var(--line);padding:8px 6px;text-align:left;vertical-align:middle}.pg th{color:var(--mut);font-size:14px}.chip{display:inline-block;padding:2px 9px;border-radius:99px;font-size:13px;font-weight:700;margin:1px 2px 1px 0;border:2px solid #cfd8e0;color:#8795a3;background:#fff}.chip.ach{background:var(--okbg);border-color:#8fd1a8;color:var(--ok)}.chip.act{border-color:var(--brand);color:var(--brand);background:var(--brand2)}
-@media print{header .pbtn,nav,.btns{display:none!important}.wrap{display:block}main{border:0}}
+nav .seg{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin:2px 0 8px}nav .seg button{font:inherit;font-size:15px;font-weight:700;padding:7px 4px;border-radius:9px;border:2px solid var(--brand);background:#fff;color:var(--brand);cursor:pointer}nav .seg button.on{background:var(--brand);color:#fff}
+@media print{header .pbtn,.topnav,nav,.btns{display:none!important}.wrap{display:block}main{border:0}}
 .streak{margin-left:auto;color:var(--mut);font-size:15px}
 .dot{display:inline-block;width:11px;height:11px;border-radius:50%;background:#d6dee6;margin-left:4px}.dot.on{background:var(--ok)}
 .q p{margin:.4em 0 .6em;font-size:20px}
@@ -49,10 +50,41 @@ svg.grid[data-click]{cursor:crosshair}
 .rev{border-top:1px solid var(--line);padding:10px 0;font-size:17px}.rev .st{color:var(--mut)}
 @media(max-width:760px){.wrap{grid-template-columns:1fr}nav{display:grid;grid-template-columns:1fr 1fr;gap:4px}nav .reset{grid-column:1/-1}}
 .sr{position:absolute;left:-9999px}
+
+.mx{font-size:1.06em;white-space:nowrap}
+.mx i{font-family:"Cambria Math","Times New Roman",serif;font-style:italic}
+.fr{display:inline-flex;flex-direction:column;vertical-align:middle;text-align:center;margin:0 3px;line-height:1.2}
+.fr .nu{border-bottom:1.6px solid currentColor;padding:0 4px 1px}.fr .de{padding:1px 4px 0}
+.rt{display:inline-block;position:relative;white-space:nowrap;line-height:1.1;padding-left:.72em;margin-right:.08em}.rt.rn{margin-left:.4em}
+.rt .ov{display:inline-block;padding:.14em 3px 0 0;border-top:1.6px solid currentColor}
+.rt .sq{position:absolute;left:0;top:0;bottom:-.12em;width:.72em;background:currentColor;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 20' preserveAspectRatio='none'%3E%3Cpath d='M0.6 11.2 L2.4 10 L4.8 18.6 L9.6 0.8' fill='none' stroke='black' stroke-width='1.7' stroke-linejoin='miter' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E") center/100% 100% no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 20' preserveAspectRatio='none'%3E%3Cpath d='M0.6 11.2 L2.4 10 L4.8 18.6 L9.6 0.8' fill='none' stroke='black' stroke-width='1.7' stroke-linejoin='miter' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E") center/100% 100% no-repeat}
+.rt .ix{position:absolute;left:-.42em;top:.12em;font-size:.62em;line-height:1}
+.q sup{font-size:.7em;line-height:0}
+.kp{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 2px}.kp button{font:inherit;font-size:19px;min-width:42px;padding:5px 10px;border:2px solid #9fb0bf;border-radius:9px;background:#f7fafc;cursor:pointer}.kp button:hover{border-color:var(--brand);background:var(--brand2)}
+.pv{min-height:34px;margin:6px 0 0;font-size:20px;color:#223}.pv .pl{font-size:14px;color:var(--mut);margin-right:6px}
+.ans input[type=text].wide{width:min(520px,100%)}
+.ans input#in0{width:min(420px,100%)}
+.fb .mx{font-size:1.05em}
+.lead{color:var(--mut);font-size:15px;margin:2px 0 0}
+svg.fig{max-width:430px;width:100%;height:auto;display:block;margin:6px 0 10px}
+.topnav{flex-basis:100%;display:flex;gap:8px;align-items:center;flex-wrap:wrap}.topnav .nb,.topnav summary{font:inherit;font-size:14px;font-weight:700;background:rgba(255,255,255,.18);color:#fff;border:1px solid rgba(255,255,255,.5);border-radius:10px;padding:5px 12px;cursor:pointer;text-decoration:none;list-style:none}.topnav .nb:hover,.topnav summary:hover{background:rgba(255,255,255,.3)}.topnav summary::-webkit-details-marker{display:none}.topnav details{position:relative}.topnav .menu{position:absolute;z-index:50;top:110%;left:0;background:#fff;border-radius:10px;box-shadow:0 4px 16px rgba(0,0,0,.25);padding:6px;min-width:260px;display:flex;flex-direction:column}.topnav .menu a{color:var(--brand);text-decoration:none;padding:7px 10px;border-radius:8px;font-size:15px}.topnav .menu a:hover{background:#eef2f7}.topnav .menu a.cur{font-weight:800;background:#e3ecf7}
+.topnav .nb.cur{background:#fff;color:var(--brand);border-color:#fff}
+.goals{background:#f3f8fd;border:1px solid var(--line);border-radius:12px;padding:8px 14px;margin:8px 0 12px}.goals .gh{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;align-items:center}.goals .gb{display:flex;gap:12px;flex-wrap:wrap}.lk{font:inherit;font-size:15px;background:none;border:0;color:var(--brand);text-decoration:underline;cursor:pointer;padding:2px 0}.goals ul{list-style:none;margin:6px 0 2px;padding:0}.goals li{display:flex;gap:9px;align-items:flex-start;padding:4px 6px;border-radius:8px;font-size:16px}.goals li.cur{background:#fff;border:1px solid var(--brand);font-weight:700}.goals .sd{flex:0 0 11px;height:11px;border-radius:50%;margin-top:7px}
+.hc{background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px 14px;margin:8px 0}.hc h4{margin:0 0 6px;font-size:18px}.hc .hr{margin:8px 0;font-size:16px}.hc .hr p{margin:2px 0}.hc .ex{background:#f7fafc;border-radius:8px;padding:2px 12px}.hc .ex .exa{margin:2px 0 8px}.hc .warn{background:var(--warnbg);border-radius:8px;padding:4px 10px}
+.pmbar{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:2px 0 8px}.pml{font-size:14px;color:var(--mut);margin-left:4px}.pm{font:inherit;font-size:14px;font-weight:700;padding:3px 11px;border-radius:99px;border:2px solid #9fb0bf;background:#fff;color:var(--ink);cursor:pointer}.pm.on{background:var(--brand);border-color:var(--brand);color:#fff}.pm.l0.on{background:#0f6a31;border-color:#0f6a31}.pm.l1.on{background:#9a6a00;border-color:#9a6a00}.pm.l2.on{background:#a3341b;border-color:#a3341b}.pm.l3.on{background:#6b1f78;border-color:#6b1f78}
+.pmnote{background:#eef4fb;border:1px solid #b9d0ea;border-radius:10px;padding:6px 12px;margin:0 0 10px;font-size:16px}.btn.sm{font-size:14px;padding:3px 12px;margin-left:8px}
+.hl{margin-top:16px;font-size:15px}.hl summary{cursor:pointer;color:var(--mut)}.hl ul{margin:6px 0;padding-left:0;list-style:none}.hl li{padding:2px 0;border-bottom:1px solid #eef2f6}.hl .ok{color:var(--ok);font-weight:700}.hl .no{color:var(--bad);font-weight:700}.hl .lq{color:var(--mut)}
+.at{margin-top:8px;font-size:15px;color:var(--mut)}.at .ok{color:var(--ok);font-weight:700;margin-right:8px}.at .no{color:var(--bad);font-weight:700;margin-right:8px}
+.cards{display:flex;gap:12px;flex-wrap:wrap;margin:6px 0}.card2{flex:1;min-width:150px;border:1px solid var(--line);border-radius:12px;padding:10px 14px;background:#f7fafc}.card2 b{display:block;font-size:28px;color:var(--brand)}.card2 span{font-size:14px;color:var(--mut)}
+.stc{display:inline-block;border:1px solid;border-radius:99px;padding:1px 10px;font-size:14px;font-weight:700;white-space:nowrap}.stkey{display:flex;gap:6px;flex-wrap:wrap}.gt .gsec td{background:#eef4fb}.gt td.num{white-space:nowrap}.mut{color:var(--mut);font-size:15px}
+.bdg{display:inline-block;margin:3px 6px 3px 0;padding:3px 12px;border-radius:99px;border:1px solid var(--line);color:#8a98a6;background:#f4f7fa;font-size:15px}.bdg.got{background:#fff4d6;color:#7a5200;border-color:#e6c874;font-weight:700}
+.filebtn{display:inline-block;cursor:pointer}.btn.danger{color:var(--bad);border-color:var(--bad)}.rname{font:inherit;font-size:18px;padding:3px 8px;border:1px solid #9fb0bf;border-radius:8px}
+.ws .wq{display:flex;gap:12px;padding:10px 0;border-bottom:1px solid var(--line);break-inside:avoid}.ws .wn{font-weight:700;color:var(--brand);min-width:26px}.ws .wl{margin-top:10px;color:var(--mut)}.ws .wo{margin:4px 0}.ws .wa{padding:6px 0;border-bottom:1px solid #eef2f6;font-size:16px}.pbreak{page-break-before:always;break-before:page}
+@media print{body.printing header,body.printing nav,body.printing .noprint,body.printing .goals{display:none!important}body.printing .wrap{display:block;margin:0;padding:0}body.printing main{border:0;padding:0}body{background:#fff}}
 </style>
-<style id="sitenav-css">#sitenav{background:#1f3b5c;color:#fff;padding:6px 14px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-family:system-ui,sans-serif}#sitenav a.nb,#sitenav summary{font:inherit;font-size:14px;font-weight:700;background:rgba(255,255,255,.18);color:#fff;border:1px solid rgba(255,255,255,.5);border-radius:10px;padding:5px 12px;cursor:pointer;text-decoration:none;list-style:none}#sitenav summary::-webkit-details-marker{display:none}#sitenav details{position:relative}#sitenav .menu{position:absolute;z-index:9999;top:110%;left:0;background:#fff;border-radius:10px;box-shadow:0 4px 16px rgba(0,0,0,.25);padding:6px;min-width:240px;display:flex;flex-direction:column}#sitenav .menu a{color:#1f3b5c;text-decoration:none;padding:7px 10px;border-radius:8px;font-size:15px}#sitenav .menu a:hover{background:#eef2f7}#sitenav .menu a.cur{font-weight:800;background:#e3ecf7}#sitenav a.nb.cur{background:#fff;color:#1f3b5c}@media print{#sitenav{display:none}}</style></head>
-<body><div id="sitenav" role="navigation" aria-label="Site navigation"><a class="nb" href="../">Home</a><a class="nb" href="../1hvt-chapter-1/">Chapter 1</a><a class="nb" href="../1hvt-chapter-2/">Chapter 2</a><a class="nb cur" href="../1hvt-chapter-3/">Chapter 3</a></div>
-<header><div class="hd"><h1>Chapter 3 &middot; Relations</h1><p>Practise as long as you like. The questions adapt to you: Mild, Medium, Spicy and Extra spicy.</p></div><button class="pbtn" id="pbtn" type="button">My progress</button></header>
+</head>
+<body>
+<header><div class="topnav" role="navigation" aria-label="Site navigation"><a class="nb" href="../">Home</a><a class="nb" href="../1hvt-chapter-1/">Chapter 1</a><a class="nb" href="../1hvt-chapter-2/">Chapter 2</a><a class="nb cur" href="../1hvt-chapter-3/" aria-current="page">Chapter 3</a></div><div class="hd"><h1>Chapter 3 &middot; Relations</h1><p>Practise as long as you like. The questions adapt to you: Mild, Medium, Spicy and Extra spicy.</p></div><button class="pbtn" id="pbtn" type="button">My progress</button></header>
 <div class="wrap">
   <nav id="nav" aria-label="Topics"></nav>
   <main id="main" aria-live="polite"></main>
@@ -575,58 +607,160 @@ svg.grid[data-click]{cursor:crosshair}
   if (typeof module !== 'undefined' && module.exports) module.exports = API; else root.Ch3 = API;
 })(typeof window !== 'undefined' ? window : globalThis);
 
+
+window.Ch3.KEY="ch3-relations-v1";window.Ch3.GOALS=[["3.1", "I can read and plot points in a coordinate system", ["readPoint", "quadrant", "clickPoint", "axisDist"]], ["3.1", "I can reflect points and use coordinates in shapes", ["rectangle", "mirror", "parallelogram", "twoReflections"]], ["3.2", "I can use a formula and a table", ["substitute", "table", "solveX", "matchFormula", "solveNeg"]], ["3.2", "I can check whether a point is on a graph", ["onGraph", "howManyOn"]], ["3.3", "I can read, draw and describe graphs of formulas", ["readLineY", "lineFormula", "plotLine", "vertex", "shape", "yAxisCross", "formulaFromPoints", "whereCrossesX"]], ["3.4", "I can decide whether a relation is linear and how it changes", ["isLinear", "nextValue", "findFormula", "changePer", "growth", "farValue", "whichIsLinear"]], ["3.5", "I can use formulas in context", ["formulaFromText", "valueAt", "timeFor", "meaning", "breakEven", "squareArea", "equalCost", "candle"]]];
 </script>
 <script>
 (function(){
 'use strict';
 const E=window.Ch3,$=s=>document.querySelector(s);
 const LV=['Mild','Medium','Spicy','Extra spicy'],GOAL=10;let mix=false;
-let st={done:{},stat:{},best:{},tests:[],sec:'3.1',prog:{},lvl:{}};   // prog: correct count per section, lvl: level per section
-try{const r=JSON.parse(localStorage.getItem('ch3-relations-v1')||'null');if(r&&r.prog)st=Object.assign(st,r)}catch(e){}
-st.done=st.done||{};st.stat=st.stat||{};st.best=st.best||{};st.tests=st.tests||[];
-const save=()=>{try{localStorage.setItem('ch3-relations-v1',JSON.stringify({sec:st.sec,prog:st.prog,lvl:st.lvl,done:st.done,stat:st.stat,best:st.best,tests:st.tests}))}catch(e){}};
-let cur=null,tries=0,done=false,streak=0,wrongRun=0,recent=[],clicked=[],choiceSel=null;
-let test=null; // {qs,i,score,log}
+const hasLessons=Array.isArray(E.LESSONS)&&E.LESSONS.length>0;
+const KEY=E.KEY||'nx-page';
+const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const plain=h=>String(h).replace(/<svg[\s\S]*?<\/svg>/g,' [figure] ').replace(/<span class="nu">/g,'(').replace(/<\/span><span class="de">/g,')/(').replace(/<sup[^>]*>/g,'^').replace(/<[^>]+>/g,'').replace(/&nbsp;/g,' ').replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/\s+/g,' ').trim();
+const items=()=>hasLessons&&st.mode==='lesson'?E.LESSONS:E.SECTIONS;
+const todayISO=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
+const latestLesson=()=>{const t=todayISO();let L=E.LESSONS[0];E.LESSONS.forEach(x=>{if(x.date&&x.date<=t&&!x.rev&&x.id!=='L10')L=x});return L.id};
+function defaultFor(mode){return mode==='lesson'&&hasLessons?latestLesson():E.SECTIONS[0].id}
+function setMode(m){if(st.mode===m)return;st.secs[st.mode]=st.sec;st.mode=m;st.sec=st.secs[m]||defaultFor(m);test=null;mix=false;free=null;focus=null;save();next(true)}
+let st={mode:E.defaultMode||'lesson',secs:{},done:{},stat:{},best:{},tests:[],sec:'',prog:{},lvl:{},res:{},log:[],badges:{},bestRow:0,goalsAll:false};
+try{const r=JSON.parse(localStorage.getItem(KEY)||'null');if(r&&r.prog)st=Object.assign(st,r)}catch(e){}
+if(!hasLessons)st.mode='para';
+if(!st.modeSet&&st.prog&&Object.keys(st.prog).length&&hasLessons)st.mode='para';
+['secs','done','stat','best','res','badges'].forEach(k=>{st[k]=st[k]||{}});st.tests=st.tests||[];st.log=st.log||[];st.prog=st.prog||{};st.lvl=st.lvl||{};
+if(!st.sec||!items().some(x=>x.id===st.sec))st.sec=defaultFor(st.mode);
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify({mode:st.mode,modeSet:1,secs:st.secs,sec:st.sec,prog:st.prog,lvl:st.lvl,done:st.done,stat:st.stat,best:st.best,tests:st.tests,res:st.res,log:st.log,badges:st.badges,bestRow:st.bestRow,goalsAll:st.goalsAll}))}catch(e){}};
+let protoAngle=null;let cur=null,tries=0,done=false,streak=0,wrongRun=0,recent=[],clicked=[],choiceSel=null,hintUsed=false,attempts=[],row=0;
+let test=null;      // {qs,i,score,log}
+let free=null;      // free practice level (0..3) or null = adaptive
+let focus=null;     // {ids:[goal ids], i}
 
+/* ---------- learning goals ---------- */
+const GL=[],gOfGen={};
+(function buildGoals(){
+  const lists=[];[E.G||{},E.XG||{}].forEach((T,xi)=>Object.keys(T).forEach(sec=>T[sec].forEach(f=>lists.push([sec,f.name,xi===1]))));
+  const present=new Set(lists.map(x=>x[1]));
+  (E.GOALS||[]).forEach((g,i)=>{const gens=g[2].filter(n=>present.has(n));if(!gens.length)return;const o={id:'g'+GL.length,sec:g[0],title:g[1],gens,warn:g[3]||''};GL.push(o);gens.forEach(n=>{if(!(n in gOfGen))gOfGen[n]=o})});
+  const secTitle={};E.SECTIONS.forEach(s=>secTitle[s.id]=s.title.replace(/^[\d.]+\s*/,''));
+  const ch={};
+  lists.forEach(([sec,name])=>{if(name in gOfGen)return;let o=ch[sec];if(!o){o=ch[sec]={id:'g'+GL.length,sec,title:'I can solve harder and mixed questions about '+(secTitle[sec]||sec).toLowerCase(),gens:[],warn:'',challenge:true};GL.push(o)}o.gens.push(name);gOfGen[name]=o});
+})();
+const goalById=id=>GL.find(g=>g.id===id);
+const genName=q=>{if(!q)return null;if(typeof q.gen!=='number')return q.gen;const g=q.gen>=100?(E.XG[q.sec]||[])[q.gen-100]:(E.G[q.sec]||[])[q.gen];return g?g.name:null};
+const goalOfQ=q=>q&&gOfGen[genName(q)]||null;
+function itemGens(it){const s=new Set();if(it.gens){it.gens.concat(it.xg||[]).forEach(e=>s.add(e[1]))}else{(E.G[it.id]||[]).concat(E.XG[it.id]||[]).forEach(f=>s.add(f.name))}return s}
+function goalsForItem(id){const it=items().find(x=>x.id===id)||E.SECTIONS.find(x=>x.id===id);if(!it)return GL;const gs=itemGens(it);return GL.filter(g=>g.gens.some(n=>gs.has(n)))}
+/* mastery: last six results, weights like the chapter 1 page */
+const STAT={mastered:['Mastered','#16803c','#e6f6ec'],almost:['Almost mastered','#2f7d32','#eef7e4'],way:['On the way','#8a5a00','#fff4d6'],attention:['Needs attention','#b25a00','#ffe9d1'],extra:['Extra practice','#b3261e','#fdecea'],none:['Not enough practice yet','#5b6b7a','#eef2f6']};
+function goalScore(g){const r=st.res[g.id]||[];const w=r.slice(-6);const n=w.length;return{n:r.length,pct:n?Math.round(100*w.reduce((a,b)=>a+b,0)/n):null,key:r.length<3?'none':(function(p){return p>=80?'mastered':p>=70?'almost':p>=55?'way':p>=40?'attention':'extra'})(Math.round(100*w.reduce((a,b)=>a+b,0)/n))}}
+function record(q,w){const g=goalOfQ(q);if(!g)return;const r=st.res[g.id]=st.res[g.id]||[];r.push(w);if(r.length>30)r.splice(0,r.length-30)}
+
+/* ---------- badges ---------- */
+const BADGES=[['first','First try!','Answer a question correctly on your first try.'],['row5','5 in a row','Answer 5 questions in a row correctly on the first try.'],['row10','10 in a row','Answer 10 questions in a row correctly on the first try.'],['up','Level up','Reach the next level.'],['spicy','Spicy!','Reach the Spicy level in any section.'],['mm','Master Mix','Unlock a Master Mix.'],['goal','Objective mastered','Get the status Mastered on a learning objective.'],['test','Test ready','Score at least 20 out of 24 in a test preparation.']];
+function award(id){if(st.badges[id])return '';st.badges[id]=todayISO();const b=BADGES.find(x=>x[0]===id);return ' <b>🏅 New badge: '+b[1]+'!</b>'}
+
+/* ---------- navigation ---------- */
 function renderNav(){
   const n=$('#nav');n.innerHTML='';
-  E.SECTIONS.forEach(s=>{
-    const b=document.createElement('button');b.className='sec';b.setAttribute('aria-current',String(!test&&!mix&&st.sec===s.id));
+  if(hasLessons){const tg=document.createElement('div');tg.className='seg';tg.innerHTML='<button type="button" class="'+(st.mode==='lesson'?'on':'')+'" data-m="lesson">By lesson</button><button type="button" class="'+(st.mode==='para'?'on':'')+'" data-m="para">By paragraph</button>';
+    tg.querySelectorAll('button').forEach(b=>b.onclick=()=>setMode(b.dataset.m));n.appendChild(tg)}
+  const t0=todayISO(),lat=hasLessons&&st.mode==='lesson'?latestLesson():'';
+  const inMain=!test&&!view;
+  items().forEach(s=>{
+    const b=document.createElement('button');b.className='sec';b.setAttribute('aria-current',String(inMain&&!mix&&st.sec===s.id));
     const p=Math.min(GOAL,st.prog[s.id]||0);
-    b.innerHTML='<div class="t">'+s.title+'</div><div class="s">'+s.sub+'</div><div class="bar" aria-hidden="true"><i style="width:'+p*100/GOAL+'%"></i></div>';
-    b.onclick=()=>{test=null;mix=false;st.sec=s.id;save();next(true)};n.appendChild(b);
-    if(st.done[s.id]){const m=document.createElement('button');m.className='sec mm';m.setAttribute('aria-current',String(!test&&mix&&st.sec===s.id));m.textContent='★ Master Mix '+s.id;m.onclick=()=>{test=null;mix=true;st.sec=s.id;save();next(true)};n.appendChild(m)}
+    b.innerHTML='<div class="t">'+s.title+'</div><div class="s">'+s.sub+(st.mode==='lesson'&&s.date?(s.date>t0?' · coming up':s.id===lat?' · latest lesson':''):'')+'</div><div class="bar" aria-hidden="true"><i style="width:'+p*100/GOAL+'%"></i></div>';
+    b.onclick=()=>{test=null;view=null;mix=false;free=null;focus=null;st.sec=s.id;save();next(true)};n.appendChild(b);
+    if(st.done[s.id]){const m=document.createElement('button');m.className='sec mm';m.setAttribute('aria-current',String(inMain&&mix&&st.sec===s.id));m.textContent='★ Master Mix';m.onclick=()=>{test=null;view=null;mix=true;free=null;focus=null;st.sec=s.id;save();next(true)};n.appendChild(m)}
   });
   const t=document.createElement('button');t.className='sec';t.setAttribute('aria-current',String(!!test));
   t.innerHTML='<div class="t">Test preparation</div><div class="s">24 mixed questions, no hints</div>';
   t.onclick=startTest;n.appendChild(t);
-  const r=document.createElement('button');r.className='reset';r.textContent='Reset my progress';
-  r.onclick=()=>{if(confirm('Delete all your progress on this page?')){st={sec:st.sec,prog:{},lvl:{},done:{},stat:{},best:{},tests:[]};mix=false;save();test=null;renderNav();next(true)}};n.appendChild(r);
 }
+let view=null;
 function lvl(){return st.lvl[st.sec]||0}
-function next(reset){
-  if(reset){streak=0;wrongRun=0;recent=[]}
-  cur=E.make(st.sec,mix?'mix':lvl(),recent);recent.push({g:cur.gen,f:cur.fp});recent=recent.slice(-12);tries=0;done=false;clicked=[];choiceSel=null;renderQ(false);renderNav();
+function curLevel(){return mix?'mix':free!==null?free:lvl()}
+function fingerprint(q){return String(q.html||'').replace(/<svg[\s\S]*?<\/svg>/g,'')+'|'+JSON.stringify(q.ans)}
+function findGen(name){for(const T of [E.G||{},E.XG||{}])for(const sec of Object.keys(T)){const f=T[sec].find(x=>x.name===name);if(f)return [f,sec,T===E.XG]}return null}
+function makeFromGoal(g,level){
+  for(let t=0;t<40;t++){
+    const name=g.gens[Math.floor(Math.random()*g.gens.length)],hit=findGen(name);if(!hit)continue;
+    const [f,sec,isX]=hit;let q;try{q=f(Math.min(level,2))}catch(e){continue}
+    q.gen=name;q.sec=sec;q.lvl=level;q.mix=false;q.fp=fingerprint(q);
+    if(recent.some(r=>r.f===q.fp))continue;return q;
+  }
+  return E.make(st.sec,level,recent);
 }
-function qHTML(q,idx){
+function next(reset){
+  view=null;
+  if(reset){streak=0;wrongRun=0;recent=[]}
+  if(focus){const g=goalById(focus.ids[focus.i%focus.ids.length]);focus.i++;const sec=g.sec;cur=makeFromGoal(g,st.lvl[sec]||0)}
+  else cur=E.make(st.sec,curLevel(),recent);
+  recent.push({g:cur.gen,f:cur.fp});recent=recent.slice(-12);tries=0;done=false;clicked=[];choiceSel=null;protoAngle=null;hintUsed=false;attempts=[];renderQ();renderNav();
+}
+function qHTML(q){
   let h='<div class="q">'+q.html+'</div><div class="ans" id="ans">';
   if(q.type==='num')h+='<label class="sr" for="in0">Your answer</label><input type="text" id="in0" inputmode="text" autocomplete="off" placeholder="your answer">';
+  else if(q.type==='expr')h+='<label class="sr" for="in0">Your answer</label><input type="text" id="in0" inputmode="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="type your answer"><div class="kp" id="kp">'+(q.keys||['√','^','/','·','(',')','π']).map(k=>'<button type="button" data-k="'+k+'">'+k+'</button>').join('')+'<button type="button" data-k="⌫" aria-label="delete">⌫</button></div><div class="pv" id="pv" aria-live="polite"></div>';
   else if(q.type==='point')h+='<label class="sr" for="in0">Your answer</label><input type="text" id="in0" autocomplete="off" placeholder="(x, y)">';
   else if(q.type==='multi')q.fields.forEach((f,i)=>{h+='<label for="in'+i+'">'+f+'</label><input type="text" id="in'+i+'" autocomplete="off">'});
   else if(q.type==='choice'){h+='<div class="choices">'+q.opts.map((o,i)=>'<button type="button" class="choice" data-i="'+i+'" aria-pressed="false">'+o+'</button>').join('')+'</div>'}
   h+='</div>';return h;
 }
+/* ---------- learning-goals panel ---------- */
+function goalsPanel(q){
+  if(!GL.length)return '';
+  const cg=goalOfQ(q),all=st.goalsAll,list=goalsForItem(st.sec);
+  const shown=all?list:(cg?[cg]:[]);
+  const li=g=>{const sc=goalScore(g),S=STAT[sc.key];return '<li'+(cg&&g.id===cg.id?' class="cur" aria-current="step"':'')+'><span class="sd" style="background:'+S[1]+'" title="'+S[0]+'"></span><span class="gt">'+esc(g.title)+'</span></li>'};
+  return '<div class="goals"><div class="gh"><b>Key learning goals</b><span class="gb"><button type="button" class="lk" id="gtoggle" aria-expanded="'+all+'">'+(all?'Show current goal only':'Show all learning goals')+'</button>'+(cg&&!test?'<button type="button" class="lk" id="gexplain">Explain this goal</button>':'')+'</span></div><ul>'+shown.map(li).join('')+'</ul><div id="gcard"></div></div>';
+}
+function modeBar(){
+  if(mix||test)return '';
+  const a=free===null&&!focus;
+  let h='<div class="pmbar"><span class="pml">Practice:</span><button type="button" class="pm'+(a?' on':'')+'" data-f="a">Adaptive</button><span class="pml">Free practice:</span>'+LV.map((l,i)=>'<button type="button" class="pm l'+i+(free===i?' on':'')+'" data-f="'+i+'">'+l+'</button>').join('')+'</div>';
+  if(free!==null)h+='<div class="pmnote"><b>Free practice: '+LV[free]+'.</b> These questions do not count towards reaching the next level. <button type="button" class="btn alt sm" id="back2a">← Back to adaptive</button></div>';
+  if(focus){const g=goalById(focus.ids[(focus.i-1+focus.ids.length)%focus.ids.length]);h+='<div class="pmnote"><b>Focused practice</b> on your weakest objectives'+(g?': '+esc(g.title):'')+'. These questions do not count towards the next level. <button type="button" class="btn alt sm" id="back2a">← Back to adaptive</button></div>'}
+  return h;
+}
 function renderQ(){
   const m=$('#main'),q=cur;
-  m.innerHTML='<div class="top">'+(q.mix?'<span class="badge lm">Master Mix</span> ':'')+'<span class="badge l'+q.lvl+'">'+LV[q.lvl]+'</span><span class="streak">In a row: '+[0,1,2].map(i=>'<span class="dot'+(i<streak?' on':'')+'"></span>').join('')+' &nbsp; Done: '+Math.min(GOAL,st.prog[st.sec]||0)+'/'+GOAL+'</span></div>'+
-   qHTML(q)+'<div class="btns"><button class="btn" id="chk">Check</button><button class="btn alt" id="hnt">Hint</button><button class="btn alt" id="nxt" style="display:none">Next question</button></div><div class="fb" id="fb"></div>';
-  wire();
+  const lvLabel=free!==null?'Free practice · '+LV[q.lvl]:LV[q.lvl];
+  m.innerHTML='<div class="top">'+(q.mix?'<span class="badge lm">Master Mix</span> ':'')+'<span class="badge l'+q.lvl+'">'+lvLabel+'</span><span class="streak">'+(free!==null||focus?'Free practice':'In a row: '+[0,1,2].map(i=>'<span class="dot'+(i<streak?' on':'')+'"></span>').join('')+' &nbsp; Done: '+Math.min(GOAL,st.prog[st.sec]||0)+'/'+GOAL)+'</span></div>'+modeBar()+goalsPanel(q)+
+   qHTML(q)+'<div class="btns"><button class="btn" id="chk">Check</button><button class="btn alt" id="hnt">Hint</button><button class="btn alt" id="sol" style="display:none">Show solution</button><button class="btn alt" id="nxt" style="display:none">Next question</button></div><div class="fb" id="fb"></div><div id="hist"></div>'+logPanel();
+  wire();wireChrome();
   const f=$('#in0');if(f)f.focus();
 }
+function logPanel(){
+  if(!st.log.length)return '';
+  return '<details class="hl"><summary>My recent answers ('+Math.min(st.log.length,15)+')</summary><ul>'+st.log.slice(-15).reverse().map(l=>'<li><span class="'+(l.ok?'ok':'no')+'">'+(l.ok?'✓':'✗')+'</span> <span class="lq">'+esc(l.t)+'</span> → <b>'+esc(l.a)+'</b></li>').join('')+'</ul></details>';
+}
+function wireChrome(){
+  document.querySelectorAll('.pmbar .pm').forEach(b=>b.onclick=()=>{const f=b.dataset.f;free=f==='a'?null:+f;focus=null;mix=false;next(true)});
+  const b2=$('#back2a');if(b2)b2.onclick=()=>{free=null;focus=null;next(true)};
+  const gt=$('#gtoggle');if(gt)gt.onclick=()=>{st.goalsAll=!st.goalsAll;save();const g=document.querySelector('.goals');const tmp=document.createElement('div');tmp.innerHTML=goalsPanel(cur);g.replaceWith(tmp.firstChild);wireChrome()};
+  const ge=$('#gexplain');if(ge)ge.onclick=()=>{const c=$('#gcard');if(c.innerHTML){c.innerHTML='';ge.textContent='Explain this goal';return}ge.textContent='Hide explanation';c.innerHTML=helpCard(goalOfQ(cur))};
+}
+const ENTER={num:'Type a number. A comma or a point both work for decimals.',expr:'Type your answer in the box. Use the buttons under the box for √, powers (^) and fractions (/). Use brackets in the bottom of a fraction: 5/(2x). The line “Your answer reads” shows what I understood.',choice:'Click the answer you think is right, then press Check.',point:'Type the coordinates like (2, 3).',multi:'Fill in every box.',click:'Click on the picture, then press Check.',proto:'Click on the protractor scale, then press Check.'};
+const WARN={root:'Simplify completely: no square factor may stay under the root.',mono:'Write the answer as simply as possible: one number, then each letter with one exponent.',poly:'Collect like terms and write everything out without brackets.',lowest:'Cancel the fraction as far as possible.',primes:'Write only prime numbers, in increasing order, with exponents.',sci:'In scientific notation the first number is at least 1 and less than 10.'};
+function helpCard(g){
+  if(!g)return '';
+  let q=null;for(const n of g.gens){const hit=findGen(n);if(!hit)continue;try{q=hit[0](0);q.gen=n;break}catch(e){}}
+  if(!q)return '<div class="hc"><p>No explanation available yet.</p></div>';
+  const how=q.hint?String(q.hint):'Read the question carefully and work step by step.';
+  const form=q.form&&WARN[q.form]?WARN[q.form]:'';
+  const warn=g.warn||form;
+  return '<div class="hc"><h4>'+esc(g.title)+'</h4><div class="hr"><b>What to do</b><p>'+how+'</p></div><div class="hr"><b>Example</b><div class="ex">'+q.html+'<p class="exa"><b>Answer: '+E.answerText(q)+'</b></p></div></div><div class="hr"><b>Steps</b><div>'+(q.steps||'')+'</div></div><div class="hr"><b>What to enter</b><p>'+(ENTER[q.type]||'Enter your answer.')+'</p></div>'+(warn?'<div class="hr warn"><b>Watch out</b><p>'+warn+'</p></div>':'')+'</div>';
+}
+/* ---------- question wiring ---------- */
 function wire(){
-  $('#chk').onclick=check;$('#hnt').onclick=hint;$('#nxt').onclick=()=>test?testNext():next(false);
+  wireProto();$('#chk').onclick=check;$('#hnt').onclick=hint;$('#sol').onclick=showSolution;$('#nxt').onclick=()=>test?testNext():next(false);
   document.querySelectorAll('.choice').forEach(b=>b.onclick=()=>{if(done)return;choiceSel=+b.dataset.i;document.querySelectorAll('.choice').forEach(x=>x.setAttribute('aria-pressed',String(x===b)))});
   document.querySelectorAll('#ans input').forEach(i=>i.addEventListener('keydown',e=>{if(e.key==='Enter')check()}));
+  wireExpr();wireGrid();
+}
+function wireGrid(){
   const sv=document.querySelector('svg.grid[data-click]');
   if(sv)sv.addEventListener('click',ev=>{
     if(done)return;const r=sv.getBoundingClientRect(),W=+sv.dataset.w,u=+sv.dataset.u,pad=+sv.dataset.pad;
@@ -635,94 +769,198 @@ function wire(){
     const k=clicked.findIndex(p=>p[0]===x&&p[1]===y);if(k>=0)clicked.splice(k,1);else clicked.push([x,y]);drawMarks(sv);
   });
 }
+function wireExpr(){
+  const kp=document.getElementById('kp');if(!kp)return;const inp=$('#in0'),pv=$('#pv');
+  const upd=()=>{const v=inp.value.trim();if(!v){pv.innerHTML='';return}let h=null;try{h=E.M(v,cur.noVars?{noVars:true}:{})}catch(e){}pv.innerHTML=h&&E.parse&&(()=>{try{E.parse(v,cur.noVars?{noVars:true}:{});return true}catch(e){return false}})()?'<span class="pl">Your answer reads:</span> '+h:'<span class="pl">I cannot read that yet. Check your brackets and symbols.</span>'};
+  inp.addEventListener('input',upd);
+  kp.querySelectorAll('button').forEach(b=>b.onclick=()=>{if(done)return;const k=b.dataset.k,s=inp.selectionStart,e=inp.selectionEnd,v=inp.value;
+    if(k==='⌫'){if(s!==e){inp.value=v.slice(0,s)+v.slice(e);inp.setSelectionRange(s,s)}else if(s>0){inp.value=v.slice(0,s-1)+v.slice(s);inp.setSelectionRange(s-1,s-1)}}
+    else{inp.value=v.slice(0,s)+k+v.slice(e);const n=s+k.length;inp.setSelectionRange(n,n)}
+    inp.focus();upd()});
+}
 function drawMarks(sv){
   const u=+sv.dataset.u,pad=+sv.dataset.pad,xmin=+sv.dataset.xmin,ymax=+sv.dataset.ymax;
   sv.querySelector('.marks').innerHTML=clicked.map(p=>{const cx=pad+(p[0]-xmin)*u,cy=pad+(ymax-p[1])*u;return '<circle cx="'+cx+'" cy="'+cy+'" r="6" fill="#d1471f" stroke="#fff" stroke-width="1.5"/>'}).join('');
 }
 function userAns(q){
-  if(q.type==='num'||q.type==='point')return $('#in0').value;
+  if(q.type==='proto')return protoAngle;
+  if(q.type==='num'||q.type==='point'||q.type==='expr')return $('#in0').value;
   if(q.type==='multi')return q.fields.map((_,i)=>$('#in'+i).value);
   if(q.type==='choice')return choiceSel;
   return clicked;
 }
+function ansText(q,u){
+  if(q.type==='choice')return u===null?'':plain(q.opts[u]);
+  if(q.type==='multi')return u.join(' and ');
+  if(q.type==='click')return u.map(p=>'('+p[0]+', '+p[1]+')').join(' ');
+  if(q.type==='proto')return u+'°';
+  return String(u);
+}
 function fb(cls,t){const b=$('#fb');b.className='fb show '+cls;b.innerHTML=t}
-function hint(){if(cur.hint)fb('hint','<b class="h">Hint</b>'+cur.hint)}
-function empty(q,u){if(q.type==='num'||q.type==='point')return !String(u).trim();if(q.type==='multi')return u.some(v=>!String(v).trim());if(q.type==='choice')return u===null;return u.length===0}
+function hint(){if(cur.hint){hintUsed=true;fb('hint','<b class="h">Hint</b>'+cur.hint)}}
+function empty(q,u){if(q.type==='proto')return u===null;if(q.type==='num'||q.type==='point'||q.type==='expr')return !String(u).trim();if(q.type==='multi')return u.some(v=>!String(v).trim());if(q.type==='choice')return u===null;return u.length===0}
+function logAnswer(q,u,ok){
+  const a=ansText(q,u);attempts.push({a,ok});
+  st.log.push({t:plain(q.html).slice(0,90),a:a.slice(0,60),ok,d:todayISO()});if(st.log.length>40)st.log.splice(0,st.log.length-40);
+  const h=$('#hist');if(h)h.innerHTML='<div class="at">Your answers on this question: '+attempts.map(x=>'<span class="'+(x.ok?'ok':'no')+'">'+(x.ok?'✓':'✗')+' '+esc(x.a)+'</span>').join(' ')+'</div>';
+}
+const chk=(q,u)=>E.check?E.check(q,u):{ok:E.grade(q,u)};
 function check(){
   if(done)return;const q=cur,u=userAns(q);
   if(empty(q,u)){fb('hint','Fill in your answer first.');return}
   if(test){return testCheck(q,u)}
-  const ok=E.grade(q,u);tries++;
+  const R_=chk(q,u),ok=R_.ok;tries++;
+  logAnswer(q,u,ok);
   const S=st.stat[st.sec]=st.stat[st.sec]||{n:0,ok:0};
+  const counts=free===null&&!focus;
   if(ok){
-    done=true;st.prog[st.sec]=(st.prog[st.sec]||0)+1;S.n++;if(tries===1)S.ok++;
-    if(tries===1){streak++;wrongRun=0}
+    done=true;if(counts)st.prog[st.sec]=(st.prog[st.sec]||0)+1;S.n++;if(tries===1)S.ok++;
+    const w=hintUsed?0.5:tries===1?1:0.75;record(q,w);
     let up='';
-    if(!mix&&streak>=3){streak=0;
-      if(lvl()<3){st.lvl[st.sec]=lvl()+1;st.best[st.sec]=Math.max(st.best[st.sec]||0,lvl());up=' <b>Level up: '+LV[lvl()]+'!</b>'+(lvl()===3?' These are challenge questions.':'')}
-      else if(!st.done[st.sec]){st.done[st.sec]=true;up=' <b>Extra spicy completed! ★ Master Mix is now unlocked for this section (see the menu).</b>'}}
+    if(tries===1&&!hintUsed){row++;streak+=counts?1:0;wrongRun=0;if(row>st.bestRow)st.bestRow=row;up+=award('first');if(row>=5)up+=award('row5');if(row>=10)up+=award('row10')}else if(tries>1){row=0;if(counts)streak=0}
+    if(counts&&!mix&&streak>=3){streak=0;
+      if(lvl()<3){st.lvl[st.sec]=lvl()+1;st.best[st.sec]=Math.max(st.best[st.sec]||0,lvl());up+=' <b>Level up: '+LV[lvl()]+'!</b>'+(lvl()===3?' These are challenge questions.':'')+award('up');if(lvl()>=2)up+=award('spicy')}
+      else if(!st.done[st.sec]){st.done[st.sec]=true;up+=' <b>Extra spicy completed! ★ Master Mix is now unlocked for this section (see the menu).</b>'+award('mm')}}
+    const g=goalOfQ(q);if(g&&goalScore(g).key==='mastered')up+=award('goal');
     save();fb('ok','<b class="h">Correct!'+(tries>1?' (second try)':'')+'</b>'+q.steps+up);finish();
   }else if(tries===1){
-    streak=0;fb('no','<b class="h">Not yet. Try again.</b>'+(q.hint?q.hint:''));
+    row=0;if(counts)streak=0;
+    $('#sol').style.display='';
+    fb('no','<b class="h">Not yet. Try again.</b>'+(R_.why==='form'?(R_.msg||'That has the right value, but it is not in the form asked for.')+' ':R_.why==='parse'?'I could not read that answer. ':'')+(q.hint?q.hint:''));
   }else{
-    done=true;wrongRun++;S.n++;let dn='';
-    if(!mix&&wrongRun>=2&&lvl()>0){st.lvl[st.sec]=lvl()-1;wrongRun=0;dn=' <i>Next questions will be a bit easier.</i>'}
+    done=true;row=0;wrongRun+=counts?1:0;S.n++;record(q,0);let dn='';
+    if(counts&&!mix&&wrongRun>=2&&lvl()>0){st.lvl[st.sec]=lvl()-1;wrongRun=0;dn=' <i>Next questions will be a bit easier.</i>'}
     save();fb('no','<b class="h">The answer is: '+E.answerText(q)+'</b>'+q.steps+dn);finish();
   }
 }
-function finish(){$('#chk').disabled=true;$('#hnt').disabled=true;$('#nxt').style.display='';$('#nxt').focus();document.querySelectorAll('.choice').forEach(b=>b.disabled=true);document.querySelectorAll('#ans input').forEach(i=>i.disabled=true);renderNavSoft()}
-function renderNavSoft(){if(E.SECTIONS.some(s=>st.done[s.id]&&!document.querySelector('#nav .mm')))renderNav();const bars=document.querySelectorAll('#nav .bar i');E.SECTIONS.forEach((s,i)=>{bars[i].style.width=Math.min(GOAL,st.prog[s.id]||0)*100/GOAL+'%'})}
+function showSolution(){
+  if(done||test)return;const q=cur;done=true;row=0;if(free===null&&!focus)streak=0;
+  const S=st.stat[st.sec]=st.stat[st.sec]||{n:0,ok:0};S.n++;record(q,0);
+  attempts.push({a:'(solution shown)',ok:false});
+  save();fb('no','<b class="h">Solution — the answer is: '+E.answerText(q)+'</b>'+q.steps+'<p><i>This question does not count as correct. Try the next one.</i></p>');finish();
+}
+function wireProto(){
+  const sv=document.querySelector('svg.proto[data-proto]');if(!sv)return;
+  sv.addEventListener('click',ev=>{if(done)return;
+    const r=sv.getBoundingClientRect(),W=+sv.dataset.w,H=+sv.dataset.h,cx=+sv.dataset.cx,cy=+sv.dataset.cy,R=+sv.dataset.r;
+    const px=(ev.clientX-r.left)*W/r.width,py=(ev.clientY-r.top)*H/r.height;
+    let a=Math.atan2(cy-py,px-cx)*180/Math.PI;if(py>cy)a=px>=cx?0:180;a=Math.max(0,Math.min(180,Math.round(a)));protoAngle=a;
+    const t=a*Math.PI/180,x2=cx+(R+22)*Math.cos(t),y2=cy-(R+22)*Math.sin(t),xd=cx+R*Math.cos(t),yd=cy-R*Math.sin(t);
+    sv.querySelector('.pm').innerHTML='<line x1="'+cx+'" y1="'+cy+'" x2="'+x2+'" y2="'+y2+'" stroke="#223" stroke-width="3" stroke-linecap="round"/><circle cx="'+xd+'" cy="'+yd+'" r="6" fill="#d1471f" stroke="#fff" stroke-width="1.5"/>';
+  });
+}
+function revealQ(q){
+  if(q.type==='proto'){const sv=document.querySelector('svg.proto');if(!sv||sv.querySelector('.rev'))return;const cx=+190,cy=188,R=160,t=q.target*Math.PI/180;
+    sv.insertAdjacentHTML('beforeend','<g class="rev"><line x1="'+cx+'" y1="'+cy+'" x2="'+(cx+(R+22)*Math.cos(t))+'" y2="'+(cy-(R+22)*Math.sin(t))+'" stroke="#16803c" stroke-width="3" stroke-dasharray="7 4"/><circle cx="'+(cx+R*Math.cos(t))+'" cy="'+(cy-R*Math.sin(t))+'" r="5.5" fill="#16803c" stroke="#fff" stroke-width="1.5"/></g>');return}
+  if(q.type!=='click')return;const sv=document.querySelector('svg.grid[data-click]');if(!sv||sv.querySelector('.rev'))return;
+  const u=+sv.dataset.u,pad=+sv.dataset.pad,xmin=+sv.dataset.xmin,ymax=+sv.dataset.ymax,X=x=>pad+(x-xmin)*u,Y=y=>pad+(ymax-y)*u;
+  const R=q.reveal||{segs:[],pts:q.targets};let h='';
+  (R.segs||[]).forEach(g=>{h+='<line x1="'+X(g.a[0])+'" y1="'+Y(g.a[1])+'" x2="'+X(g.b[0])+'" y2="'+Y(g.b[1])+'" stroke="#16803c" stroke-width="2.2" stroke-dasharray="6 4" opacity=".75"/>'});
+  (R.pts||[]).forEach(p=>{h+='<circle cx="'+X(p[0])+'" cy="'+Y(p[1])+'" r="5" fill="#16803c" stroke="#fff" stroke-width="1.5"/>'});
+  sv.querySelector('.marks').insertAdjacentHTML('beforebegin','<g class="rev">'+h+'</g>');
+}
+function finish(){revealQ(cur);$('#chk').disabled=true;$('#hnt').disabled=true;$('#sol').style.display='none';$('#nxt').style.display='';$('#nxt').focus();document.querySelectorAll('.choice').forEach(b=>b.disabled=true);document.querySelectorAll('#ans input').forEach(i=>i.disabled=true);document.querySelectorAll('#kp button').forEach(i=>i.disabled=true);renderNavSoft();const lp=document.querySelector('details.hl');if(lp){const o=lp.open;lp.outerHTML=logPanel();const n=document.querySelector('details.hl');if(n)n.open=o}}
+function renderNavSoft(){if(items().some(s=>st.done[s.id]&&!document.querySelector('#nav .mm')))renderNav();const bars=document.querySelectorAll('#nav .bar i');items().forEach((s,i)=>{if(bars[i])bars[i].style.width=Math.min(GOAL,st.prog[s.id]||0)*100/GOAL+'%'});const sd=document.querySelectorAll('.goals .sd');}
 
-/* ---- test preparation ---- */
-function startTest(){test={qs:E.makeTest(),i:0,score:0,log:[]};renderNav();testShow()}
+/* ---------- test preparation ---------- */
+function startTest(){view=null;free=null;focus=null;test={qs:E.makeTest(),i:0,score:0,log:[]};renderNav();testShow()}
 function testShow(){
-  const q=cur=test.qs[test.i];done=false;clicked=[];choiceSel=null;
+  const q=cur=test.qs[test.i];done=false;clicked=[];choiceSel=null;protoAngle=null;hintUsed=false;
   $('#main').innerHTML='<div class="top"><span class="badge l1">Test preparation</span><span class="streak">Question '+(test.i+1)+' of '+test.qs.length+'</span></div>'+qHTML(q)+
    '<div class="btns"><button class="btn" id="chk">Check</button><button class="btn alt" id="nxt" style="display:none">'+(test.i===test.qs.length-1?'See my result':'Next question')+'</button></div><div class="fb" id="fb"></div>';
-  $('#chk').onclick=check;$('#nxt').onclick=testNext;
-  const wiring=$('#hnt');
+  wireProto();$('#chk').onclick=check;$('#nxt').onclick=testNext;
   const tmp=document.createElement('button');tmp.id='hnt';tmp.style.display='none';$('.btns').appendChild(tmp);
   document.querySelectorAll('.choice').forEach(b=>b.onclick=()=>{if(done)return;choiceSel=+b.dataset.i;document.querySelectorAll('.choice').forEach(x=>x.setAttribute('aria-pressed',String(x===b)))});
   document.querySelectorAll('#ans input').forEach(i=>i.addEventListener('keydown',e=>{if(e.key==='Enter')check()}));
-  const sv=document.querySelector('svg.grid[data-click]');
-  if(sv)sv.addEventListener('click',ev=>{if(done)return;const r=sv.getBoundingClientRect(),W=+sv.dataset.w,u=+sv.dataset.u,pad=+sv.dataset.pad;
-    const x=Math.round(((ev.clientX-r.left)*W/r.width-pad)/u)+ +sv.dataset.xmin,y=+sv.dataset.ymax-Math.round(((ev.clientY-r.top)*W/r.width-pad)/u);
-    const k=clicked.findIndex(p=>p[0]===x&&p[1]===y);if(k>=0)clicked.splice(k,1);else clicked.push([x,y]);drawMarks(sv)});
+  wireExpr();wireGrid();
   const f=$('#in0');if(f)f.focus();
 }
 function testCheck(q,u){
-  done=true;const ok=E.grade(q,u);if(ok)test.score++;
+  done=true;const ok=E.grade(q,u);if(ok)test.score++;revealQ(q);record(q,ok?1:0);
   test.log.push({q,ok,u});
   fb(ok?'ok':'no',ok?'<b class="h">Correct</b>':'<b class="h">Not correct. The answer is: '+E.answerText(q)+'</b>'+q.steps);
-  $('#chk').disabled=true;document.querySelectorAll('.choice').forEach(b=>b.disabled=true);document.querySelectorAll('#ans input').forEach(i=>i.disabled=true);
+  $('#chk').disabled=true;document.querySelectorAll('.choice').forEach(b=>b.disabled=true);document.querySelectorAll('#ans input').forEach(i=>i.disabled=true);document.querySelectorAll('#kp button').forEach(i=>i.disabled=true);
   $('#nxt').style.display='';$('#nxt').focus();
 }
 function testNext(){
   test.i++;if(test.i<test.qs.length)return testShow();
   const n=test.qs.length,g=Math.round((test.score/n*9+1)*10)/10;
-  const wrong=test.log.filter(x=>!x.ok);st.tests.push({d:new Date().toISOString().slice(0,10),s:test.score,n:n});st.tests=st.tests.slice(-20);save();
-  $('#main').innerHTML='<div class="res"><h2>Your result</h2><div class="grade">'+test.score+' / '+n+'</div><p>That is a '+String(g).replace('.',',')+' on a scale of 1 to 10 (a rough guide only).</p>'+
-   (wrong.length?'<h3>Look at these again</h3>'+wrong.map(x=>'<div class="rev"><div>'+x.q.html+'</div><div><b>Answer: '+E.answerText(x.q)+'</b></div><div class="st">'+x.q.steps+'</div></div>').join(''):'<p><b>Everything correct. Great work!</b></p>')+
+  const wrong=test.log.filter(x=>!x.ok);st.tests.push({d:new Date().toISOString().slice(0,10),s:test.score,n:n});st.tests=st.tests.slice(-20);
+  const bd=test.score>=20?award('test'):'';save();
+  $('#main').innerHTML='<div class="res"><h2>Your result</h2><div class="grade">'+test.score+' / '+n+'</div><p>That is a '+String(g).replace('.',',')+' on a scale of 1 to 10 (a rough guide only).'+bd+'</p>'+
+   (wrong.length?'<h3>Look at these again</h3>'+wrong.map(x=>{const gg=goalOfQ(x.q);return '<div class="rev"><div>'+x.q.html+'</div><div><b>Answer: '+E.answerText(x.q)+'</b></div><div class="st">'+x.q.steps+'</div>'+(gg?'<div class="st"><i>Learning goal: '+esc(gg.title)+'</i></div>':'')+'</div>'}).join(''):'<p><b>Everything correct. Great work!</b></p>')+
    '<div class="btns"><button class="btn" id="again">Try a new test</button></div></div>';
   $('#again').onclick=startTest;
 }
 
-/* ---- progress overview ---- */
+/* ---------- progress overview ---------- */
+function overall(){let n=0,s=0;GL.forEach(g=>{const w=(st.res[g.id]||[]).slice(-6);w.forEach(x=>{n++;s+=x})});return{n,pct:n?Math.round(100*s/n):null}}
+function statusChip(key){const S=STAT[key];return '<span class="stc" style="background:'+S[2]+';color:'+S[1]+';border-color:'+S[1]+'">'+S[0]+'</span>'}
 function showProgress(){
-  test=null;renderNav();
-  const rows=E.SECTIONS.map(s=>{
+  test=null;view='progress';renderNav();
+  const rows=items().map(s=>{
     const cur_=st.lvl[s.id]||0,best=Math.max(st.best[s.id]||0,cur_),d=!!st.done[s.id],S=st.stat[s.id]||{n:0,ok:0};
     const chips=LV.map((l,i)=>'<span class="chip '+(d||i<best?'ach':i===cur_&&(S.n>0||cur_>0)?'act':'')+'">'+l+'</span>').join('');
-    return '<tr><td><b>'+s.title+'</b></td><td>'+chips+'</td><td>'+(S.n||0)+'</td><td>'+(S.n?Math.round(S.ok*100/S.n)+'%':'–')+'</td><td>'+(d?'★ unlocked':'not yet')+'</td></tr>';
+    const gs=goalsForItem(s.id),sc=gs.map(goalScore).filter(x=>x.pct!==null);
+    return '<tr><td><b>'+s.title+'</b></td><td>'+chips+'</td><td>'+(S.n||0)+'</td><td>'+(d?'★ unlocked':'not yet')+'</td></tr>';
   }).join('');
+  const O=overall(),mastered=GL.filter(g=>goalScore(g).key==='mastered').length;
+  const bySec={};GL.forEach(g=>{(bySec[g.sec]=bySec[g.sec]||[]).push(g)});
+  const goalRows=Object.keys(bySec).map(sec=>{const s=E.SECTIONS.find(x=>x.id===sec);return '<tr class="gsec"><td colspan="3"><b>'+(s?s.title:sec)+'</b></td></tr>'+bySec[sec].map(g=>{const sc=goalScore(g);return '<tr><td>'+esc(g.title)+'</td><td>'+statusChip(sc.key)+'</td><td class="num">'+(sc.pct===null?'–':sc.pct+'%')+' <span class="mut">('+sc.n+')</span></td></tr>'}).join('')}).join('');
+  const weak=weakGoals();
   const T=st.tests.length?'<h3>Test preparation results</h3><table><tr><th>Date</th><th>Score</th></tr>'+st.tests.slice().reverse().map(t=>'<tr><td>'+t.d+'</td><td>'+t.s+' / '+t.n+'</td></tr>').join('')+'</table>':'<p>You have not done a test preparation yet.</p>';
-  $('#main').innerHTML='<div class="pg"><h2>My progress</h2><p>Green = level reached. Blue = the level you are working on. Reach Extra spicy and answer 3 in a row correctly to unlock the Master Mix.</p><table><tr><th>Section</th><th>Levels</th><th>Questions</th><th>First try</th><th>Master Mix</th></tr>'+rows+'</table>'+T+
-    '<div class="btns"><button class="btn" id="back">Back to practice</button><button class="btn alt" id="prt">Print / save as PDF</button></div></div>';
-  $('#back').onclick=()=>next(true);$('#prt').onclick=()=>window.print();
+  const bad=BADGES.map(b=>'<span class="bdg'+(st.badges[b[0]]?' got':'')+'" title="'+esc(b[2])+'">'+(st.badges[b[0]]?'🏅 ':'🔒 ')+b[1]+'</span>').join('');
+  $('#main').innerHTML='<div class="pg"><h2>My progress'+(hasLessons?' ('+(st.mode==='lesson'?'by lesson':'by paragraph')+')':'')+'</h2>'+
+    '<div class="cards"><div class="card2"><b>'+O.n+'</b><span>answers counted (last 6 per objective)</span></div><div class="card2"><b>'+(O.pct===null?'–':O.pct+'%')+'</b><span>recent score</span></div><div class="card2"><b>'+mastered+' / '+GL.length+'</b><span>objectives mastered</span></div></div>'+
+    '<p class="mut">Recent score: for every learning objective only your <b>last six answers</b> count. Correct on the first try = 100%, first try with a hint = 50%, correct on the second try = 75%, not correct or solution shown = 0%.</p>'+
+    '<h3>Levels</h3><p>Green = level reached. Blue = the level you are working on. Reach Extra spicy and answer 3 in a row correctly to unlock the Master Mix.</p><table><tr><th>'+(st.mode==='lesson'&&hasLessons?'Lesson':'Section')+'</th><th>Levels</th><th>Questions</th><th>Master Mix</th></tr>'+rows+'</table>'+
+    '<h3>Results by learning objective</h3><p class="stkey">'+['mastered','almost','way','attention','extra','none'].map(statusChip).join(' ')+'</p><p class="mut">The status uses your last six answers on that objective (you need at least three answers).</p><table class="gt"><tr><th>Learning objective</th><th>Status</th><th>Score</th></tr>'+goalRows+'</table>'+
+    '<h3>Continue practising</h3>'+(weak.length?'<p>Your weakest objectives right now: '+weak.slice(0,3).map(g=>'<b>'+esc(g.title)+'</b>').join('; ')+'.</p>':'<p>Answer some more questions first, then I can point out what to practise.</p>')+
+    '<div class="btns"><button class="btn" id="fprac">Practise my weakest objectives online</button><button class="btn alt" id="wsheet">Printable practice worksheet</button></div>'+
+    '<h3>Badges</h3><p>'+bad+'</p>'+T+
+    '<h3>My data</h3><p class="mut">Your progress is stored on this device only (in this browser). Make a backup if you want to continue on another device.</p><div class="btns"><button class="btn alt" id="rep">Progress report (PDF)</button><button class="btn alt" id="bk">Download backup</button><label class="btn alt filebtn" for="rs">Restore backup<input type="file" id="rs" accept=".json,application/json" hidden></label><button class="btn alt danger" id="rst">Start again</button></div><div id="datamsg" class="mut"></div>'+
+    '<div class="btns"><button class="btn" id="back">Back to practice</button></div></div>';
+  $('#back').onclick=()=>next(true);$('#fprac').onclick=startFocus;$('#wsheet').onclick=showWorksheet;$('#rep').onclick=showReport;$('#bk').onclick=backup;$('#rst').onclick=startAgain;$('#rs').onchange=restore;
+}
+function weakGoals(){return GL.filter(g=>{const s=goalScore(g);return s.pct!==null&&s.n>=3&&s.key!=='mastered'}).sort((a,b)=>goalScore(a).pct-goalScore(b).pct)}
+function weakOrAny(k){let w=weakGoals();if(w.length<k){const att=GL.filter(g=>!w.includes(g)).sort((a,b)=>{const A=goalScore(a),B=goalScore(b);return (A.pct===null?101:A.pct)-(B.pct===null?101:B.pct)});w=w.concat(att)}return w.slice(0,k)}
+function startFocus(){const w=weakOrAny(4);if(!w.length)return;free=null;mix=false;focus={ids:w.map(g=>g.id),i:0};next(true)}
+function showWorksheet(){
+  view='ws';renderNav();const gs=weakOrAny(4);const qs=[];
+  gs.forEach(g=>{let k=0,guard=0;while(k<3&&guard++<30){const q=makeFromGoal(g,st.lvl[g.sec]||0);if(['num','expr','choice','point'].includes(q.type)&&!qs.some(x=>x.fp===q.fp)){qs.push(q);k++}}});
+  const t0=todayISO();
+  const qh=qs.map((q,i)=>'<div class="wq"><div class="wn">'+(i+1)+'</div><div class="wb">'+q.html+(q.type==='choice'?'<ol type="a" class="wo">'+q.opts.map(o=>'<li>'+o+'</li>').join('')+'</ol>':'<div class="wl">Answer: ________________________</div>')+'</div></div>').join('');
+  const ah=qs.map((q,i)=>'<div class="wa"><b>'+(i+1)+'.</b> '+(q.type==='choice'?String.fromCharCode(97+q.ans)+') ':'')+'<b>'+E.answerText(q)+'</b><div class="st">'+q.steps+'</div></div>').join('');
+  $('#main').innerHTML='<div class="pg ws"><div class="btns noprint"><button class="btn" id="wp">Print / save as PDF</button><button class="btn alt" id="wb">Back to my progress</button></div><h2>Practice worksheet · '+esc(document.querySelector('header h1').textContent)+'</h2><p class="mut">Name: ______________________ &nbsp; Date: '+t0+'</p><p class="mut">Objectives: '+gs.map(g=>esc(g.title)).join(' · ')+'</p>'+qh+'<div class="pbreak"></div><h2>Answers</h2>'+ah+'</div>';
+  $('#wp').onclick=()=>{document.body.classList.add('printing');window.print();setTimeout(()=>document.body.classList.remove('printing'),500)};$('#wb').onclick=showProgress;
+}
+function showReport(){
+  view='report';renderNav();const O=overall();
+  const bySec={};GL.forEach(g=>{(bySec[g.sec]=bySec[g.sec]||[]).push(g)});
+  const gr=Object.keys(bySec).map(sec=>{const s=E.SECTIONS.find(x=>x.id===sec);return '<tr class="gsec"><td colspan="3"><b>'+(s?s.title:sec)+'</b></td></tr>'+bySec[sec].map(g=>{const sc=goalScore(g);return '<tr><td>'+esc(g.title)+'</td><td>'+STAT[sc.key][0]+'</td><td>'+(sc.pct===null?'–':sc.pct+'%')+' ('+sc.n+')</td></tr>'}).join('')}).join('');
+  $('#main').innerHTML='<div class="pg ws"><div class="btns noprint"><button class="btn" id="wp">Print / save as PDF</button><button class="btn alt" id="wb">Back to my progress</button></div><h2>Progress report · '+esc(document.querySelector('header h1').textContent)+'</h2><p>Name: <input type="text" id="rn" class="rname" placeholder="your name"> &nbsp; Date: '+todayISO()+'</p><p><b>Recent score:</b> '+(O.pct===null?'–':O.pct+'%')+' over '+O.n+' counted answers. <b>Objectives mastered:</b> '+GL.filter(g=>goalScore(g).key==='mastered').length+' of '+GL.length+'.</p><table class="gt"><tr><th>Learning objective</th><th>Status</th><th>Score (answers)</th></tr>'+gr+'</table>'+(st.tests.length?'<h3>Test preparation</h3><p>'+st.tests.slice(-5).map(t=>t.d+': '+t.s+'/'+t.n).join(' · ')+'</p>':'')+'<p class="mut">Score = average of the last six answers per objective (first try 100%, with hint 50%, second try 75%, wrong 0%).</p></div>';
+  $('#wp').onclick=()=>{const n=$('#rn');if(n){n.setAttribute('value',n.value)}document.body.classList.add('printing');window.print();setTimeout(()=>document.body.classList.remove('printing'),500)};$('#wb').onclick=showProgress;
+}
+function backup(){
+  const data={page:KEY,saved:new Date().toISOString(),state:JSON.parse(localStorage.getItem(KEY)||'{}')};
+  const blob=new Blob([JSON.stringify(data)],{type:'application/json'}),a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);a.download=KEY+'-backup-'+todayISO()+'.json';document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},500);
+  const m=$('#datamsg');if(m)m.textContent='Backup downloaded.';
+}
+function restore(ev){
+  const f=ev.target.files&&ev.target.files[0];if(!f)return;const r=new FileReader();
+  r.onload=()=>{try{const d=JSON.parse(r.result);if(!d||d.page!==KEY||!d.state||!d.state.prog)throw new Error('wrong file');
+    if(!confirm('Replace the progress on this device with the backup?'))return;localStorage.setItem(KEY,JSON.stringify(d.state));location.reload()}catch(e){const m=$('#datamsg');if(m)m.textContent='That file is not a backup of this page.'}};
+  r.readAsText(f);
+}
+function startAgain(){
+  if(!confirm('Delete all your progress on this page and start again?'))return;
+  st={mode:st.mode,secs:{},done:{},stat:{},best:{},tests:[],sec:st.sec,prog:{},lvl:{},res:{},log:[],badges:{},bestRow:0,goalsAll:st.goalsAll};mix=false;free=null;focus=null;save();test=null;renderNav();next(true);
 }
 document.getElementById('pbtn').onclick=showProgress;
 window.__dbg=()=>cur;renderNav();next(true);
 })();
+
 </script>
 </body>
 </html>
