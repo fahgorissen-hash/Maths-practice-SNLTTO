@@ -340,9 +340,32 @@ svg.grid[data-click]{cursor:crosshair}
         hint: 'In the name of an angle, the letter of the vertex (the corner point) is in the middle.', steps: 'The vertex is ' + nm[v] + ', so the name is ' + right + '.' };
     },
     function complete(l) {
-      const kind = pick([['a right angle', 90], ['a straight angle', 180], ['a full angle', 360]]), a = kind[1] === 360 ? ri(3, 33) * 10 : ri(2, kind[1] / 10 - 2) * 10 + (l === 2 ? ri(1, 9) : 0);
-      return { type: 'num', ans: kind[1] - a, correct: String(kind[1] - a), html: '<p>An angle of <b>' + a + '°</b> must be made into <b>' + kind[0] + '</b> (' + kind[1] + '°). How many degrees are missing?</p>',
-        hint: 'Subtract: ' + kind[1] + '° − ' + a + '°.', steps: kind[1] + '° − ' + a + '° = ' + (kind[1] - a) + '°.' };
+      const nm = { 90: 'a right angle', 180: 'a straight angle', 360: 'a full angle' };
+      if (l === 0) {                       // two known angles, one missing
+        const T = pick([90, 180]), x = 5 * ri(2, T / 5 - 6), a = 5 * ri(2, (T - x) / 5 - 2), b = T - x - a;
+        if (b <= 0 || a <= 0) return G['2.2'][6](l);
+        return { type: 'num', ans: x, correct: String(x),
+          html: '<p>The angles <b>' + a + '°</b> and <b>' + b + '°</b> are next to each other, together with a third angle <b>x</b>. All three together make <b>' + nm[T] + '</b> (' + T + '°). How big is <b>x</b>? (Give the number of degrees.)</p>',
+          hint: 'Add the two angles you know. Then subtract the total from ' + T + '°.', steps: a + ' + ' + b + ' = ' + (a + b) + '°. Then ' + T + ' − ' + (a + b) + ' = ' + x + '°.' };
+      }
+      if (l === 1) {                       // three known angles, full turn or straight angle
+        const T = pick([180, 360]), n = T === 180 ? 2 : 3; let ang = [], sum = 0;
+        for (let i = 0; i < n; i++) { const v = ri(18, Math.floor((T - 30) / (n + 0.5))); ang.push(v); sum += v; }
+        const x = T - sum;
+        if (x < 10) return G['2.2'][6](l);
+        return { type: 'num', ans: x, correct: String(x),
+          html: '<p>Around a point (or on a straight line) the angles ' + ang.map(v => '<b>' + v + '°</b>').join(', ') + ' and one more angle <b>x</b> together make <b>' + nm[T] + '</b> (' + T + '°). How big is <b>x</b>? (Give the number of degrees.)</p>',
+          hint: 'Add all the angles you know. Then subtract the total from ' + T + '°.', steps: ang.join(' + ') + ' = ' + sum + '°. Then ' + T + ' − ' + sum + ' = ' + x + '°.' };
+      }
+      const T = pick([90, 180]), d = 2 * ri(2, 12), A = (T - d) / 2, B = A + d, mode = ri(0, 1);
+      if (A < 5) return G['2.2'][6](l);
+      return mode === 0
+        ? { type: 'num', ans: A, correct: String(A),
+          html: '<p>Two angles together make <b>' + nm[T] + '</b> (' + T + '°). The bigger angle is <b>' + d + '° bigger</b> than the smaller angle. How big is the <b>smaller</b> angle? (Give the number of degrees.)</p>',
+          hint: 'Take the ' + d + '° away first. Then the two angles are equally big: share what is left by 2.', steps: T + ' − ' + d + ' = ' + (T - d) + '°. Then ' + (T - d) + ' : 2 = ' + A + '° (the smaller angle).' }
+        : { type: 'num', ans: B, correct: String(B),
+          html: '<p>Two angles together make <b>' + nm[T] + '</b> (' + T + '°). The bigger angle is <b>' + d + '° bigger</b> than the smaller angle. How big is the <b>bigger</b> angle? (Give the number of degrees.)</p>',
+          hint: 'Take the ' + d + '° away first. Share what is left by 2. That is the smaller angle. Then add the ' + d + '° back.', steps: T + ' − ' + d + ' = ' + (T - d) + '°. Smaller angle: ' + (T - d) + ' : 2 = ' + A + '°. Bigger angle: ' + A + ' + ' + d + ' = ' + B + '°.' };
     },
     function drawAngle(l) {
       const start = l === 0 ? 'R' : pick(['R', 'L']);
