@@ -82,6 +82,7 @@ svg.fig{max-width:430px;width:100%;height:auto;display:block;margin:6px 0 10px}
 .ws .wq{display:flex;gap:12px;padding:10px 0;border-bottom:1px solid var(--line);break-inside:avoid}.ws .wn{font-weight:700;color:var(--brand);min-width:26px}.ws .wl{margin-top:10px;color:var(--mut)}.ws .wo{margin:4px 0}.ws .wa{padding:6px 0;border-bottom:1px solid #eef2f6;font-size:16px}.pbreak{page-break-before:always;break-before:page}
 @media print{body.printing header,body.printing nav,body.printing .noprint,body.printing .goals{display:none!important}body.printing .wrap{display:block;margin:0;padding:0}body.printing main{border:0;padding:0}body{background:#fff}}
 .autoc{display:block;margin:.6rem 0 0;font-size:.9rem;color:var(--mut,#556)}.autoc input{margin-right:.4rem}
+.stp .stl{font-size:1.15rem;margin:.35rem 0;color:var(--ink,inherit)}.stp .eq{margin-left:.15rem;font-weight:700}
 </style>
 </head>
 <body>
@@ -632,7 +633,7 @@ if(!st.modeSet&&st.prog&&Object.keys(st.prog).length&&hasLessons)st.mode='para';
 ['secs','done','stat','best','res','badges'].forEach(k=>{st[k]=st[k]||{}});st.tests=st.tests||[];st.log=st.log||[];st.prog=st.prog||{};st.lvl=st.lvl||{};
 if(!st.sec||!items().some(x=>x.id===st.sec))st.sec=defaultFor(st.mode);
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify({mode:st.mode,modeSet:1,secs:st.secs,sec:st.sec,prog:st.prog,lvl:st.lvl,done:st.done,stat:st.stat,best:st.best,tests:st.tests,res:st.res,log:st.log,badges:st.badges,bestRow:st.bestRow,goalsAll:st.goalsAll}))}catch(e){}};
-let protoAngle=null;let cur=null,tries=0,done=false,streak=0,wrongRun=0,recent=[],clicked=[],choiceSel=null,hintUsed=false,attempts=[],row=0;
+let protoAngle=null;let cur=null,tries=0,done=false,streak=0,wrongRun=0,recent=[],clicked=[],choiceSel=null,hintUsed=false,attempts=[],stepLines=[],row=0;
 let test=null;      // {qs,i,score,log}
 let free=null;      // free practice level (0..3) or null = adaptive
 let focus=null;     // {ids:[goal ids], i}
@@ -699,10 +700,10 @@ function next(reset){
   if(reset){streak=0;wrongRun=0;recent=[]}
   if(focus){const g=goalById(focus.ids[focus.i%focus.ids.length]);focus.i++;const sec=g.sec;cur=makeFromGoal(g,st.lvl[sec]||0)}
   else cur=E.make(st.sec,curLevel(),recent);
-  recent.push({g:cur.gen,f:cur.fp});recent=recent.slice(-12);tries=0;done=false;clicked=[];choiceSel=null;protoAngle=null;hintUsed=false;attempts=[];renderQ();renderNav();
+  recent.push({g:cur.gen,f:cur.fp});recent=recent.slice(-12);tries=0;done=false;clicked=[];choiceSel=null;protoAngle=null;hintUsed=false;attempts=[];stepLines=[];renderQ();renderNav();
 }
 function qHTML(q){
-  let h='<div class="q">'+q.html+'</div><div class="ans" id="ans">';
+  let h='<div class="q">'+q.html+'</div><div id="stp" class="stp"></div><div class="ans" id="ans">';
   if(q.type==='num')h+='<label class="sr" for="in0">Your answer</label><input type="text" id="in0" inputmode="text" autocomplete="off" placeholder="your answer">';
   else if(q.type==='expr')h+='<label class="sr" for="in0">Your answer</label><input type="text" id="in0" inputmode="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="type your answer"><div class="kp" id="kp">'+(q.keys||['√','^','/','·','(',')','π']).map(k=>'<button type="button" data-k="'+k+'">'+k+'</button>').join('')+'<button type="button" data-k="⌫" aria-label="delete">⌫</button></div><div class="pv" id="pv" aria-live="polite"></div>';
   else if(q.type==='point')h+='<label class="sr" for="in0">Your answer</label><input type="text" id="in0" autocomplete="off" placeholder="(x, y)">';
@@ -807,6 +808,7 @@ function logAnswer(q,u,ok){
   const h=$('#hist');if(h)h.innerHTML='<div class="at">Your answers on this question: '+attempts.map(x=>'<span class="'+(x.ok?'ok':'no')+'">'+(x.ok?'✓':'✗')+' '+esc(x.a)+'</span>').join(' ')+'</div>';
 }
 const chk=(q,u)=>E.check?E.check(q,u):{ok:E.grade(q,u)};
+function drawSteps(){const d=$('#stp');if(!d)return;d.innerHTML=stepLines.map(t=>{let h=null;if(/\//.test(t)){try{h=E.M(t,{noVars:true})}catch(e){}}else h=esc(t).replace(/\*|·/g,'×').replace(/-/g,'−');return '<div class="stl">'+(h||esc(t))+' <span class="eq">=</span></div>'}).join('')}
 function check(){
   if(done)return;const q=cur,u=userAns(q);
   if(empty(q,u)){fb('hint','Fill in your answer first.');return}
@@ -814,7 +816,7 @@ function check(){
   let calcWrong=false;
   if(q.type==='num'&&isNaN(E.parseNum(u))&&E.parse){let calc=false;try{E.parse(String(u),{noVars:true});calc=true}catch(e){}
     if(calc){const rr=E.check({type:'expr',ans:String(q.ans),form:'any',noVars:true},u);
-      if(rr.ok){fb('hint','<b class="h">✓ That calculation is right.</b>Now work it out and type the <b>final number</b> as your answer.');const i0=$('#in0');i0.value='';i0.focus();const pv=$('#pv');if(pv)pv.innerHTML='';return}calcWrong=true}}
+      if(rr.ok){fb('hint','<b class="h">✓ That calculation is right.</b>Now work it out and type the <b>final number</b> as your answer.');stepLines.push(String(u).trim());drawSteps();const i0=$('#in0');i0.value='';i0.focus();const pv=$('#pv');if(pv)pv.innerHTML='';return}calcWrong=true}}
   const R_=chk(q,u),ok=R_.ok;tries++;
   logAnswer(q,u,ok);
   const S=st.stat[st.sec]=st.stat[st.sec]||{n:0,ok:0};
