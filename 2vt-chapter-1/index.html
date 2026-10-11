@@ -750,11 +750,14 @@ XG['1.5'] = [
 ];
 
 /* ---------- sections and lessons ---------- */
+/* 2HT study guide leaves these out (rationalising, squares of roots, root areas, negative roots) */
+const SKIP = P.cls === '2HT' ? ['rationalise', 'rationaliseSimplify', 'rectArea', 'squareRoot', 'rootNeg'] : [];
+if (SKIP.length) { [G, XG].forEach(T => Object.keys(T).forEach(k => { T[k] = T[k].filter(fn => !SKIP.includes(fn.name)); })); }
 const SECTIONS = [
   { id: '1.1', title: '1.1 Multiples and factors', sub: 'LCM, HCF, prime numbers' },
   { id: '1.2', title: '1.2 Powers', sub: 'Power rules, negative and zero exponents' },
   { id: '1.3', title: '1.3 Square roots', sub: 'Calculating roots, order of operations' },
-  { id: '1.4', title: '1.4 Radicals', sub: 'Simplify, add, multiply, rationalise' },
+  { id: '1.4', title: '1.4 Radicals', sub: 'Simplify, add, multiply'+(P.cls === '2HT' ? '' : ', rationalise')+'' },
   { id: '1.5', title: '1.5 Scientific notation', sub: 'Powers of ten, big and small numbers' }
 ];
 const L = (id, title, sub, gens, xg, extra) => Object.assign({ id, title, sub, gens, xg }, extra || {});
@@ -766,10 +769,11 @@ const LESSONS = [
   L('L5', 'Lesson 5 · 1.3 A Square roots', 'Paragraph 1.3', [['1.3', 'niceRoot'], ['1.3', 'rootBetween'], ['1.3', 'rootNeg'], ['1.3', 'estimateRoot']], [['1.3', 'rootEq'], ['1.3', 'rootCompare']]),
   L('L6', 'Lesson 6 · 1.3 B Order of operations and roots', 'Paragraph 1.3', [['1.3', 'rootOrder'], ['1.3', 'rootSq'], ['1.3', 'niceRoot']], [['1.3', 'rootSumSq'], ['1.3', 'rootFactor']]),
   L('L7', 'Lesson 7 · 1.4 A Simplifying roots, like radicals', 'Paragraph 1.4', [['1.4', 'simplifyRoot'], ['1.4', 'likeRadicals'], ['1.4', 'simplifySum']], [['1.4', 'mixedRoot'], ['1.4', 'bigRoot']]),
-  L('L8', 'Lesson 8 · 1.4 B Multiplying, dividing, rationalising', 'Paragraph 1.4', [['1.4', 'multDiv'], ['1.4', 'squareRoot'], ['1.4', 'rationalise'], ['1.4', 'simplifyRoot']], [['1.4', 'rationaliseSimplify'], ['1.4', 'threeRoots'], ['1.4', 'rectArea']]),
+  L('L8', 'Lesson 8 · 1.4 B Multiplying, dividing' + (P.cls === '2HT' ? ' roots' : ', rationalising'), 'Paragraph 1.4', [['1.4', 'multDiv'], ['1.4', 'squareRoot'], ['1.4', 'rationalise'], ['1.4', 'simplifyRoot']], [['1.4', 'rationaliseSimplify'], ['1.4', 'threeRoots'], ['1.4', 'rectArea']]),
   L('L9', 'Lesson 9 · 1.5 Decimal and scientific notation', 'Paragraph 1.5', [['1.5', 'toSci'], ['1.5', 'fromSci'], ['1.5', 'sumPowers'], ['1.5', 'compareSci'], ['1.5', 'mulSci'], ['1.5', 'words']], [['1.5', 'timesBigger'], ['1.5', 'distance'], ['1.5', 'addSci']]),
   L('L10', 'Test preparation · whole chapter', 'Mixed', [].concat(...['1.1', '1.2', '1.3', '1.4', '1.5'].map(s => G[s].map(fn => [s, fn.name]))), [].concat(...['1.1', '1.2', '1.3', '1.4', '1.5'].map(s => XG[s].map(fn => [s, fn.name]))), { rev: true })
 ];
+LESSONS.forEach(le => { le.gens = le.gens.filter(g => !SKIP.includes(g[1])); le.xg = le.xg.filter(g => !SKIP.includes(g[1])); });
 return { key: 'nx-' + P.cls.toLowerCase() + '-ch1-v1', SECTIONS, LESSONS, G, XG, defaultMode: 'para' };
 }))(NX,{"cls": "2VT"}));
 </script>
