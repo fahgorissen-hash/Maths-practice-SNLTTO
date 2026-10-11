@@ -485,7 +485,7 @@ svg.fig{max-width:430px;width:100%;height:auto;display:block;margin:6px 0 10px}
     },
     function diagonals(l) {
       const n = l === 0 ? ri(4, 7) : l === 1 ? ri(6, 10) : ri(10, 25), ans = n * (n - 3) / 2, hs = Math.random() < .3 && l > 0;
-      return hs ? { type: 'num', ans: n * (n - 1) / 2, correct: String(n * (n - 1) / 2), html: '<p>' + n + ' people shake hands once with everybody else. Think of a regular polygon with ' + n + ' corners: sides and diagonals are handshakes. How many handshakes?</p>',
+      return hs ? { type: 'num', ans: n * (n - 1) / 2, correct: String(n * (n - 1) / 2), html: '<p>' + n + ' people shake hands once with everybody else. How many handshakes?</p>',
         hint: 'Each person shakes hands with ' + (n - 1) + ' others, but every handshake is counted twice.', steps: n + ' · ' + (n - 1) + ' : 2 = ' + n * (n - 1) / 2 + '.' }
         : { type: 'num', ans, correct: String(ans), html: '<p>How many diagonals does a polygon with <b>' + n + ' sides</b> have?</p>',
         hint: 'From each corner you can draw ' + (n - 3) + ' diagonals (not to itself or to its two neighbours). Every diagonal is then counted twice.', steps: n + ' · ' + (n - 3) + ' : 2 = ' + ans + '.' };

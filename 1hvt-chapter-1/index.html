@@ -930,7 +930,7 @@ G['1.5'] = [
     if (l === 0) { const e = ri(2, 9); return nu(p('Calculate <b>2<sup>' + e + '</sup></b>'), Math.pow(2, e), 'Start with 2 and double it again and again.', 'Doubling: ' + Array.from({ length: e }, (_, i) => Math.pow(2, i + 1)).join(', ') + '. So 2<sup>' + e + '</sup> = ' + Math.pow(2, e) + '.'); }
     const e = ri(10, 24); const v = Math.pow(2, e);
     if (l === 1) return nu(p('A chessboard story: on the first square lies 1 grain, on every next square twice as many as on the square before. On the <b>' + ord(e + 1) + '</b> square lie 2<sup>' + e + '</sup> grains. If 2<sup>' + (e - 1) + '</sup> = ' + grp(v / 2) + ', how many grains are on the ' + ord(e + 1) + ' square?'), v, 'Every next power of 2 is double the one before.', '2<sup>' + e + '</sup> = 2 × 2<sup>' + (e - 1) + '</sup> = 2 × ' + grp(v / 2) + ' = ' + grp(v) + '.');
-    return nu(p('Calculate <b>2<sup>' + e + '</sup></b>. (Use 2<sup>10</sup> = 1 024 and your calculator if you want.)'), v, 'Use a calculator, or split: 2<sup>' + e + '</sup> = 2<sup>10</sup> × 2<sup>' + (e - 10) + '</sup>.', '2<sup>' + e + '</sup> = ' + grp(v) + '.');
+    return nu(p('Calculate <b>2<sup>' + e + '</sup></b>.'), v, 'Use a calculator, or split: 2<sup>' + e + '</sup> = 2<sup>10</sup> × 2<sup>' + (e - 10) + '</sup>.', '2<sup>' + e + '</sup> = ' + grp(v) + '.');
   }
 ];
 XG['1.5'] = [
