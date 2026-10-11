@@ -456,6 +456,104 @@ const sinN = { sin: 'sin', cos: 'cos', tan: 'tan' };
 const triple = () => pick([[3, 4, 5], [5, 12, 13], [8, 15, 17], [7, 24, 25], [20, 21, 29], [9, 40, 41].slice(0, 3)]);
 const scaled = () => { const t = pick([[3, 4, 5], [5, 12, 13], [8, 15, 17]]); const k = pick([1, 2, 3]); return t.map(x => x * k); };
 
+/* ===== similarity (2.1-2.2) ===== */
+const txt = (x, y, s, c) => '<text x="' + x + '" y="' + y + '" font-size="15" font-weight="700" text-anchor="middle" fill="' + (c || '#123') + '">' + s + '</text>';
+const tri = (pts, labels, sides) => {
+  let s = '<polygon points="' + pts.map(q => q.join(',')).join(' ') + '" fill="#eaf2fb" stroke="#345" stroke-width="2"/>';
+  const cx = (pts[0][0] + pts[1][0] + pts[2][0]) / 3, cy = (pts[0][1] + pts[1][1] + pts[2][1]) / 3;
+  pts.forEach((q, i) => { const dx = q[0] - cx, dy = q[1] - cy, d = Math.hypot(dx, dy) || 1; s += txt(q[0] + dx / d * 13, q[1] + dy / d * 13 + 5, labels[i]); });
+  if (sides) for (let i = 0; i < 3; i++) { const a = pts[i], b = pts[(i + 1) % 3], mx = (a[0] + b[0]) / 2, my = (a[1] + b[1]) / 2, dx = mx - cx, dy = my - cy, d = Math.hypot(dx, dy) || 1; if (sides[i] != null) s += txt(mx + dx / d * 16, my + dy / d * 16 + 5, sides[i], '#a33'); }
+  return s;
+};
+const twoTri = (la, sa, lb, sb) => svg(340, 150, '<g>' + tri([[20, 110], [150, 110], [70, 20]], la, sa) + '</g><g transform="translate(180,0)">' + tri([[10, 110], [140, 110], [90, 30]], lb, sb) + '</g>');
+const k2 = () => pick([[2, 1], [3, 1], [3, 2], [5, 2], [4, 1], [3, 1.5]]);
+
+/* ---------- 2.1 Similar figures ---------- */
+G['2.1'] = [
+  function quadAngle(l) {
+    const a = ri(60, 110), b = ri(60, 120), c = ri(60, 120); const d = 360 - a - b - c; if (d < 40 || d > 160) return G['2.1'][0](l);
+    return nu(p('Quadrilateral KLMN has ∠K = ' + a + '°, ∠L = ' + b + '° and ∠M = ' + c + '°. Quadrilateral SPQR ~ KLMN. How big is ∠R (corresponding to ∠N), in °?'), d, 'The angles of a quadrilateral add up to 360°. Similar figures have equal corresponding angles.', '∠N = 360 − ' + a + ' − ' + b + ' − ' + c + ' = ' + d + '°, so ∠R = ' + d + '°.');
+  },
+  function polySide(l) {
+    const k = pick([1.5, 2, 2.5, 3, 0.5, 4]); const s = [ri(2, 7) * 2, ri(2, 7) * 2, ri(2, 7) * 2, ri(2, 7) * 2]; const t = ri(0, 3);
+    const names = ['AB', 'BC', 'CD', 'DA'], names2 = ['EF', 'FG', 'GH', 'HE'];
+    return nu(p('ABCD ~ EFGH. AB = ' + s[0] + ', BC = ' + s[1] + ', CD = ' + s[2] + ', DA = ' + s[3] + '. In EFGH the side ' + names2[(t + 1) % 4] + ' = ' + f(s[(t + 1) % 4] * k) + '. Calculate ' + names2[t] + '.'), s[t] * k, 'Scale factor = new side ÷ corresponding old side. Corresponding sides are in the same position (AB ↔ EF, BC ↔ FG, …).', 'Scale factor = ' + f(s[(t + 1) % 4] * k) + ' ÷ ' + s[(t + 1) % 4] + ' = ' + k + '. ' + names2[t] + ' = ' + s[t] + ' × ' + k + ' = ' + f(s[t] * k) + '.');
+  },
+  function similarFigures(l) {
+    const w = ri(2, 6) * 2, h = ri(2, 6) * 2, k = pick([2, 3, 1.5]); const yes = Math.random() < .5; const w2 = w * k, h2 = yes ? h * k : h * k + pick([-2, 2, 3]);
+    return ch(p('Rectangle 1 is ' + w + ' by ' + h + '. Rectangle 2 is ' + f(w2) + ' by ' + f(h2) + '. Are the rectangles similar?'), yes ? 'Yes' : 'No', [yes ? 'No' : 'Yes'], 'All angles are 90°. Check whether both pairs of sides are enlarged by the same factor.', 'Width: ' + f(w2) + ' ÷ ' + w + ' = ' + k + '. Height: ' + f(h2) + ' ÷ ' + h + ' = ' + f(h2 / h) + '. ' + (yes ? 'Same factor: similar.' : 'Different factors: not similar.'), { keys: [] });
+  },
+  function aspectRatio(l) {
+    const r = pick([[4, 3], [16, 9], [3, 2], [5, 4]]); const m = ri(2, 6) * 100; const wNew = r[0] * ri(2, 9) * 10; return nu(p('A photo has ratio width : height = ' + r[0] + ' : ' + r[1] + '. It is printed with a width of ' + wNew + ' mm and keeps the same shape. How high is the print (in mm, 1 decimal)?'), Math.round(wNew * r[1] / r[0] * 10) / 10, 'The printed photo is similar to the original: height = width × ' + r[1] + '/' + r[0] + '.', wNew + ' × ' + r[1] + ' ÷ ' + r[0] + ' = ' + f(Math.round(wNew * r[1] / r[0] * 10) / 10) + ' mm.', { tol: .06 });
+  }
+];
+XG['2.1'] = [
+  function insideRect(l) {
+    const w = ri(3, 8), h = ri(2, 6); const k = pick([1.5, 2, 2.5]); return nu(p('A rectangle of ' + w + ' by ' + h + ' has a border so that the outer rectangle is similar to the inner one. The outer rectangle is ' + f(w * k) + ' long. How wide is it?'), h * k, 'Same scale factor for length and width.', 'Scale factor ' + k + '; width = ' + h + ' × ' + k + ' = ' + f(h * k) + '.');
+  },
+  function twoFactors(l) {
+    const k = pick([2, 3]); const s = ri(3, 9); return nu(p('Figure B is figure A enlarged by factor ' + k + '. Figure C is figure B enlarged by factor 1.5. A side of figure A is ' + s + '. How long is the corresponding side in C?'), s * k * 1.5, 'Multiply the scale factors: A → C = ' + k + ' × 1.5.', s + ' × ' + k + ' × 1.5 = ' + f(s * k * 1.5) + '.');
+  }
+];
+
+/* ---------- 2.2 Similarity ---------- */
+G['2.2'] = [
+  function scaleFactor(l) {
+    const k = pick(l === 0 ? [2, 3, 4] : [1.5, 2.5, 0.5, 3, 1 / 3 * 3 + 1.5]); const a = ri(2, 8) * 2, b = ri(2, 8) * 2;
+    return nu(p('Rectangle B is a scaled version of rectangle A. A has sides <b>' + a + ' cm</b> and <b>' + b + ' cm</b>. The scale factor from A to B is <b>' + k + '</b>. How long is the <b>' + a + ' cm</b> side in B (in cm)?'), a * k, 'New length = scale factor × old length.', a + ' × ' + k + ' = ' + f(a * k) + ' cm.');
+  },
+  function missingAngle(l) {
+    const a = ri(30, 80), b = ri(30, 80); return nu(p('Triangle ABC has ∠A = <b>' + a + '°</b> and ∠B = <b>' + b + '°</b>. Triangle PQR has ∠P = ' + a + '° and ∠Q = ' + b + '°. How big is ∠R?'), 180 - a - b, 'The angles of a triangle add up to 180°. Both triangles have two equal angles, so they are similar (aa).', '180 − ' + a + ' − ' + b + ' = ' + (180 - a - b) + '°.');
+  },
+  function similarSide(l) {
+    const [kn, kd] = k2(); const k = kn / kd; const a = ri(2, 6) * (kd === 2 ? 2 : 1) * 2, b = ri(2, 6) * 2, c = ri(3, 6) * 2; const A = [a, b, c].map(x => x), B = A.map(x => x * k);
+    const t = ri(0, 2); const u = ['AB', 'BC', 'CA'];
+    const sa = [a, b, c].map((x, i) => i === t ? '?' : null), sb = B.map((x, i) => i === t ? null : f(x));
+    const sa2 = [a, b, c].map(String), sb2 = B.map((x, i) => i === t ? '?' : f(x));
+    return nu(p('The triangles are <b>similar</b> (corresponding sides are in the same position). Calculate the side marked <b>?</b>. (Not drawn to scale.)') + twoTri(['A', 'B', 'C'], sa2, ['P', 'Q', 'R'], sb2), B[t], 'Find the scale factor from two corresponding sides that you know. Then multiply (or divide) the other side.', 'Scale factor = ' + f(B[(t + 1) % 3]) + ' ÷ ' + [a, b, c][(t + 1) % 3] + ' = ' + f(k) + '. So ? = ' + [a, b, c][t] + ' × ' + f(k) + ' = ' + f(B[t]) + '.');
+  },
+  function aaOrSss(l) {
+    const a = ri(40, 80), b = ri(40, 80), c = 180 - a - b; const s = ri(0, 2);
+    const tr = ri(2, 4); const sides = [3, 4, 5].map(x => x * tr), sides2 = [3, 4, 5].map(x => x * (tr + 1));
+    const cases = [
+      { q: 'Triangle 1 has angles ' + a + '° and ' + b + '°. Triangle 2 has angles ' + b + '° and ' + c + '°.', r: 'Yes, aa' },
+      { q: 'Triangle 1 has sides ' + sides.join(', ') + ' cm. Triangle 2 has sides ' + sides2.join(', ') + ' cm.', r: 'No' },
+      { q: 'Triangle 1 has sides ' + sides.join(', ') + ' cm. Triangle 2 has sides ' + sides.map(x => x * 2).join(', ') + ' cm.', r: 'Yes, ssr' },
+      { q: 'Triangle 1 has angles ' + a + '° and ' + b + '°. Triangle 2 has angles ' + (a + 10) + '° and ' + b + '°.', r: 'No' }
+    ];
+    const cs = pick(cases); return ch(p('Are the two triangles similar? ' + cs.q), cs.r, ['Yes, aa', 'Yes, ssr', 'No'].filter(x => x !== cs.r), 'aa: two equal angles are enough (the third is then equal too). ssr: all three sides must have the same ratio.', cs.r === 'No' ? 'The angles or the ratios of the sides are not all equal: not similar.' : 'This is a ' + cs.r.slice(5) + ' case: similar.');
+  },
+  function anglePair(l) {
+    const right = pick(['vertically opposite angles', 'alternate angles (Z-angles)', 'corresponding angles (F-angles)']);
+    const d = { 'vertically opposite angles': 'Two angles on the opposite sides of the point where two lines cross.', 'alternate angles (Z-angles)': 'Between two parallel lines, on opposite sides of the transversal, in a Z shape.', 'corresponding angles (F-angles)': 'Two parallel lines cut by a transversal, on the same side, in an F shape.' }[right];
+    return ch(p('Which angle pair is described? <i>' + d + '</i> These angles are always equal.'), right, ['vertically opposite angles', 'alternate angles (Z-angles)', 'corresponding angles (F-angles)'].filter(x => x !== right), 'Think of a letter: Z, F, or an X shape.', right + '.');
+  },
+  function matchingOrder(l) {
+    const rights = [['ABC ~ PQR', 'AB corresponds to PQ, BC to QR'], ['ABC ~ QRP', 'AB corresponds to QR, BC to RP']]; const r = pick(rights);
+    const tot = r[0]; const wr = ['ABC ~ RPQ', 'ABC ~ PRQ', 'ABC ~ QPR'].filter(x => x !== tot);
+    const [x, y] = tot === 'ABC ~ PQR' ? [['A', 'P'], ['B', 'Q']] : [['A', 'Q'], ['B', 'R']];
+    return ch(p('In two similar triangles ∠A = ∠' + x[1] + ' and ∠B = ∠' + y[1] + '. Which similarity statement is correct?'), tot, wr.slice(0, 3), 'Write the letters of the equal angles in the same order.', 'A matches ' + x[1] + ', B matches ' + y[1] + ', so ' + tot + '.');
+  }
+];
+XG['2.2'] = [
+  function ratioTable(l) {
+    const a = ri(3, 9), b = ri(3, 9), k = pick([2, 3, 4]); const x = ri(2, 9);
+    return nu(p('Triangle ABC ~ triangle DEF. AB = ' + a + ', BC = ' + b + ', DE = ' + a * k + '. Calculate EF.'), b * k, 'AB corresponds to DE, so the scale factor is DE ÷ AB.', 'Scale factor ' + k + '. EF = ' + b + ' × ' + k + ' = ' + b * k + '.');
+  },
+  function areaFactor(l) {
+    const k = pick([2, 3, 4]); const A = ri(2, 9) * 2; return nu(p('Triangle B is a scaled version of triangle A with scale factor ' + k + '. The area of A is ' + A + ' cm². What is the area of B?'), A * k * k, 'Lengths scale by k, areas scale by k².', A + ' × ' + k + '² = ' + A * k * k + ' cm².');
+  },
+  function shadow(l) {
+    const h = pick([1.5, 1.8, 2, 1.6]), s = pick([2, 3, 2.5]), S = pick([12, 15, 20, 30]);
+    return nu(p('A person of ' + h + ' m casts a shadow of ' + s + ' m. At the same moment a tree casts a shadow of ' + S + ' m. How tall is the tree (in m)?'), Math.round(h / s * S * 100) / 100, 'The sun makes two similar triangles. Use the ratio height : shadow.', 'Height = ' + h + ' ÷ ' + s + ' × ' + S + ' = ' + f(Math.round(h / s * S * 100) / 100) + ' m.', { tol: .01 });
+  },
+  function nestedTri(l) {
+    const a = ri(2, 5), b = ri(2, 5), k = ri(2, 3); const w = ri(3, 7);
+    return nu(p('In triangle ABC, DE ∥ BC with D on AB and E on AC. AD = ' + a + ', DB = ' + a * (k - 1) + ', DE = ' + w + '. Calculate BC.'), w * k, 'Triangle ADE ~ triangle ABC (aa). AB = AD + DB.', 'AB = ' + a * k + ', scale factor = ' + a * k + ' ÷ ' + a + ' = ' + k + ', BC = ' + w + ' × ' + k + ' = ' + w * k + '.');
+  }
+];
+
+
 /* ---------- 2.3 Ratios ---------- */
 G['2.3'] = [
   function whichSide(l) {
@@ -581,6 +679,8 @@ XG['2.5'] = [
 ];
 
 const SECTIONS = [
+  { id: '2.1', title: '2.1 Similar figures', sub: 'Corresponding angles and sides, scale factor' },
+  { id: '2.2', title: '2.2 Similar triangles', sub: 'aa, ssr, scale factor, Pythagoras' },
   { id: '2.3', title: '2.3 Sine, cosine, tangent', sub: 'Ratios, tan = sin ÷ cos, sin² + cos² = 1' },
   { id: '2.4', title: '2.4 Sides and angles', sub: 'Calculate sides and angles with a calculator' },
   { id: '2.5', title: '2.5 Slopes and solids', sub: 'Slope, auxiliary lines, cuboids and pyramids' }
@@ -589,6 +689,8 @@ const ALL = sec => (G[sec] || []).map(fn => [sec, fn.name]), ALLX = sec => (XG[s
 const nm = (sec, names) => names.map(n => [sec, n]);
 const L = (id, title, sub, date, gens, xg, extra) => Object.assign({ id, title, sub, date, gens, xg }, extra || {});
 const LESSONS = [
+  L('L0', 'Lesson · 2.1 Similar figures', '2.1', null, nm('2.1', ['quadAngle', 'polySide', 'similarFigures', 'aspectRatio', ]), nm('2.1', ['insideRect', 'twoFactors'])),
+  L('L0b', 'Lesson · 2.2 Similar triangles', '2.2', null, nm('2.2', ['missingAngle', 'anglePair', 'aaOrSss', 'similarSide', 'matchingOrder']), nm('2.2', ['ratioTable', 'nestedTri', 'shadow'])),
   L('L1', 'Lesson · 2.3 A Sine, cosine and tangent', 'Thu 1 Oct', '2026-10-01', nm('2.3', ['whichSide', 'soh', 'ratioFromTriangle']), nm('2.3', ['tanRatioSide', 'exactTrig'])),
   L('L2', 'Lesson · 2.3 B Why the ratios work', 'Fri 2 Oct', '2026-10-02', nm('2.3', ['sameAngleSame', 'ratioFromTriangle', 'tanFromSinCos', 'identity']), nm('2.3', ['sinHyp', 'tanRatioSide'])),
   L('L3', 'Lesson · 2.3 C Ratios explored', 'Tue 6 Oct', '2026-10-06', nm('2.3', ['soh', 'ratioFromTriangle', 'tanFromSinCos', 'identity']), ALLX('2.3')),
@@ -596,7 +698,7 @@ const LESSONS = [
   L('L5', 'Lesson · 2.4 B Calculating angles', 'Fri 9 Oct', '2026-10-09', nm('2.4', ['angleInverse', 'angleFromTwo', 'thirdAngle']), nm('2.4', ['angleOfElevation', 'ladder'])),
   L('L6', 'Lesson · 2.5 A Slopes and auxiliary lines', 'Tue 27 Oct', '2026-10-27', nm('2.5', ['slopePct', 'slopeToAngle', 'angleToSlope', 'steeper', 'isoscelesBase', 'isoscelesAngle']), nm('2.5', ['slopeLength', 'triangleAltitude'])),
   L('L7', 'Lesson · 2.5 B Trigonometry in solids', 'Thu 29 Oct', '2026-10-29', nm('2.5', ['cuboidDiag', 'pyramidAngle', 'isoscelesAngle']), nm('2.5', ['cubeAngle', 'triangleAltitude'])),
-  L('L8', 'Revision · mock test chapters 1 and 2', 'Fri 30 Oct', '2026-10-30', [].concat(...['2.3', '2.4', '2.5'].map(ALL)), [].concat(...['2.3', '2.4', '2.5'].map(ALLX)), { rev: true })
+  L('L8', 'Revision · mock test chapters 1 and 2', 'Fri 30 Oct', '2026-10-30', [].concat(...['2.1', '2.2', '2.3', '2.4', '2.5'].map(ALL)), [].concat(...['2.1', '2.2', '2.3', '2.4', '2.5'].map(ALLX)), { rev: true })
 ];
 return { key: 'nx-3vt-ch2-v1', SECTIONS, LESSONS, G, XG, defaultMode: 'lesson' };
 }))(NX,{"cls": "3VT"}));

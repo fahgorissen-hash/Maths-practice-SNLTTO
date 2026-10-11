@@ -443,6 +443,34 @@ const tri = (pts, labels, sides) => {
 const twoTri = (la, sa, lb, sb) => svg(340, 150, '<g>' + tri([[20, 110], [150, 110], [70, 20]], la, sa) + '</g><g transform="translate(180,0)">' + tri([[10, 110], [140, 110], [90, 30]], lb, sb) + '</g>');
 const k2 = () => pick([[2, 1], [3, 1], [3, 2], [5, 2], [4, 1], [3, 1.5]]);
 
+/* ---------- 2.1 Similar figures ---------- */
+G['2.1'] = [
+  function quadAngle(l) {
+    const a = ri(60, 110), b = ri(60, 120), c = ri(60, 120); const d = 360 - a - b - c; if (d < 40 || d > 160) return G['2.1'][0](l);
+    return nu(p('Quadrilateral KLMN has ∠K = ' + a + '°, ∠L = ' + b + '° and ∠M = ' + c + '°. Quadrilateral SPQR ~ KLMN. How big is ∠R (corresponding to ∠N), in °?'), d, 'The angles of a quadrilateral add up to 360°. Similar figures have equal corresponding angles.', '∠N = 360 − ' + a + ' − ' + b + ' − ' + c + ' = ' + d + '°, so ∠R = ' + d + '°.');
+  },
+  function polySide(l) {
+    const k = pick([1.5, 2, 2.5, 3, 0.5, 4]); const s = [ri(2, 7) * 2, ri(2, 7) * 2, ri(2, 7) * 2, ri(2, 7) * 2]; const t = ri(0, 3);
+    const names = ['AB', 'BC', 'CD', 'DA'], names2 = ['EF', 'FG', 'GH', 'HE'];
+    return nu(p('ABCD ~ EFGH. AB = ' + s[0] + ', BC = ' + s[1] + ', CD = ' + s[2] + ', DA = ' + s[3] + '. In EFGH the side ' + names2[(t + 1) % 4] + ' = ' + f(s[(t + 1) % 4] * k) + '. Calculate ' + names2[t] + '.'), s[t] * k, 'Scale factor = new side ÷ corresponding old side. Corresponding sides are in the same position (AB ↔ EF, BC ↔ FG, …).', 'Scale factor = ' + f(s[(t + 1) % 4] * k) + ' ÷ ' + s[(t + 1) % 4] + ' = ' + k + '. ' + names2[t] + ' = ' + s[t] + ' × ' + k + ' = ' + f(s[t] * k) + '.');
+  },
+  function similarFigures(l) {
+    const w = ri(2, 6) * 2, h = ri(2, 6) * 2, k = pick([2, 3, 1.5]); const yes = Math.random() < .5; const w2 = w * k, h2 = yes ? h * k : h * k + pick([-2, 2, 3]);
+    return ch(p('Rectangle 1 is ' + w + ' by ' + h + '. Rectangle 2 is ' + f(w2) + ' by ' + f(h2) + '. Are the rectangles similar?'), yes ? 'Yes' : 'No', [yes ? 'No' : 'Yes'], 'All angles are 90°. Check whether both pairs of sides are enlarged by the same factor.', 'Width: ' + f(w2) + ' ÷ ' + w + ' = ' + k + '. Height: ' + f(h2) + ' ÷ ' + h + ' = ' + f(h2 / h) + '. ' + (yes ? 'Same factor: similar.' : 'Different factors: not similar.'), { keys: [] });
+  },
+  function aspectRatio(l) {
+    const r = pick([[4, 3], [16, 9], [3, 2], [5, 4]]); const m = ri(2, 6) * 100; const wNew = r[0] * ri(2, 9) * 10; return nu(p('A photo has ratio width : height = ' + r[0] + ' : ' + r[1] + '. It is printed with a width of ' + wNew + ' mm and keeps the same shape. How high is the print (in mm, 1 decimal)?'), Math.round(wNew * r[1] / r[0] * 10) / 10, 'The printed photo is similar to the original: height = width × ' + r[1] + '/' + r[0] + '.', wNew + ' × ' + r[1] + ' ÷ ' + r[0] + ' = ' + f(Math.round(wNew * r[1] / r[0] * 10) / 10) + ' mm.', { tol: .06 });
+  }
+];
+XG['2.1'] = [
+  function insideRect(l) {
+    const w = ri(3, 8), h = ri(2, 6); const k = pick([1.5, 2, 2.5]); return nu(p('A rectangle of ' + w + ' by ' + h + ' has a border so that the outer rectangle is similar to the inner one. The outer rectangle is ' + f(w * k) + ' long. How wide is it?'), h * k, 'Same scale factor for length and width.', 'Scale factor ' + k + '; width = ' + h + ' × ' + k + ' = ' + f(h * k) + '.');
+  },
+  function twoFactors(l) {
+    const k = pick([2, 3]); const s = ri(3, 9); return nu(p('Figure B is figure A enlarged by factor ' + k + '. Figure C is figure B enlarged by factor 1.5. A side of figure A is ' + s + '. How long is the corresponding side in C?'), s * k * 1.5, 'Multiply the scale factors: A → C = ' + k + ' × 1.5.', s + ' × ' + k + ' × 1.5 = ' + f(s * k * 1.5) + '.');
+  }
+];
+
 /* ---------- 2.2 Similarity ---------- */
 G['2.2'] = [
   function scaleFactor(l) {
@@ -576,7 +604,8 @@ XG['2.4'] = [
 ];
 
 const SECTIONS = [
-  { id: '2.2', title: '2.2 Similarity', sub: 'Scale factor, aa, sss' },
+  { id: '2.1', title: '2.1 Similar figures', sub: 'Corresponding angles and sides, scale factor' },
+  { id: '2.2', title: '2.2 Similar triangles', sub: 'aa, sss, proofs, scale factor' },
   { id: '2.3', title: '2.3 Bisectors', sub: 'Angle bisector and perpendicular bisector' },
   { id: '2.4', title: '2.4 Altitudes and medians', sub: 'Orthocentre and centroid' }
 ];
@@ -584,14 +613,15 @@ const ALL = sec => (G[sec] || []).map(fn => [sec, fn.name]), ALLX = sec => (XG[s
 const nm = (sec, names) => names.map(n => [sec, n]);
 const L = (id, title, sub, date, gens, xg, extra) => Object.assign({ id, title, sub, date, gens, xg }, extra || {});
 const LESSONS = [
-  L('L1', 'Lesson · 2.1 B Similar figures', 'Thu 1 Oct', '2026-10-01', nm('2.2', ['scaleFactor', 'similarSide', 'anglePair']), nm('2.2', ['ratioTable', 'areaFactor'])),
+  L('L0', 'Lesson · 2.1 A Similar figures', '2.1 A', null, nm('2.1', ['quadAngle', 'polySide', 'similarFigures', 'aspectRatio']), nm('2.1', ['insideRect', 'twoFactors'])),
+  L('L1', 'Lesson · 2.1 B Similar figures', 'Thu 1 Oct', '2026-10-01', nm('2.1', ['quadAngle', 'polySide', 'similarFigures']).concat(nm('2.2', ['scaleFactor', 'similarSide', 'anglePair'])), nm('2.1', ['insideRect', 'twoFactors']).concat(nm('2.2', ['ratioTable', 'areaFactor']))),
   L('L2', 'Lesson · 2.2 A Similar triangles', 'Fri 2 Oct', '2026-10-02', nm('2.2', ['missingAngle', 'similarSide', 'matchingOrder', 'aaOrSss']), nm('2.2', ['ratioTable', 'shadow'])),
   L('L3', 'Lesson · 2.2 B Proving similarity', 'Wed 7 Oct', '2026-10-07', nm('2.2', ['anglePair', 'aaOrSss', 'matchingOrder', 'similarSide']), nm('2.2', ['nestedTri', 'shadow', 'areaFactor'])),
   L('L4', 'Lesson · 2.3 A Angle bisector', 'Thu 8 Oct', '2026-10-08', nm('2.3', ['bisectAngle', 'whichWord', 'equidistantPoint']), nm('2.3', ['bisectedFull', 'triangleBis'])),
   L('L5', 'Lesson · 2.3 B Perpendicular bisector', 'Fri 9 Oct', '2026-10-09', nm('2.3', ['whichWord', 'equidistantPoint', 'closerTo', 'trueFalseBis']), nm('2.3', ['triangleBis'])),
   L('L6', 'Lesson · 2.4 A Altitudes', 'Wed 28 Oct', '2026-10-28', nm('2.4', ['orthoPlace', 'altitudeArea', 'twoAltitudes', 'whichLine']), nm('2.4', ['missingVertex'])),
   L('L7', 'Lesson · 2.4 B Medians', 'Thu 29 Oct', '2026-10-29', nm('2.4', ['midpoint', 'centroid', 'centroidRatio', 'whichLine']), nm('2.4', ['missingVertex', 'missingCentroidVertex', 'zToMidpoint'])),
-  L('L8', 'Revision · mock test chapters 1 and 2', 'Fri 30 Oct', '2026-10-30', [].concat(...['2.2', '2.3', '2.4'].map(ALL)), [].concat(...['2.2', '2.3', '2.4'].map(ALLX)), { rev: true })
+  L('L8', 'Revision · mock test chapters 1 and 2', 'Fri 30 Oct', '2026-10-30', [].concat(...['2.1', '2.2', '2.3', '2.4'].map(ALL)), [].concat(...['2.1', '2.2', '2.3', '2.4'].map(ALLX)), { rev: true })
 ];
 return { key: 'nx-3ht-ch2-v1', SECTIONS, LESSONS, G, XG, defaultMode: 'lesson' };
 }))(NX,{"cls": "3HT"}));
