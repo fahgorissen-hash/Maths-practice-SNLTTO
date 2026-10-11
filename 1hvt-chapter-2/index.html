@@ -608,7 +608,7 @@ svg.grid[data-click]{cursor:crosshair}
         hint: 'Do the turns one at a time. Between North, East, South and West there is a 90° turn; 45° is half of that.', steps: 'Start ' + dirs[i] + '. After the two turns you face ' + dirs[ans] + '.' };
     },
     function twoArms() {
-      const a = 10 * ri(2, 8), b = a + 5 * ri(4, 14), start = Math.random() < .5 ? 'R' : 'L';
+      const a = ri(12, 90), b = Math.min(172, a + ri(21, 80)), start = Math.random() < .5 ? 'R' : 'L';
       const A = start === 'R' ? a : 180 - a, B = start === 'R' ? b : 180 - b;
       return { type: 'num', ans: b - a, tol: 1, correct: String(b - a),
         html: '<p>The <b>black arm</b> and the <b>blue arm</b> are the two sides of an angle. Neither arm is on the zero line. What is the size of the angle between the black and the blue arm? (Give the number of degrees. A difference of 1° is fine.)</p>' + protractor({ start, arm: A, arm2: B }),
