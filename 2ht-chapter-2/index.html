@@ -483,6 +483,44 @@ const colMax = g => g[0].map((_, c) => Math.max(...g.map(r => r[c])));        //
 const rowMaxFront = g => g.map(r => Math.max(...r)).reverse();                 // side view from the right, left to right = front to back
 
 /* ---------- 2.2 Volume ---------- */
+
+/* ---------- 2.1 Solids and their parts ---------- */
+const EDGE = ['AB', 'BC', 'CD', 'DA', 'EF', 'FG', 'GH', 'HE', 'AE', 'BF', 'CG', 'DH'], FACED = ['AC', 'BD', 'EG', 'FH', 'AF', 'BE', 'BG', 'CF', 'CH', 'DG', 'AH', 'DE'], SPACED = ['AG', 'BH', 'CE', 'DF'];
+const polyName = n => ({ 3: 'triangle', 4: 'quadrilateral', 5: 'pentagon', 6: 'hexagon', 7: 'heptagon', 8: 'octagon' }[n]);
+G['2.1'] = [
+  function solidName(l) {
+    const S = [['A solid with two equal parallel polygons as bases and rectangles as sides.', 'prism'], ['A solid with a polygon as base and triangular faces that meet in one point.', 'pyramid'], ['A solid with a circle as base and one vertex, and a curved surface.', 'cone'], ['A solid with two equal parallel circles as bases and a curved surface.', 'cylinder'], ['A solid with six rectangular faces, 8 vertices and 12 edges.', 'cuboid'], ['A solid with six equal square faces.', 'cube'], ['A solid with one curved surface, and no edges or vertices.', 'sphere']];
+    const t = pick(S); return ch(p('Which solid is described? <i>' + t[0] + '</i>'), t[1], ['prism', 'pyramid', 'cone', 'cylinder', 'cuboid', 'cube', 'sphere'].filter(x => x !== t[1] && !(t[1] === 'cuboid' && x === 'cube')).slice(0, 3), 'Think about the base(s) and the sides of the solid.', 'This is a ' + t[1] + '.', { keys: [] });
+  },
+  function lineKind(l) {
+    const kinds = { 'edge': EDGE, 'face diagonal': FACED, 'space diagonal': SPACED }; const k = pick(Object.keys(kinds)); const ln = pick(kinds[k]);
+    return ch(p('In the cuboid ABCD.EFGH, what is the line <b>' + ln + '</b>?') + cuboidSVG([ln]), k, Object.keys(kinds).filter(x => x !== k), 'An edge is where two faces meet. A face diagonal joins two opposite corners of one face. A space diagonal goes through the inside of the solid to the opposite corner.', ln + ' is a ' + k + '.', { keys: [] });
+  },
+  function countParts(l) {
+    const n = pick(l === 0 ? [3, 4, 5] : [5, 6, 7, 8]); const prism = Math.random() < .5; const what = pick(['faces', 'vertices', 'edges']);
+    const F = prism ? n + 2 : n + 1, Vv = prism ? 2 * n : n + 1, E = prism ? 3 * n : 2 * n; const val = { faces: F, vertices: Vv, edges: E }[what];
+    return nu(p('How many <b>' + what + '</b> does a ' + (prism ? 'prism' : 'pyramid') + ' with a ' + polyName(n) + ' as base have?'), val, prism ? 'Prism: 2 bases + n side faces; 2n vertices; 3n edges.' : 'Pyramid: 1 base + n side faces; n + 1 vertices; 2n edges.', 'Base with ' + n + ' sides → ' + val + ' ' + what + '.');
+  },
+  function baseShape(l) {
+    const n = ri(3, 8); return ch(p('What is the base of a pyramid with <b>' + n + '</b> sides on its base?'), polyName(n), [3, 4, 5, 6, 7, 8].filter(x => x !== n).slice(0, 3).map(polyName), 'A pyramid is named after its base.', 'A base with ' + n + ' sides is a ' + polyName(n) + '.', { keys: [] });
+  },
+  function isPrism(l) {
+    const S = [['A prism always has an even number of vertices.', true], ['A cone has no edges.', false], ['A cube is a special cuboid.', true], ['A sphere has one face and no vertices.', true], ['A pyramid always has the same number of faces as vertices.', true], ['A cylinder is a prism.', false], ['A cuboid has 8 edges.', false], ['A cuboid has four space diagonals.', true]];
+    const t = pick(S); return ch(p('True or false? <b>' + t[0] + '</b>'), t[1] ? 'True' : 'False', [t[1] ? 'False' : 'True'], 'Count faces, vertices and edges, or think of the shape.', t[0] + ' is ' + (t[1] ? 'true' : 'false') + '.', { keys: [] });
+  }
+];
+XG['2.1'] = [
+  function eulerEdges(l) {
+    const n = pick([3, 4, 5, 6, 7, 8]); const F = n + 2, Vv = 2 * n; return nu(p('A solid has <b>' + F + '</b> faces and <b>' + Vv + '</b> vertices. Use Euler (faces + vertices − edges = 2) to find the number of edges.'), F + Vv - 2, 'Rearrange: edges = faces + vertices − 2.', F + ' + ' + Vv + ' − 2 = ' + (F + Vv - 2) + '.');
+  },
+  function totalDiagonals(l) {
+    const what = pick(['face diagonals', 'space diagonals']); return nu(p('How many <b>' + what + '</b> does a cuboid have in total?'), what === 'face diagonals' ? 12 : 4, what === 'face diagonals' ? 'Each of the 6 faces has 2 diagonals.' : 'Each corner has one space diagonal, and every diagonal has two corners.', what === 'face diagonals' ? '6 × 2 = 12.' : '8 ÷ 2 = 4.');
+  },
+  function prismFromEdges(l) {
+    const n = ri(3, 9) ; const E = 3 * n; return nu(p('A prism has <b>' + E + '</b> edges. How many sides does its base have?'), n, 'A prism with an n-gon base has 3n edges.', E + ' ÷ 3 = ' + n + '.');
+  }
+];
+
 G['2.2'] = [
   function volPrism(l) {
     if (l === 0) { const a = ri(2, 9), b = ri(2, 8), c = ri(2, 9); return nu(p('A box (cuboid) is <b>' + a + '</b> cm long, <b>' + b + '</b> cm wide and <b>' + c + '</b> cm high. What is its volume in cm³?'), a * b * c, 'Volume of a prism = area of the base · height.', a + ' · ' + b + ' · ' + c + ' = ' + a * b * c + ' cm³.'); }
@@ -693,6 +731,7 @@ if (VT) XG['2.5'].push(function coneSector(l) {
 
 /* ---------- sections and lessons ---------- */
 const SECTIONS = [
+  { id: '2.1', title: '2.1 Solids and their parts', sub: 'Names, faces, edges, vertices, diagonals' },
   { id: '2.2', title: '2.2 Volume', sub: VT ? 'Prisms, cones, spheres, composite solids' : 'Prisms, cylinders, pyramids, cones, spheres' },
   { id: '2.3', title: '2.3 Lines in space', sub: 'Parallel, intersecting, skew' },
   { id: '2.4', title: '2.4 Views', sub: 'Front, side and top view of cube buildings' },
@@ -703,6 +742,7 @@ const L = (id, title, sub, date, gens, xg, extra) => Object.assign({ id, title, 
 const nm = (sec, names) => names.map(n => [sec, n]);
 let LESSONS;
 if (VT) LESSONS = [
+  L('L0', 'Lesson · 2.1 Solids and their parts', '2.1', null, ALL('2.1'), ALLX('2.1')),
   L('L1', 'Volume of prisms, cylinders, pyramids and cones', '2.2 A–B', null, nm('2.2', ['volPrism', 'volCylinder', 'volPyramid', 'volCone']), nm('2.2', ['coneInCylinder', 'pyramidsCube'])),
   L('L2', 'Lesson · 2.2 C Volume of a sphere', 'Fri 2 Oct', '2026-10-02', nm('2.2', ['volSphere', 'volHemisphere', 'volReverse', 'volCone']), nm('2.2', ['ballInCylinder', 'doubleRadius', 'meltBall'])),
   L('L3', 'Lesson · 2.2 D Composite solids', 'Tue 6 Oct', '2026-10-06', nm('2.2', ['volComposite', 'volHemisphere', 'volCone', 'volCylinder']), nm('2.2', ['frustum', 'ballInCylinder'])),
@@ -710,16 +750,17 @@ if (VT) LESSONS = [
   L('L5', 'Lesson · 2.5 A Nets', 'Fri 9 Oct', '2026-10-09', nm('2.5', ['cubeNet', 'diceNet', 'cylinderNet']), nm('2.5', ['diceOpposite', 'sameVolume'])),
   L('L6', 'Lesson · 2.5 B Surface area', 'Tue 27 Oct', '2026-10-27', nm('2.5', ['surfCuboid', 'surfPrism', 'surfCylinder', 'surfSphere', 'wrapping']), nm('2.5', ['sameVolume', 'cubeEdgeFromSurface'])),
   L('L7', 'Lesson · 2.5 C Exploring surface area', 'Wed 28 Oct', '2026-10-28', nm('2.5', ['surfCone', 'diceNet', 'surfCylinder', 'wrapping', 'surfSphere']), nm('2.5', ['coneSector', 'sameVolume', 'diceOpposite'])),
-  L('L8', 'Revision · mock test chapter 2', 'Fri 30 Oct', '2026-10-30', [].concat(...['2.2', '2.3', '2.4', '2.5'].map(ALL)), [].concat(...['2.2', '2.3', '2.4', '2.5'].map(ALLX)), { rev: true })
+  L('L8', 'Revision · mock test chapter 2', 'Fri 30 Oct', '2026-10-30', [].concat(...['2.1', '2.2', '2.3', '2.4', '2.5'].map(ALL)), [].concat(...['2.1', '2.2', '2.3', '2.4', '2.5'].map(ALLX)), { rev: true })
 ];
 else LESSONS = [
+  L('L0', 'Lesson · 2.1 Solids and their parts', '2.1', null, ALL('2.1'), ALLX('2.1')),
   L('L1', 'Lesson · 2.2 B Volume of prisms and cylinders', 'Thu 1 Oct', '2026-10-01', nm('2.2', ['volPrism', 'volCylinder']), nm('2.2', ['doubleRadius'])),
   L('L2', 'Lesson · 2.2 C Volume of pyramids and cones', 'Fri 2 Oct', '2026-10-02', nm('2.2', ['volPyramid', 'volCone', 'volPrism']), nm('2.2', ['pyramidsCube', 'coneInCylinder'])),
   L('L3', 'Lesson · 2.2 D Volume of cones and spheres', 'Wed 7 Oct', '2026-10-07', nm('2.2', ['volCone', 'volSphere', 'volHemisphere', 'volReverse']), nm('2.2', ['ballInCylinder', 'doubleRadius'])),
   L('L4', 'Lesson · 2.3–2.4 Lines in space and views', 'Thu 8 Oct', '2026-10-08', [].concat(ALL('2.3'), ALL('2.4')), [].concat(ALLX('2.3'), ALLX('2.4'))),
   L('L5', 'Lesson · 2.5 A Nets', 'Fri 9 Oct', '2026-10-09', nm('2.5', ['cubeNet', 'diceNet', 'cylinderNet']), nm('2.5', ['diceOpposite', 'sameVolume'])),
   L('L6', 'Lesson · 2.5 B Surface area', 'Wed 28 Oct', '2026-10-28', nm('2.5', ['surfCuboid', 'surfPrism', 'surfCylinder', 'surfSphere', 'wrapping']), nm('2.5', ['sameVolume', 'cubeEdgeFromSurface'])),
-  L('L7', 'Revision A · solids and volume', 'Thu 29 Oct', '2026-10-29', ALL('2.2'), ALLX('2.2'), { rev: true }),
+  L('L7', 'Revision A · solids and volume', 'Thu 29 Oct', '2026-10-29', [].concat(ALL('2.1'), ALL('2.2')), [].concat(ALLX('2.1'), ALLX('2.2')), { rev: true }),
   L('L8', 'Revision B · lines, views and surface area', 'Fri 30 Oct', '2026-10-30', [].concat(ALL('2.3'), ALL('2.4'), ALL('2.5')), [].concat(ALLX('2.3'), ALLX('2.4'), ALLX('2.5')), { rev: true })
 ];
 return { key: 'nx-' + P.cls.toLowerCase() + '-ch2-v1', SECTIONS, LESSONS, G, XG, defaultMode: 'lesson' };
