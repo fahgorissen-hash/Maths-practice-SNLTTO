@@ -357,15 +357,12 @@ svg.grid[data-click]{cursor:crosshair}
           html: '<p>Around a point (or on a straight line) the angles ' + ang.map(v => '<b>' + v + '°</b>').join(', ') + ' and one more angle <b>x</b> together make <b>' + nm[T] + '</b> (' + T + '°). How big is <b>x</b>? (Give the number of degrees.)</p>',
           hint: 'Add all the angles you know. Then subtract the total from ' + T + '°.', steps: ang.join(' + ') + ' = ' + sum + '°. Then ' + T + ' − ' + sum + ' = ' + x + '°.' };
       }
-      const T = pick([90, 180]), d = 2 * ri(2, 12), A = (T - d) / 2, B = A + d, mode = ri(0, 1);
-      if (A < 5) return G['2.2'][6](l);
-      return mode === 0
-        ? { type: 'num', ans: A, correct: String(A),
-          html: '<p>Two angles together make <b>' + nm[T] + '</b> (' + T + '°). The bigger angle is <b>' + d + '° bigger</b> than the smaller angle. How big is the <b>smaller</b> angle? (Give the number of degrees.)</p>',
-          hint: 'Take the ' + d + '° away first. Then the two angles are equally big: share what is left by 2.', steps: T + ' − ' + d + ' = ' + (T - d) + '°. Then ' + (T - d) + ' : 2 = ' + A + '° (the smaller angle).' }
-        : { type: 'num', ans: B, correct: String(B),
-          html: '<p>Two angles together make <b>' + nm[T] + '</b> (' + T + '°). The bigger angle is <b>' + d + '° bigger</b> than the smaller angle. How big is the <b>bigger</b> angle? (Give the number of degrees.)</p>',
-          hint: 'Take the ' + d + '° away first. Share what is left by 2. That is the smaller angle. Then add the ' + d + '° back.', steps: T + ' − ' + d + ' = ' + (T - d) + '°. Smaller angle: ' + (T - d) + ' : 2 = ' + A + '°. Bigger angle: ' + A + ' + ' + d + ' = ' + B + '°.' };
+      const ang = []; let sum = 0;
+      for (let i = 0; i < 3; i++) { const v = ri(31, 99); ang.push(v); sum += v; }
+      const x = 360 - sum;
+      return { type: 'num', ans: x, correct: String(x),
+        html: '<p>Four angles around a point make a <b>full angle</b> (360°). Three of them are <b>' + ang[0] + '°</b>, <b>' + ang[1] + '°</b> and <b>' + ang[2] + '°</b>. How big is the fourth angle? (Give the number of degrees.)</p>',
+        hint: 'Add the three angles. Then subtract the total from 360°.', steps: ang.join(' + ') + ' = ' + sum + '°. Then 360 − ' + sum + ' = ' + x + '°.' };
     },
     function drawAngle(l) {
       const start = l === 0 ? 'R' : pick(['R', 'L']);
@@ -528,16 +525,16 @@ svg.grid[data-click]{cursor:crosshair}
         hint: 'P is exactly in the middle between A and A′.', steps: f(2 * d) + ' : 2 = ' + d + ' cm.' };
     },
     function rhombusFacts(l) {
-      const side = ri(3, 9), a = pick([50, 60, 70, 110, 120, 130]), mode = ri(0, 2);
+      const side = ri(3, 9), p = ri(3, 8), q = p + ri(1, 5), mode = ri(0, 2);
       if (mode === 0) return { type: 'num', ans: 4 * side, correct: String(4 * side),
         html: '<p>ABCD is a <b>rhombus</b>. Side AB is <b>' + side + ' cm</b>. What is the <b>perimeter</b> of the rhombus? (Give the number of cm.)</p>',
         hint: 'All four sides of a rhombus are equally long.', steps: '4 · ' + side + ' = ' + 4 * side + ' cm.' };
-      if (mode === 1) return { type: 'num', ans: a, correct: String(a),
-        html: '<p>ABCD is a <b>parallelogram</b>. Angle <b>A = ' + a + '°</b>. How big is the <b>opposite</b> angle <b>C</b>? (Give the number of degrees.)</p>',
-        hint: 'In a parallelogram the opposite angles are equal.', steps: 'C is opposite to A, so C = ' + a + '°.' };
-      return { type: 'num', ans: 180 - a, correct: String(180 - a),
-        html: '<p>ABCD is a <b>parallelogram</b>. Angle <b>A = ' + a + '°</b>. How big is the <b>next</b> angle <b>B</b>? (Give the number of degrees.)</p>',
-        hint: 'Two angles next to each other in a parallelogram add up to 180°.', steps: '180 − ' + a + ' = ' + (180 - a) + '°.' };
+      if (mode === 1) return { type: 'num', ans: p, correct: String(p),
+        html: '<p>KLMN is a <b>parallelogram</b>. KL = <b>' + p + ' cm</b> and LM = <b>' + q + ' cm</b>. How long is side <b>MN</b>? (Give the number of cm.)</p>',
+        hint: 'In a parallelogram the opposite sides are equally long. Which side is opposite to MN?', steps: 'MN is opposite to KL, so MN = ' + p + ' cm.' };
+      return { type: 'num', ans: 2 * (p + q), correct: String(2 * (p + q)),
+        html: '<p>KLMN is a <b>parallelogram</b>. KL = <b>' + p + ' cm</b> and LM = <b>' + q + ' cm</b>. What is the <b>perimeter</b> of KLMN? (Give the number of cm.)</p>',
+        hint: 'The opposite sides are equally long, so there are two sides of ' + p + ' cm and two sides of ' + q + ' cm.', steps: '2 · ' + p + ' + 2 · ' + q + ' = ' + (2 * (p + q)) + ' cm.' };
     },
     function compassCircle(l) {
       const r = ri(2, 8), mode = ri(0, 1);
@@ -553,6 +550,13 @@ svg.grid[data-click]{cursor:crosshair}
   const XG = {};   // extra spicy generators per section
   /* ---------- Extra spicy (level 4): challenge questions ---------- */
   XG['2.1'] = [
+    function maxIntersect5() {
+      const n = pick([5, 6, 7]), ans = n * (n - 1) / 2, prev = (n - 1) * (n - 2) / 2;
+      return { type: 'num', ans, correct: String(ans),
+        html: '<p>You draw <b>' + n + ' lines</b> in a plane. What is the <b>maximum</b> number of points of intersection? (Pattern: 2 lines give 1, 3 lines give 3, 4 lines give 6, …)</p>',
+        hint: 'Every line can cross each of the other ' + (n - 1) + ' lines once. But then every point is counted twice. Or continue the pattern: it goes up by 1 more each time.',
+        steps: n + ' · ' + (n - 1) + ' = ' + n * (n - 1) + ', counted twice: ' + n * (n - 1) + ' : 2 = ' + ans + '. (Pattern: ' + prev + ' + ' + (n - 1) + ' = ' + ans + '.)' };
+    },
     function distParallelPoints() {
       const horiz = Math.random() < .5, c1 = ri(-4, 0), d = ri(2, 7), c2 = c1 + d, a1 = ri(-6, 6), a2 = ri(-6, 6);
       const P = horiz ? [a1, c1] : [c1, a1], Q = horiz ? [a2, c2] : [c2, a2];
@@ -576,12 +580,32 @@ svg.grid[data-click]{cursor:crosshair}
     }
   ];
   XG['2.2'] = [
-    function aroundPoint() {
-      let b, a; do { b = ri(30, 100); a = 360 - 3 * b; } while (a < 30 || a > 300 || a === 180);
-      return { type: 'num', ans: 2 * b, correct: String(2 * b),
-        html: '<p>Three angles together make a full turn around a point: angle <b>A = ' + a + '°</b>, angle <b>B</b>, and angle <b>C</b>, which is <b>twice as big as B</b>. How big is angle <b>C</b>? (Give the number of degrees.)</p>',
-        hint: 'A full turn is 360°. Together B and C are 3 times B. So 3 × B = 360° − A.',
-        steps: '360 − ' + a + ' = ' + (360 - a) + '. This is 3 × B, so B = ' + b + '° and C = 2 · ' + b + ' = ' + 2 * b + '°.' };
+    function angleReason() {
+      const kinds = [
+        ['an <b>acute</b> angle', 'twice as big', 'acute, right or obtuse', 0],
+        ['an <b>obtuse</b> angle', 'half as big', 'acute', 1],
+        ['a <b>right</b> angle', 'twice as big', 'straight', 2],
+        ['an <b>obtuse</b> angle', 'twice as big', 'reflex', 3],
+        ['a <b>straight</b> angle', 'half as big', 'right', 4]
+      ];
+      const k = pick(kinds), all = ['acute', 'right', 'obtuse', 'straight', 'reflex'];
+      const opts = ['acute only', 'right only', 'obtuse only', 'straight only', 'reflex only', 'acute, right or obtuse'];
+      const want = k[2] === 'acute, right or obtuse' ? 'acute, right or obtuse' : k[2] + ' only';
+      const o = shuffle([want].concat(shuffle(opts.filter(x => x !== want)).slice(0, 3))), ans = o.indexOf(want);
+      const why = ['An acute angle is between 0° and 90°. Twice as big is between 0° and 180°: that can be acute, right or obtuse.', 'An obtuse angle is between 90° and 180°. Half as big is between 45° and 90°: acute.', 'A right angle is 90°. Twice as big is 180°: a straight angle.', 'An obtuse angle is between 90° and 180°. Twice as big is between 180° and 360°: reflex.', 'A straight angle is 180°. Half as big is 90°: a right angle.'][k[3]];
+      return { type: 'choice', opts: o.map(x => x[0].toUpperCase() + x.slice(1)), ans, correct: ans,
+        html: '<p>Angle A is ' + k[0] + '. Angle B is <b>' + k[1] + '</b> as angle A. What kind of angle is B?</p>',
+        hint: 'Think about the smallest and the biggest size that angle A can have. Then double it (or halve it).', steps: why };
+    },
+    function turnSequence() {
+      const dirs = ['North', 'North-east', 'East', 'South-east', 'South', 'South-west', 'West', 'North-west'];
+      let i = ri(0, 7), pos = i, txt = [];
+      const turns = [45, 90, 135, 180, 225, 270];
+      for (let n = 0; n < 2; n++) { const t = pick(turns), side = pick(['right', 'left']); pos = ((pos + (side === 'right' ? 1 : -1) * t / 45) % 8 + 8) % 8; txt.push(t + '° to the ' + side); }
+      const ans = pos, o = dirs;
+      return { type: 'choice', opts: o, ans, correct: ans,
+        html: '<p>You face <b>' + dirs[i] + '</b>. First you turn <b>' + txt[0] + '</b>. Then you turn <b>' + txt[1] + '</b>. In which direction do you face now? (Clockwise = right.)</p>',
+        hint: 'Do the turns one at a time. Between North, East, South and West there is a 90° turn; 45° is half of that.', steps: 'Start ' + dirs[i] + '. After the two turns you face ' + dirs[ans] + '.' };
     },
     function twoArms() {
       const a = 10 * ri(2, 8), b = a + 5 * ri(4, 14), start = Math.random() < .5 ? 'R' : 'L';
@@ -591,7 +615,7 @@ svg.grid[data-click]{cursor:crosshair}
         hint: 'Read both arms on the same scale. Then subtract: bigger number minus smaller number.', steps: 'On the scale that starts at the red arm: black = ' + a + '°, blue = ' + b + '°. The angle between them is ' + b + ' − ' + a + ' = ' + (b - a) + '°.' };
     },
     function clockAngle() {
-      const h = ri(1, 11), m = 2 * ri(0, 29);
+      const h = ri(1, 11), m = 10 * ri(0, 5);
       const hand = (30 * h + m / 2) % 360, min = 6 * m, diff = Math.abs(hand - min), ang = diff > 180 ? 360 - diff : diff;
       if (ang === 0 || ang === 180) return XG['2.2'][1]();
       const t = h + ':' + (m < 10 ? '0' : '') + m;
@@ -602,12 +626,21 @@ svg.grid[data-click]{cursor:crosshair}
     }
   ];
   XG['2.3'] = [
-    function exterior() {
-      const a = ri(30, 80), b = ri(30, 80);
-      return { type: 'num', ans: a + b, correct: String(a + b),
-        html: '<p>A triangle has angles of <b>' + a + '°</b> and <b>' + b + '°</b>. At the third corner you extend one side in a straight line. How big is the <b>outside angle</b> (between the extended side and the next side)? (Give the number of degrees.)</p>',
-        hint: 'First find the third angle of the triangle (the angles add up to 180°). The outside angle and that angle together make a straight line.',
-        steps: 'Third angle: 180 − ' + a + ' − ' + b + ' = ' + (180 - a - b) + '°. Outside angle: 180 − ' + (180 - a - b) + ' = ' + (a + b) + '°.' };
+    function diagonalsPattern() {
+      const n = pick([8, 9, 10]), tab = [0, 2, 5, 9, 14, 20, 27, 35], ans = tab[n - 3];
+      return { type: 'num', ans, correct: String(ans),
+        html: '<p>A regular polygon has this number of diagonals: 3 sides → 0, 4 sides → 2, 5 sides → 5, 6 sides → 9, 7 sides → 14. How many diagonals does a regular polygon with <b>' + n + ' sides</b> have?</p>',
+        hint: 'Look at how much the number goes up each time: +2, +3, +4, +5, … Continue the pattern.',
+        steps: 'The steps are +2, +3, +4, +5, +6, +7, … So 7 sides: 14, 8 sides: 20, 9 sides: 27, 10 sides: 35. For ' + n + ' sides: ' + ans + ' diagonals.' };
+    },
+    function circlesMeet() {
+      const r1 = ri(2, 5), r2 = ri(2, 5), mode = ri(0, 2), d = mode === 0 ? r1 + r2 : mode === 1 ? Math.abs(r1 - r2) + ri(1, Math.min(r1, r2) * 2 - 1) : r1 + r2 + ri(1, 3);
+      if (mode === 1 && (d <= Math.abs(r1 - r2) || d >= r1 + r2)) return XG['2.3'][1]();
+      const ans = d === r1 + r2 ? 1 : d < r1 + r2 ? 2 : 0, o = ['0 points', '1 point', '2 points'];
+      return { type: 'choice', opts: o, ans, correct: ans,
+        html: '<p>Points A and C are <b>' + d + ' cm</b> apart. You draw a circle with centre A and radius <b>' + r1 + ' cm</b>, and a circle with centre C and radius <b>' + r2 + ' cm</b>. How many points do the two circles have in common?</p>',
+        hint: 'Compare the distance between A and C with the sum of the two radii: ' + r1 + ' + ' + r2 + ' = ' + (r1 + r2) + ' cm.',
+        steps: 'Radii together: ' + (r1 + r2) + ' cm. ' + (ans === 1 ? 'That is exactly ' + d + ' cm: the circles just touch, so 1 point.' : ans === 2 ? d + ' cm is less than ' + (r1 + r2) + ' cm (and the circles are not inside each other): they cross in 2 points.' : d + ' cm is more than ' + (r1 + r2) + ' cm: the circles do not reach each other, so 0 points.') };
     },
     function isosceles() {
       const apex = pick([20, 30, 40, 50, 70, 80, 100, 110, 120, 140]), base = (180 - apex) / 2, rev = Math.random() < .5;
@@ -625,12 +658,6 @@ svg.grid[data-click]{cursor:crosshair}
         hint: 'OA and OB are both radii, so they are equally long. What kind of triangle is OAB? Its base angles are equal.',
         steps: 'Triangle OAB is isosceles (OA = OB). The other two angles together: 180 − ' + th + ' = ' + (180 - th) + '°. So each is ' + (180 - th) + ' : 2 = ' + base + '°.' };
     },
-    function trapezium() {
-      const a = ri(50, 130);
-      return { type: 'num', ans: 270 - a, correct: String(270 - a),
-        html: '<p>A quadrilateral has two right angles and one angle of <b>' + a + '°</b>. How big is the <b>fourth</b> angle? (Give the number of degrees.)</p>',
-        hint: 'The four angles of a quadrilateral add up to 360°.', steps: '360 − 90 − 90 − ' + a + ' = ' + (270 - a) + '°.' };
-    }
   ];
   XG['2.4'] = [
     function thirdSide() {
@@ -665,19 +692,19 @@ svg.grid[data-click]{cursor:crosshair}
   /* ---------- lessons (follow the study guide) ---------- */
   const ALL = (sec) => (G[sec] || []).map(f => [sec, f.name]);
   const LESSONS = [
-    { id: 'L1', title: 'Lesson 1 · 2.1 Lines and distances', sub: 'Thu 1 Oct', date: '2026-10-01', gens: ALL('2.1'), xg: [['2.1', 'distParallelPoints'], ['2.1', 'throughPoint']] },
+    { id: 'L1', title: 'Lesson 1 · 2.1 Lines and distances', sub: 'Thu 1 Oct', date: '2026-10-01', gens: ALL('2.1'), xg: [['2.1', 'distParallelPoints'], ['2.1', 'throughPoint'], ['2.1', 'maxIntersect5']] },
     { id: 'L2', title: 'Lesson 2 · 2.2 Angles', sub: 'Fri 2 Oct', date: '2026-10-02',
-      gens: [['2.2', 'typeByDegrees'], ['2.2', 'typeByPicture'], ['2.2', 'reflex'], ['2.2', 'clock'], ['2.2', 'compass'], ['2.2', 'vertexName'], ['2.2', 'complete']], xg: [['2.2', 'aroundPoint'], ['2.2', 'clockAngle']] },
+      gens: [['2.2', 'typeByDegrees'], ['2.2', 'typeByPicture'], ['2.2', 'reflex'], ['2.2', 'clock'], ['2.2', 'compass'], ['2.2', 'vertexName'], ['2.2', 'complete']], xg: [['2.2', 'angleReason'], ['2.2', 'clockAngle'], ['2.2', 'turnSequence']] },
     { id: 'L3', title: 'Lesson 3 · 2.2 Measuring and drawing angles', sub: 'Tue 6 Oct', date: '2026-10-06',
-      gens: [['2.2', 'drawAngle'], ['2.2', 'readAngle'], ['2.2', 'pickReading'], ['2.2', 'complete'], ['2.4', 'tools']], xg: [['2.2', 'twoArms'], ['2.2', 'aroundPoint']] },
+      gens: [['2.2', 'drawAngle'], ['2.2', 'readAngle'], ['2.2', 'pickReading'], ['2.2', 'complete'], ['2.4', 'tools']], xg: [['2.2', 'twoArms'], ['2.2', 'angleReason']] },
     { id: 'L4', title: 'Lesson 4 · 2.3 Triangles', sub: 'Wed 7 Oct', date: '2026-10-07',
-      gens: [['2.3', 'triByAngles'], ['2.3', 'triBySidesFromAngles'], ['2.3', 'triBySides'], ['2.3', 'thirdAngle']], xg: [['2.3', 'exterior'], ['2.3', 'isosceles']] },
+      gens: [['2.3', 'triByAngles'], ['2.3', 'triBySidesFromAngles'], ['2.3', 'triBySides'], ['2.3', 'thirdAngle']], xg: [['2.3', 'isosceles'], ['2.4', 'thirdSide']] },
     { id: 'L5', title: 'Lesson 5 · 2.3 Quadrilaterals and circles', sub: 'Thu 8 Oct', date: '2026-10-08',
-      gens: [['2.3', 'quadName'], ['2.3', 'alwaysSometimes'], ['2.3', 'circleConv'], ['2.3', 'diagonals']], xg: [['2.3', 'radiiTriangle'], ['2.3', 'trapezium']] },
+      gens: [['2.3', 'quadName'], ['2.3', 'alwaysSometimes'], ['2.3', 'circleConv'], ['2.3', 'diagonals']], xg: [['2.3', 'radiiTriangle'], ['2.3', 'circlesMeet'], ['2.3', 'diagonalsPattern']] },
     { id: 'L6', title: 'Lesson 6 · 2.4 Constructing triangles', sub: 'Fri 9 Oct', date: '2026-10-09',
       gens: [['2.4', 'canMake'], ['2.4', 'tools'], ['2.3', 'thirdAngle']], xg: [['2.4', 'thirdSide'], ['2.3', 'isosceles']] },
     { id: 'L7', title: 'Lesson 7 · 2.4 Constructing with a compass', sub: 'Tue 27 Oct', date: '2026-10-27',
-      gens: [['2.4', 'tools'], ['2.4', 'compassCircle'], ['2.4', 'rhombusFacts'], ['2.4', 'canMake']], xg: [['2.4', 'thirdSide'], ['2.3', 'radiiTriangle']] },
+      gens: [['2.4', 'tools'], ['2.4', 'compassCircle'], ['2.4', 'rhombusFacts'], ['2.4', 'canMake']], xg: [['2.3', 'circlesMeet'], ['2.4', 'thirdSide']] },
     { id: 'L8', title: 'Lesson 8 · 2.4 Reflecting in a point', sub: 'Wed 28 Oct', date: '2026-10-28',
       gens: [['2.4', 'reflectPoint'], ['2.4', 'midpoint'], ['2.4', 'whereIsP'], ['2.4', 'mirrorDist']], xg: [['2.4', 'doubleReflect']] },
     { id: 'L9', title: 'Lesson 9 · 2.4 Reflecting in a line', sub: 'Thu 29 Oct', date: '2026-10-29',
