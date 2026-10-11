@@ -370,7 +370,7 @@ svg.grid[data-click]{cursor:crosshair}
     function drawAngle(l) {
       const start = l === 0 ? 'R' : pick(['R', 'L']);
       const deg = l === 0 ? 10 * ri(2, 16) : l === 1 ? 5 * ri(2, 34) : ri(8, 172), target = start === 'R' ? deg : 180 - deg;
-      return { type: 'proto', target, tol: 2, correct: target,
+      return { type: 'proto', target, tol: 1, correct: target,
         html: '<p>The red arm is one side of an angle. Draw an angle of <b>' + deg + '°</b> with the red arm. Click on the protractor <b>scale</b> where the <b>second arm</b> goes through.</p>' + protractor({ start, click: true }),
         hint: start === 'R' ? 'The red arm points to the <b>right</b> and goes through the 0 on the right. Use the scale that starts with 0 on the right (the bold numbers) and count up to ' + deg + '.' : 'The red arm points to the <b>left</b> and goes through the 0 on the left. Use the scale that starts with 0 on the left (the small grey numbers) and count up to ' + deg + '.',
         steps: 'Use the scale that has 0 at the red arm and count up to ' + deg + '°. The green arm shows where the second arm goes.' };
@@ -378,8 +378,8 @@ svg.grid[data-click]{cursor:crosshair}
     function readAngle(l) {
       const start = l === 0 ? 'R' : pick(['R', 'L']);
       const deg = l === 0 ? 10 * ri(2, 16) : l === 1 ? 5 * ri(2, 34) : ri(8, 172), arm = start === 'R' ? deg : 180 - deg;
-      return { type: 'num', ans: deg, tol: 2, correct: String(deg),
-        html: '<p>What is the size of the angle between the red arm and the black arm? (Give the number of degrees. A difference of 2° is fine.)</p>' + protractor({ start, arm }),
+      return { type: 'num', ans: deg, tol: 1, correct: String(deg),
+        html: '<p>What is the size of the angle between the red arm and the black arm? (Give the number of degrees. A difference of 1° is fine.)</p>' + protractor({ start, arm }),
         hint: start === 'R' ? 'The red arm goes through the 0 on the <b>right</b>. Read the scale that starts with 0 on the right (the bold numbers).' : 'The red arm goes through the 0 on the <b>left</b>. Read the scale that starts with 0 on the left (the small grey numbers).',
         steps: 'Start at the 0 where the red arm is. The black arm is at ' + deg + '°.' };
     },
@@ -586,8 +586,8 @@ svg.grid[data-click]{cursor:crosshair}
     function twoArms() {
       const a = 10 * ri(2, 8), b = a + 5 * ri(4, 14), start = Math.random() < .5 ? 'R' : 'L';
       const A = start === 'R' ? a : 180 - a, B = start === 'R' ? b : 180 - b;
-      return { type: 'num', ans: b - a, tol: 2, correct: String(b - a),
-        html: '<p>The <b>black arm</b> and the <b>blue arm</b> are the two sides of an angle. Neither arm is on the zero line. What is the size of the angle between the black and the blue arm? (Give the number of degrees. A difference of 2° is fine.)</p>' + protractor({ start, arm: A, arm2: B }),
+      return { type: 'num', ans: b - a, tol: 1, correct: String(b - a),
+        html: '<p>The <b>black arm</b> and the <b>blue arm</b> are the two sides of an angle. Neither arm is on the zero line. What is the size of the angle between the black and the blue arm? (Give the number of degrees. A difference of 1° is fine.)</p>' + protractor({ start, arm: A, arm2: B }),
         hint: 'Read both arms on the same scale. Then subtract: bigger number minus smaller number.', steps: 'On the scale that starts at the red arm: black = ' + a + '°, blue = ' + b + '°. The angle between them is ' + b + ' − ' + a + ' = ' + (b - a) + '°.' };
     },
     function clockAngle() {
