@@ -505,7 +505,7 @@ svg.grid[data-click]{cursor:crosshair}
     { id: '3.5', title: '3.5 Relations in context', sub: 'Formulas for real situations' }
   ];
 
-  function make(sec, lvl, avoid) {
+  function makeOne(sec, lvl, avoid) {
     const mix = lvl === 'mix'; if (mix) lvl = pick([0, 1, 1, 2, 2, 3, 3]);
     const X = XG[sec] || [], list = G[sec]; let q, i, tries = 0;
     if (lvl === 3 && X.length && Math.random() < 0.7) {
@@ -517,10 +517,25 @@ svg.grid[data-click]{cursor:crosshair}
     }
     q.sec = sec; q.lvl = lvl; q.mix = mix; return q;
   }
+  const fingerprint = q => String(q.html || '').replace(/<svg[\s\S]*?<\/svg>/g, '') + '|' + JSON.stringify(q.correct);
+  /* make(): like makeOne, but never repeats a question text from the last 12, nor a generator from the last 3 (when there is a choice) */
+  function make(key, lvl, recent) {
+    recent = Array.isArray(recent) ? recent : [];
+    const fps = recent.map(r => r.f), gens = recent.slice(-3).map(r => r.g);
+    let q;
+    for (let t = 0; t < 40; t++) {
+      q = makeOne(key, lvl, null);
+      q.fp = fingerprint(q);
+      if (fps.includes(q.fp)) continue;
+      if (t < 25 && gens.includes(q.gen)) continue;
+      break;
+    }
+    return q;
+  }
   function makeTest() {
     const lv = shuffle([0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2]);
     const secs = []; for (let i = 0; i < 24; i++) secs.push(SECTIONS[i % 5].id);
-    const qs = shuffle(secs).map((s, i) => { const q = make(s, lv[i]); q.hint = null; return q; });
+    const seen = []; const qs = shuffle(secs).map((s, i) => { const q = make(s, lv[i], seen); seen.push({ g: null, f: q.fp }); q.hint = null; return q; });
     return qs;
   }
 
@@ -570,7 +585,7 @@ let st={done:{},stat:{},best:{},tests:[],sec:'3.1',prog:{},lvl:{}};   // prog: c
 try{const r=JSON.parse(localStorage.getItem('ch3-relations-v1')||'null');if(r&&r.prog)st=Object.assign(st,r)}catch(e){}
 st.done=st.done||{};st.stat=st.stat||{};st.best=st.best||{};st.tests=st.tests||[];
 const save=()=>{try{localStorage.setItem('ch3-relations-v1',JSON.stringify({sec:st.sec,prog:st.prog,lvl:st.lvl,done:st.done,stat:st.stat,best:st.best,tests:st.tests}))}catch(e){}};
-let cur=null,tries=0,done=false,streak=0,wrongRun=0,lastGen=-1,clicked=[],choiceSel=null;
+let cur=null,tries=0,done=false,streak=0,wrongRun=0,recent=[],clicked=[],choiceSel=null;
 let test=null; // {qs,i,score,log}
 
 function renderNav(){
@@ -590,8 +605,8 @@ function renderNav(){
 }
 function lvl(){return st.lvl[st.sec]||0}
 function next(reset){
-  if(reset){streak=0;wrongRun=0;lastGen=-1}
-  cur=E.make(st.sec,mix?'mix':lvl(),lastGen);lastGen=cur.gen;tries=0;done=false;clicked=[];choiceSel=null;renderQ(false);renderNav();
+  if(reset){streak=0;wrongRun=0;recent=[]}
+  cur=E.make(st.sec,mix?'mix':lvl(),recent);recent.push({g:cur.gen,f:cur.fp});recent=recent.slice(-12);tries=0;done=false;clicked=[];choiceSel=null;renderQ(false);renderNav();
 }
 function qHTML(q,idx){
   let h='<div class="q">'+q.html+'</div><div class="ans" id="ans">';
