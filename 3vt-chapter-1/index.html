@@ -83,6 +83,7 @@ svg.fig{max-width:430px;width:100%;height:auto;display:block;margin:6px 0 10px}
 @media print{body.printing header,body.printing nav,body.printing .noprint,body.printing .goals{display:none!important}body.printing .wrap{display:block;margin:0;padding:0}body.printing main{border:0;padding:0}body{background:#fff}}
 .autoc{display:block;margin:.6rem 0 0;font-size:.9rem;color:var(--mut,#556)}.autoc input{margin-right:.4rem}
 .stp .stl{font-size:1.15rem;margin:.35rem 0;color:var(--ink,inherit)}.stp .eq{margin-left:.15rem;font-weight:700}
+.stepnote{margin:.5rem 0;padding:.45rem .7rem;border-left:4px solid #b7791f;background:#fff7e6;border-radius:6px;font-size:.92rem;color:#5a3d00}@media (prefers-color-scheme:dark){.stepnote{background:#3a2d12;color:#f3d9a4}}
 </style>
 </head>
 <body>
@@ -437,7 +438,7 @@ function engine(def) {
     const secs = []; for (let i = 0; i < N; i++) secs.push(SECTIONS[i % n].id);
     const seen = []; return shuffle(secs).map((s, i) => { const q = make(s, lv[i], seen); seen.push({ g: null, f: q.fp }); q.hint = null; return q; });
   }
-  return { KEY: def.key, SECTIONS, LESSONS, G, XG, make, makeTest, grade, check, answerText, parseNum, parsePoint, f, M, parse, defaultMode: def.defaultMode || 'lesson' };
+  return { KEY: def.key, SECTIONS, LESSONS, G, XG, make, makeTest, grade, check, answerText, evalNum: s => evalAst(parse(String(s), { noVars: true }), {}), parseNum, parsePoint, f, M, parse, defaultMode: def.defaultMode || 'lesson' };
 }
 const U = { ri, pick, shuffle, nz, f, gcd, lcm, isPrime, primeFactors, squarefree, sqrtSplit, parse, evalAst, numEq, R, M, fr, mixed, tbl, fmtNum, ratText, formCheck, gradeExpr, toRF, flat, monoTerm, Poly, engine, esc, parseNum };
 if (typeof module !== 'undefined' && module.exports) module.exports = U; else root.NX = U;
@@ -812,8 +813,30 @@ function next(reset){
   else cur=E.make(st.sec,curLevel(),recent);
   recent.push({g:cur.gen,f:cur.fp});recent=recent.slice(-12);tries=0;done=false;clicked=[];choiceSel=null;protoAngle=null;hintUsed=false;attempts=[];stepLines=[];renderQ();renderNav();
 }
+
+/* ---------- steps: which questions need working ---------- */
+const NOSTEP=new Set('missingExp multDiv rootEq volPrism volPyramid volCone volHemisphere cylinderNet surfCuboid primeFact nthRootCalc findNumber quadAngle centroidRatio zToMidpoint decimalToFraction subInt missingNumber divInt missingFactor toMixed toImproper likeAdd equivFrac fractionOf fracDivInt riverShare missingFraction areaVolume maxIntersect maxIntersect5 isosceles axisDist substitute readLineY valueAt squareArea findK context graphK symmetryLine findKInv inverseContext axisFromPoints yIntercept exactTrig lcmTwo hcfTwo'.split(' '));
+const DISC=new Set('sideKnownHyp angleInverse isoscelesBase twoArms howManyOn'.split(' '));
+const NODISC=new Set('primeOrNot readPoint gradientIntercept abc vertex table frontView sideView cubeNet pickSkew'.split(' '));
+const eqN=q=>(String(q.steps||'').replace(/<svg[\s\S]*?<\/svg>/g,'').replace(/<[^>]+>/g,'').match(/=/g)||[]).length;
+const canType=q=>q.type==='num'||(q.type==='expr'&&!!E.check);
+function stepMode(q){
+  if(!q||q.noStep)return '';
+  const gn=String(genName(q)||'').replace(/^X/,'');
+  const st_=String(q.steps||'');
+  if(!(q.needStep||eqN(q)>=2))return '';
+  if(canType(q)){
+    if(test)return 'note';
+    if(q.needStep)return 'enforce';
+    if(NOSTEP.has(gn))return '';
+    if(DISC.has(gn)||/\b(sin|cos|tan)\b|sin⁻|cos⁻|tan⁻/.test(st_.replace(/<[^>]+>/g,'')))return 'note';
+    return 'enforce';
+  }
+  return NODISC.has(gn)?'':'note';
+}
+const STEPNOTE='<p class="stepnote"><b>Steps count.</b> Showing your steps is part of a correct answer. '+'This page can only check the final answer of this question, so write your working on paper too (in a test you always must).</p>';
 function qHTML(q){
-  let h='<div class="q">'+q.html+'</div><div id="stp" class="stp"></div><div class="ans" id="ans">';
+  let h='<div class="q">'+q.html+'</div>'+(stepMode(q)==='note'?STEPNOTE:'')+'<div id="stp" class="stp"></div><div class="ans" id="ans">';
   if(q.type==='num')h+='<label class="sr" for="in0">Your answer</label><input type="text" id="in0" inputmode="text" autocomplete="off" placeholder="your answer">';
   else if(q.type==='expr')h+='<label class="sr" for="in0">Your answer</label><input type="text" id="in0" inputmode="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="type your answer"><div class="kp" id="kp">'+(q.keys||['√','^','/','·','(',')','π']).map(k=>'<button type="button" data-k="'+k+'">'+k+'</button>').join('')+'<button type="button" data-k="⌫" aria-label="delete">⌫</button></div><div class="pv" id="pv" aria-live="polite"></div>';
   else if(q.type==='point')h+='<label class="sr" for="in0">Your answer</label><input type="text" id="in0" autocomplete="off" placeholder="(x, y)">';
@@ -868,9 +891,9 @@ function helpCard(g){
 }
 /* ---------- question wiring ---------- */
 function wire(){
-  wireProto();$('#chk').onclick=check;$('#hnt').onclick=hint;$('#sol').onclick=showSolution;$('#nxt').onclick=()=>test?testNext():next(false);{const ac=$('#autoc');if(ac)ac.onchange=()=>{st.auto=ac.checked;if(!ac.checked)clearTimeout(autoT);save()}}
+  wireProto();$('#chk').onclick=check;$('#hnt').onclick=hint;$('#sol').onclick=showSolution;$('#nxt').onclick=()=>{if(Date.now()-finT<400)return;test?testNext():next(false)};{const ac=$('#autoc');if(ac)ac.onchange=()=>{st.auto=ac.checked;if(!ac.checked)clearTimeout(autoT);save()}}
   document.querySelectorAll('.choice').forEach(b=>b.onclick=()=>{if(done)return;choiceSel=+b.dataset.i;document.querySelectorAll('.choice').forEach(x=>x.setAttribute('aria-pressed',String(x===b)))});
-  document.querySelectorAll('#ans input').forEach(i=>i.addEventListener('keydown',e=>{if(e.key==='Enter')check()}));
+  document.querySelectorAll('#ans input').forEach(i=>i.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();check()}}));
   wireExpr();wireGrid();
 }
 function wireGrid(){
@@ -918,16 +941,20 @@ function logAnswer(q,u,ok){
   const h=$('#hist');if(h)h.innerHTML='<div class="at">Your answers on this question: '+attempts.map(x=>'<span class="'+(x.ok?'ok':'no')+'">'+(x.ok?'✓':'✗')+' '+esc(x.a)+'</span>').join(' ')+'</div>';
 }
 const chk=(q,u)=>E.check?E.check(q,u):{ok:E.grade(q,u)};
-function drawSteps(){const d=$('#stp');if(!d)return;d.innerHTML=stepLines.map(t=>{let h=null;if(/\//.test(t)){try{h=E.M(t,{noVars:true})}catch(e){}}else h=esc(t).replace(/\*|·/g,'×').replace(/-/g,'−');return '<div class="stl">'+(h||esc(t))+' <span class="eq">=</span></div>'}).join('')}
+function drawSteps(){const d=$('#stp');if(!d)return;d.innerHTML=stepLines.map(t=>{let h=null;if(/\//.test(t)||(cur&&cur.type==='expr'&&/[\^√]/.test(t))){try{h=E.M(t,{noVars:cur&&cur.type!=='expr'})}catch(e){}}else h=esc(t).replace(/\*|·/g,'×').replace(/-/g,'−');return '<div class="stl">'+(h||esc(t))+' <span class="eq">=</span></div>'}).join('')}
 function check(){
   if(done)return;const q=cur,u=userAns(q);
   if(empty(q,u)){fb('hint','Fill in your answer first.');return}
   if(test){return testCheck(q,u)}
-  if(q.needStep&&q.type==='num'&&!stepLines.length&&!isNaN(E.parseNum(u))){fb('hint','<b class="h">Show your working first.</b>Type the first calculation you do (for example the part with the brackets or the multiplication), then work towards the final answer.');return}
+  const sm=stepMode(q);
+  if(sm==='enforce'&&q.type==='num'&&!stepLines.length&&!isNaN(E.parseNum(u))){fb('hint','<b class="h">Show your working first.</b>Showing your steps is part of a correct answer. Type the first calculation you do (for example <i>(4+5)*9</i> or <i>9*9</i>), then work towards the final answer.');return}
   let calcWrong=false;
   if(q.type==='num'&&isNaN(E.parseNum(u))&&E.parse){let calc=false;try{E.parse(String(u),{noVars:true});calc=true}catch(e){}
-    if(calc){const rr=E.check({type:'expr',ans:String(q.ans),form:'any',noVars:true},u);
+    if(calc){let rr;if(q.tol&&E.evalNum){let vv=NaN;try{vv=E.evalNum(u)}catch(e){}rr={ok:Math.abs(vv-q.ans)<=q.tol}}else rr=E.check({type:'expr',ans:String(q.ans),form:'any',noVars:true},u);
       if(rr.ok){fb('hint','<b class="h">✓ That calculation is right.</b>Now work it out and type the <b>final number</b> as your answer.');stepLines.push(String(u).trim());drawSteps();const i0=$('#in0');i0.value='';i0.focus();const pv=$('#pv');if(pv)pv.innerHTML='';return}calcWrong=true}}
+  if(sm==='enforce'&&q.type==='expr'&&!stepLines.length){const r0=E.check(q,u);
+    if(r0.ok){q._blk=(q._blk||0)+1;if(q._blk<3){fb('hint','<b class="h">Show your working first.</b>Showing your steps is part of a correct answer. Type an in-between step first (for example before you simplify or add things up), then type your final answer.');return}}
+    else if(r0.why==='form'){stepLines.push(String(u).trim());drawSteps();fb('hint','<b class="h">✓ Good step.</b>That is equal to the answer, but it is not finished yet. Now type the final answer.');const i0=$('#in0');i0.value='';i0.focus();const pv=$('#pv');if(pv)pv.innerHTML='';return}}
   const R_=chk(q,u),ok=R_.ok;tries++;
   logAnswer(q,u,ok);
   const S=st.stat[st.sec]=st.stat[st.sec]||{n:0,ok:0};
@@ -979,7 +1006,7 @@ function revealQ(q){
   (R.pts||[]).forEach(p=>{h+='<circle cx="'+X(p[0])+'" cy="'+Y(p[1])+'" r="5" fill="#16803c" stroke="#fff" stroke-width="1.5"/>'});
   sv.querySelector('.marks').insertAdjacentHTML('beforebegin','<g class="rev">'+h+'</g>');
 }
-function finish(){revealQ(cur);$('#chk').disabled=true;$('#hnt').disabled=true;$('#sol').style.display='none';$('#nxt').style.display='';$('#nxt').focus();document.querySelectorAll('.choice').forEach(b=>b.disabled=true);document.querySelectorAll('#ans input').forEach(i=>i.disabled=true);document.querySelectorAll('#kp button').forEach(i=>i.disabled=true);renderNavSoft();const lp=document.querySelector('details.hl');if(lp){const o=lp.open;lp.outerHTML=logPanel();const n=document.querySelector('details.hl');if(n)n.open=o}}
+let finT=0;function finish(){finT=Date.now();revealQ(cur);$('#chk').disabled=true;$('#hnt').disabled=true;$('#sol').style.display='none';$('#nxt').style.display='';$('#nxt').focus();document.querySelectorAll('.choice').forEach(b=>b.disabled=true);document.querySelectorAll('#ans input').forEach(i=>i.disabled=true);document.querySelectorAll('#kp button').forEach(i=>i.disabled=true);renderNavSoft();const lp=document.querySelector('details.hl');if(lp){const o=lp.open;lp.outerHTML=logPanel();const n=document.querySelector('details.hl');if(n)n.open=o}}
 function renderNavSoft(){if(items().some(s=>st.done[s.id]&&!document.querySelector('#nav .mm')))renderNav();const bars=document.querySelectorAll('#nav .bar i');items().forEach((s,i)=>{if(bars[i])bars[i].style.width=Math.min(GOAL,st.prog[s.id]||0)*100/GOAL+'%'});const sd=document.querySelectorAll('.goals .sd');}
 
 /* ---------- test preparation ---------- */
@@ -991,7 +1018,7 @@ function testShow(){
   wireProto();$('#chk').onclick=check;$('#nxt').onclick=testNext;
   const tmp=document.createElement('button');tmp.id='hnt';tmp.style.display='none';$('.btns').appendChild(tmp);
   document.querySelectorAll('.choice').forEach(b=>b.onclick=()=>{if(done)return;choiceSel=+b.dataset.i;document.querySelectorAll('.choice').forEach(x=>x.setAttribute('aria-pressed',String(x===b)))});
-  document.querySelectorAll('#ans input').forEach(i=>i.addEventListener('keydown',e=>{if(e.key==='Enter')check()}));
+  document.querySelectorAll('#ans input').forEach(i=>i.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();check()}}));
   wireExpr();wireGrid();
   const f=$('#in0');if(f)f.focus();
 }

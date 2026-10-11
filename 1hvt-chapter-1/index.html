@@ -83,6 +83,7 @@ svg.fig{max-width:430px;width:100%;height:auto;display:block;margin:6px 0 10px}
 @media print{body.printing header,body.printing nav,body.printing .noprint,body.printing .goals{display:none!important}body.printing .wrap{display:block;margin:0;padding:0}body.printing main{border:0;padding:0}body{background:#fff}}
 .autoc{display:block;margin:.6rem 0 0;font-size:.9rem;color:var(--mut,#556)}.autoc input{margin-right:.4rem}
 .stp .stl{font-size:1.15rem;margin:.35rem 0;color:var(--ink,inherit)}.stp .eq{margin-left:.15rem;font-weight:700}
+.stepnote{margin:.5rem 0;padding:.45rem .7rem;border-left:4px solid #b7791f;background:#fff7e6;border-radius:6px;font-size:.92rem;color:#5a3d00}@media (prefers-color-scheme:dark){.stepnote{background:#3a2d12;color:#f3d9a4}}
 </style>
 </head>
 <body>
@@ -437,7 +438,7 @@ function engine(def) {
     const secs = []; for (let i = 0; i < N; i++) secs.push(SECTIONS[i % n].id);
     const seen = []; return shuffle(secs).map((s, i) => { const q = make(s, lv[i], seen); seen.push({ g: null, f: q.fp }); q.hint = null; return q; });
   }
-  return { KEY: def.key, SECTIONS, LESSONS, G, XG, make, makeTest, grade, check, answerText, parseNum, parsePoint, f, M, parse, defaultMode: def.defaultMode || 'lesson' };
+  return { KEY: def.key, SECTIONS, LESSONS, G, XG, make, makeTest, grade, check, answerText, evalNum: s => evalAst(parse(String(s), { noVars: true }), {}), parseNum, parsePoint, f, M, parse, defaultMode: def.defaultMode || 'lesson' };
 }
 const U = { ri, pick, shuffle, nz, f, gcd, lcm, isPrime, primeFactors, squarefree, sqrtSplit, parse, evalAst, numEq, R, M, fr, mixed, tbl, fmtNum, ratText, formCheck, gradeExpr, toRF, flat, monoTerm, Poly, engine, esc, parseNum };
 if (typeof module !== 'undefined' && module.exports) module.exports = U; else root.NX = U;
@@ -512,7 +513,7 @@ G['1.1'] = [
   function countIntegers(l) {
     const a = ri(2, 9), b = ri(2, 9); const incl = l === 0;
     const lo = -a, hi = b; const n = incl ? a + b + 1 : a + b - 1;
-    return nu(p('How many <b>integers</b> are there from <b>' + f(lo) + '</b> to <b>' + hi + '</b>' + (incl ? ', including both ' + f(lo) + ' and ' + hi + '?' : ', <u>not</u> counting ' + f(lo) + ' and ' + hi + '?')), n, 'Integers are whole numbers (negative, zero and positive). Do not forget 0!', incl ? 'From ' + f(lo) + ' to −1 there are ' + a + ' numbers, then 0, then 1 to ' + b + ': ' + a + ' + 1 + ' + b + ' = ' + n + '.' : 'Including the ends it is ' + (a + b + 1) + ' numbers. Without the two ends: ' + n + '.');
+    return nu(p('How many <b>integers</b> are there from <b>' + f(lo) + '</b> to <b>' + hi + '</b>' + (incl ? ', including both ' + f(lo) + ' and ' + hi + '?' : ', <u>not</u> counting ' + f(lo) + ' and ' + hi + '?')), n, 'Integers are whole numbers: negative ones, zero and positive ones. Example: from −2 to 2 are −2, −1, 0, 1, 2. Do not forget 0!', incl ? 'From ' + f(lo) + ' to −1 there are ' + a + ' numbers, then 0, then 1 to ' + b + ': ' + a + ' + 1 + ' + b + ' = ' + n + '.' : 'Including the ends it is ' + (a + b + 1) + ' numbers. Without the two ends: ' + n + '.');
   },
   function decimalPlaces(l) {
     const k = l === 0 ? ri(1, 2) : ri(2, 4); let v = ri(1, 9) + ri(1, 9) / 10; let s = String(ri(1, 99)) + '.' + String(ri(1, 9)) + (k > 1 ? Array.from({ length: k - 1 }, () => ri(0, 9)).join('') : ''); s = s.replace(/0+$/, ''); const dp = (s.split('.')[1] || '').length; const neg = Math.random() < 0.4;
@@ -523,7 +524,7 @@ G['1.1'] = [
     else if (l === 1) { a = rd(ri(-90, 90) / 10); do { b = rd(ri(-90, 90) / 10); } while (b === a); }
     else { const base = ri(-120, 120); a = rd(base / 10 + pick([0.01, 0.1, 0, 0.05])); b = rd(base / 10 + pick([0.02, -0.01, -0.1, 0.04])); if (a === b) b = rd(b + 0.03); if (Math.random() < 0.4) { a = -ri(95, 130); b = a - 1 - ri(0, 2); } }
     const right = a < b ? '<' : '>';
-    return ch(p('Which sign makes this true? <b>' + f(a) + ' ? ' + f(b) + '</b>'), right, [right === '<' ? '>' : '<'], 'The number that lies further to the right on the number line is greater.', f(a) + ' lies ' + (a < b ? 'to the left of ' : 'to the right of ') + f(b) + ' on the number line, so ' + f(a) + ' ' + right + ' ' + f(b) + '.');
+    return ch(p('Which symbol makes this true (&lt; or &gt;)? <b>' + f(a) + ' ? ' + f(b) + '</b>'), right, [right === '<' ? '>' : '<'], 'The number that is further to the right on the number line is bigger. Example: −2 is to the right of −5, so −2 &gt; −5.', f(a) + ' lies ' + (a < b ? 'to the left of ' : 'to the right of ') + f(b) + ' on the number line, so ' + f(a) + ' ' + right + ' ' + f(b) + '.');
   },
   function orderNumbers(l) {
     const set = new Set(); while (set.size < 4) set.add(l === 0 ? ri(-9, 9) : rd(ri(-60, 60) / (l === 1 ? 10 : 100)));
@@ -541,7 +542,7 @@ G['1.1'] = [
     else if (l === 1) { a = ri(-25, 25); b = ri(-25, 25); if (a >= 0 && b >= 0) b = -b || -4; }
     else { a = rd(ri(-120, 120) / 10); b = rd(ri(-120, 120) / 10); if (a >= 0 && b >= 0) b = -b || -2.5; }
     const r = rd(a + b);
-    return nu(p('Calculate <b>' + f(a) + ' + ' + pn(b) + '</b>'), r, a * b < 0 ? 'Different signs: subtract the smaller number (without sign) from the larger one. The sign of the answer is the sign of the larger one.' : 'Same signs: add the numbers and keep the sign.', f(a) + ' + ' + pn(b) + ' = ' + f(r) + '.');
+    return nu(p('Calculate <b>' + f(a) + ' + ' + pn(b) + '</b>'), r, a * b < 0 ? 'One number is positive and one is negative. Take the small number away from the big number (forget the minus). The answer gets the minus or plus of the bigger number. Example: −7 + 3: 7 − 3 = 4, and 7 is the bigger number with a minus, so −7 + 3 = −4.' : 'Both numbers are positive or both are negative. Add them and keep the minus if there is one. Example: −4 + (−3) = −7.', f(a) + ' + ' + pn(b) + ' = ' + f(r) + '.');
   },
   function subInt(l) {
     let a, b; if (l === 0) { a = ri(-9, 9); b = ri(-9, 9); } else if (l === 1) { a = ri(-30, 30); b = ri(-30, 30); } else { a = rd(ri(-150, 150) / 10); b = rd(ri(-150, 150) / 10); }
@@ -585,18 +586,18 @@ const SIGN_Q = [['positive × positive', 'positive'], ['positive × negative', '
 G['1.2'] = [
   function signRule(l) {
     const [q, a] = pick(SIGN_Q);
-    return ch(p('Is the answer <b>positive</b> or <b>negative</b>?<br><b>' + q + '</b>'), a, [a === 'positive' ? 'negative' : 'positive'], 'Same signs: the answer is positive. Different signs: the answer is negative.', q.includes('negative × negative') || q.includes('negative : negative') ? 'Two negatives (same signs) give a positive answer.' : 'Look at the two signs: ' + a + '.');
+    return ch(p('Is the answer <b>positive</b> or <b>negative</b>?<br><b>' + q + '</b>'), a, [a === 'positive' ? 'negative' : 'positive'], 'Two the same (both + or both −): the answer is positive. One + and one −: the answer is negative. Example: negative × negative = positive, like −2 × −3 = 6.', q.includes('negative × negative') || q.includes('negative : negative') ? 'Two minuses make a plus.' : 'One is positive and one is negative, so the answer is negative.');
   },
   function mulInt(l) {
     let a, b; if (l === 0) { a = ri(-9, 9); b = ri(-9, 9); } else if (l === 1) { a = ri(-15, 15); b = ri(-15, 15); } else { a = pick([-1, 1]) * rd(ri(5, 95) / pick([1, 4, 10])); b = pick([-1, 1]) * pick([10, 20, 5, 4, 2.5, 0.5, 100]); }
     if (a === 0) a = -3; if (b === 0) b = 4; const r = rd(a * b);
-    return nu(p('Calculate <b>' + f(a) + ' × ' + pn(b) + '</b>'), r, 'First calculate without the signs. Then decide: same signs → positive, different signs → negative.', f(Math.abs(a)) + ' × ' + f(Math.abs(b)) + ' = ' + f(Math.abs(r)) + '. The signs are ' + (a * b < 0 ? 'different' : 'the same') + ', so the answer is ' + (r < 0 ? 'negative' : 'positive') + ': ' + f(r) + '.');
+    return nu(p('Calculate <b>' + f(a) + ' × ' + pn(b) + '</b>'), r, 'First multiply and forget the minuses. Then decide: two minuses make a plus (−3 × −4 = 12). One minus makes a minus (3 × −4 = −12).', f(Math.abs(a)) + ' × ' + f(Math.abs(b)) + ' = ' + f(Math.abs(r)) + '. ' + (a * b < 0 ? 'There is one minus' : 'There are two minuses or none') + ', so the answer is ' + (r < 0 ? 'negative' : 'positive') + ': ' + f(r) + '.');
   },
   function divInt(l) {
     let a, b, q; if (l === 0) { b = nz(-9, 9); q = nz(-9, 9); } else if (l === 1) { b = nz(-12, 12); q = nz(-15, 15); } else { const t = ri(0, 3); if (t === 0) { b = 10; q = rd(-ri(1, 9) / 10); } else if (t === 1) { b = pick([0.1, -0.1, 0.5, -0.5, 0.2, -0.2]); q = nz(-30, 30); } else if (t === 2) { b = pick([-2.5, 2.5, -0.5, 0.25]); q = nz(-30, 30); } else { b = nz(-20, 20); q = rd(pick([0.5, 1.5, 2.5, -0.5, -1.5]) * pick([1, 2])); } }
     if (b * q > 0 && l < 2 && Math.random() < 0.7) { b = -b; q = -q; if (Math.random() < 0.5) { b = -b; q = -q; b = -b; } }
     a = rd(b * q); const r = rd(a / b);
-    return nu(p('Calculate <b>' + f(a) + ' : ' + pn(b) + '</b>'), q, 'Divide without the signs first. Same signs → positive, different signs → negative.', f(Math.abs(a)) + ' : ' + f(Math.abs(b)) + ' = ' + f(Math.abs(q)) + ', and the answer is ' + (q < 0 ? 'negative' : 'positive') + ': ' + f(q) + '. Check: ' + pn(q) + ' × ' + pn(b) + ' = ' + f(a) + '.');
+    return nu(p('Calculate <b>' + f(a) + ' : ' + pn(b) + '</b>'), q, 'First divide and forget the minuses. Then decide: two minuses make a plus (−12 : −4 = 3). One minus makes a minus (12 : −4 = −3).', f(Math.abs(a)) + ' : ' + f(Math.abs(b)) + ' = ' + f(Math.abs(q)) + ', and the answer is ' + (q < 0 ? 'negative' : 'positive') + ': ' + f(q) + '. Check: ' + pn(q) + ' × ' + pn(b) + ' = ' + f(a) + '.');
   },
   function missingFactor(l) {
     const b = nz(l === 0 ? -9 : -15, l === 0 ? 9 : 15), x = nz(l === 0 ? -9 : -15, l === 0 ? 9 : 15), t = ri(0, 2);
@@ -668,7 +669,7 @@ XG['1.2'] = [
   },
   function decimalMul(l) {
     const a = pick([-1, 1]) * rd(ri(11, 99) / 10), b = pick([-1, 1]) * pick([0.5, 0.2, 0.1, 2.5]); const r = rd(a * b);
-    return nu(p('Calculate <b>' + f(a) + ' × ' + pn(b) + '</b>'), r, 'Calculate without signs and decimal point first, then place the decimal point.', 'The answer is ' + (r < 0 ? 'negative' : 'positive') + ': ' + f(r) + '.');
+    return nu(p('Calculate <b>' + f(a) + ' × ' + pn(b) + '</b>'), r, 'First multiply without the minuses and without the comma. Then put the comma back. Then decide plus or minus. Example: −0,3 × 4: 3 × 4 = 12, so 1,2, and one minus gives −1,2.', 'The answer is ' + (r < 0 ? 'negative' : 'positive') + ': ' + f(r) + '.');
   }
 ];
 
@@ -687,21 +688,21 @@ G['1.3'] = [
     if (l >= 1 && Math.random() < 0.3) { q = 1; pp = ri(2, 9); k = ri(2, 9); }
     const neg = l >= 1 && Math.random() < 0.4; const r = rat((neg ? -1 : 1) * pp, q); const n = pp * k * (neg ? -1 : 1), d = q * k;
     const g = gcd(Math.abs(n), d);
-    return rq(p('Simplify <b>' + (neg ? '−' : '') + fr(pp * k, d) + '</b> as far as possible. ' + AF), r, 'lowest', 'Divide the numerator and the denominator by the same number (the largest one that fits in both).', 'Divide the top and the bottom by ' + g + ': ' + (neg ? '−' : '') + fr(pp * k, d) + ' = ' + FR(r) + '.');
+    return rq(p('Simplify <b>' + (neg ? '−' : '') + fr(pp * k, d) + '</b> as far as possible. ' + AF), r, 'lowest', 'Divide the top and the bottom by the same number (the biggest one that fits in both). Example: 6/9: divide by 3 → 2/3.', 'Divide the top and the bottom by ' + g + ': ' + (neg ? '−' : '') + fr(pp * k, d) + ' = ' + FR(r) + '.');
   },
   function toMixed(l) {
     let d, n; do { d = ri(2, l === 0 ? 6 : 12); n = ri(1, d - 1); } while (gcd(n, d) > 1); const w = ri(1, l === 2 ? 25 : 9), neg = l >= 1 && Math.random() < 0.4; const num = w * d + n; const r = rat((neg ? -1 : 1) * num, d);
-    return rq(p('Write <b>' + (neg ? '−' : '') + fr(num, d) + '</b> as a <b>mixed number</b>. ' + AF), r, 'mixed', 'Divide the numerator by the denominator. The quotient is the whole number, the remainder is the new numerator.', num + ' : ' + d + ' = ' + w + ' remainder ' + n + ', so ' + (neg ? '−' : '') + fr(num, d) + ' = ' + (neg ? '−' : '') + mixed(w, n, d) + '.');
+    return rq(p('Write <b>' + (neg ? '−' : '') + fr(num, d) + '</b> as a <b>mixed number</b>. ' + AF), r, 'mixed', 'Divide the top number by the bottom number. The answer is the whole number. What is left over goes on top. Example: 7/3: 7 : 3 = 2 remainder 1, so 2 1/3.', num + ' : ' + d + ' = ' + w + ' remainder ' + n + ', so ' + (neg ? '−' : '') + fr(num, d) + ' = ' + (neg ? '−' : '') + mixed(w, n, d) + '.');
   },
   function toImproper(l) {
     let d, n; do { d = ri(2, l === 0 ? 6 : 9); n = ri(1, d - 1); } while (gcd(n, d) > 1); const w = ri(1, l === 2 ? 40 : 9), neg = l >= 1 && Math.random() < 0.4; const num = w * d + n;
-    return rq(p('Write <b>' + (neg ? '−' : '') + mixed(w, n, d) + '</b> as <b>one fraction</b> (an improper fraction). Type it like 7/4.'), rat((neg ? -1 : 1) * num, d), 'improper', 'Whole number × denominator + numerator = new numerator.', w + ' × ' + d + ' + ' + n + ' = ' + num + ', so ' + (neg ? '−' : '') + mixed(w, n, d) + ' = ' + (neg ? '−' : '') + fr(num, d) + '.');
+    return rq(p('Write <b>' + (neg ? '−' : '') + mixed(w, n, d) + '</b> as <b>one fraction</b> (an improper fraction). Type it like 7/4.'), rat((neg ? -1 : 1) * num, d), 'improper', 'Whole number × bottom number + top number = new top number. Example: 2 1/3 = (2 × 3 + 1)/3 = 7/3.', w + ' × ' + d + ' + ' + n + ' = ' + num + ', so ' + (neg ? '−' : '') + mixed(w, n, d) + ' = ' + (neg ? '−' : '') + fr(num, d) + '.');
   },
   function likeAdd(l) {
     const d = ri(3, l === 0 ? 8 : 12); const k = l === 0 ? 2 : 3; const ns = Array.from({ length: k }, () => ri(1, d - 1)); let sg_ = ns.map((_, i) => i === 0 ? 1 : pick([1, -1]));
     let tot = 0; ns.forEach((n, i) => tot += sg_[i] * n); if (tot <= 0) { sg_ = ns.map(() => 1); tot = ns.reduce((a, c) => a + c, 0); } const r = rat(tot, d);
     const html = ns.map((n, i) => (i === 0 ? '' : sg_[i] > 0 ? ' + ' : ' − ') + fr(n, d)).join('');
-    return rq(p('Calculate <b>' + html + '</b>. ' + AF), r, 'lowest', 'The denominators are the same: only add or subtract the numerators. The denominator stays.', ns.map((n, i) => (i === 0 ? '' : sg_[i] > 0 ? ' + ' : ' − ') + n).join('') + ' = ' + tot + ', so ' + frn(tot, d) + (r[1] !== d || r[0] !== tot ? ' = ' + FR(r) : '') + '.');
+    return rq(p('Calculate <b>' + html + '</b>. ' + AF), r, 'lowest', 'The bottom numbers are the same: only add or subtract the top numbers. The bottom number stays. Example: 2/7 + 3/7 = 5/7.', ns.map((n, i) => (i === 0 ? '' : sg_[i] > 0 ? ' + ' : ' − ') + n).join('') + ' = ' + tot + ', so ' + frn(tot, d) + (r[1] !== d || r[0] !== tot ? ' = ' + FR(r) : '') + '.');
   },
   function mixedLike(l) {
     const d = pick([3, 4, 5, 6, 7, 8, 9]); let a = impr(ri(1, 6), ri(1, d - 1), d, l >= 1 && Math.random() < 0.4), b = impr(ri(1, 6), ri(1, d - 1), d, l >= 2 && Math.random() < 0.5); const sub = Math.random() < 0.5;
@@ -717,7 +718,7 @@ G['1.3'] = [
   },
   function equivFrac(l) {
     const q = pick([2, 3, 4, 5, 6, 7, 8, 9]), pp = ri(1, q - 1), k = ri(2, l === 0 ? 5 : 9); const missingTop = Math.random() < 0.6;
-    return nu(p('Fill in the missing number: <b>' + (missingTop ? fr(pp, q) + ' = ' + fr('?', q * k) : fr('?', q) + ' = ' + fr(pp * k, q * k)) + '</b>'), missingTop ? pp * k : pp, 'Multiply (or divide) the numerator and the denominator by the same number.', missingTop ? 'The denominator ' + q + ' × ' + k + ' = ' + q * k + ', so the numerator must also be multiplied by ' + k + ': ' + pp + ' × ' + k + ' = ' + pp * k + '.' : 'The denominator went from ' + q * k + ' to ' + q + ' (÷ ' + k + '), so ' + pp * k + ' : ' + k + ' = ' + pp + '.');
+    return nu(p('Fill in the missing number: <b>' + (missingTop ? fr(pp, q) + ' = ' + fr('?', q * k) : fr('?', q) + ' = ' + fr(pp * k, q * k)) + '</b>'), missingTop ? pp * k : pp, 'Multiply (or divide) the top and the bottom by the same number. Example: 2/3 = 4/6, because 2 × 2 = 4 and 3 × 2 = 6.', missingTop ? 'The denominator ' + q + ' × ' + k + ' = ' + q * k + ', so the numerator must also be multiplied by ' + k + ': ' + pp + ' × ' + k + ' = ' + pp * k + '.' : 'The denominator went from ' + q * k + ' to ' + q + ' (÷ ' + k + '), so ' + pp * k + ' : ' + k + ' = ' + pp + '.');
   },
   function compareFrac(l) {
     let a, b; if (l === 0) { const d = ri(4, 12); const x = ri(1, d - 1); let y; do { y = ri(1, d - 1); } while (y === x); a = rat(x, d); b = rat(y, d); a = [x, d]; b = [y, d]; }
@@ -726,7 +727,7 @@ G['1.3'] = [
     const L = lcm(a[1], b[1]); const x = a[0] * L / a[1], y = b[0] * L / b[1]; if (x === y) b = [b[0] + 1 > b[1] ? b[0] - 1 : b[0] + 1, b[1]];
     const x2 = a[0] * L / a[1], y2 = b[0] * L / (b[1]); const LL = lcm(a[1], b[1]); const xx = a[0] * (LL / a[1]), yy = b[0] * (LL / b[1]);
     const right = xx < yy ? '<' : '>';
-    return ch(p('Which sign makes this true?<br><b>' + fr(a[0], a[1]) + ' ? ' + fr(b[0], b[1]) + '</b>'), right, [right === '<' ? '>' : '<'], a[1] === b[1] ? 'Same denominator: the larger numerator is the larger fraction.' : 'Give both fractions the same denominator first.', a[1] === b[1] ? 'Same denominator ' + a[1] + ': compare ' + a[0] + ' and ' + b[0] + '.' : 'Common denominator ' + LL + ': ' + frn(a[0], a[1]) + ' = ' + frn(xx, LL) + ' and ' + frn(b[0], b[1]) + ' = ' + frn(yy, LL) + '. So ' + frn(a[0], a[1]) + ' ' + right + ' ' + frn(b[0], b[1]) + '.');
+    return ch(p('Which symbol makes this true (&lt; or &gt;)?<br><b>' + fr(a[0], a[1]) + ' ? ' + fr(b[0], b[1]) + '</b>'), right, [right === '<' ? '>' : '<'], a[1] === b[1] ? 'Same bottom number: the bigger top number is the bigger fraction. Example: 5/7 &gt; 2/7.' : 'First make the bottom numbers the same. Example: 1/2 and 2/3: 3/6 and 4/6, so 2/3 is bigger.', a[1] === b[1] ? 'Same denominator ' + a[1] + ': compare ' + a[0] + ' and ' + b[0] + '.' : 'Common denominator ' + LL + ': ' + frn(a[0], a[1]) + ' = ' + frn(xx, LL) + ' and ' + frn(b[0], b[1]) + ' = ' + frn(yy, LL) + '. So ' + frn(a[0], a[1]) + ' ' + right + ' ' + frn(b[0], b[1]) + '.');
   },
   function addUnlike(l) {
     let a, b, c = null; const sub = Math.random() < 0.45;
@@ -734,7 +735,7 @@ G['1.3'] = [
     else { const ds = shuffle([3, 4, 5, 6, 7, 8, 9, 10, 12]); a = rat(ri(1, ds[0] - 1), ds[0]); b = rat(ri(1, ds[1] - 1), ds[1]); if (l === 2 && Math.random() < 0.6) c = rat(ri(1, ds[2] - 1), ds[2]); }
     let r, html, st; if (c) { const s2 = Math.random() < 0.5; r = rsub(radd(a, b), c); r = s2 ? r : radd(radd(a, b), c); html = T(a) + ' + ' + T(b) + (s2 ? ' − ' : ' + ') + T(c); const ab = radd(a, b); st = 'First ' + T(a) + ' + ' + T(b) + ': ' + addSteps(a, b, false) + ' Then ' + addSteps(ab, c, s2); }
     else { r = sub ? rsub(a, b) : radd(a, b); html = T(a) + (sub ? ' − ' : ' + ') + T(b); st = addSteps(a, b, sub); }
-    return rq(p('Calculate <b>' + html + '</b>. ' + AF), r, 'lowest', 'Find a common denominator (a number both denominators fit in). Then add or subtract the numerators.', st);
+    return rq(p('Calculate <b>' + html + '</b>. ' + AF), r, 'lowest', 'First make the bottom numbers the same (find a number that both fit in). Then add or subtract the top numbers. Example: 1/2 + 1/3 = 3/6 + 2/6 = 5/6.', st);
   },
   function landUse(l) {
     const d1 = pick([4, 5, 6, 8, 10, 12, 20]), d2 = pick([3, 7, 9, 14, 15, 10, 12]); let a = rat(ri(1, d1 - 1), d1), b = rat(ri(1, d2 - 1), d2); const s = radd(a, b); if (s[0] >= s[1]) { a = rat(1, d1); b = rat(1, d2); }
@@ -743,7 +744,7 @@ G['1.3'] = [
   },
   function mixedUnlike(l) {
     const d1 = pick(l === 0 ? [2, 4, 3, 6] : [3, 4, 5, 6, 7, 8, 9, 10, 11]), d2 = l === 0 ? d1 * pick([1, 2]) : pick([3, 4, 5, 6, 8, 9, 10, 12]); let a = impr(ri(1, 6), ri(1, d1 - 1), d1, l >= 2 && Math.random() < 0.35), b = impr(ri(1, 6), ri(1, d2 - 1), d2, l >= 2 && Math.random() < 0.25); const sub = Math.random() < 0.5; if (sub && a[0] * b[1] === b[0] * a[1]) b = radd(b, [1, b[1]]); const r = sub ? rsub(a, b) : radd(a, b);
-    return rq(p('Calculate <b>' + T(a, true) + (sub ? ' − ' : ' + ') + TP(b, true) + '</b> and give the answer as a <b>mixed number</b>. ' + AF), r, 'mixed', 'Turn both mixed numbers into improper fractions. Find a common denominator. Calculate. Turn the answer back into a mixed number.', FR(a) + (sub ? ' − ' : ' + ') + TP(b) + '. ' + addSteps(a, b, sub) + (r[1] !== 1 && Math.abs(r[0]) > r[1] ? ' As a mixed number: ' + MXd(r) + '.' : ''));
+    return rq(p('Calculate <b>' + T(a, true) + (sub ? ' − ' : ' + ') + TP(b, true) + '</b> and give the answer as a <b>mixed number</b>. ' + AF), r, 'mixed', 'Turn both mixed numbers into one fraction each (2 1/3 = 7/3). Make the bottom numbers the same. Calculate. Turn the answer back into a mixed number.', FR(a) + (sub ? ' − ' : ' + ') + TP(b) + '. ' + addSteps(a, b, sub) + (r[1] !== 1 && Math.abs(r[0]) > r[1] ? ' As a mixed number: ' + MXd(r) + '.' : ''));
   },
   function pyramid(l) {
     const dsets = l === 0 ? [[2, 4, 4], [3, 6, 6], [5, 10, 5]] : [[5, 30, 15], [4, 6, 12], [3, 5, 15], [6, 4, 12], [7, 14, 2]]; const ds = pick(dsets); const a = rat(ri(1, ds[0] - 1), ds[0]), b = rat(ri(1, ds[1] - 1), ds[1]), c = rat(ri(1, ds[2] - 1), ds[2]);
@@ -754,7 +755,7 @@ G['1.3'] = [
 XG['1.3'] = [
   function threeMixed(l) {
     const a = mt([3, 4, 5], 5), b = impr(ri(1, 5), ri(1, 6), pick([7, 8, 9])), c = impr(ri(1, 4), ri(1, 2), pick([3, 5, 6])); const r = rsub(radd(a, b), c);
-    return rq(p('Calculate <b>' + T(a, true) + ' + ' + T(b, true) + ' − ' + T(c, true) + '</b> and give the answer as a mixed number. ' + AF), r, 'mixed', 'Use improper fractions. Take one common denominator for all three.', 'Improper fractions: ' + FR(a) + ' + ' + FR(b) + ' − ' + FR(c) + '. ' + addSteps(a, b, false) + ' Then ' + addSteps(radd(a, b), c, true) + ' As a mixed number: ' + MXd(r) + '.');
+    return rq(p('Calculate <b>' + T(a, true) + ' + ' + T(b, true) + ' − ' + T(c, true) + '</b> and give the answer as a mixed number. ' + AF), r, 'mixed', 'Turn every mixed number into one fraction (2 1/3 = 7/3). Make all three bottom numbers the same.', 'Improper fractions: ' + FR(a) + ' + ' + FR(b) + ' − ' + FR(c) + '. ' + addSteps(a, b, false) + ' Then ' + addSteps(radd(a, b), c, true) + ' As a mixed number: ' + MXd(r) + '.');
   },
   function remainingTrip(l) {
     const d1 = pick([3, 4, 5, 6]), d2 = pick([7, 8, 9, 10, 12]); const a = rat(ri(1, d1 - 1), d1), b = rat(ri(1, d2 - 1), d2); const used = radd(a, b); if (used[0] >= used[1]) return XG['1.3'][1](l);
@@ -770,25 +771,25 @@ G['1.4'] = [
     if (mxd) a = mt([2, 3, 4, 5], 4); else a = properFrac(l === 0 ? [3, 4, 5, 7] : [3, 4, 5, 7, 8, 9]);
     const n = (neg ? -1 : 1) * ri(2, l === 0 ? 5 : 20); const r = rmul(a, [n, 1]);
     const html = intFirst ? f(n) + ' × ' + T(a, mxd) : TP(a, mxd) + ' × ' + pn(n);
-    return rq(p('Calculate <b>' + (intFirst ? f(n) + ' × ' + T(a, mxd) : T(a, mxd) + ' × ' + pn(n)) + '</b>. ' + AF), r, 'lowest', 'Write the whole number as a fraction over 1 (or multiply the numerator by it). Simplify if you can.', (mxd ? 'As an improper fraction: ' + FR(a) + '. ' : '') + FR(a) + ' × ' + pn(n) + ' = ' + frn(a[0] * n, a[1]) + (r[1] !== a[1] || r[0] !== a[0] * n ? ' = ' + FR(r) : '') + '.');
+    return rq(p('Calculate <b>' + (intFirst ? f(n) + ' × ' + T(a, mxd) : T(a, mxd) + ' × ' + pn(n)) + '</b>. ' + AF), r, 'lowest', 'Write the whole number as a fraction over 1 (4 = 4/1), or multiply the top number by it. Simplify if you can. Example: 2/3 × 4 = 8/3.', (mxd ? 'As an improper fraction: ' + FR(a) + '. ' : '') + FR(a) + ' × ' + pn(n) + ' = ' + frn(a[0] * n, a[1]) + (r[1] !== a[1] || r[0] !== a[0] * n ? ' = ' + FR(r) : '') + '.');
   },
   function fractionOf(l) {
     const q = pick(l === 0 ? [2, 3, 4, 5] : [3, 4, 5, 8, 10, 12]), pp = ri(1, q - 1), k = ri(2, l === 0 ? 20 : 60); const tot = q * k; const things = ['£ ' + tot, tot + ' km', tot + ' minutes', tot + ' students', tot + ' kg'];
     const unit = pick(['£', 'km', 'minutes', 'students', 'kg']);
-    return nu(p('Calculate <b>' + fr(pp, q) + ' of ' + tot + '</b>.'), pp * k, 'Divide by the denominator first, then multiply by the numerator. ("of" means ×)', fr(pp, q) + ' × ' + tot + ' = ' + tot + ' : ' + q + ' × ' + pp + ' = ' + k + ' × ' + pp + ' = ' + pp * k + '.');
+    return nu(p('Calculate <b>' + fr(pp, q) + ' of ' + tot + '</b>.'), pp * k, 'Divide by the bottom number first, then multiply by the top number. ("of" means ×) Example: 3/4 of 20: 20 : 4 = 5, then 5 × 3 = 15.', fr(pp, q) + ' × ' + tot + ' = ' + tot + ' : ' + q + ' × ' + pp + ' = ' + k + ' × ' + pp + ' = ' + pp * k + '.');
   },
   function mulFrac(l) {
     let a, b; if (l === 0) { a = properFrac([2, 3, 4, 5, 7]); b = properFrac([2, 3, 5, 7, 8, 9]); }
     else if (l === 1) { a = properFrac([4, 5, 6, 8, 9, 10]); b = properFrac([3, 4, 5, 6, 8, 9, 10]); if (Math.random() < 0.4) a = rat(-a[0], a[1]); }
     else { a = Math.random() < 0.5 ? mt([2, 3, 4, 5], 4) : properFrac([4, 6, 9, 10, 11]); b = Math.random() < 0.6 ? mt([3, 5, 8], 3) : properFrac([5, 6, 7, 8, 11]); if (Math.random() < 0.5) b = rat(-b[0], b[1]); }
     const mx = (x) => x[1] !== 1 && Math.abs(x[0]) > x[1]; const r = rmul(a, b);
-    return rq(p('Calculate <b>' + T(a, mx(a)) + ' × ' + TP(b, mx(b)) + '</b>. ' + AF), r, 'lowest', 'Turn mixed numbers into improper fractions. Multiply numerators, multiply denominators. Simplify (you may cancel first).', (mx(a) || mx(b) ? 'Improper fractions: ' + FR(a) + ' × ' + TP(b) + '. ' : '') + frn(a[0], a[1]) + ' × ' + (b[0] < 0 ? '(' + frn(b[0], b[1]) + ')' : frn(b[0], b[1])) + ' = ' + frn(a[0] * b[0], a[1] * b[1]) + (r[1] !== a[1] * b[1] || r[0] !== a[0] * b[0] ? ' = ' + FR(r) : '') + '.');
+    return rq(p('Calculate <b>' + T(a, mx(a)) + ' × ' + TP(b, mx(b)) + '</b>. ' + AF), r, 'lowest', 'Turn mixed numbers into one fraction (2 1/3 = 7/3). Multiply the tops, multiply the bottoms. Then simplify. Example: 2/3 × 3/4 = 6/12 = 1/2.', (mx(a) || mx(b) ? 'Improper fractions: ' + FR(a) + ' × ' + TP(b) + '. ' : '') + frn(a[0], a[1]) + ' × ' + (b[0] < 0 ? '(' + frn(b[0], b[1]) + ')' : frn(b[0], b[1])) + ' = ' + frn(a[0] * b[0], a[1] * b[1]) + (r[1] !== a[1] * b[1] || r[0] !== a[0] * b[0] ? ' = ' + FR(r) : '') + '.');
   },
   function fracOrder(l) {
     let html, r, st; if (l === 0) { const a = nz(-5, -1), b = ri(2, 6), c = rat(ri(1, 4) * 2 + 1, 2); const m = rmul([b, 1], c); r = radd([a, 1], m); html = f(a) + ' + ' + b + ' × ' + T(c); st = b + ' × ' + FR(c) + ' = ' + FR(m) + '; ' + f(a) + ' + ' + FR(m) + ' = ' + FR(r) + '.'; }
     else if (l === 1) { const a = properFrac([3, 5]), b = properFrac([2, 6, 4]), c = properFrac([5, 6, 7]), d = properFrac([5, 4, 3]); const s1 = radd(a, b), m = rmul(s1, c); r = rsub(m, d); html = '(' + T(a) + ' + ' + T(b) + ') × ' + T(c) + ' − ' + T(d); st = 'Brackets: ' + FR(a) + ' + ' + FR(b) + ' = ' + FR(s1) + '. Then ' + FR(s1) + ' × ' + FR(c) + ' = ' + FR(m) + '. Then ' + FR(m) + ' − ' + FR(d) + ' = ' + FR(r) + '.'; }
     else { const m0 = ri(1, 3), a = properFrac([2, 3]), b = impr(ri(1, 3), 1, 2), c = impr(1, 1, pick([2, 3])); const s1 = radd(a, b), m = rmul(s1, c); r = rsub([m0, 1], m); html = m0 + ' − (' + T(a) + ' + ' + T(b, true) + ') × ' + T(c, true); st = 'Brackets: ' + FR(a) + ' + ' + FR(b) + ' = ' + FR(s1) + '. Then × ' + FR(c) + ': ' + FR(m) + '. Then ' + m0 + ' − ' + FR(m) + ' = ' + FR(r) + '.'; }
-    return rq(p('Calculate <b>' + html + '</b>. ' + AF), r, 'lowest', 'Order of operations: brackets first, then ×, then + and −.', st);
+    return rq(p('Calculate <b>' + html + '</b>. ' + AF), r, 'lowest', 'Do brackets first, then × and :, then + and −. Example: 2 + 3 × 4 = 2 + 12 = 14.', st);
   },
   function fracDivInt(l) {
     const mxd = l >= 1 && Math.random() < 0.4, neg = l >= 2 && Math.random() < 0.4; let a; const n = ri(2, l === 0 ? 6 : 12);
@@ -801,7 +802,7 @@ G['1.4'] = [
     else if (l === 1) { a = properFrac([3, 4, 5, 6, 7, 8]); b = properFrac([3, 4, 5, 6, 8, 9]); if (Math.random() < 0.3) a = rat(ri(2, 9), 1); }
     else { a = Math.random() < 0.5 ? mt([3, 5, 6, 10], 4) : properFrac([4, 5, 6, 9]); b = Math.random() < 0.6 ? mt([3, 5, 8], 3) : properFrac([4, 5, 7, 10]); if (Math.random() < 0.5) b = rat(-b[0], b[1]); }
     const mx = x => x[1] !== 1 && Math.abs(x[0]) > x[1]; const r = rdiv(a, b);
-    return rq(p('Calculate <b>' + T(a, mx(a)) + ' : ' + TP(b, mx(b)) + '</b>. ' + AF), r, 'lowest', 'Dividing by a fraction is multiplying by its reciprocal (turn the fraction upside down).', (mx(a) || mx(b) ? 'Improper fractions: ' + FR(a) + ' : ' + TP(b) + '. ' : '') + 'The reciprocal of ' + TP(b) + ' is ' + (b[0] < 0 ? '−' : '') + fr(b[1], Math.abs(b[0])) + '. ' + FR(a) + ' × ' + (b[0] < 0 ? '−' : '') + fr(b[1], Math.abs(b[0])) + ' = ' + FR(r) + '.');
+    return rq(p('Calculate <b>' + T(a, mx(a)) + ' : ' + TP(b, mx(b)) + '</b>. ' + AF), r, 'lowest', 'Dividing by a fraction is the same as multiplying by the fraction turned upside down. Example: 3/4 : 2/5 = 3/4 × 5/2 = 15/8.', (mx(a) || mx(b) ? 'Improper fractions: ' + FR(a) + ' : ' + TP(b) + '. ' : '') + 'Turned upside down, ' + TP(b) + ' is ' + (b[0] < 0 ? '−' : '') + fr(b[1], Math.abs(b[0])) + '. ' + FR(a) + ' × ' + (b[0] < 0 ? '−' : '') + fr(b[1], Math.abs(b[0])) + ' = ' + FR(r) + '.');
   },
   function fracDivOrder(l) {
     let html, r, st; if (l === 0) { const k = ri(2, 6), a = properFrac([7, 14]), b = rat(ri(1, 6), 14); const s1 = radd(a, b); r = rdiv([k, 1], s1); html = k + ' : (' + T(a) + ' + ' + T(b) + ')'; st = 'Brackets: ' + addSteps(a, b, false) + ' Then ' + k + ' : ' + FR(s1) + ' = ' + k + ' × ' + (s1[0] === 1 ? s1[1] : fr(s1[1], s1[0])) + ' = ' + FR(r) + '.'; }
@@ -860,7 +861,7 @@ G['1.5'] = [
       else if (t === 2) { const a = rat(-1, pick([2, 3])), e = pick([2, 3, 4]); html = PW(a, e); r = rpow(a, e); st = prodTxt(a, e) + ' = ' + FR(r) + '.'; }
       else { const a = pick([0.5, 0.2, 0.1, 1.5, 0.3]); const e = 2; html = '(' + f(a) + ')<sup>2</sup>'; return nu(p('Calculate <b>' + html + '</b>'), rd(a * a), 'Multiply the number by itself.', f(a) + ' × ' + f(a) + ' = ' + f(rd(a * a)) + '.'); }
     }
-    return resQ(p('Calculate <b>' + html + '</b>' + (r[1] === 1 ? '' : '. ' + AF)), r, 'The exponent tells how many times you multiply the base by itself. A negative base needs brackets: (−3)<sup>2</sup> is different from −3<sup>2</sup>.', st);
+    return resQ(p('Calculate <b>' + html + '</b>' + (r[1] === 1 ? '' : '. ' + AF)), r, 'The little number up high tells how many times you multiply the big number by itself. Example: 2<sup>3</sup> = 2 × 2 × 2 = 8. A negative number needs brackets: (−3)<sup>2</sup> = 9, but −3<sup>2</sup> = −9.', st);
   },
   function writeProduct(l) {
     const mode = l === 0 ? 0 : ri(0, 2); let b, e = ri(2, 6), txt, base; if (mode === 0) { b = ri(2, 12); base = b; txt = Array(e).fill(String(b)).join(' × '); }
@@ -884,8 +885,8 @@ G['1.5'] = [
   },
   function negPower(l) {
     const b = -ri(2, 4); const e = ri(2, 6); const v = Math.pow(b, e);
-    if (l === 0) return ch(p('Is the answer <b>positive</b> or <b>negative</b>? <b>(' + f(b) + ')<sup>' + e + '</sup></b>'), v > 0 ? 'positive' : 'negative', [v > 0 ? 'negative' : 'positive'], 'Even exponent: the minus signs cancel in pairs. Odd exponent: one minus sign is left over.', 'The exponent ' + e + ' is ' + (e % 2 === 0 ? 'even, so the answer is positive' : 'odd, so the answer is negative') + '.');
-    if (l === 1) return nu(p('Calculate <b>(' + f(b) + ')<sup>' + e + '</sup></b>'), v, 'Even exponent → positive. Odd exponent → negative.', prodTxt([b, 1], e) + ' = ' + f(v) + '.');
+    if (l === 0) return ch(p('Is the answer <b>positive</b> or <b>negative</b>? <b>(' + f(b) + ')<sup>' + e + '</sup></b>'), v > 0 ? 'positive' : 'negative', [v > 0 ? 'negative' : 'positive'], 'The little number tells how many times the number is multiplied. Two minuses make a plus, so they cancel in pairs. Example: (−2)<sup>2</sup> = −2 × −2 = 4 (positive). (−2)<sup>3</sup> = 4 × −2 = −8 (negative).', 'The exponent ' + e + ' is ' + (e % 2 === 0 ? 'even, so the answer is positive' : 'odd, so the answer is negative') + '.');
+    if (l === 1) return nu(p('Calculate <b>(' + f(b) + ')<sup>' + e + '</sup></b>'), v, 'Write it out as a multiplication. Two minuses make a plus. Example: (−2)<sup>4</sup> = −2 × −2 × −2 × −2 = 16. With an odd number, one minus is left: (−2)<sup>3</sup> = −8.', prodTxt([b, 1], e) + ' = ' + f(v) + '.');
     const big = pick([100, 101, 1000, 1001, 2024, 2025]); return nu(p('Calculate <b>(−1)<sup>' + big + '</sup></b>'), big % 2 === 0 ? 1 : -1, 'Is the exponent even or odd?', 'The exponent ' + big + ' is ' + (big % 2 === 0 ? 'even, so the answer is 1' : 'odd, so the answer is −1') + '.');
   },
   function squares(l) {
@@ -912,7 +913,7 @@ G['1.5'] = [
       else if (t === 3) { const a = ri(2, 4), b = impr(1, 1, 2); html = '2<sup>' + a + '</sup> : ' + T(b, true) + ' − 1'; r = rsub(rdiv([Math.pow(2, a), 1], b), [1, 1]); st = '2<sup>' + a + '</sup> = ' + Math.pow(2, a) + '; ' + Math.pow(2, a) + ' : ' + FR(b) + ' = ' + FR(rdiv([Math.pow(2, a), 1], b)) + '; minus 1 = ' + FR(r) + '.'; }
       else { const a = impr(1, 1, 3), b = properFrac([4, 7, 5]); html = '(' + T(a, true) + ' + ' + T(b) + ') × 2<sup>2</sup> + 3'; const s = radd(a, b); r = radd(rmul(s, [4, 1]), [3, 1]); st = 'Brackets: ' + addSteps(a, b, false) + ' Then × 4: ' + FR(rmul(s, [4, 1])) + '. Then + 3: ' + FR(r) + '.'; }
     }
-    return resQ(p('Calculate <b>' + html + '</b>' + (r[1] === 1 ? '' : '. ' + AF)), r, 'Order of operations: 1) brackets, 2) powers, 3) × and :, 4) + and −.', st, { needStep: true });
+    return resQ(p('Calculate <b>' + html + '</b>' + (r[1] === 1 ? '' : '. ' + AF)), r, 'Do it in this order: 1) brackets, 2) powers, 3) × and :, 4) + and −. Example: 2 + 3<sup>2</sup> × 2 = 2 + 9 × 2 = 2 + 18 = 20.', st, { needStep: true });
   },
   function bracketPlace(l) {
     const a = ri(2, 6), b = ri(2, 6), c = ri(2, 4); const target = (a + b) * c * c; const opts = [['(' + a + ' + ' + b + ') × ' + c + '<sup>2</sup>', (a + b) * c * c], [a + ' + (' + b + ' × ' + c + ')<sup>2</sup>', a + b * b * c * c], ['(' + a + ' + ' + b + ' × ' + c + ')<sup>2</sup>', (a + b * c) * (a + b * c)], [a + ' + ' + b + ' × ' + c + '<sup>2</sup>', a + b * c * c]];
@@ -937,7 +938,7 @@ XG['1.5'] = [
   },
   function longOrder(l) {
     const a = ri(2, 4), b = ri(2, 5), c = ri(2, 3), d = ri(3, 9); const v = -Math.pow(a, 2) * Math.pow(b, c) + (d - b) * Math.pow(a, 3);
-    return nu(p('Calculate <b>−' + a + '<sup>2</sup> × ' + b + '<sup>' + c + '</sup> + (' + d + ' − ' + b + ') × ' + a + '<sup>3</sup></b>'), v, 'Brackets, then powers, then × and :, then + and −. Mind the minus sign in front of the first term!', 'Brackets: ' + (d - b) + '. Powers: ' + a + '<sup>2</sup> = ' + a * a + ', ' + b + '<sup>' + c + '</sup> = ' + Math.pow(b, c) + ', ' + a + '<sup>3</sup> = ' + Math.pow(a, 3) + '. So −' + a * a + ' × ' + Math.pow(b, c) + ' + ' + (d - b) + ' × ' + Math.pow(a, 3) + ' = ' + f(-a * a * Math.pow(b, c)) + ' + ' + (d - b) * Math.pow(a, 3) + ' = ' + f(v) + '.', { needStep: true });
+    return nu(p('Calculate <b>−' + a + '<sup>2</sup> × ' + b + '<sup>' + c + '</sup> + (' + d + ' − ' + b + ') × ' + a + '<sup>3</sup></b>'), v, 'Brackets, then powers, then × and :, then + and −. Watch the minus in front of the first term: −3<sup>2</sup> means −(3 × 3) = −9.', 'Brackets: ' + (d - b) + '. Powers: ' + a + '<sup>2</sup> = ' + a * a + ', ' + b + '<sup>' + c + '</sup> = ' + Math.pow(b, c) + ', ' + a + '<sup>3</sup> = ' + Math.pow(a, 3) + '. So −' + a * a + ' × ' + Math.pow(b, c) + ' + ' + (d - b) + ' × ' + Math.pow(a, 3) + ' = ' + f(-a * a * Math.pow(b, c)) + ' + ' + (d - b) * Math.pow(a, 3) + ' = ' + f(v) + '.', { needStep: true });
   }
 ];
 
@@ -1064,8 +1065,30 @@ function next(reset){
   else cur=E.make(st.sec,curLevel(),recent);
   recent.push({g:cur.gen,f:cur.fp});recent=recent.slice(-12);tries=0;done=false;clicked=[];choiceSel=null;protoAngle=null;hintUsed=false;attempts=[];stepLines=[];renderQ();renderNav();
 }
+
+/* ---------- steps: which questions need working ---------- */
+const NOSTEP=new Set('missingExp multDiv rootEq volPrism volPyramid volCone volHemisphere cylinderNet surfCuboid primeFact nthRootCalc findNumber quadAngle centroidRatio zToMidpoint decimalToFraction subInt missingNumber divInt missingFactor toMixed toImproper likeAdd equivFrac fractionOf fracDivInt riverShare missingFraction areaVolume maxIntersect maxIntersect5 isosceles axisDist substitute readLineY valueAt squareArea findK context graphK symmetryLine findKInv inverseContext axisFromPoints yIntercept exactTrig lcmTwo hcfTwo'.split(' '));
+const DISC=new Set('sideKnownHyp angleInverse isoscelesBase twoArms howManyOn'.split(' '));
+const NODISC=new Set('primeOrNot readPoint gradientIntercept abc vertex table frontView sideView cubeNet pickSkew'.split(' '));
+const eqN=q=>(String(q.steps||'').replace(/<svg[\s\S]*?<\/svg>/g,'').replace(/<[^>]+>/g,'').match(/=/g)||[]).length;
+const canType=q=>q.type==='num'||(q.type==='expr'&&!!E.check);
+function stepMode(q){
+  if(!q||q.noStep)return '';
+  const gn=String(genName(q)||'').replace(/^X/,'');
+  const st_=String(q.steps||'');
+  if(!(q.needStep||eqN(q)>=2))return '';
+  if(canType(q)){
+    if(test)return 'note';
+    if(q.needStep)return 'enforce';
+    if(NOSTEP.has(gn))return '';
+    if(DISC.has(gn)||/\b(sin|cos|tan)\b|sin⁻|cos⁻|tan⁻/.test(st_.replace(/<[^>]+>/g,'')))return 'note';
+    return 'enforce';
+  }
+  return NODISC.has(gn)?'':'note';
+}
+const STEPNOTE='<p class="stepnote"><b>Steps count.</b> Showing your steps is part of a correct answer. '+'This page can only check the final answer of this question, so write your working on paper too (in a test you always must).</p>';
 function qHTML(q){
-  let h='<div class="q">'+q.html+'</div><div id="stp" class="stp"></div><div class="ans" id="ans">';
+  let h='<div class="q">'+q.html+'</div>'+(stepMode(q)==='note'?STEPNOTE:'')+'<div id="stp" class="stp"></div><div class="ans" id="ans">';
   if(q.type==='num')h+='<label class="sr" for="in0">Your answer</label><input type="text" id="in0" inputmode="text" autocomplete="off" placeholder="your answer">';
   else if(q.type==='expr')h+='<label class="sr" for="in0">Your answer</label><input type="text" id="in0" inputmode="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="type your answer"><div class="kp" id="kp">'+(q.keys||['√','^','/','·','(',')','π']).map(k=>'<button type="button" data-k="'+k+'">'+k+'</button>').join('')+'<button type="button" data-k="⌫" aria-label="delete">⌫</button></div><div class="pv" id="pv" aria-live="polite"></div>';
   else if(q.type==='point')h+='<label class="sr" for="in0">Your answer</label><input type="text" id="in0" autocomplete="off" placeholder="(x, y)">';
@@ -1120,9 +1143,9 @@ function helpCard(g){
 }
 /* ---------- question wiring ---------- */
 function wire(){
-  wireProto();$('#chk').onclick=check;$('#hnt').onclick=hint;$('#sol').onclick=showSolution;$('#nxt').onclick=()=>test?testNext():next(false);{const ac=$('#autoc');if(ac)ac.onchange=()=>{st.auto=ac.checked;if(!ac.checked)clearTimeout(autoT);save()}}
+  wireProto();$('#chk').onclick=check;$('#hnt').onclick=hint;$('#sol').onclick=showSolution;$('#nxt').onclick=()=>{if(Date.now()-finT<400)return;test?testNext():next(false)};{const ac=$('#autoc');if(ac)ac.onchange=()=>{st.auto=ac.checked;if(!ac.checked)clearTimeout(autoT);save()}}
   document.querySelectorAll('.choice').forEach(b=>b.onclick=()=>{if(done)return;choiceSel=+b.dataset.i;document.querySelectorAll('.choice').forEach(x=>x.setAttribute('aria-pressed',String(x===b)))});
-  document.querySelectorAll('#ans input').forEach(i=>i.addEventListener('keydown',e=>{if(e.key==='Enter')check()}));
+  document.querySelectorAll('#ans input').forEach(i=>i.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();check()}}));
   wireExpr();wireGrid();
 }
 function wireGrid(){
@@ -1170,16 +1193,20 @@ function logAnswer(q,u,ok){
   const h=$('#hist');if(h)h.innerHTML='<div class="at">Your answers on this question: '+attempts.map(x=>'<span class="'+(x.ok?'ok':'no')+'">'+(x.ok?'✓':'✗')+' '+esc(x.a)+'</span>').join(' ')+'</div>';
 }
 const chk=(q,u)=>E.check?E.check(q,u):{ok:E.grade(q,u)};
-function drawSteps(){const d=$('#stp');if(!d)return;d.innerHTML=stepLines.map(t=>{let h=null;if(/\//.test(t)){try{h=E.M(t,{noVars:true})}catch(e){}}else h=esc(t).replace(/\*|·/g,'×').replace(/-/g,'−');return '<div class="stl">'+(h||esc(t))+' <span class="eq">=</span></div>'}).join('')}
+function drawSteps(){const d=$('#stp');if(!d)return;d.innerHTML=stepLines.map(t=>{let h=null;if(/\//.test(t)||(cur&&cur.type==='expr'&&/[\^√]/.test(t))){try{h=E.M(t,{noVars:cur&&cur.type!=='expr'})}catch(e){}}else h=esc(t).replace(/\*|·/g,'×').replace(/-/g,'−');return '<div class="stl">'+(h||esc(t))+' <span class="eq">=</span></div>'}).join('')}
 function check(){
   if(done)return;const q=cur,u=userAns(q);
   if(empty(q,u)){fb('hint','Fill in your answer first.');return}
   if(test){return testCheck(q,u)}
-  if(q.needStep&&q.type==='num'&&!stepLines.length&&!isNaN(E.parseNum(u))){fb('hint','<b class="h">Show your working first.</b>Type the first calculation you do (for example the part with the brackets or the multiplication), then work towards the final answer.');return}
+  const sm=stepMode(q);
+  if(sm==='enforce'&&q.type==='num'&&!stepLines.length&&!isNaN(E.parseNum(u))){fb('hint','<b class="h">Show your working first.</b>Showing your steps is part of a correct answer. Type the first calculation you do (for example <i>(4+5)*9</i> or <i>9*9</i>), then work towards the final answer.');return}
   let calcWrong=false;
   if(q.type==='num'&&isNaN(E.parseNum(u))&&E.parse){let calc=false;try{E.parse(String(u),{noVars:true});calc=true}catch(e){}
-    if(calc){const rr=E.check({type:'expr',ans:String(q.ans),form:'any',noVars:true},u);
+    if(calc){let rr;if(q.tol&&E.evalNum){let vv=NaN;try{vv=E.evalNum(u)}catch(e){}rr={ok:Math.abs(vv-q.ans)<=q.tol}}else rr=E.check({type:'expr',ans:String(q.ans),form:'any',noVars:true},u);
       if(rr.ok){fb('hint','<b class="h">✓ That calculation is right.</b>Now work it out and type the <b>final number</b> as your answer.');stepLines.push(String(u).trim());drawSteps();const i0=$('#in0');i0.value='';i0.focus();const pv=$('#pv');if(pv)pv.innerHTML='';return}calcWrong=true}}
+  if(sm==='enforce'&&q.type==='expr'&&!stepLines.length){const r0=E.check(q,u);
+    if(r0.ok){q._blk=(q._blk||0)+1;if(q._blk<3){fb('hint','<b class="h">Show your working first.</b>Showing your steps is part of a correct answer. Type an in-between step first (for example before you simplify or add things up), then type your final answer.');return}}
+    else if(r0.why==='form'){stepLines.push(String(u).trim());drawSteps();fb('hint','<b class="h">✓ Good step.</b>That is equal to the answer, but it is not finished yet. Now type the final answer.');const i0=$('#in0');i0.value='';i0.focus();const pv=$('#pv');if(pv)pv.innerHTML='';return}}
   const R_=chk(q,u),ok=R_.ok;tries++;
   logAnswer(q,u,ok);
   const S=st.stat[st.sec]=st.stat[st.sec]||{n:0,ok:0};
@@ -1231,7 +1258,7 @@ function revealQ(q){
   (R.pts||[]).forEach(p=>{h+='<circle cx="'+X(p[0])+'" cy="'+Y(p[1])+'" r="5" fill="#16803c" stroke="#fff" stroke-width="1.5"/>'});
   sv.querySelector('.marks').insertAdjacentHTML('beforebegin','<g class="rev">'+h+'</g>');
 }
-function finish(){revealQ(cur);$('#chk').disabled=true;$('#hnt').disabled=true;$('#sol').style.display='none';$('#nxt').style.display='';$('#nxt').focus();document.querySelectorAll('.choice').forEach(b=>b.disabled=true);document.querySelectorAll('#ans input').forEach(i=>i.disabled=true);document.querySelectorAll('#kp button').forEach(i=>i.disabled=true);renderNavSoft();const lp=document.querySelector('details.hl');if(lp){const o=lp.open;lp.outerHTML=logPanel();const n=document.querySelector('details.hl');if(n)n.open=o}}
+let finT=0;function finish(){finT=Date.now();revealQ(cur);$('#chk').disabled=true;$('#hnt').disabled=true;$('#sol').style.display='none';$('#nxt').style.display='';$('#nxt').focus();document.querySelectorAll('.choice').forEach(b=>b.disabled=true);document.querySelectorAll('#ans input').forEach(i=>i.disabled=true);document.querySelectorAll('#kp button').forEach(i=>i.disabled=true);renderNavSoft();const lp=document.querySelector('details.hl');if(lp){const o=lp.open;lp.outerHTML=logPanel();const n=document.querySelector('details.hl');if(n)n.open=o}}
 function renderNavSoft(){if(items().some(s=>st.done[s.id]&&!document.querySelector('#nav .mm')))renderNav();const bars=document.querySelectorAll('#nav .bar i');items().forEach((s,i)=>{if(bars[i])bars[i].style.width=Math.min(GOAL,st.prog[s.id]||0)*100/GOAL+'%'});const sd=document.querySelectorAll('.goals .sd');}
 
 /* ---------- test preparation ---------- */
@@ -1243,7 +1270,7 @@ function testShow(){
   wireProto();$('#chk').onclick=check;$('#nxt').onclick=testNext;
   const tmp=document.createElement('button');tmp.id='hnt';tmp.style.display='none';$('.btns').appendChild(tmp);
   document.querySelectorAll('.choice').forEach(b=>b.onclick=()=>{if(done)return;choiceSel=+b.dataset.i;document.querySelectorAll('.choice').forEach(x=>x.setAttribute('aria-pressed',String(x===b)))});
-  document.querySelectorAll('#ans input').forEach(i=>i.addEventListener('keydown',e=>{if(e.key==='Enter')check()}));
+  document.querySelectorAll('#ans input').forEach(i=>i.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();check()}}));
   wireExpr();wireGrid();
   const f=$('#in0');if(f)f.focus();
 }
