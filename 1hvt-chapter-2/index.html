@@ -21,7 +21,11 @@ nav .t{font-weight:700}nav .s{font-size:14px;color:var(--mut)}
 main{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px 22px;min-height:420px}
 .top{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:8px}
 .badge{padding:3px 12px;border-radius:99px;font-weight:700;font-size:15px}
-.l0{background:#dff3e5;color:#0f6a31}.l1{background:#fff0c9;color:#7a5200}.l2{background:#fde0d9;color:#a3341b}
+.l0{background:#dff3e5;color:#0f6a31}.l1{background:#fff0c9;color:#7a5200}.l2{background:#fde0d9;color:#a3341b}.l3{background:#f3d9f5;color:#6b1f78}.lm{background:#e3def7;color:#40318a}
+header{display:flex;align-items:center;gap:14px;flex-wrap:wrap}header .hd{flex:1;min-width:240px}.pbtn{font:inherit;font-weight:700;background:#fff;color:var(--brand);border:0;border-radius:10px;padding:8px 16px;cursor:pointer;font-size:16px}
+nav button.mm{margin-left:14px;width:calc(100% - 14px);background:#f1edfb;border-color:#cbbdf0;font-weight:700;color:#40318a;font-size:16px}
+.pg h2{margin-top:0}.pg table{border-collapse:collapse;width:100%;font-size:16px;margin:8px 0 14px}.pg th,.pg td{border-bottom:1px solid var(--line);padding:8px 6px;text-align:left;vertical-align:middle}.pg th{color:var(--mut);font-size:14px}.chip{display:inline-block;padding:2px 9px;border-radius:99px;font-size:13px;font-weight:700;margin:1px 2px 1px 0;border:2px solid #cfd8e0;color:#8795a3;background:#fff}.chip.ach{background:var(--okbg);border-color:#8fd1a8;color:var(--ok)}.chip.act{border-color:var(--brand);color:var(--brand);background:var(--brand2)}
+@media print{header .pbtn,nav,.btns{display:none!important}.wrap{display:block}main{border:0}}
 .streak{margin-left:auto;color:var(--mut);font-size:15px}
 .dot{display:inline-block;width:11px;height:11px;border-radius:50%;background:#d6dee6;margin-left:4px}.dot.on{background:var(--ok)}
 .q p{margin:.4em 0 .6em;font-size:20px}
@@ -48,7 +52,7 @@ svg.grid[data-click]{cursor:crosshair}
 </style>
 </head>
 <body>
-<header><h1>Chapter 2 &middot; Plane figures</h1><p>Practise as long as you like. The questions adapt to you: Mild, Medium, Spicy.</p></header>
+<header><div class="hd"><h1>Chapter 2 &middot; Plane figures</h1><p>Practise as long as you like. The questions adapt to you: Mild, Medium, Spicy and Extra spicy.</p></div><button class="pbtn" id="pbtn" type="button">My progress</button></header>
 <div class="wrap">
   <nav id="nav" aria-label="Topics"></nav>
   <main id="main" aria-live="polite"></main>
@@ -440,6 +444,83 @@ svg.grid[data-click]{cursor:crosshair}
     }
   ];
 
+  const XG = {};   // extra spicy generators per section
+  /* ---------- Extra spicy (level 4): challenge questions ---------- */
+  XG['2.1'] = [
+    function distParallelPoints() {
+      const horiz = Math.random() < .5, c1 = ri(-4, 0), d = ri(2, 7), c2 = c1 + d, a1 = ri(-6, 6), a2 = ri(-6, 6);
+      const P = horiz ? [a1, c1] : [c1, a1], Q = horiz ? [a2, c2] : [c2, a2];
+      const line = (k, col, lab) => horiz ? { a: [-7, k], b: [7, k], color: col, label: lab } : { a: [k, -7], b: [k, 7], color: col, label: lab };
+      return { type: 'num', ans: d, correct: String(d),
+        html: '<p>Line <b>l</b> goes through <b>P = ' + pt(P[0], P[1]) + '</b> and line <b>m</b> goes through <b>Q = ' + pt(Q[0], Q[1]) + '</b>. Both lines are <b>' + (horiz ? 'horizontal' : 'vertical') + '</b>. What is the distance between l and m? One square is 1 cm. (Give the number of cm.)</p>' + grp({ segs: [line(c1, ptc, 'l'), line(c2, MIR, 'm')], pts: [{ x: P[0], y: P[1], label: 'P', color: ptc }, { x: Q[0], y: Q[1], label: 'Q', color: MIR }] }),
+        hint: 'The lines are ' + (horiz ? 'horizontal' : 'vertical') + ', so only the ' + (horiz ? 'y' : 'x') + '-coordinates matter. The other coordinate does not change the distance.',
+        steps: 'Distance = |' + f(c2) + ' − ' + par(c1) + '| = ' + d + ' cm.' };
+    },
+    function throughPoint() {
+      const dirs = [[1, 0], [0, 1], [1, 1], [1, -1], [2, 1], [1, 2], [2, -1], [1, -2]];
+      const d = pick(dirs), rel = Math.random() < .5 ? 'par' : 'perp', A = [ri(-2, 2), ri(-2, 2)];
+      const far = (P, v) => { let k = 0; while (Math.abs(P[0] + (k + 1) * v[0]) <= 7 && Math.abs(P[1] + (k + 1) * v[1]) <= 7) k++; let j = 0; while (Math.abs(P[0] - (j + 1) * v[0]) <= 7 && Math.abs(P[1] - (j + 1) * v[1]) <= 7) j++; return { a: [P[0] - j * v[0], P[1] - j * v[1]], b: [P[0] + k * v[0], P[1] + k * v[1]] }; };
+      const s = far(A, d), e = rel === 'par' ? d : [-d[1], d[0]];
+      let P, T, n = 0;
+      do { P = [ri(-5, 5), ri(-5, 5)]; T = [P[0] + e[0], P[1] + e[1]]; n++; } while (n < 200 && (!inR(T, 6) || (rel === 'par' && (P[0] - A[0]) * d[1] - (P[1] - A[1]) * d[0] === 0)));
+      return { type: 'click', rel, dir: d, base: A, through: P, targets: [T], correct: [T], example: true,
+        html: '<p>Line <b>n</b> goes through point <b>P = ' + pt(P[0], P[1]) + '</b> and is <b>' + (rel === 'par' ? 'parallel' : 'perpendicular') + '</b> to line <b>m</b>. Click <b>one more point</b> that line n goes through.</p>' + grp({ segs: [{ a: s.a, b: s.b, color: ptc, label: 'm' }], pts: [{ x: P[0], y: P[1], label: 'P', color: MIR }], click: true }),
+        hint: rel === 'par' ? 'Look at the steps of m (right and up or down). Start at P and take the same steps.' : 'Look at the steps of m. For a perpendicular line, swap the steps (and change one sign). Start at P.',
+        steps: 'For example ' + pt(T[0], T[1]) + '. Other points on the line are correct too.' };
+    }
+  ];
+  XG['2.2'] = [
+    function aroundPoint() {
+      let b, a; do { b = ri(30, 100); a = 360 - 3 * b; } while (a < 30 || a > 300 || a === 180);
+      return { type: 'num', ans: 2 * b, correct: String(2 * b),
+        html: '<p>Three angles together make a full turn around a point: angle <b>A = ' + a + '°</b>, angle <b>B</b>, and angle <b>C</b>, which is <b>twice as big as B</b>. How big is angle <b>C</b>? (Give the number of degrees.)</p>',
+        hint: 'A full turn is 360°. Together B and C are 3 times B. So 3 × B = 360° − A.',
+        steps: '360 − ' + a + ' = ' + (360 - a) + '. This is 3 × B, so B = ' + b + '° and C = 2 · ' + b + ' = ' + 2 * b + '°.' };
+    },
+    function clockAngle() {
+      const h = ri(1, 11), m = 2 * ri(0, 29);
+      const hand = (30 * h + m / 2) % 360, min = 6 * m, diff = Math.abs(hand - min), ang = diff > 180 ? 360 - diff : diff;
+      if (ang === 0 || ang === 180) return XG['2.2'][1]();
+      const t = h + ':' + (m < 10 ? '0' : '') + m;
+      return { type: 'num', ans: ang, correct: String(ang),
+        html: '<p>A clock shows <b>' + t + '</b>. What is the <b>smaller</b> angle between the hour hand and the minute hand? (Give the number of degrees.)</p>',
+        hint: 'The minute hand turns 6° per minute. The hour hand turns 30° per hour, so 0,5° per minute.',
+        steps: 'Minute hand: ' + m + ' · 6 = ' + min + '°. Hour hand: ' + h + ' · 30 + ' + m + ' · 0,5 = ' + hand + '°. Difference: ' + diff + '°' + (diff > 180 ? ', and the smaller angle is 360° − ' + diff + '° = ' + ang + '°.' : '.') };
+    }
+  ];
+  XG['2.3'] = [
+    function exterior() {
+      const a = ri(30, 80), b = ri(30, 80);
+      return { type: 'num', ans: a + b, correct: String(a + b),
+        html: '<p>A triangle has angles of <b>' + a + '°</b> and <b>' + b + '°</b>. At the third corner you extend one side in a straight line. How big is the <b>outside angle</b> (between the extended side and the next side)? (Give the number of degrees.)</p>',
+        hint: 'First find the third angle of the triangle (the angles add up to 180°). The outside angle and that angle together make a straight line.',
+        steps: 'Third angle: 180 − ' + a + ' − ' + b + ' = ' + (180 - a - b) + '°. Outside angle: 180 − ' + (180 - a - b) + ' = ' + (a + b) + '°.' };
+    },
+    function radiiTriangle() {
+      const th = pick([40, 50, 60, 70, 80, 100, 120, 140]), base = (180 - th) / 2;
+      return { type: 'num', ans: base, correct: String(base),
+        html: '<p>O is the centre of a circle. A and B lie on the circle and the angle <b>AOB = ' + th + '°</b>. How big is angle <b>OAB</b>? (Give the number of degrees.)</p>',
+        hint: 'OA and OB are both radii, so they are equally long. What kind of triangle is OAB? Its base angles are equal.',
+        steps: 'Triangle OAB is isosceles (OA = OB). The other two angles together: 180 − ' + th + ' = ' + (180 - th) + '°. So each is ' + (180 - th) + ' : 2 = ' + base + '°.' };
+    },
+    function trapezium() {
+      const a = ri(50, 130);
+      return { type: 'num', ans: 270 - a, correct: String(270 - a),
+        html: '<p>A quadrilateral has two right angles and one angle of <b>' + a + '°</b>. How big is the <b>fourth</b> angle? (Give the number of degrees.)</p>',
+        hint: 'The four angles of a quadrilateral add up to 360°.', steps: '360 − 90 − 90 − ' + a + ' = ' + (270 - a) + '°.' };
+    }
+  ];
+  XG['2.4'] = [
+    function doubleReflect() {
+      let k, A, P, B, C, n = 0;
+      do { k = ri(-3, 3); A = [ri(-5, 5), ri(-5, 5)]; P = [ri(-5, 5), ri(-5, 5)]; B = [A[0], 2 * k - A[1]]; C = [2 * P[0] - B[0], 2 * P[1] - B[1]]; n++; }
+      while (n < 300 && (!inR(B, 6) || !inR(C, 6) || A[1] === k));
+      return clickQ('<p>Point <b>A</b> is reflected in the <b>horizontal line n</b> (dashed). The image is called <b>A′</b>. Then A′ is reflected in <b>point P</b>, which gives <b>A″</b>. Click <b>A″</b>.</p>' + gr({ click: true, segs: [{ a: [-7, k], b: [7, k], color: '#16803c', label: 'n', dash: true }], pts: [{ x: A[0], y: A[1], label: 'A' }, { x: P[0], y: P[1], label: 'P', color: MIR }] }), [C],
+        'Do it in two steps. Step 1: A′ is as far below/above n as A is, on the other side. Step 2: A″ is as far from P as A′, on the opposite side (a half turn around P).',
+        'A′ = ' + pt(B[0], B[1]) + ' (the x-coordinate stays, the line is y = ' + f(k) + '). A″ = ' + pt(C[0], C[1]) + ' (point reflection in P).');
+    }
+  ];
+
   const SECTIONS = [
     { id: '2.1', title: '2.1 Lines and distances', sub: 'Parallel, perpendicular, distances' },
     { id: '2.2', title: '2.2 Angles', sub: 'Types, reflex, clocks, compass' },
@@ -448,9 +529,16 @@ svg.grid[data-click]{cursor:crosshair}
   ];
 
   function make(sec, lvl, avoid) {
-    const list = G[sec]; let i, tries = 0;
-    do { i = ri(0, list.length - 1); tries++; } while (i === avoid && tries < 10);
-    const q = list[i](lvl); q.sec = sec; q.gen = i; q.lvl = lvl; return q;
+    const mix = lvl === 'mix'; if (mix) lvl = pick([0, 1, 1, 2, 2, 3, 3]);
+    const X = XG[sec] || [], list = G[sec]; let q, i, tries = 0;
+    if (lvl === 3 && X.length && Math.random() < 0.7) {
+      do { i = ri(0, X.length - 1); tries++; } while (100 + i === avoid && tries < 10);
+      q = X[i](2); q.gen = 100 + i;
+    } else {
+      do { i = ri(0, list.length - 1); tries++; } while (i === avoid && tries < 10);
+      q = list[i](Math.min(lvl, 2)); q.gen = i;
+    }
+    q.sec = sec; q.lvl = lvl; q.mix = mix; return q;
   }
   function makeTest() {
     const lv = shuffle([0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2]);
@@ -478,6 +566,11 @@ svg.grid[data-click]{cursor:crosshair}
     if (q.type === 'multi') return Array.isArray(u) && u.length === q.ans.length && u.every((v, i) => { const n = parseNum(v); return !isNaN(n) && Math.abs(n - q.ans[i]) < 1e-9; });
     if (q.type === 'point') { const p = parsePoint(u); return !!p && p[0] === q.ans[0] && p[1] === q.ans[1]; }
     if (q.type === 'choice') return Number(u) === q.ans;
+    if (q.type === 'click' && q.rel && q.through) {
+      if (!Array.isArray(u) || u.length !== 1) return false;
+      const v = [u[0][0] - q.through[0], u[0][1] - q.through[1]]; if (!v[0] && !v[1]) return false;
+      return q.rel === 'perp' ? v[0] * q.dir[0] + v[1] * q.dir[1] === 0 : v[0] * q.dir[1] - v[1] * q.dir[0] === 0;
+    }
     if (q.type === 'click' && q.rel) {
       if (!Array.isArray(u) || u.length !== 2) return false;
       const v = [u[1][0] - u[0][0], u[1][1] - u[0][1]]; if (!v[0] && !v[1]) return false;
@@ -501,7 +594,7 @@ svg.grid[data-click]{cursor:crosshair}
     return '';
   }
 
-  const API = { SECTIONS, G, make, makeTest, grade, answerText, parseNum, parsePoint, f };
+  const API = { SECTIONS, G, XG, make, makeTest, grade, answerText, parseNum, parsePoint, f };
   if (typeof module !== 'undefined' && module.exports) module.exports = API; else root.Ch3 = API;
 })(typeof window !== 'undefined' ? window : globalThis);
 
@@ -510,31 +603,33 @@ svg.grid[data-click]{cursor:crosshair}
 (function(){
 'use strict';
 const E=window.Ch3,$=s=>document.querySelector(s);
-const LV=['Mild','Medium','Spicy'],GOAL=10;
-let st={sec:'2.1',prog:{},lvl:{}};   // prog: correct count per section, lvl: level per section
+const LV=['Mild','Medium','Spicy','Extra spicy'],GOAL=10;let mix=false;
+let st={done:{},stat:{},best:{},tests:[],sec:'2.1',prog:{},lvl:{}};   // prog: correct count per section, lvl: level per section
 try{const r=JSON.parse(localStorage.getItem('ch2-1hvt-plane-figures-v1')||'null');if(r&&r.prog)st=Object.assign(st,r)}catch(e){}
-const save=()=>{try{localStorage.setItem('ch2-1hvt-plane-figures-v1',JSON.stringify({sec:st.sec,prog:st.prog,lvl:st.lvl}))}catch(e){}};
+st.done=st.done||{};st.stat=st.stat||{};st.best=st.best||{};st.tests=st.tests||[];
+const save=()=>{try{localStorage.setItem('ch2-1hvt-plane-figures-v1',JSON.stringify({sec:st.sec,prog:st.prog,lvl:st.lvl,done:st.done,stat:st.stat,best:st.best,tests:st.tests}))}catch(e){}};
 let cur=null,tries=0,done=false,streak=0,wrongRun=0,lastGen=-1,clicked=[],choiceSel=null;
 let test=null; // {qs,i,score,log}
 
 function renderNav(){
   const n=$('#nav');n.innerHTML='';
   E.SECTIONS.forEach(s=>{
-    const b=document.createElement('button');b.className='sec';b.setAttribute('aria-current',String(!test&&st.sec===s.id));
+    const b=document.createElement('button');b.className='sec';b.setAttribute('aria-current',String(!test&&!mix&&st.sec===s.id));
     const p=Math.min(GOAL,st.prog[s.id]||0);
     b.innerHTML='<div class="t">'+s.title+'</div><div class="s">'+s.sub+'</div><div class="bar" aria-hidden="true"><i style="width:'+p*100/GOAL+'%"></i></div>';
-    b.onclick=()=>{test=null;st.sec=s.id;save();next(true)};n.appendChild(b);
+    b.onclick=()=>{test=null;mix=false;st.sec=s.id;save();next(true)};n.appendChild(b);
+    if(st.done[s.id]){const m=document.createElement('button');m.className='sec mm';m.setAttribute('aria-current',String(!test&&mix&&st.sec===s.id));m.textContent='★ Master Mix '+s.id;m.onclick=()=>{test=null;mix=true;st.sec=s.id;save();next(true)};n.appendChild(m)}
   });
   const t=document.createElement('button');t.className='sec';t.setAttribute('aria-current',String(!!test));
   t.innerHTML='<div class="t">Test preparation</div><div class="s">24 mixed questions, no hints</div>';
   t.onclick=startTest;n.appendChild(t);
   const r=document.createElement('button');r.className='reset';r.textContent='Reset my progress';
-  r.onclick=()=>{if(confirm('Delete all your progress on this page?')){st={sec:st.sec,prog:{},lvl:{}};save();test=null;renderNav();next(true)}};n.appendChild(r);
+  r.onclick=()=>{if(confirm('Delete all your progress on this page?')){st={sec:st.sec,prog:{},lvl:{},done:{},stat:{},best:{},tests:[]};mix=false;save();test=null;renderNav();next(true)}};n.appendChild(r);
 }
 function lvl(){return st.lvl[st.sec]||0}
 function next(reset){
   if(reset){streak=0;wrongRun=0;lastGen=-1}
-  cur=E.make(st.sec,lvl(),lastGen);lastGen=cur.gen;tries=0;done=false;clicked=[];choiceSel=null;renderQ(false);renderNav();
+  cur=E.make(st.sec,mix?'mix':lvl(),lastGen);lastGen=cur.gen;tries=0;done=false;clicked=[];choiceSel=null;renderQ(false);renderNav();
 }
 function qHTML(q,idx){
   let h='<div class="q">'+q.html+'</div><div class="ans" id="ans">';
@@ -546,7 +641,7 @@ function qHTML(q,idx){
 }
 function renderQ(){
   const m=$('#main'),q=cur;
-  m.innerHTML='<div class="top"><span class="badge l'+q.lvl+'">'+LV[q.lvl]+'</span><span class="streak">In a row: '+[0,1,2].map(i=>'<span class="dot'+(i<streak?' on':'')+'"></span>').join('')+' &nbsp; Done: '+Math.min(GOAL,st.prog[st.sec]||0)+'/'+GOAL+'</span></div>'+
+  m.innerHTML='<div class="top">'+(q.mix?'<span class="badge lm">Master Mix</span> ':'')+'<span class="badge l'+q.lvl+'">'+LV[q.lvl]+'</span><span class="streak">In a row: '+[0,1,2].map(i=>'<span class="dot'+(i<streak?' on':'')+'"></span>').join('')+' &nbsp; Done: '+Math.min(GOAL,st.prog[st.sec]||0)+'/'+GOAL+'</span></div>'+
    qHTML(q)+'<div class="btns"><button class="btn" id="chk">Check</button><button class="btn alt" id="hnt">Hint</button><button class="btn alt" id="nxt" style="display:none">Next question</button></div><div class="fb" id="fb"></div>';
   wire();
   const f=$('#in0');if(f)f.focus();
@@ -581,22 +676,25 @@ function check(){
   if(empty(q,u)){fb('hint','Fill in your answer first.');return}
   if(test){return testCheck(q,u)}
   const ok=E.grade(q,u);tries++;
+  const S=st.stat[st.sec]=st.stat[st.sec]||{n:0,ok:0};
   if(ok){
-    done=true;st.prog[st.sec]=(st.prog[st.sec]||0)+1;
+    done=true;st.prog[st.sec]=(st.prog[st.sec]||0)+1;S.n++;if(tries===1)S.ok++;
     if(tries===1){streak++;wrongRun=0}
     let up='';
-    if(streak>=3){streak=0;if(lvl()<2){st.lvl[st.sec]=lvl()+1;up=' <b>Level up: '+LV[lvl()]+'!</b>'}}
+    if(!mix&&streak>=3){streak=0;
+      if(lvl()<3){st.lvl[st.sec]=lvl()+1;st.best[st.sec]=Math.max(st.best[st.sec]||0,lvl());up=' <b>Level up: '+LV[lvl()]+'!</b>'+(lvl()===3?' These are challenge questions.':'')}
+      else if(!st.done[st.sec]){st.done[st.sec]=true;up=' <b>Extra spicy completed! ★ Master Mix is now unlocked for this section (see the menu).</b>'}}
     save();fb('ok','<b class="h">Correct!'+(tries>1?' (second try)':'')+'</b>'+q.steps+up);finish();
   }else if(tries===1){
     streak=0;fb('no','<b class="h">Not yet. Try again.</b>'+(q.hint?q.hint:''));
   }else{
-    done=true;wrongRun++;let dn='';
-    if(wrongRun>=2&&lvl()>0){st.lvl[st.sec]=lvl()-1;wrongRun=0;dn=' <i>Next questions will be a bit easier.</i>'}
+    done=true;wrongRun++;S.n++;let dn='';
+    if(!mix&&wrongRun>=2&&lvl()>0){st.lvl[st.sec]=lvl()-1;wrongRun=0;dn=' <i>Next questions will be a bit easier.</i>'}
     save();fb('no','<b class="h">The answer is: '+E.answerText(q)+'</b>'+q.steps+dn);finish();
   }
 }
 function finish(){$('#chk').disabled=true;$('#hnt').disabled=true;$('#nxt').style.display='';$('#nxt').focus();document.querySelectorAll('.choice').forEach(b=>b.disabled=true);document.querySelectorAll('#ans input').forEach(i=>i.disabled=true);renderNavSoft()}
-function renderNavSoft(){const bars=document.querySelectorAll('#nav .bar i');E.SECTIONS.forEach((s,i)=>{bars[i].style.width=Math.min(GOAL,st.prog[s.id]||0)*100/GOAL+'%'})}
+function renderNavSoft(){if(E.SECTIONS.some(s=>st.done[s.id]&&!document.querySelector('#nav .mm')))renderNav();const bars=document.querySelectorAll('#nav .bar i');E.SECTIONS.forEach((s,i)=>{bars[i].style.width=Math.min(GOAL,st.prog[s.id]||0)*100/GOAL+'%'})}
 
 /* ---- test preparation ---- */
 function startTest(){test={qs:E.makeTest(),i:0,score:0,log:[]};renderNav();testShow()}
@@ -625,12 +723,27 @@ function testCheck(q,u){
 function testNext(){
   test.i++;if(test.i<test.qs.length)return testShow();
   const n=test.qs.length,g=Math.round((test.score/n*9+1)*10)/10;
-  const wrong=test.log.filter(x=>!x.ok);
+  const wrong=test.log.filter(x=>!x.ok);st.tests.push({d:new Date().toISOString().slice(0,10),s:test.score,n:n});st.tests=st.tests.slice(-20);save();
   $('#main').innerHTML='<div class="res"><h2>Your result</h2><div class="grade">'+test.score+' / '+n+'</div><p>That is a '+String(g).replace('.',',')+' on a scale of 1 to 10 (a rough guide only).</p>'+
    (wrong.length?'<h3>Look at these again</h3>'+wrong.map(x=>'<div class="rev"><div>'+x.q.html+'</div><div><b>Answer: '+E.answerText(x.q)+'</b></div><div class="st">'+x.q.steps+'</div></div>').join(''):'<p><b>Everything correct. Great work!</b></p>')+
    '<div class="btns"><button class="btn" id="again">Try a new test</button></div></div>';
   $('#again').onclick=startTest;
 }
+
+/* ---- progress overview ---- */
+function showProgress(){
+  test=null;renderNav();
+  const rows=E.SECTIONS.map(s=>{
+    const cur_=st.lvl[s.id]||0,best=Math.max(st.best[s.id]||0,cur_),d=!!st.done[s.id],S=st.stat[s.id]||{n:0,ok:0};
+    const chips=LV.map((l,i)=>'<span class="chip '+(d||i<best?'ach':i===cur_&&(S.n>0||cur_>0)?'act':'')+'">'+l+'</span>').join('');
+    return '<tr><td><b>'+s.title+'</b></td><td>'+chips+'</td><td>'+(S.n||0)+'</td><td>'+(S.n?Math.round(S.ok*100/S.n)+'%':'–')+'</td><td>'+(d?'★ unlocked':'not yet')+'</td></tr>';
+  }).join('');
+  const T=st.tests.length?'<h3>Test preparation results</h3><table><tr><th>Date</th><th>Score</th></tr>'+st.tests.slice().reverse().map(t=>'<tr><td>'+t.d+'</td><td>'+t.s+' / '+t.n+'</td></tr>').join('')+'</table>':'<p>You have not done a test preparation yet.</p>';
+  $('#main').innerHTML='<div class="pg"><h2>My progress</h2><p>Green = level reached. Blue = the level you are working on. Reach Extra spicy and answer 3 in a row correctly to unlock the Master Mix.</p><table><tr><th>Section</th><th>Levels</th><th>Questions</th><th>First try</th><th>Master Mix</th></tr>'+rows+'</table>'+T+
+    '<div class="btns"><button class="btn" id="back">Back to practice</button><button class="btn alt" id="prt">Print / save as PDF</button></div></div>';
+  $('#back').onclick=()=>next(true);$('#prt').onclick=()=>window.print();
+}
+document.getElementById('pbtn').onclick=showProgress;
 window.__dbg=()=>cur;renderNav();next(true);
 })();
 </script>

@@ -21,7 +21,11 @@ nav .t{font-weight:700}nav .s{font-size:14px;color:var(--mut)}
 main{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px 22px;min-height:420px}
 .top{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:8px}
 .badge{padding:3px 12px;border-radius:99px;font-weight:700;font-size:15px}
-.l0{background:#dff3e5;color:#0f6a31}.l1{background:#fff0c9;color:#7a5200}.l2{background:#fde0d9;color:#a3341b}
+.l0{background:#dff3e5;color:#0f6a31}.l1{background:#fff0c9;color:#7a5200}.l2{background:#fde0d9;color:#a3341b}.l3{background:#f3d9f5;color:#6b1f78}.lm{background:#e3def7;color:#40318a}
+header{display:flex;align-items:center;gap:14px;flex-wrap:wrap}header .hd{flex:1;min-width:240px}.pbtn{font:inherit;font-weight:700;background:#fff;color:var(--brand);border:0;border-radius:10px;padding:8px 16px;cursor:pointer;font-size:16px}
+nav button.mm{margin-left:14px;width:calc(100% - 14px);background:#f1edfb;border-color:#cbbdf0;font-weight:700;color:#40318a;font-size:16px}
+.pg h2{margin-top:0}.pg table{border-collapse:collapse;width:100%;font-size:16px;margin:8px 0 14px}.pg th,.pg td{border-bottom:1px solid var(--line);padding:8px 6px;text-align:left;vertical-align:middle}.pg th{color:var(--mut);font-size:14px}.chip{display:inline-block;padding:2px 9px;border-radius:99px;font-size:13px;font-weight:700;margin:1px 2px 1px 0;border:2px solid #cfd8e0;color:#8795a3;background:#fff}.chip.ach{background:var(--okbg);border-color:#8fd1a8;color:var(--ok)}.chip.act{border-color:var(--brand);color:var(--brand);background:var(--brand2)}
+@media print{header .pbtn,nav,.btns{display:none!important}.wrap{display:block}main{border:0}}
 .streak{margin-left:auto;color:var(--mut);font-size:15px}
 .dot{display:inline-block;width:11px;height:11px;border-radius:50%;background:#d6dee6;margin-left:4px}.dot.on{background:var(--ok)}
 .q p{margin:.4em 0 .6em;font-size:20px}
@@ -48,7 +52,7 @@ svg.grid[data-click]{cursor:crosshair}
 </style>
 </head>
 <body>
-<header><h1>Chapter 3 &middot; Relations</h1><p>Practise as long as you like. The questions adapt to you: Mild, Medium, Spicy.</p></header>
+<header><div class="hd"><h1>Chapter 3 &middot; Relations</h1><p>Practise as long as you like. The questions adapt to you: Mild, Medium, Spicy and Extra spicy.</p></div><button class="pbtn" id="pbtn" type="button">My progress</button></header>
 <div class="wrap">
   <nav id="nav" aria-label="Topics"></nav>
   <main id="main" aria-live="polite"></main>
@@ -404,6 +408,95 @@ svg.grid[data-click]{cursor:crosshair}
     }
   ];
 
+  const XG = {};   // extra spicy generators per section
+  /* ---------- Extra spicy (level 4): challenge questions ---------- */
+  XG['3.1'] = [
+    function parallelogram() {
+      let A, B, C, D, n = 0;
+      do { A = [ri(-5, 3), ri(-5, 3)]; B = [A[0] + ri(2, 5), A[1] + ri(-1, 2)]; const v = [ri(-3, 3), ri(2, 4)]; C = [B[0] + v[0], B[1] + v[1]]; D = [A[0] + v[0], A[1] + v[1]]; n++; }
+      while (n < 300 && ![A, B, C, D].every(p => Math.abs(p[0]) <= 7 && Math.abs(p[1]) <= 7));
+      return { type: 'point', ans: D, correct: pt(D[0], D[1]),
+        html: '<p>ABCD is a parallelogram with <b>A = ' + pt(A[0], A[1]) + '</b>, <b>B = ' + pt(B[0], B[1]) + '</b> and <b>C = ' + pt(C[0], C[1]) + '</b>. Which are the coordinates of <b>D</b>?</p>' + grid({ xmin: -8, xmax: 8, ymin: -8, ymax: 8, pts: [{ x: A[0], y: A[1], label: 'A' }, { x: B[0], y: B[1], label: 'B' }, { x: C[0], y: C[1], label: 'C' }] }),
+        hint: 'In a parallelogram the sides AD and BC are equal and parallel. Go from B to C (count the steps), and do the same steps from A.',
+        steps: 'From B to C: ' + f(C[0] - B[0]) + ' in x and ' + f(C[1] - B[1]) + ' in y. From A: D = ' + pt(D[0], D[1]) + '.' };
+    },
+    function twoReflections() {
+      const x = nz(-6, 6), y = nz(-6, 6), first = Math.random() < .5 ? 'y' : 'x';
+      const B = first === 'y' ? [-x, y] : [x, -y], C = first === 'y' ? [B[0], -B[1]] : [-B[0], B[1]];
+      return { type: 'point', ans: C, correct: pt(C[0], C[1]),
+        html: '<p>Point <b>A = ' + pt(x, y) + '</b> is reflected in the <b>' + first + '-axis</b>. The image B is then reflected in the <b>' + (first === 'y' ? 'x' : 'y') + '-axis</b>. Which are the coordinates of the final image C?</p>',
+        hint: 'Do it in two steps. Reflecting in the y-axis changes the sign of x. Reflecting in the x-axis changes the sign of y.',
+        steps: 'B = ' + pt(B[0], B[1]) + ', so C = ' + pt(C[0], C[1]) + '.' };
+    }
+  ];
+  XG['3.2'] = [
+    function solveNeg() {
+      const a = pick([-5, -4, -3, -2, 2, 3, 4]), b = ri(-8, 8), x = ri(-6, 6), y = a * x + b;
+      return { type: 'num', ans: x, correct: String(x),
+        html: '<p>Given: <b>y = ' + linTxt(a, b) + '</b>. For which <b>x</b> is <b>y = ' + f(y) + '</b>?</p>',
+        hint: 'Solve ' + linTxt(a, b) + ' = ' + f(y) + '. First get the term with x alone, then divide.',
+        steps: (b !== 0 ? f(a) + 'x = ' + f(y) + (b > 0 ? ' − ' + b : ' + ' + Math.abs(b)) + ' = ' + f(y - b) + '<br>' : '') + 'x = ' + f(y - b) + ' : ' + par(a) + ' = ' + f(x) };
+    },
+    function howManyOn() {
+      const a = nz(-3, 3), b = ri(-5, 5), pts = [], on = [];
+      for (let i = 0; i < 4; i++) { const x = ri(-4, 4); const hit = Math.random() < .5; const y = ev(a, b, x) + (hit ? 0 : pick([-2, -1, 1, 2])); pts.push([x, y]); if (hit) on.push(1); }
+      return { type: 'num', ans: on.length, correct: String(on.length),
+        html: '<p>How many of the points <b>' + pts.map(p => pt(p[0], p[1])).join(', ') + '</b> lie on the graph of <b>y = ' + linTxt(a, b) + '</b>?</p>',
+        hint: 'Put the x of each point in the formula. Is the y you get equal to the y of the point?',
+        steps: pts.map(p => pt(p[0], p[1]) + ': y = ' + subStep(a, b, p[0]) + (ev(a, b, p[0]) === p[1] ? ' ✓' : ' ✗ (not ' + f(p[1]) + ')')).join('<br>') + '<br>Answer: ' + on.length };
+    }
+  ];
+  XG['3.3'] = [
+    function formulaFromPoints() {
+      const a = nz(-3, 3), b = ri(-5, 5), x1 = ri(-3, 1), x2 = x1 + ri(1, 3), P = [x1, ev(a, b, x1)], Q = [x2, ev(a, b, x2)];
+      return { type: 'multi', fields: ['m', 'b'], ans: [a, b], correct: [String(a), String(b)],
+        html: '<p>A straight line <b>y = mx + b</b> goes through <b>' + pt(P[0], P[1]) + '</b> and <b>' + pt(Q[0], Q[1]) + '</b>. Find <b>m</b> and <b>b</b>.</p>' + grid({ xmin: -6, xmax: 6, ymin: -9, ymax: 9, pts: [{ x: P[0], y: P[1] }, { x: Q[0], y: Q[1] }] }),
+        hint: 'm = how much y changes when x goes up 1: (change in y) : (change in x). Then use one point to find b.',
+        steps: 'm = (' + f(Q[1]) + ' − ' + par(P[1]) + ') : (' + f(x2) + ' − ' + par(x1) + ') = ' + f(Q[1] - P[1]) + ' : ' + (x2 - x1) + ' = ' + f(a) + '. Then b = ' + f(P[1]) + ' − ' + par(a) + ' · ' + par(x1) + ' = ' + f(b) + '. So y = ' + linTxt(a, b) };
+    },
+    function whereCrossesX() {
+      const a = nz(-3, 3), x0 = ri(-5, 5), b = -a * x0;
+      return { type: 'num', ans: x0, correct: String(x0),
+        html: '<p>The graph of <b>y = ' + linTxt(a, b) + '</b> crosses the <b>x-axis</b>. At which <b>x</b>?</p>',
+        hint: 'On the x-axis y = 0. Solve ' + linTxt(a, b) + ' = 0.',
+        steps: 'y = 0: ' + linTxt(a, b) + ' = 0, so ' + f(a) + 'x = ' + f(-b) + ' and x = ' + f(x0) + '.' };
+    }
+  ];
+  XG['3.4'] = [
+    function farValue() {
+      const a = nz(-4, 4), b = ri(-6, 6), x1 = ri(0, 3), x2 = x1 + ri(2, 4), x3 = x2 + ri(3, 6);
+      return { type: 'num', ans: ev(a, b, x3), correct: String(ev(a, b, x3)),
+        html: '<p>The table is <b>linear</b> (the points are on a straight line). Find the missing value.</p>' + tbl([x1, x2, x3], [ev(a, b, x1), ev(a, b, x2), null]),
+        hint: 'Find how much y changes per 1 step of x: (change in y) : (change in x). Then continue to the new x.',
+        steps: 'Per 1 in x, y changes by (' + f(ev(a, b, x2)) + ' − ' + par(ev(a, b, x1)) + ') : ' + (x2 - x1) + ' = ' + f(a) + '. From x = ' + x2 + ' to x = ' + x3 + ' is ' + (x3 - x2) + ' steps: ' + f(ev(a, b, x2)) + ' + ' + (x3 - x2) + ' · ' + par(a) + ' = ' + f(ev(a, b, x3)) + '.' };
+    },
+    function whichIsLinear() {
+      const a = nz(-3, 3), b = ri(-4, 4), xs = [0, 1, 2, 3, 4], good = xs.map(x => ev(a, b, x));
+      const bad = good.slice(); const k = ri(1, 3); bad[k + 1] += pick([-2, -1, 1, 2]);
+      const opts = shuffle([['Table A', good], ['Table B', bad]]), ans = opts.findIndex(o => o[1] === good);
+      return { type: 'choice', opts: opts.map(o => o[0]), ans, correct: ans,
+        html: '<p>Which table is <b>linear</b>?</p>' + opts.map(o => '<p><b>' + o[0] + '</b></p>' + tbl(xs, o[1])).join(''),
+        hint: 'In a linear table y changes by the same amount for every step of 1 in x. Check the differences.',
+        steps: opts[ans][0] + ': y changes by ' + f(a) + ' every step. In the other table the steps are not all the same.' };
+    }
+  ];
+  XG['3.5'] = [
+    function equalCost() {
+      const x0 = ri(3, 9), a1 = ri(1, 3), a2 = a1 + ri(1, 3), b2 = ri(0, 6), b1 = b2 + (a2 - a1) * x0, cost = b1 + a1 * x0;
+      return { type: 'multi', fields: ['k (km)', 'cost in €'], ans: [x0, cost], correct: [String(x0), String(cost)],
+        html: '<p>Taxi A: <b>C = ' + b1 + ' + ' + a1 + 'k</b>. Taxi B: <b>C = ' + b2 + ' + ' + a2 + 'k</b> (C in €, k in km). For some distance both taxis cost the same. Find that distance and the cost.</p>',
+        hint: 'Make a table for k = 1, 2, 3, … for both taxis, or solve ' + b1 + ' + ' + a1 + 'k = ' + b2 + ' + ' + a2 + 'k.',
+        steps: 'At k = ' + x0 + ': A = ' + b1 + ' + ' + a1 + ' · ' + x0 + ' = ' + cost + ' and B = ' + b2 + ' + ' + a2 + ' · ' + x0 + ' = ' + cost + '. Same cost: €' + cost + ' at ' + x0 + ' km.' };
+    },
+    function candle() {
+      const r = ri(2, 5), t1 = ri(1, 3), t2 = t1 + ri(2, 4), H0 = ri(30, 60), h1 = H0 - r * t1, h2 = H0 - r * t2;
+      return { type: 'num', ans: H0, correct: String(H0),
+        html: '<p>A candle burns down at a constant speed. After <b>' + t1 + ' hour' + (t1 > 1 ? 's' : '') + '</b> it is <b>' + h1 + ' cm</b> tall. After <b>' + t2 + ' hours</b> it is <b>' + h2 + ' cm</b> tall. How tall was the candle at the start (at 0 hours)? (Give the number of cm.)</p>',
+        hint: 'First find how many cm the candle loses per hour. Then go back to 0 hours.',
+        steps: 'Loss per hour: (' + h1 + ' − ' + h2 + ') : ' + (t2 - t1) + ' = ' + r + ' cm. Back to 0 hours: ' + h1 + ' + ' + t1 + ' · ' + r + ' = ' + H0 + ' cm.' };
+    }
+  ];
+
   const SECTIONS = [
     { id: '3.1', title: '3.1 Coordinates', sub: 'Points, quadrants, mirror images' },
     { id: '3.2', title: '3.2 Formulas and tables', sub: 'Calculate y, fill in tables' },
@@ -413,9 +506,16 @@ svg.grid[data-click]{cursor:crosshair}
   ];
 
   function make(sec, lvl, avoid) {
-    const list = G[sec]; let i, tries = 0;
-    do { i = ri(0, list.length - 1); tries++; } while (i === avoid && tries < 10);
-    const q = list[i](lvl); q.sec = sec; q.gen = i; q.lvl = lvl; return q;
+    const mix = lvl === 'mix'; if (mix) lvl = pick([0, 1, 1, 2, 2, 3, 3]);
+    const X = XG[sec] || [], list = G[sec]; let q, i, tries = 0;
+    if (lvl === 3 && X.length && Math.random() < 0.7) {
+      do { i = ri(0, X.length - 1); tries++; } while (100 + i === avoid && tries < 10);
+      q = X[i](2); q.gen = 100 + i;
+    } else {
+      do { i = ri(0, list.length - 1); tries++; } while (i === avoid && tries < 10);
+      q = list[i](Math.min(lvl, 2)); q.gen = i;
+    }
+    q.sec = sec; q.lvl = lvl; q.mix = mix; return q;
   }
   function makeTest() {
     const lv = shuffle([0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2]);
@@ -456,7 +556,7 @@ svg.grid[data-click]{cursor:crosshair}
     return '';
   }
 
-  const API = { SECTIONS, G, make, makeTest, grade, answerText, parseNum, parsePoint, f };
+  const API = { SECTIONS, G, XG, make, makeTest, grade, answerText, parseNum, parsePoint, f };
   if (typeof module !== 'undefined' && module.exports) module.exports = API; else root.Ch3 = API;
 })(typeof window !== 'undefined' ? window : globalThis);
 
@@ -465,31 +565,33 @@ svg.grid[data-click]{cursor:crosshair}
 (function(){
 'use strict';
 const E=window.Ch3,$=s=>document.querySelector(s);
-const LV=['Mild','Medium','Spicy'],GOAL=10;
-let st={sec:'3.1',prog:{},lvl:{}};   // prog: correct count per section, lvl: level per section
+const LV=['Mild','Medium','Spicy','Extra spicy'],GOAL=10;let mix=false;
+let st={done:{},stat:{},best:{},tests:[],sec:'3.1',prog:{},lvl:{}};   // prog: correct count per section, lvl: level per section
 try{const r=JSON.parse(localStorage.getItem('ch3-relations-v1')||'null');if(r&&r.prog)st=Object.assign(st,r)}catch(e){}
-const save=()=>{try{localStorage.setItem('ch3-relations-v1',JSON.stringify({sec:st.sec,prog:st.prog,lvl:st.lvl}))}catch(e){}};
+st.done=st.done||{};st.stat=st.stat||{};st.best=st.best||{};st.tests=st.tests||[];
+const save=()=>{try{localStorage.setItem('ch3-relations-v1',JSON.stringify({sec:st.sec,prog:st.prog,lvl:st.lvl,done:st.done,stat:st.stat,best:st.best,tests:st.tests}))}catch(e){}};
 let cur=null,tries=0,done=false,streak=0,wrongRun=0,lastGen=-1,clicked=[],choiceSel=null;
 let test=null; // {qs,i,score,log}
 
 function renderNav(){
   const n=$('#nav');n.innerHTML='';
   E.SECTIONS.forEach(s=>{
-    const b=document.createElement('button');b.className='sec';b.setAttribute('aria-current',String(!test&&st.sec===s.id));
+    const b=document.createElement('button');b.className='sec';b.setAttribute('aria-current',String(!test&&!mix&&st.sec===s.id));
     const p=Math.min(GOAL,st.prog[s.id]||0);
     b.innerHTML='<div class="t">'+s.title+'</div><div class="s">'+s.sub+'</div><div class="bar" aria-hidden="true"><i style="width:'+p*100/GOAL+'%"></i></div>';
-    b.onclick=()=>{test=null;st.sec=s.id;save();next(true)};n.appendChild(b);
+    b.onclick=()=>{test=null;mix=false;st.sec=s.id;save();next(true)};n.appendChild(b);
+    if(st.done[s.id]){const m=document.createElement('button');m.className='sec mm';m.setAttribute('aria-current',String(!test&&mix&&st.sec===s.id));m.textContent='★ Master Mix '+s.id;m.onclick=()=>{test=null;mix=true;st.sec=s.id;save();next(true)};n.appendChild(m)}
   });
   const t=document.createElement('button');t.className='sec';t.setAttribute('aria-current',String(!!test));
   t.innerHTML='<div class="t">Test preparation</div><div class="s">24 mixed questions, no hints</div>';
   t.onclick=startTest;n.appendChild(t);
   const r=document.createElement('button');r.className='reset';r.textContent='Reset my progress';
-  r.onclick=()=>{if(confirm('Delete all your progress on this page?')){st={sec:st.sec,prog:{},lvl:{}};save();test=null;renderNav();next(true)}};n.appendChild(r);
+  r.onclick=()=>{if(confirm('Delete all your progress on this page?')){st={sec:st.sec,prog:{},lvl:{},done:{},stat:{},best:{},tests:[]};mix=false;save();test=null;renderNav();next(true)}};n.appendChild(r);
 }
 function lvl(){return st.lvl[st.sec]||0}
 function next(reset){
   if(reset){streak=0;wrongRun=0;lastGen=-1}
-  cur=E.make(st.sec,lvl(),lastGen);lastGen=cur.gen;tries=0;done=false;clicked=[];choiceSel=null;renderQ(false);renderNav();
+  cur=E.make(st.sec,mix?'mix':lvl(),lastGen);lastGen=cur.gen;tries=0;done=false;clicked=[];choiceSel=null;renderQ(false);renderNav();
 }
 function qHTML(q,idx){
   let h='<div class="q">'+q.html+'</div><div class="ans" id="ans">';
@@ -501,7 +603,7 @@ function qHTML(q,idx){
 }
 function renderQ(){
   const m=$('#main'),q=cur;
-  m.innerHTML='<div class="top"><span class="badge l'+q.lvl+'">'+LV[q.lvl]+'</span><span class="streak">In a row: '+[0,1,2].map(i=>'<span class="dot'+(i<streak?' on':'')+'"></span>').join('')+' &nbsp; Done: '+Math.min(GOAL,st.prog[st.sec]||0)+'/'+GOAL+'</span></div>'+
+  m.innerHTML='<div class="top">'+(q.mix?'<span class="badge lm">Master Mix</span> ':'')+'<span class="badge l'+q.lvl+'">'+LV[q.lvl]+'</span><span class="streak">In a row: '+[0,1,2].map(i=>'<span class="dot'+(i<streak?' on':'')+'"></span>').join('')+' &nbsp; Done: '+Math.min(GOAL,st.prog[st.sec]||0)+'/'+GOAL+'</span></div>'+
    qHTML(q)+'<div class="btns"><button class="btn" id="chk">Check</button><button class="btn alt" id="hnt">Hint</button><button class="btn alt" id="nxt" style="display:none">Next question</button></div><div class="fb" id="fb"></div>';
   wire();
   const f=$('#in0');if(f)f.focus();
@@ -536,22 +638,25 @@ function check(){
   if(empty(q,u)){fb('hint','Fill in your answer first.');return}
   if(test){return testCheck(q,u)}
   const ok=E.grade(q,u);tries++;
+  const S=st.stat[st.sec]=st.stat[st.sec]||{n:0,ok:0};
   if(ok){
-    done=true;st.prog[st.sec]=(st.prog[st.sec]||0)+1;
+    done=true;st.prog[st.sec]=(st.prog[st.sec]||0)+1;S.n++;if(tries===1)S.ok++;
     if(tries===1){streak++;wrongRun=0}
     let up='';
-    if(streak>=3){streak=0;if(lvl()<2){st.lvl[st.sec]=lvl()+1;up=' <b>Level up: '+LV[lvl()]+'!</b>'}}
+    if(!mix&&streak>=3){streak=0;
+      if(lvl()<3){st.lvl[st.sec]=lvl()+1;st.best[st.sec]=Math.max(st.best[st.sec]||0,lvl());up=' <b>Level up: '+LV[lvl()]+'!</b>'+(lvl()===3?' These are challenge questions.':'')}
+      else if(!st.done[st.sec]){st.done[st.sec]=true;up=' <b>Extra spicy completed! ★ Master Mix is now unlocked for this section (see the menu).</b>'}}
     save();fb('ok','<b class="h">Correct!'+(tries>1?' (second try)':'')+'</b>'+q.steps+up);finish();
   }else if(tries===1){
     streak=0;fb('no','<b class="h">Not yet. Try again.</b>'+(q.hint?q.hint:''));
   }else{
-    done=true;wrongRun++;let dn='';
-    if(wrongRun>=2&&lvl()>0){st.lvl[st.sec]=lvl()-1;wrongRun=0;dn=' <i>Next questions will be a bit easier.</i>'}
+    done=true;wrongRun++;S.n++;let dn='';
+    if(!mix&&wrongRun>=2&&lvl()>0){st.lvl[st.sec]=lvl()-1;wrongRun=0;dn=' <i>Next questions will be a bit easier.</i>'}
     save();fb('no','<b class="h">The answer is: '+E.answerText(q)+'</b>'+q.steps+dn);finish();
   }
 }
 function finish(){$('#chk').disabled=true;$('#hnt').disabled=true;$('#nxt').style.display='';$('#nxt').focus();document.querySelectorAll('.choice').forEach(b=>b.disabled=true);document.querySelectorAll('#ans input').forEach(i=>i.disabled=true);renderNavSoft()}
-function renderNavSoft(){const bars=document.querySelectorAll('#nav .bar i');E.SECTIONS.forEach((s,i)=>{bars[i].style.width=Math.min(GOAL,st.prog[s.id]||0)*100/GOAL+'%'})}
+function renderNavSoft(){if(E.SECTIONS.some(s=>st.done[s.id]&&!document.querySelector('#nav .mm')))renderNav();const bars=document.querySelectorAll('#nav .bar i');E.SECTIONS.forEach((s,i)=>{bars[i].style.width=Math.min(GOAL,st.prog[s.id]||0)*100/GOAL+'%'})}
 
 /* ---- test preparation ---- */
 function startTest(){test={qs:E.makeTest(),i:0,score:0,log:[]};renderNav();testShow()}
@@ -580,12 +685,27 @@ function testCheck(q,u){
 function testNext(){
   test.i++;if(test.i<test.qs.length)return testShow();
   const n=test.qs.length,g=Math.round((test.score/n*9+1)*10)/10;
-  const wrong=test.log.filter(x=>!x.ok);
+  const wrong=test.log.filter(x=>!x.ok);st.tests.push({d:new Date().toISOString().slice(0,10),s:test.score,n:n});st.tests=st.tests.slice(-20);save();
   $('#main').innerHTML='<div class="res"><h2>Your result</h2><div class="grade">'+test.score+' / '+n+'</div><p>That is a '+String(g).replace('.',',')+' on a scale of 1 to 10 (a rough guide only).</p>'+
    (wrong.length?'<h3>Look at these again</h3>'+wrong.map(x=>'<div class="rev"><div>'+x.q.html+'</div><div><b>Answer: '+E.answerText(x.q)+'</b></div><div class="st">'+x.q.steps+'</div></div>').join(''):'<p><b>Everything correct. Great work!</b></p>')+
    '<div class="btns"><button class="btn" id="again">Try a new test</button></div></div>';
   $('#again').onclick=startTest;
 }
+
+/* ---- progress overview ---- */
+function showProgress(){
+  test=null;renderNav();
+  const rows=E.SECTIONS.map(s=>{
+    const cur_=st.lvl[s.id]||0,best=Math.max(st.best[s.id]||0,cur_),d=!!st.done[s.id],S=st.stat[s.id]||{n:0,ok:0};
+    const chips=LV.map((l,i)=>'<span class="chip '+(d||i<best?'ach':i===cur_&&(S.n>0||cur_>0)?'act':'')+'">'+l+'</span>').join('');
+    return '<tr><td><b>'+s.title+'</b></td><td>'+chips+'</td><td>'+(S.n||0)+'</td><td>'+(S.n?Math.round(S.ok*100/S.n)+'%':'–')+'</td><td>'+(d?'★ unlocked':'not yet')+'</td></tr>';
+  }).join('');
+  const T=st.tests.length?'<h3>Test preparation results</h3><table><tr><th>Date</th><th>Score</th></tr>'+st.tests.slice().reverse().map(t=>'<tr><td>'+t.d+'</td><td>'+t.s+' / '+t.n+'</td></tr>').join('')+'</table>':'<p>You have not done a test preparation yet.</p>';
+  $('#main').innerHTML='<div class="pg"><h2>My progress</h2><p>Green = level reached. Blue = the level you are working on. Reach Extra spicy and answer 3 in a row correctly to unlock the Master Mix.</p><table><tr><th>Section</th><th>Levels</th><th>Questions</th><th>First try</th><th>Master Mix</th></tr>'+rows+'</table>'+T+
+    '<div class="btns"><button class="btn" id="back">Back to practice</button><button class="btn alt" id="prt">Print / save as PDF</button></div></div>';
+  $('#back').onclick=()=>next(true);$('#prt').onclick=()=>window.print();
+}
+document.getElementById('pbtn').onclick=showProgress;
 window.__dbg=()=>cur;renderNav();next(true);
 })();
 </script>
