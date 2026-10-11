@@ -110,6 +110,7 @@ const SUP = '⁰¹²³⁴⁵⁶⁷⁸⁹';
 function tokenize(src, o) {
   o = o || {};
   let s = String(src).replace(/[−–—]/g, '-').replace(/ /g, ' ');
+  s = s.replace(/(^|[^\d.,])(-?)(\d+)[ ]+(\d+)[ ]*\/[ ]*(\d+)/g, (m, pre, sg, w, n, d) => pre + (sg ? '-' : '') + '(' + w + '+' + n + '/' + d + ')');   // mixed number 2 1/3
   s = s.replace(/sqrt/gi, '√').replace(/(?<![a-zA-Z])pi(?![a-zA-Z])/gi, 'π');
   s = s.replace(/([⁰¹²³⁴⁵⁶⁷⁸⁹]+)√/g, (m, d) => '\u0001' + d.split('').map(c => SUP.indexOf(c)).join('') + ';');
   s = s.replace(/∛/g, '\u00013;').replace(/∜/g, '\u00014;');
@@ -316,6 +317,7 @@ function formCheck(form, ast, q) {            // returns null if ok else message
     const a = lit(n.a), p = n.b; if (a === null || Math.abs(a) < 1 || Math.abs(a) >= 10) return 'The first number must be at least 1 and less than 10.';
     if (p.t !== 'pow' || lit(p.a) !== 10 || lit(p.b) === null || !isInt(lit(p.b))) return 'Write it as a · 10^n.'; return null;
   }
+  if (form === 'powfrac') { if (ast.t !== 'pow') return 'Write it as a single power, like (2/5)^3.'; const e = lit(ast.b); if (e === null || !isInt(e) || ast.a.t !== 'div') return 'Write it as a power of a fraction, like (2/5)^3.'; return null; }
   if (form === 'power') {
     if (ast.t !== 'pow') return 'Write it as a single power.'; const b = lit(ast.a), e = lit(ast.b);
     if (b === null || e === null || !isInt(e)) return 'Write it as a single power.'; if (q && q.base !== undefined && b !== q.base) return 'Use the base ' + q.base + '.'; return null;
@@ -327,6 +329,8 @@ function gradeExpr(q, u) {
   try { ua = parse(u, o); } catch (e) { return { ok: false, why: 'parse' }; }
   ea = parse(q.ans, o);
   if (!numEq(ea, ua)) return { ok: false, why: 'value' };
+  if (q.form === 'mixed') { const t = String(u).replace(/[−–—]/g, '-').trim(); const mm = /^-?\d+[ ]+(\d+)[ ]*\/[ ]*(\d+)$/.exec(t); const isI = /^-?\d+$/.test(t); const pf_ = /^-?(\d+)[ ]*\/[ ]*(\d+)$/.exec(t); if (!isI && pf_ && !mm) { const n1 = +pf_[1], d1 = +pf_[2]; if (n1 >= d1) return { ok: false, why: 'form', msg: 'Write it as a mixed number: a whole number, a space and a fraction, like 2 1/3.' }; if (gcd(n1, d1) > 1) return { ok: false, why: 'form', msg: 'Not fully simplified: the fraction can still be simplified.' }; return { ok: true }; } if (!isI) { if (!mm) return { ok: false, why: 'form', msg: 'Write it as a mixed number: a whole number, a space and a fraction, like 2 1/3.' }; const nn = +mm[1], dd = +mm[2]; if (nn >= dd) return { ok: false, why: 'form', msg: 'The fraction part must be smaller than 1.' }; if (gcd(nn, dd) > 1) return { ok: false, why: 'form', msg: 'Not fully simplified: the fraction part can still be simplified.' }; } return { ok: true }; }
+  if (q.form === 'improper') { if (/\d[ ]+\d+[ ]*\/[ ]*\d/.test(String(u).trim())) return { ok: false, why: 'form', msg: 'Write it as one fraction (no whole number in front), like 7/4.' }; const m2 = formCheck('lowest', ua, q); if (m2) return { ok: false, why: 'form', msg: m2 }; return { ok: true }; }
   const m = formCheck(q.form, ua, q); if (m) return { ok: false, why: 'form', msg: m };
   if (q.needPi && !/π|pi/i.test(String(u))) return { ok: false, why: 'form', msg: 'Give the exact answer, with π.' };
   return { ok: true };
@@ -693,7 +697,8 @@ const GL=[],gOfGen={};
   lists.forEach(([sec,name])=>{if(name in gOfGen)return;let o=ch[sec];if(!o){o=ch[sec]={id:'g'+GL.length,sec,title:'I can solve harder and mixed questions about '+(secTitle[sec]||sec).toLowerCase(),gens:[],warn:'',challenge:true};GL.push(o)}o.gens.push(name);gOfGen[name]=o});
 })();
 const goalById=id=>GL.find(g=>g.id===id);
-const goalOfQ=q=>q&&gOfGen[q.gen]||null;
+const genName=q=>{if(!q)return null;if(typeof q.gen!=='number')return q.gen;const g=q.gen>=100?(E.XG[q.sec]||[])[q.gen-100]:(E.G[q.sec]||[])[q.gen];return g?g.name:null};
+const goalOfQ=q=>q&&gOfGen[genName(q)]||null;
 function itemGens(it){const s=new Set();if(it.gens){it.gens.concat(it.xg||[]).forEach(e=>s.add(e[1]))}else{(E.G[it.id]||[]).concat(E.XG[it.id]||[]).forEach(f=>s.add(f.name))}return s}
 function goalsForItem(id){const it=items().find(x=>x.id===id)||E.SECTIONS.find(x=>x.id===id);if(!it)return GL;const gs=itemGens(it);return GL.filter(g=>g.gens.some(n=>gs.has(n)))}
 /* mastery: last six results, weights like the chapter 1 page */
