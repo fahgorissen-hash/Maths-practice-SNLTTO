@@ -892,8 +892,9 @@ function next(reset){
 
 /* ---------- steps: which questions need working ---------- */
 const NOSTEP=new Set('missingExp multDiv rootEq volPrism volPyramid volCone volHemisphere cylinderNet surfCuboid primeFact nthRootCalc findNumber quadAngle centroidRatio zToMidpoint decimalToFraction subInt missingNumber divInt missingFactor toMixed toImproper likeAdd equivFrac fractionOf fracDivInt riverShare missingFraction areaVolume maxIntersect maxIntersect5 isosceles axisDist substitute readLineY valueAt squareArea findK context graphK symmetryLine findKInv inverseContext axisFromPoints yIntercept exactTrig lcmTwo hcfTwo'.split(' '));
-const EXPRSTEP=new Set('simplifyRoot likeRadicals simplifySum mixedRoot rationaliseSimplify threeRoots bigRoot addSci distance surfCylinder surfCone divideRoots pythRoot addSimplify simplifyByPrimes rootOfFractionSimp exactRatios mixedLike addUnlike landUse mixedUnlike pyramid mulFrac fracOrder fracDivOrder threeMixed remainingTrip fracChain tenPower'.split(' '));
-const DISC=new Set('sideKnownHyp angleInverse isoscelesBase twoArms howManyOn'.split(' '));
+const ADDMULTI=new Set('calcRoots nthMix multRoots addLike likeTermsPoly minusBracket binomMul threeFactors powerSpecial simplifyBinom numFracAdd numFracMulDiv numberAndFraction intDivFraction longProduct quotientPower chainBrackets differenceOfSquares2 sumDiff threeFracs binomialDen rootsFractionSum nthRootPow substitute addUnlike quotientRoots difference gauss howManyTerms productRule evenSum sumBetween sumRationalise aspectRatio twoFactors areaFactor mulSci timesBigger commonFactorCount coneInCylinder frustum identity tanFromSinCos'.split(' '));
+const EXPRSTEP=new Set('calcRoots multRoots addLike likeTermsPoly minusBracket binomMul threeFactors powerSpecial simplifyBinom numFracAdd numFracMulDiv numberAndFraction intDivFraction longProduct quotientPower chainBrackets differenceOfSquares2 sumDiff threeFracs binomialDen rootsFractionSum sumRationalise quotientRoots mulSci timesBigger commonFactorCount simplifyRoot likeRadicals simplifySum mixedRoot rationaliseSimplify threeRoots bigRoot addSci distance surfCylinder surfCone divideRoots pythRoot addSimplify simplifyByPrimes rootOfFractionSimp exactRatios mixedLike addUnlike landUse mixedUnlike pyramid mulFrac fracOrder fracDivOrder threeMixed remainingTrip fracChain tenPower'.split(' '));
+const DISC=new Set('identity tanFromSinCos sideKnownHyp angleInverse isoscelesBase twoArms howManyOn'.split(' '));
 const NODISC=new Set('primeOrNot readPoint gradientIntercept abc vertex table frontView sideView cubeNet pickSkew'.split(' '));
 const eqN=q=>(String(q.steps||'').replace(/<svg[\s\S]*?<\/svg>/g,'').replace(/<[^>]+>/g,'').match(/=/g)||[]).length;
 const canType=q=>q.type==='num'||(q.type==='expr'&&!!E.check);
@@ -901,7 +902,7 @@ function stepMode(q){
   if(!q||q.noStep)return '';
   const gn=String(genName(q)||'').replace(/^X/,'');
   const st_=String(q.steps||'');
-  if(!(q.needStep||eqN(q)>=2))return '';
+  if(!(q.needStep||eqN(q)>=2||ADDMULTI.has(gn)))return '';
   if(canType(q)){
     if(test)return 'note';
     if(q.needStep)return 'enforce';
