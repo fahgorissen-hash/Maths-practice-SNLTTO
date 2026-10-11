@@ -26,7 +26,7 @@ header{display:flex;align-items:center;gap:14px;flex-wrap:wrap}header .hd{flex:1
 nav button.mm{margin-left:14px;width:calc(100% - 14px);background:#f1edfb;border-color:#cbbdf0;font-weight:700;color:#40318a;font-size:16px}
 .pg h2{margin-top:0}.pg table{border-collapse:collapse;width:100%;font-size:16px;margin:8px 0 14px}.pg th,.pg td{border-bottom:1px solid var(--line);padding:8px 6px;text-align:left;vertical-align:middle}.pg th{color:var(--mut);font-size:14px}.chip{display:inline-block;padding:2px 9px;border-radius:99px;font-size:13px;font-weight:700;margin:1px 2px 1px 0;border:2px solid #cfd8e0;color:#8795a3;background:#fff}.chip.ach{background:var(--okbg);border-color:#8fd1a8;color:var(--ok)}.chip.act{border-color:var(--brand);color:var(--brand);background:var(--brand2)}
 nav .seg{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin:2px 0 8px}nav .seg button{font:inherit;font-size:15px;font-weight:700;padding:7px 4px;border-radius:9px;border:2px solid var(--brand);background:#fff;color:var(--brand);cursor:pointer}nav .seg button.on{background:var(--brand);color:#fff}
-@media print{header .pbtn,nav,.btns{display:none!important}.wrap{display:block}main{border:0}}
+@media print{header .pbtn,.topnav,nav,.btns{display:none!important}.wrap{display:block}main{border:0}}
 .streak{margin-left:auto;color:var(--mut);font-size:15px}
 .dot{display:inline-block;width:11px;height:11px;border-radius:50%;background:#d6dee6;margin-left:4px}.dot.on{background:var(--ok)}
 .q p{margin:.4em 0 .6em;font-size:20px}
@@ -67,10 +67,11 @@ svg.grid[data-click]{cursor:crosshair}
 .fb .mx{font-size:1.05em}
 .lead{color:var(--mut);font-size:15px;margin:2px 0 0}
 svg.fig{max-width:430px;width:100%;height:auto;display:block;margin:6px 0 10px}
+.topnav{flex-basis:100%;display:flex;gap:8px;align-items:center;flex-wrap:wrap}.topnav .nb,.topnav summary{font:inherit;font-size:14px;font-weight:700;background:rgba(255,255,255,.18);color:#fff;border:1px solid rgba(255,255,255,.5);border-radius:10px;padding:5px 12px;cursor:pointer;text-decoration:none;list-style:none}.topnav .nb:hover,.topnav summary:hover{background:rgba(255,255,255,.3)}.topnav summary::-webkit-details-marker{display:none}.topnav details{position:relative}.topnav .menu{position:absolute;z-index:50;top:110%;left:0;background:#fff;border-radius:10px;box-shadow:0 4px 16px rgba(0,0,0,.25);padding:6px;min-width:260px;display:flex;flex-direction:column}.topnav .menu a{color:var(--brand);text-decoration:none;padding:7px 10px;border-radius:8px;font-size:15px}.topnav .menu a:hover{background:#eef2f7}.topnav .menu a.cur{font-weight:800;background:#e3ecf7}
 </style>
 </head>
 <body>
-<header><div class="hd"><h1>3HT · Chapter 1 · Numbers and variables</h1><p>Practise as long as you like. The questions adapt to you: Mild, Medium, Spicy and Extra spicy.</p></div><button class="pbtn" id="pbtn" type="button">My progress</button></header>
+<header><div class="topnav" role="navigation" aria-label="Site navigation"><a class="nb" href="../">Home</a><details><summary>3HT chapters &#9662;</summary><div class="menu"><a href="../3ht-chapter-1/" class="cur">Chapter 1</a><a href="../3ht-chapter-2/">Chapter 2</a></div></details></div><div class="hd"><h1>3HT · Chapter 1 · Numbers and variables</h1><p>Practise as long as you like. The questions adapt to you: Mild, Medium, Spicy and Extra spicy.</p></div><button class="pbtn" id="pbtn" type="button">My progress</button></header>
 <div class="wrap">
   <nav id="nav" aria-label="Topics"></nav>
   <main id="main" aria-live="polite"></main>
