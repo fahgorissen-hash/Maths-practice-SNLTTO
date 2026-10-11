@@ -601,7 +601,7 @@ G['1.3'] = [
   function addLike(l) {
     const v = V(), a = ri(2, 5), c1 = ri(3, 6), c2 = ri(1, 2); const t = pick([0, 1, 2]);
     const src = t === 0 ? c1 + pw(v, a) + '*' + pw(v, ri(2, 4)) + '+' + c2 + pw(v, a + 1) : t === 1 ? c1 + v + '^' + a + '+' + c2 + v + '^' + a : c1 + pw(v, a + 2) + '-' + c2 + pw(v, a) + '*' + pw(v, 2);
-    return alg(p('Simplify: ' + M(src) + '. (First the multiplications, then add or subtract like terms.)'), src, 'poly', 'Multiply the powers first (add exponents). Then add or subtract the terms that have the same letters and the same exponents.');
+    return alg(p('Simplify: ' + M(src) + '.'), src, 'poly', 'Multiply the powers first (add exponents). Then add or subtract the terms that have the same letters and the same exponents.');
   },
   function divideTerms(l) {
     const [v, w] = V2(); const c = pick([2, 3, 4]), a = ri(3, 7), b = ri(2, a - 1); const c2 = c * pick([2, 3]); const src = c2 + pw(v, a) + w + '÷(' + c + pw(v, b) + ')';
@@ -656,7 +656,7 @@ G['1.4'] = [
   function special(l) {
     const v = V(), w = l === 2 ? pick(['b', 'c', 'n', 'y'].filter(x => x !== v)) : null; const t = pick(['sq+', 'sq-', 'diff']); const a = ri(1, l === 0 ? 3 : 5), b = ri(1, 7); const A = l === 0 ? v : coef(ri(2, 5), v), B = w ? coef(ri(1, 4), w) : String(b);
     const src = t === 'sq+' ? '(' + A + '+' + B + ')^2' : t === 'sq-' ? '(' + A + '-' + B + ')^2' : '(' + A + '-' + B + ')(' + A + '+' + B + ')';
-    return polyQ(p('Expand: ' + M(src) + '. (Use a special product.)'), src, 'Special products: (a + b)² = a² + 2ab + b², (a − b)² = a² − 2ab + b², (a − b)(a + b) = a² − b².');
+    return polyQ(p('Expand: ' + M(src) + '.'), src, 'Special products: (a + b)² = a² + 2ab + b², (a − b)² = a² − 2ab + b², (a − b)(a + b) = a² − b².');
   },
   function threeFactors(l) {
     const v = V(); const c = ri(2, 3), a = nz(-4, 4), b = nz(-4, 4); const src = c + '(' + v + (a < 0 ? '-' : '+') + Math.abs(a) + ')(' + v + (b < 0 ? '-' : '+') + Math.abs(b) + ')'; return polyQ(p('Expand and simplify: ' + M(src) + '.'), src, 'First multiply the two brackets. Then multiply the result by ' + c + '.');
@@ -711,7 +711,7 @@ G['1.5'] = [
   },
   function divFrac(l) {
     const [v, w] = V2(); const a = ri(2, 5), b = ri(2, 6), c = ri(2, 5), d = ri(2, 6); const src = l === 0 ? a + '/' + b + '÷' + c + '/' + d : '(' + a + v + '/' + b + ')÷(' + c + w + '/' + d + ')'; const ans = ALG.canon(src.replace('÷', '/'));
-    return ex(p('Calculate: ' + M(src) + '. (Use KFC: Keep, Flip, Change.)'), ans, 'lowest', 'Keep the first fraction, Flip the second one, Change ÷ into ×. Then multiply and simplify.', M(src) + ' = ' + M(ans) + '.');
+    return ex(p('Calculate: ' + M(src) + '.'), ans, 'lowest', 'Keep the first fraction, Flip the second one, Change ÷ into ×. Then multiply and simplify.', M(src) + ' = ' + M(ans) + '.');
   }
 ];
 XG['1.5'] = [
@@ -798,7 +798,7 @@ G['1.4'].push(
   },
   function powerSpecial(l) {
     const v = V(), n = pick([2, 3]), a = ri(2, 6); const t = pick([[v + '^' + n + '+1', 'sq'], [v + '^' + n + '-' + a, 'sq'], [v + '^' + n + '+' + a, 'dsq']]);
-    const src = t[1] === 'sq' ? '(' + t[0] + ')^2' : '(' + v + '^' + n + '-' + a + ')(' + v + '^' + n + '+' + a + ')'; return alg(p('Expand: ' + M(src) + '. (Use a special product.)'), src, 'poly', 'Treat ' + v + '^' + n + ' as one term: (A + B)² = A² + 2AB + B² and (A − B)(A + B) = A² − B².', '');
+    const src = t[1] === 'sq' ? '(' + t[0] + ')^2' : '(' + v + '^' + n + '-' + a + ')(' + v + '^' + n + '+' + a + ')'; return alg(p('Expand: ' + M(src) + '.'), src, 'poly', 'Treat ' + v + '^' + n + ' as one term: (A + B)² = A² + 2AB + B² and (A − B)(A + B) = A² − B².', '');
   }
 );
 G['1.5'].push(
