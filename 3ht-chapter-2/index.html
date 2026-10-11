@@ -116,6 +116,7 @@ function tokenize(src, o) {
   s = s.replace(/(^|[^\d.,])(-?)(\d+)[ ]+(\d+)[ ]*\/[ ]*(\d+)/g, (m, pre, sg, w, n, d) => pre + (sg ? '-' : '') + '(' + w + '+' + n + '/' + d + ')');   // mixed number 2 1/3
   s = s.replace(/sqrt/gi, '√').replace(/(?<![a-zA-Z])pi(?![a-zA-Z])/gi, 'π');
   s = s.replace(/([⁰¹²³⁴⁵⁶⁷⁸⁹]+)√/g, (m, d) => '\u0001' + d.split('').map(c => SUP.indexOf(c)).join('') + ';');
+  s = s.replace(/(\d+)\s*V/g, (m, d) => '\u0001' + d + ';');   // 3V27 = cube root of 27
   s = s.replace(/∛/g, '\u00013;').replace(/∜/g, '\u00014;');
   s = s.replace(/[⁰¹²³⁴⁻⁵⁶⁷⁸⁹]+/g, m => '^(' + m.split('').map(c => c === '⁻' ? '-' : SUP.indexOf(c)).join('') + ')');
   const t = []; let i = 0;
@@ -781,7 +782,7 @@ const STEPNOTE='<p class="stepnote"><b>Steps count.</b> Showing your steps is pa
 function qHTML(q){
   let h='<div class="q">'+q.html+'</div>'+(stepMode(q)==='note'?STEPNOTE:'')+'<div id="stp" class="stp"></div><div class="ans" id="ans">';
   if(q.type==='num')h+='<label class="sr" for="in0">Your answer</label><input type="text" id="in0" inputmode="text" autocomplete="off" placeholder="your answer">';
-  else if(q.type==='expr')h+='<label class="sr" for="in0">Your answer</label><input type="text" id="in0" inputmode="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="type your answer"><div class="kp" id="kp">'+(q.keys||['√','^','/','·','(',')','π']).map(k=>'<button type="button" data-k="'+k+'">'+k+'</button>').join('')+'<button type="button" data-k="⌫" aria-label="delete">⌫</button></div><div class="pv" id="pv" aria-live="polite"></div>';
+  else if(q.type==='expr')h+='<label class="sr" for="in0">Your answer</label><input type="text" id="in0" inputmode="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="type your answer"><div class="kp" id="kp">'+(q.keys||['√','³√','⁴√','^','/','·','(',')','π']).map(k=>'<button type="button" data-k="'+k+'">'+k+'</button>').join('')+'<button type="button" data-k="⌫" aria-label="delete">⌫</button></div><div class="pv" id="pv" aria-live="polite"></div>';
   else if(q.type==='point')h+='<label class="sr" for="in0">Your answer</label><input type="text" id="in0" autocomplete="off" placeholder="(x, y)">';
   else if(q.type==='multi')q.fields.forEach((f,i)=>{h+='<label for="in'+i+'">'+f+'</label><input type="text" id="in'+i+'" autocomplete="off">'});
   else if(q.type==='choice'){h+='<div class="choices">'+q.opts.map((o,i)=>'<button type="button" class="choice" data-i="'+i+'" aria-pressed="false">'+o+'</button>').join('')+'</div>'}
@@ -821,7 +822,7 @@ function wireChrome(){
   const gt=$('#gtoggle');if(gt)gt.onclick=()=>{st.goalsAll=!st.goalsAll;save();const g=document.querySelector('.goals');const tmp=document.createElement('div');tmp.innerHTML=goalsPanel(cur);g.replaceWith(tmp.firstChild);wireChrome()};
   const ge=$('#gexplain');if(ge)ge.onclick=()=>{const c=$('#gcard');if(c.innerHTML){c.innerHTML='';ge.textContent='Explain this goal';return}ge.textContent='Hide explanation';c.innerHTML=helpCard(goalOfQ(cur))};
 }
-const ENTER={num:'Type a number. A comma or a point both work for decimals.',expr:'Type your answer in the box. Use the buttons under the box for √, powers (^) and fractions (/). Use brackets in the bottom of a fraction: 5/(2x). The line “Your answer reads” shows what I understood.',choice:'Click the answer you think is right, then press Check.',point:'Type the coordinates like (2, 3).',multi:'Fill in every box.',click:'Click on the picture, then press Check.',proto:'Click on the protractor scale, then press Check.'};
+const ENTER={num:'Type a number. A comma or a point both work for decimals.',expr:'Type your answer in the box. Use the buttons under the box for √, higher roots (³√ is the cube root; you can also type 3V27), powers (^) and fractions (/). Use brackets in the bottom of a fraction: 5/(2x). The line “Your answer reads” shows what I understood.',choice:'Click the answer you think is right, then press Check.',point:'Type the coordinates like (2, 3).',multi:'Fill in every box.',click:'Click on the picture, then press Check.',proto:'Click on the protractor scale, then press Check.'};
 const WARN={root:'Simplify completely: no square factor may stay under the root.',mono:'Write the answer as simply as possible: one number, then each letter with one exponent.',poly:'Collect like terms and write everything out without brackets.',lowest:'Cancel the fraction as far as possible.',primes:'Write only prime numbers, in increasing order, with exponents.',sci:'In scientific notation the first number is at least 1 and less than 10.'};
 function helpCard(g){
   if(!g)return '';
