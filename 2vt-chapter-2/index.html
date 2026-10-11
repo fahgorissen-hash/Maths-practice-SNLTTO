@@ -68,10 +68,11 @@ svg.grid[data-click]{cursor:crosshair}
 .lead{color:var(--mut);font-size:15px;margin:2px 0 0}
 svg.fig{max-width:430px;width:100%;height:auto;display:block;margin:6px 0 10px}
 .topnav{flex-basis:100%;display:flex;gap:8px;align-items:center;flex-wrap:wrap}.topnav .nb,.topnav summary{font:inherit;font-size:14px;font-weight:700;background:rgba(255,255,255,.18);color:#fff;border:1px solid rgba(255,255,255,.5);border-radius:10px;padding:5px 12px;cursor:pointer;text-decoration:none;list-style:none}.topnav .nb:hover,.topnav summary:hover{background:rgba(255,255,255,.3)}.topnav summary::-webkit-details-marker{display:none}.topnav details{position:relative}.topnav .menu{position:absolute;z-index:50;top:110%;left:0;background:#fff;border-radius:10px;box-shadow:0 4px 16px rgba(0,0,0,.25);padding:6px;min-width:260px;display:flex;flex-direction:column}.topnav .menu a{color:var(--brand);text-decoration:none;padding:7px 10px;border-radius:8px;font-size:15px}.topnav .menu a:hover{background:#eef2f7}.topnav .menu a.cur{font-weight:800;background:#e3ecf7}
+.topnav .nb.cur{background:#fff;color:var(--brand);border-color:#fff}
 </style>
 </head>
 <body>
-<header><div class="topnav" role="navigation" aria-label="Site navigation"><a class="nb" href="../">Home</a><details><summary>2VT chapters &#9662;</summary><div class="menu"><a href="../2vt-chapter-1/">Chapter 1</a><a href="../2vt-chapter-2/" class="cur">Chapter 2</a></div></details></div><div class="hd"><h1>2VT · Chapter 2 · Solid geometry</h1><p>Practise as long as you like. The questions adapt to you: Mild, Medium, Spicy and Extra spicy.</p></div><button class="pbtn" id="pbtn" type="button">My progress</button></header>
+<header><div class="topnav" role="navigation" aria-label="Site navigation"><a class="nb" href="../">Home</a><a class="nb" href="../2vt-chapter-1/">Chapter 1</a><a class="nb cur" href="../2vt-chapter-2/" aria-current="page">Chapter 2</a></div><div class="hd"><h1>2VT · Chapter 2 · Solid geometry</h1><p>Practise as long as you like. The questions adapt to you: Mild, Medium, Spicy and Extra spicy.</p></div><button class="pbtn" id="pbtn" type="button">My progress</button></header>
 <div class="wrap">
   <nav id="nav" aria-label="Topics"></nav>
   <main id="main" aria-live="polite"></main>
