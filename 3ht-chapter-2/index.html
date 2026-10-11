@@ -607,6 +607,19 @@ XG['2.4'] = [
   }
 ];
 
+/* ---------- additions after the assignment-by-assignment check ---------- */
+G['2.2'].push(function pythSimilar(l) {
+  const T = pick([[3, 4, 5], [6, 8, 10], [5, 12, 13], [8, 15, 17]]); const k = pick([2, 3, 1.5, 2.5]); const t = ri(0, 2); const [a, b, c] = T; const A = [a, b, c], B = A.map(x => x * k);
+  const what = ['the shorter leg', 'the longer leg', 'the hypotenuse']; if (l === 0 && t === 2) return G['2.2'].find(g => g.name === 'pythSimilar')(l);
+  const known = (t === 0 ? 1 : 0);
+  const sa = [a, b, c].map(String); const sb = B.map(x => f(x));
+  return nu(p('Triangle KLM is right-angled at L with KL = ' + a + ' and LM = ' + b + '. Triangle PQR ~ KLM (P ↔ K, Q ↔ L, R ↔ M). In triangle PQR, PQ = ' + f(B[0]) + '. Calculate <b>PR</b> (the hypotenuse of PQR).'), B[2] * 0 + (Math.hypot(a, b) * k), 'First find KM with Pythagoras. Then use the scale factor PQ ÷ KL.', 'KM = √(' + a + '² + ' + b + '²) = ' + f(Math.hypot(a, b)) + '. Scale factor = ' + f(B[0]) + ' ÷ ' + a + ' = ' + f(k) + '. PR = ' + f(Math.hypot(a, b)) + ' × ' + f(k) + ' = ' + f(Math.hypot(a, b) * k) + '.');
+});
+G['2.2'].push(function sidesNotSimilar(l) {
+  const A = pick([[3, 4, 5], [6, 8, 10], [5, 12, 13]]), k = pick([2, 3]); const B = A.map(x => x * k); const bad = ri(0, 2); const delta = pick([1, 2]); B[bad] += delta;
+  const same = false; return ch(p('Triangle 1 has sides ' + A.join(', ') + ' cm. Triangle 2 has sides ' + B.join(', ') + ' cm. Are they similar?'), 'No', ['Yes, sss'], 'Divide each side of triangle 2 by the corresponding side of triangle 1. If the three ratios are not equal, the triangles are not similar.', B.map((x, i) => f(x) + '/' + A[i] + ' = ' + f(x / A[i])).join(', ') + ': not all equal, so not similar.');
+});
+
 const SECTIONS = [
   { id: '2.1', title: '2.1 Similar figures', sub: 'Corresponding angles and sides, scale factor' },
   { id: '2.2', title: '2.2 Similar triangles', sub: 'aa, sss, proofs, scale factor' },
@@ -619,8 +632,8 @@ const L = (id, title, sub, date, gens, xg, extra) => Object.assign({ id, title, 
 const LESSONS = [
   L('L0', 'Lesson · 2.1 A Similar figures', '2.1 A', null, nm('2.1', ['quadAngle', 'polySide', 'similarFigures', 'aspectRatio']), nm('2.1', ['insideRect', 'twoFactors'])),
   L('L1', 'Lesson · 2.1 B Similar figures', 'Thu 1 Oct', '2026-10-01', nm('2.1', ['quadAngle', 'polySide', 'similarFigures']).concat(nm('2.2', ['scaleFactor', 'similarSide', 'anglePair'])), nm('2.1', ['insideRect', 'twoFactors']).concat(nm('2.2', ['ratioTable', 'areaFactor']))),
-  L('L2', 'Lesson · 2.2 A Similar triangles', 'Fri 2 Oct', '2026-10-02', nm('2.2', ['missingAngle', 'similarSide', 'matchingOrder', 'aaOrSss']), nm('2.2', ['ratioTable', 'shadow'])),
-  L('L3', 'Lesson · 2.2 B Proving similarity', 'Wed 7 Oct', '2026-10-07', nm('2.2', ['anglePair', 'aaOrSss', 'matchingOrder', 'similarSide']), nm('2.2', ['nestedTri', 'shadow', 'areaFactor'])),
+  L('L2', 'Lesson · 2.2 A Similar triangles', 'Fri 2 Oct', '2026-10-02', nm('2.2', ['missingAngle', 'similarSide', 'matchingOrder', 'aaOrSss', 'sidesNotSimilar']), nm('2.2', ['ratioTable', 'shadow'])),
+  L('L3', 'Lesson · 2.2 B Proving similarity', 'Wed 7 Oct', '2026-10-07', nm('2.2', ['anglePair', 'aaOrSss', 'matchingOrder', 'similarSide', 'pythSimilar']), nm('2.2', ['nestedTri', 'shadow', 'areaFactor'])),
   L('L4', 'Lesson · 2.3 A Angle bisector', 'Thu 8 Oct', '2026-10-08', nm('2.3', ['bisectAngle', 'whichWord', 'equidistantPoint']), nm('2.3', ['bisectedFull', 'triangleBis'])),
   L('L5', 'Lesson · 2.3 B Perpendicular bisector', 'Fri 9 Oct', '2026-10-09', nm('2.3', ['whichWord', 'equidistantPoint', 'closerTo', 'trueFalseBis']), nm('2.3', ['triangleBis'])),
   L('L6', 'Lesson · 2.4 A Altitudes', 'Wed 28 Oct', '2026-10-28', nm('2.4', ['orthoPlace', 'altitudeArea', 'twoAltitudes', 'whichLine']), nm('2.4', ['missingVertex'])),

@@ -609,6 +609,75 @@ XG['1.5'] = [
   function lcmHcfSum(l) { const a = pick([12, 18, 24, 30, 36, 48]), b = pick([20, 27, 28, 32, 42, 45, 50]); const g = gcd(a, b), L2 = a * b / g; return nu(p('Calculate LCM(' + a + ', ' + b + ') + HCF(' + a + ', ' + b + ').'), L2 + g, 'Find both separately, then add.', 'LCM = ' + L2 + ', HCF = ' + g + ', sum = ' + (L2 + g) + '.'); }
 ];
 
+/* ---------- additions after the assignment-by-assignment check ---------- */
+G['1.1'].push(
+  function setElements(l) {
+    const m = pick([4, 6, 7, 8, 9, 12]); const top = m * ri(8, 14); const els = []; for (let x = m; x <= top; x += m) els.push(x); const n = pick([0, 1, 2]);
+    if (n === 0) return nu(p('Set <b>B</b> consists of all multiples of ' + m + ' from ' + m + ' up to and including ' + top + '. How many elements does <b>B</b> have?'), els.length, 'Count: ' + m + ', ' + 2 * m + ', 3·' + m + ', … up to ' + top + '.', 'The elements are ' + m + '·1 up to ' + m + '·' + els.length + ', so ' + els.length + ' elements.');
+    const cand = n === 1 ? pick([els[ri(0, els.length - 1)], els[ri(0, els.length - 1)] + ri(1, m - 1), top + m]) : pick([-m, 0, top + m, els[2] + 1]); const yes = els.includes(cand);
+    return ch(p('Set <b>B</b> = {' + els.slice(0, 3).join(', ') + ', …, ' + top + '} (all multiples of ' + m + ' up to ' + top + '). Which statement is true?'), M(cand + (yes ? ' ∈ B' : ' ∉ B')), [M(cand + (yes ? ' ∉ B' : ' ∈ B'))], '∈ means "is an element of", ∉ means "is not an element of". Check whether ' + cand + ' is a multiple of ' + m + ' and in the range.', cand + (yes ? ' is' : ' is not') + ' in the set.');
+  },
+  function simplifyByPrimes(l) {
+    const P3 = [2, 3, 5, 7, 11]; const a = pick(P3), b = pick(P3.filter(x => x !== a)); const num = a * a * b * pick([3, 5]) * (l ? ri(2, 5) : 1), den = a * a * a * b * b * pick([2, 3, 5]); const g = gcd(num, den); if (g === 1) return G['1.1'].find(x => x.name === 'simplifyByPrimes')(l);
+    return ex(p('Write the prime factorisations of <b>' + num + '</b> and <b>' + den + '</b> and use them to simplify the fraction ' + M(num + '/' + den) + '. (Type for example <b>7/80</b>.)'), ratText(num, den), 'lowest', 'Write numerator and denominator as products of primes, then cancel the common prime factors.', num + ' = ' + M(pf(num)) + ' and ' + den + ' = ' + M(pf(den)) + '. Cancel: ' + M(ratText(num, den)) + '.');
+  }
+);
+G['1.2'].push(
+  function decimalToFraction(l) {
+    const pool = l === 0 ? ['0.5', '0.25', '1.5', '0.75', '0.2'] : ['5.9', '1.12', '0.105', '0.375', '2.45', '6.0082'.slice(0, 5)]; const s = pick(pool); const dec = s.split('.')[1].length; const n = Math.round(Number(s) * Math.pow(10, dec)), d = Math.pow(10, dec);
+    return ex(p('Write <b>' + s.replace('.', ',') + '</b> as a fraction in lowest terms. (Type for example <b>7/4</b>.)'), ratText(n, d), 'lowest', 'Write the decimal over 10, 100 or 1000 and simplify.', s + ' = ' + M(n + '/' + d) + ' = ' + M(ratText(n, d)) + '.');
+  },
+  function fractionToDecimal(l) {
+    const pool = l === 0 ? [[3, 5], [17, 20], [1, 8], [7, 4], [9, 25]] : [[69, 250], [1554, 5000], [41, 12], [5, 22], [10, 37], [4, 15], [7, 6]];
+    const [n, d] = pick(pool); const rep = [3, 6, 7, 9, 11, 12, 15, 22, 37].some(x => d % x === 0 && x !== 1) && ((d / gcd(n, d)) % 2 !== 0 || (d / gcd(n, d)) % 5 !== 0) && (function () { let q = d / gcd(n, d); while (q % 2 === 0) q /= 2; while (q % 5 === 0) q /= 5; return q > 1; })();
+    if (!rep) return nu(p('Write <b>' + M(n + '/' + d) + '</b> as a decimal.'), n / d, 'Divide the numerator by the denominator (long division), or scale the denominator to 10, 100, 1000.', M(n + '/' + d) + ' = ' + String(n / d).replace('.', ',') + '.');
+    const dec = (n / d).toFixed(8); const right = (function () { const digits = []; let r = n % d, ip = Math.floor(n / d); const seen = {}; let i = 0; while (r !== 0 && seen[r] === undefined) { seen[r] = i++; r *= 10; digits.push(Math.floor(r / d)); r = r % d; } const st = seen[r]; const pre = digits.slice(0, st).join(''), per = digits.slice(st).join(''); return ip + ',' + pre + '<span style="text-decoration:overline">' + per + '</span>'; })();
+    const wrongs = [(Math.round(n / d * 100) / 100).toString().replace('.', ','), (Math.round(n / d * 1000) / 1000).toString().replace('.', ',') + '0', (Math.round(n / d * 10000) / 10000).toString().replace('.', ',') + '…'];
+    return ch(p('Write <b>' + M(n + '/' + d) + '</b> as a decimal (the bar shows the repeating part).'), right, wrongs.map(w => w.replace(/…$/, '')), 'Use long division until the remainders repeat. The digits that repeat get a bar.', M(n + '/' + d) + ' = ' + right + '.');
+  },
+  function setStatement(l) {
+    const S = [['−2', 'ℕ', false], ['0', 'ℕ', true], ['−7', 'ℚ', true], ['0,333…', 'ℚ', true], ['√2', 'ℝ', true], ['√2', 'ℚ', false], ['∛−81', 'ℕ', false], ['π', 'ℚ', false], ['1 2/9', 'ℝ', true], ['(−√3)⁴', 'ℤ', true], ['0,16…', 'ℚ', true], ['0,78', 'ℤ', false], ['√−9', 'ℝ', false], ['−8', 'ℕ', false]]; const s = pick(S); const sym = s[2] ? '∈' : '∉';
+    return ch(p('Which statement is true?'), s[0] + ' ' + sym + ' ' + s[1], [s[0] + ' ' + (s[2] ? '∉' : '∈') + ' ' + s[1]], 'ℕ ⊂ ℤ ⊂ ℚ ⊂ ℝ. Check which sets the number belongs to.', s[0] + (s[2] ? ' is' : ' is not') + ' an element of ' + s[1] + '.');
+  },
+  function mixedAsInteger(l) {
+    const w1 = ri(1, 5), w2 = ri(1, 5), d = pick([3, 4, 5, 8]); const a = ri(1, d - 1), c = ri(1, d - 1); const op = pick(['+', '-']); const v = (w1 + a / d) + (op === '+' ? 1 : -1) * (w2 + c / d); const isInt = Math.abs(v - Math.round(v)) < 1e-9;
+    const mx = (w, a) => '<span class="mx">' + w + '<span class="fr"><span class="nu">' + a + '</span><span class="de">' + d + '</span></span></span>';
+    return ch(p('Calculate ' + mx(w1, a) + ' ' + (op === '+' ? '+' : '−') + ' ' + mx(w2, c) + '. Is the result an element of ℤ?'), isInt ? 'Yes, it is an integer' : 'No, it is not an integer', [isInt ? 'No, it is not an integer' : 'Yes, it is an integer'], 'Change to improper fractions, use the common denominator ' + d + ', and see if the fraction simplifies to a whole number.', 'The result is ' + M(ratText(Math.round((w1 * d + a + (op === '+' ? 1 : -1) * (w2 * d + c))), d)) + ', ' + (isInt ? 'a whole number' : 'not a whole number') + '.');
+  }
+);
+G['1.3'].push(
+  function divideRoots(l) {
+    const r = pick([2, 3, 5, 7]), k = pick([2, 3]), a = ri(2, 5), b = ri(1, 3); const inner = r * k * k; const A2 = a * k, B2 = b; const g = gcd(A2, B2);
+    if (l === 0) return ex(p('Simplify ' + M('√' + (r * k * k * 3) + '/√3').replace(/·/g, '') + '.'), radStr(k, r), 'root', 'Combine into one root: √a ÷ √b = √(a ÷ b).', M('√' + (r * k * k * 3) + '/√3') + ' = ' + M('√' + (r * k * k)) + ' = ' + M(radStr(k, r)) + '.');
+    const ansR = (B2 / g === 1) ? radStr(A2 / g, r) : radStr(A2 / g, r) + '/' + (B2 / g);
+    return ex(p('Simplify ' + M(a + '√' + (inner * r) + '/(' + b + '√' + r + ')') + '.'), ansR, 'root', 'Divide the roots: √' + (inner * r) + ' ÷ √' + r + ' = √' + inner + '. Then cancel the numbers.', M(a + '√' + (inner * r) + '/(' + b + '√' + r + ')') + ' = ' + M(a + '√' + inner + '/' + b) + ' = ' + M(ansR) + '.');
+  },
+  function pythRoot(l) {
+    const a = pick([2, 3, 5, 7, 10, 13]), b = pick([2, 3, 4, 5, 6]); const h2 = a + b * b; const [o, r] = sqrtSplit(h2);
+    return ex(p('A right-angled triangle has legs ' + M('√' + a) + ' cm and ' + b + ' cm. How long is the hypotenuse? (Simplified root.)'), radStr(o, r), 'root', 'Pythagoras: c² = (√' + a + ')² + ' + b + '². Remember (√' + a + ')² = ' + a + '.', 'c² = ' + a + ' + ' + (b * b) + ' = ' + h2 + ', so c = ' + M('√' + h2) + ' = ' + M(radStr(o, r)) + '.');
+  },
+  function rootOfFractionSimp(l) {
+    const t = pick(l === 0 ? [[1, 2], [1, 3], [1, 5]] : [[2, 5], [4, 7], [3, 8], [5, 8], [9, 32], [7, 18]]); const [a, b] = t; const num = Math.sqrt(a), den = b; const [o1, r1] = sqrtSplit(a), [o2, r2] = sqrtSplit(b);
+    // sqrt(a/b) = sqrt(a*b)/b
+    const ab = a * b; const [o, r] = sqrtSplit(ab); const g = gcd(o, b); const nn = o / g, dd = b / g; const ans = (r === 1 ? String(nn) : (nn === 1 ? '' : nn) + '√' + r) + (dd === 1 ? '' : '/' + dd);
+    return ex(p('Write ' + M('√(' + a + '/' + b + ')') + ' without a root in the denominator and as simple as possible.'), ans, 'root', 'Write √(a/b) = √a / √b. Multiply top and bottom by the root in the denominator, then simplify.', M('√(' + a + '/' + b + ')') + ' = ' + M('√' + ab + '/' + b) + ' = ' + M(ans) + '.');
+  },
+  function calcNth(l) {
+    const k = pick([[3, 100], [3, 50], [3, 7], [4, 20], [4, 2], [5, 100], [3, -98], [3, -35], [4, 75]]); const s = sym[k[0]]; const v = Math.round(Math.sign(k[1]) * Math.pow(Math.abs(k[1]), 1 / k[0]) * 1000) / 1000;
+    return nu(p('Use your calculator: ' + M(s + k[1]) + ' = ? (Round to 3 decimals.)'), v, 'Use the nth-root key (ˣ√) or the power 1/n.', M(s + k[1]) + ' ≈ ' + String(v).replace('.', ',') + '.');
+  },
+  function orderRoots(l) {
+    const set = pick([[['∛-20', Math.cbrt(-20)], ['∛-100', Math.cbrt(-100)], ['⁴√40', Math.pow(40, .25)], ['∛30', Math.cbrt(30)], ['⁴√1200', Math.pow(1200, .25)], ['√64', 8]], [['∛15', Math.cbrt(15)], ['√10', Math.sqrt(10)], ['⁴√50', Math.pow(50, .25)], ['∛-9', Math.cbrt(-9)]]]);
+    const sorted = set.slice().sort((a, b) => a[1] - b[1]); const small = sorted[0], big = sorted[sorted.length - 1]; const askBig = pick([true, false]);
+    const right = askBig ? big : small; return ch(p('Which of these numbers is the <b>' + (askBig ? 'largest' : 'smallest') + '</b>? ' + set.map(x => M(x[0])).join(', ')), M(right[0]), shuffle(set.filter(x => x !== right)).slice(0, 3).map(x => M(x[0])), 'Estimate each root between two whole numbers (e.g. 3³ = 27 < 30 < 4³ = 64). Negative roots are smaller than positive ones.', 'Smallest to largest: ' + sorted.map(x => M(x[0])).join(' < ') + '.');
+  }
+);
+G['1.5'].push(function hcfLcmPrimes(l) {
+  const P3 = [2, 3, 5, 7, 11, 13]; const mk = () => { let n = 1; const used = {}; for (let i = 0; i < ri(3, 4); i++) { const q = pick(P3); used[q] = (used[q] || 0) + 1; n *= q; } return [n, used]; }; let a, b; do { a = mk()[0]; b = mk()[0]; } while (a === b || a > 3000 || b > 3000 || gcd(a, b) === 1);
+  const lcmQ = pick([true, false]); const ans = lcmQ ? lcm(a, b) : gcd(a, b);
+  return nu(p('Calculate the <b>' + (lcmQ ? 'LCM' : 'HCF') + '</b> of <b>' + a + '</b> and <b>' + b + '</b> with their prime factorisations.'), ans, (lcmQ ? 'LCM: every prime factor, with its highest exponent.' : 'HCF: only the common prime factors, with their lowest exponent.'), a + ' = ' + M(pf(a)) + ', ' + b + ' = ' + M(pf(b)) + '. ' + (lcmQ ? 'LCM' : 'HCF') + ' = ' + ans + '.');
+});
+
 const SECTIONS = [
   { id: '1.0', title: '1.0 Arithmetic sequences', sub: 'Terms, differences, Gauss' },
   { id: '1.1', title: '1.1 Prime factorisation', sub: 'Primes, divisors, squares and cubes' },
@@ -622,12 +691,12 @@ const L = (id, title, sub, gens, xg, extra) => Object.assign({ id, title, sub, g
 const LESSONS = [
   L('L1', 'Lesson 1 · 1.0 Arithmetic sequences', 'Paragraph 1.0', nm('1.0', ['nthTerm', 'difference', 'gauss', 'sumSeq', 'howManyTerms']), ALLX('1.0')),
   L('L2', 'Lesson 2 · 1.1 B Prime factorisation', 'Paragraph 1.1', ALL('1.1'), ALLX('1.1')),
-  L('L3', 'Lesson 3 · 1.2 A Rational numbers', 'Paragraph 1.2', nm('1.2', ['classify', 'decimalType', 'trueFalse']), nm('1.2', ['sqrtIrrational'])),
-  L('L4', 'Lesson 4 · 1.2 B Real numbers', 'Paragraph 1.2', nm('1.2', ['classify', 'whichSet', 'trueFalse', 'decimalType']), ALLX('1.2')),
-  L('L5', 'Lesson 5 · 1.3 A Square roots', 'Paragraph 1.3', nm('1.3', ['simplifyRoot', 'calcRoots', 'rationalise', 'quotientRoots']), nm('1.3', ['mixedFrac', 'sumRationalise'])),
-  L('L6', 'Lesson 6 · 1.3 B nth power roots', 'Paragraph 1.3', nm('1.3', ['nthRootCalc', 'undefinedRoot', 'expressionRoots']), nm('1.3', ['rootEq'])),
-  L('L7', 'Lesson 7 · 1.3 C Roots practice', 'Paragraph 1.3', nm('1.3', ['nthRootCalc', 'undefinedRoot', 'compareRoots', 'expressionRoots', 'rationalise']), nm('1.3', ['sumRationalise', 'rootEq'])),
-  L('L8', 'Lesson 8 · 1.5 A LCM and HCF', 'Paragraph 1.5', nm('1.5', ['hcfTwo', 'lcmTwo', 'productRule', 'runners', 'tiles']), nm('1.5', ['threeNumbers', 'lcmHcfSum'])),
+  L('L3', 'Lesson 3 · 1.2 A Rational numbers', 'Paragraph 1.2', nm('1.2', ['classify', 'decimalType', 'decimalToFraction', 'fractionToDecimal', 'mixedAsInteger', 'trueFalse']), nm('1.2', ['sqrtIrrational'])),
+  L('L4', 'Lesson 4 · 1.2 B Real numbers', 'Paragraph 1.2', nm('1.2', ['classify', 'whichSet', 'setStatement', 'trueFalse', 'decimalType']), ALLX('1.2')),
+  L('L5', 'Lesson 5 · 1.3 A Square roots', 'Paragraph 1.3', nm('1.3', ['simplifyRoot', 'calcRoots', 'divideRoots', 'pythRoot', 'rootOfFractionSimp', 'rationalise', 'quotientRoots']), nm('1.3', ['mixedFrac', 'sumRationalise'])),
+  L('L6', 'Lesson 6 · 1.3 B nth power roots', 'Paragraph 1.3', nm('1.3', ['nthRootCalc', 'undefinedRoot', 'calcNth', 'expressionRoots']), nm('1.3', ['rootEq'])),
+  L('L7', 'Lesson 7 · 1.3 C Roots practice', 'Paragraph 1.3', nm('1.3', ['nthRootCalc', 'undefinedRoot', 'compareRoots', 'orderRoots', 'expressionRoots', 'rationalise']), nm('1.3', ['sumRationalise', 'rootEq'])),
+  L('L8', 'Lesson 8 · 1.5 A LCM and HCF', 'Paragraph 1.5', nm('1.5', ['hcfTwo', 'lcmTwo', 'hcfLcmPrimes', 'productRule', 'runners', 'tiles']), nm('1.5', ['threeNumbers', 'lcmHcfSum'])),
   L('L9', 'Lesson 9 · 1.5 B Euclidean algorithm', 'Paragraph 1.5', nm('1.5', ['euclid', 'hcfTwo', 'productRule']), nm('1.5', ['euclidBig', 'lcmHcfSum'])),
   L('L10', 'Test preparation · whole chapter', 'Mixed', [].concat(...['1.0', '1.1', '1.2', '1.3', '1.5'].map(ALL)), [].concat(...['1.0', '1.1', '1.2', '1.3', '1.5'].map(ALLX)), { rev: true })
 ];

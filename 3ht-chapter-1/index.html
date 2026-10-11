@@ -715,6 +715,102 @@ XG['1.5'] = [
   }
 ];
 
+/* ---------- additions after the assignment-by-assignment check against the study guide ---------- */
+G['1.1'].push(function nrDivisors(l) {
+  const n = pick(l === 0 ? [12, 18, 20, 24, 28, 30] : [36, 48, 60, 72, 84, 90, 96, 120]); let c = 0; for (let i = 1; i <= n; i++) if (n % i === 0) c++;
+  return nu(p('How many positive divisors does <b>' + n + '</b> have, including 1 and ' + n + '?'), c, 'Write ' + n + ' as a product of primes. Add 1 to each exponent and multiply the results (or list them).', n + ' = ' + M(pf(n)) + '. Add 1 to each exponent and multiply: ' + c + ' divisors.');
+});
+G['1.2'].push(
+  function divideRoots(l) {
+    const r = pick([2, 3, 5, 7]), k = pick([2, 3]), a = ri(2, 5), b = ri(1, 3);
+    if (l === 0) { const m = pick([2, 3, 5]); const A = m * r; return ex(p('Simplify ' + M('√' + (A * r * m * m) + '/√' + (A)) ), String(m * r === 0 ? 1 : Math.sqrt(r * m * m)) === String(Math.sqrt(r * m * m)) && Number.isInteger(Math.sqrt(r * m * m)) ? String(Math.sqrt(r * m * m)) : radStr(m, r), 'root', 'Combine into one root: √a / √b = √(a ÷ b).', M('√' + (A * r * m * m) + '/√' + A) + ' = ' + M('√' + (r * m * m)) + ' = ' + M(radStr(m, r)) + '.'); }
+    const inner = r * k * k, c = ri(2, 4); const num = c * a, den = c * b; const ans = (k * a / b === Math.round(k * a / b)) ? radStr(k * a / b, r) : null;
+    const A2 = a * k, B2 = b; const g = gcd(A2, B2); const ansR = (B2 / g === 1) ? radStr(A2 / g, r) : radStr(A2 / g, r) + '/' + (B2 / g);
+    return ex(p('Simplify ' + M(a + '√' + (inner * r) + '/(' + b + '√' + r + ')') + '.'), ansR, 'root', 'Divide the roots: √' + (inner * r) + ' ÷ √' + r + ' = √' + inner + '. Then cancel the numbers.', M(a + '√' + (inner * r) + '/(' + b + '√' + r + ')') + ' = ' + M(a + '√' + inner + '/' + b) + ' = ' + M(ansR) + '.');
+  },
+  function nthRootFraction(l) {
+    const pool = l === 0 ? [[3, 1, 8, 1, 2], [3, 1, 27, 1, 3], [4, 1, 16, 1, 2], [3, 8, 27, 2, 3]] : [[3, -8, 125, -2, 5], [4, 1, 81, 1, 3], [3, 27, 64, 3, 4], [3, -1, 64, -1, 4], [5, 1, 32, 1, 2], [3, -27, 8, -3, 2]];
+    const [k, a, b, x, y] = pick(pool); const s = { 3: '∛', 4: '⁴√', 5: '⁵√' }[k];
+    return ex(p('Calculate ' + M(s + '(' + a + '/' + b + ')') + '. (Give a fraction like 2/5.)'), x + '/' + y, 'lowest', 'Take the root of the numerator and of the denominator separately.', M(s + '(' + a + '/' + b + ')') + ' = ' + M(x + '/' + y) + '.');
+  },
+  function nthRootDecimal(l) {
+    const pool = [['∛', '0.001', '0.1'], ['∛', '0.008', '0.2'], ['∛', '0.027', '0.3'], ['⁴√', '0.0001', '0.1'], ['∛', '0.125', '0.5'], ['√', '0.04', '0.2'], ['√', '0.49', '0.7']];
+    const q = pick(pool); return nu(p('Calculate ' + M(q[0] + q[1]) + '.'), Number(q[2]), 'Write the decimal as a fraction, or ask: which decimal to the power ' + (q[0] === '∛' ? 3 : q[0] === '⁴√' ? 4 : 2) + ' gives ' + q[1] + '?', M(q[0] + q[1]) + ' = ' + q[2] + '.');
+  },
+  function calcNth(l) {
+    const k = pick([[3, 100], [3, 50], [3, 7], [4, 20], [4, 2], [5, 100], [3, -98], [3, -35], [4, 75]]); const s = { 3: '∛', 4: '⁴√', 5: '⁵√' }[k[0]]; const v = Math.round(Math.sign(k[1]) * Math.pow(Math.abs(k[1]), 1 / k[0]) * 1000) / 1000;
+    return nu(p('Use your calculator: ' + M(s + k[1]) + ' = ? (Round to 3 decimals.)'), v, 'Use the nth-root key (ˣ√) or write the root as a power with exponent 1/n.', M(s + k[1]) + ' ≈ ' + String(v).replace('.', ',') + '.');
+  },
+  function pythRoot(l) {
+    const a = pick([2, 3, 5, 7, 10]), b = pick([4, 5, 6, 3, 2]); const h2 = a + b * b; const [o, r] = sqrtSplit(h2); const legs = 'one leg is ' + M('√' + a) + ' and the other leg is ' + b;
+    return ex(p('A right-angled triangle has legs ' + M('√' + a) + ' cm and ' + b + ' cm. How long is the hypotenuse? (Give your answer as a simplified root.)'), radStr(o, r), 'root', 'Pythagoras: c² = (√' + a + ')² + ' + b + '². Remember (√' + a + ')² = ' + a + '.', 'c² = ' + a + ' + ' + (b * b) + ' = ' + h2 + ', so c = ' + M('√' + h2) + ' = ' + M(radStr(o, r)) + '.');
+  }
+);
+G['1.3'].push(
+  function evalPower(l) {
+    const pool = l === 0 ? [['-2^4', -16], ['(-2)^4', 16], ['(-3)^2', 9], ['-3^2', -9], ['-5^2', -25], ['(-5)^3', -125]] : [['3^3-(-3)^3', 54], ['(-5)^2-5^2', 0], ['-7^2+(-2)^2', -45], ['(-2)^5-3^3', -59], ['-4^2-(-4)^2', -32], ['2^3·(-3)^2', 72]];
+    const q = pick(pool); return nu(p('Calculate ' + M(q[0].replace('·', '*')) + '.'), q[1], 'Powers first. Be careful: −3² means −(3²), but (−3)² means (−3)·(−3).', M(q[0].replace('·', '*')) + ' = ' + q[1] + '.');
+  },
+  function writeAsPower(l) {
+    const v = V(), n = ri(3, 6); const k = pick([2, 3, 5]);
+    if (l === 0) return ex(p('Write as a single power: ' + M(Array(n).fill(v).join('*')) + '. (Type for example <b>a^4</b>.)'), v + '^' + n, 'mono', 'Count how many times the letter is multiplied.', M(Array(n).fill(v).join('*')) + ' = ' + M(v + '^' + n) + '.');
+    const prod = Array(n).fill(k + v).join(' · '); const right = '(' + k + v + ')^' + n; return ch(p('Which power equals ' + M(Array(n).fill(k + v).join('*')) + '?'), M(right), [M(k + v + '^' + n), M('(' + k + v + ')^' + (n + 1)), M('(' + k + v + ')^' + (n - 1))], 'The same factor ' + k + v + ' is multiplied ' + n + ' times, so the whole factor gets the exponent.', prod + ' = ' + M(right) + '.');
+  },
+  function substitute(l) {
+    const v = V(); const x = pick(l === 0 ? [-1, 2, -2, 3] : [-2, -3, 4, -4]); const t = pick([
+      c => [c[0] + '·' + v + '^3', c[0] * x * x * x, c[0] + v + '^3'], c => ['-' + v + '^2-' + v + '^3', -x * x - x * x * x, '−' + v + '² − ' + v + '³'], c => ['(-' + c[1] + v + ')^2', c[1] * c[1] * x * x, '(−' + c[1] + v + ')²'], c => ['1/' + (c[1] * 2) + '·' + v + '^4', x * x * x * x / (c[1] * 2), '¼·'.replace('¼', '1/' + (c[1] * 2)) + v + '⁴']
+    ])([ri(2, 4), ri(2, 6)]);
+    const val = t[1]; if (!Number.isInteger(val * 4)) return G['1.3'].find(g => g.name === 'substitute')(l);
+    return nu(p('Calculate the value of <b>' + M(t[0].replace('·', '*')) + '</b> for <b>' + v + ' = ' + x + '</b>.'), val, 'Substitute ' + x + ' for ' + v + ' (use brackets for a negative number). Powers first.', 'Substitute: ' + M(t[0].replace(new RegExp(v, 'g'), '(' + x + ')').replace('·', '*')) + ' = ' + val + '.');
+  },
+  function divideToFraction(l) {
+    const v = V(); const a = ri(1, 5), b = a * ri(1, 3); const e1 = ri(1, 4), e2 = e1 + ri(1, 3); const src = a + v + '^' + e1 + '/(' + b + v + '^' + e2 + ')';
+    return ex(p('Simplify: ' + M(src) + '. (Type for example <b>1/a^2</b>.)'), ALG.canon(src), 'lowest', 'Divide the numbers and subtract the exponents. If the bottom has more of the letter, the rest stays in the denominator.', M(src) + ' = ' + M(ALG.canon(src)) + '.');
+  },
+  function likeTermsPoly(l) {
+    const [v, w] = V2(); const a = ri(2, 6), b = ri(2, 6), c = ri(1, 5); const src = a + v + '^3' + w + '-' + b + v + w + '^2+' + c + v + '^3' + w; return alg(p('Simplify: ' + M(src) + '.'), src, 'poly', 'Only add or subtract terms with exactly the same letters and exponents.', '');
+  }
+);
+G['1.4'].push(
+  function monoTimesBinom(l) {
+    const v = V(), a = ri(2, 6), b = nz(-6, 6), c = nz(-5, 5), d = pick([1, 2, 3]); const src = (l === 0 ? a : '-' + a) + v + '(' + d + v + (b < 0 ? b : '+' + b) + (l === 2 ? (c < 0 ? c : '+' + c) + v + '^2' : '') + ')'; return alg(p('Expand the brackets: ' + M(src) + '.'), src, 'poly', 'Multiply every term in the brackets by the term in front.', '');
+  },
+  function reverseSpecial(l) {
+    const v = V(); const a = ri(2, 9), s = pick([1, -1]); const sq = l === 0 ? v + '^2' + (s > 0 ? '+' : '-') + 2 * a + v + '+' + a * a : (function () { const c = pick([2, 3, 4, 5]); return c * c + v + '^2' + (s > 0 ? '+' : '-') + 2 * a * c + v + '+' + a * a; })();
+    const c = l === 0 ? 1 : Math.round(Math.sqrt(parseInt(sq))); const sg = s > 0 ? '+' : '−', ng = s > 0 ? '−' : '+'; const right = '(' + (c === 1 ? '' : c) + v + sg + a + ')²'; const wrong = ['(' + (c === 1 ? '' : c) + v + ng + a + ')²', '(' + (c === 1 ? '' : c) + v + sg + 2 * a + ')²', '(' + (c === 1 ? '' : c) + v + ')² ' + (s > 0 ? '+' : '−') + ' ' + a + '²'];
+    return ch(p('Which square equals <b>' + M(sq) + '</b>?'), right, wrong, 'A perfect square trinomial: first² + 2·first·last + last². Check the middle term.', M(sq) + ' = ' + right + '.');
+  },
+  function powerSpecial(l) {
+    const v = V(), n = pick([2, 3]), a = ri(2, 6); const t = pick([[v + '^' + n + '+1', 'sq'], [v + '^' + n + '-' + a, 'sq'], [v + '^' + n + '+' + a, 'dsq']]);
+    const src = t[1] === 'sq' ? '(' + t[0] + ')^2' : '(' + v + '^' + n + '-' + a + ')(' + v + '^' + n + '+' + a + ')'; return alg(p('Expand: ' + M(src) + '. (Use a special product.)'), src, 'poly', 'Treat ' + v + '^' + n + ' as one term: (A + B)² = A² + 2AB + B² and (A − B)(A + B) = A² − B².', '');
+  }
+);
+G['1.5'].push(
+  function numFracAdd(l) {
+    const mk = () => { const d = pick([2, 3, 4, 5, 6, 8]); return [ri(1, d - 1), d]; }; let [a, b] = mk(), [c, d] = mk(); const w1 = ri(1, 3), w2 = ri(1, 2); const sgn2 = pick(['+', '-']);
+    const v1 = w1 + a / b, v2 = w2 + c / d; const val = sgn2 === '+' ? v1 + v2 : v1 - v2; const n = Math.round(val * b * d * 1), D = b * d; const g = gcd(Math.abs(n), D);
+    const txt = M(w1 + ' ' + a + '/' + b + sgn2 + w2 + ' ' + c + '/' + d).replace(/ \+ /, ' + ');
+    const ans = ratText(n, D);
+    if (b === d) return G['1.5'].find(g => g.name === 'numFracAdd')(l);
+    return ex(p('Calculate: ' + mixedHtml(w1, a, b) + ' ' + (sgn2 === '+' ? '+' : '−') + ' ' + mixedHtml(w2, c, d) + '. (Give your answer as an improper fraction like 17/6, or a whole number.)'), ans, 'lowest', 'Change the mixed numbers to improper fractions, use a common denominator, and simplify.', 'Result: ' + M(ans) + '.');
+  },
+  function numFracMulDiv(l) {
+    const mk = () => { const d = pick([2, 3, 4, 5, 6, 7, 8]); return [ri(1, 3), ri(1, d - 1), d]; }; const A = mk(), B = mk(); const mul = l !== 2 ? pick([true, false]) : pick([true, false]);
+    const n1 = A[0] * A[2] + A[1], d1 = A[2], n2 = B[0] * B[2] + B[1], d2 = B[2]; const n = mul ? n1 * n2 : n1 * d2, D = mul ? d1 * d2 : d1 * n2;
+    return ex(p('Calculate: ' + mixedHtml(A[0], A[1], A[2]) + ' ' + (mul ? '·' : '÷') + ' ' + mixedHtml(B[0], B[1], B[2]) + '. (Give your answer as a simplified fraction like 7/4.)'), ratText(n, D), 'lowest', 'Write the mixed numbers as improper fractions. For ÷: keep, flip, change. Then cancel.', 'Answer: ' + M(ratText(n, D)) + '.');
+  },
+  function numberAndFraction(l) {
+    const v = V(), a = ri(2, 9), b = ri(2, 7), w = pick([1, 2, 3]), e = pick([1, 2]); const src = pick([w + '-' + a + '/' + v + (e > 1 ? '^2' : ''), a + '/(' + b + v + ')-' + w]); return fracQ(p('Calculate and simplify: ' + M(src) + '. (Type for example <b>(x+3)/x</b>.)'), src, 'Write the whole number as a fraction with the same denominator, then add or subtract.');
+  },
+  function intDivFraction(l) {
+    const v = V(), w = pick(['a', 'b', 'c', 'm', 'n', 'p'].filter(x => x !== v)); const a = ri(2, 12), b = ri(2, 7), c = ri(2, 6); const src = pick([a + '÷(' + w + '/' + b + ')', (c + v) + '/' + b + '÷' + (c + 1) + v, '(' + c + v + '/' + b + ')*' + b + v]); return fracQ(p('Calculate: ' + M(src) + '. (Give your answer as a simplified fraction or expression.)'), src, 'Dividing by a fraction means multiplying by its reciprocal (keep, flip, change).');
+  },
+  function powerOfFraction(l) {
+    const [v, w] = V2(); const a = ri(1, 4), b = ri(2, 4), e = pick([2, 3]); const src = '(' + a + v + '^' + ri(1, 3) + '/(' + b + w + '^' + ri(1, 2) + '))^' + e; return fracQ(p('Simplify: ' + M(src) + '. (Type for example <b>x^4/(9y^2)</b>.)'), src, 'Raise the numerator and the denominator to the power separately.');
+  }
+);
+function mixedHtml(w, a, b) { return '<span class="mx">' + w + '<span class="fr"><span class="nu">' + a + '</span><span class="de">' + b + '</span></span></span>'; }
+
 /* ---------- sections and lessons ---------- */
 const SECTIONS = [
   { id: '1.1', title: '1.1 Types of numbers', sub: 'Natural, integer, rational, real; prime factors' },
@@ -727,17 +823,17 @@ const nm = (sec, names) => names.map(n => [sec, n]);
 const ALL = sec => (G[sec] || []).map(fn => [sec, fn.name]), ALLX = sec => (XG[sec] || []).map(fn => [sec, fn.name]);
 const L = (id, title, sub, gens, xg, extra) => Object.assign({ id, title, sub, gens, xg }, extra || {});
 const LESSONS = [
-  L('L1', 'Lesson 1 · 1.1 Types of numbers', 'Paragraph 1.1', nm('1.1', ['classify', 'trueFalseSets', 'irrationalPick', 'primeFact', 'productOfNumbers']), nm('1.1', ['smallestSquare', 'rationalSqrt', 'countRational'])),
-  L('L2', 'Lesson 2 · 1.2 A Calculations with roots', 'Paragraph 1.2', nm('1.2', ['calcRoots', 'simplifyRoot', 'multRoots', 'rootOfFraction']), nm('1.2', ['addSimplify', 'rootsFractionSum'])),
-  L('L3', 'Lesson 3 · 1.2 B Higher power roots', 'Paragraph 1.2', nm('1.2', ['nthRootCalc', 'nthUndefined', 'nthMix']), nm('1.2', ['nthRootPow'])),
-  L('L4', 'Lesson 4 · 1.3 A Powers of letters', 'Paragraph 1.3', nm('1.3', ['mulDiv', 'powerOfPower', 'productPower']), nm('1.3', ['longProduct'])),
-  L('L5', 'Lesson 5 · 1.3 B Mixed power questions', 'Paragraph 1.3', nm('1.3', ['productPower', 'addLike', 'divideTerms', 'mulDiv']), nm('1.3', ['quotientPower', 'sumOfPowers'])),
+  L('L1', 'Lesson 1 · 1.1 Types of numbers', 'Paragraph 1.1', nm('1.1', ['classify', 'trueFalseSets', 'irrationalPick', 'primeFact', 'productOfNumbers', 'nrDivisors']), nm('1.1', ['smallestSquare', 'rationalSqrt', 'countRational'])),
+  L('L2', 'Lesson 2 · 1.2 A Calculations with roots', 'Paragraph 1.2', nm('1.2', ['calcRoots', 'simplifyRoot', 'multRoots', 'divideRoots', 'rootOfFraction', 'pythRoot']), nm('1.2', ['addSimplify', 'rootsFractionSum'])),
+  L('L3', 'Lesson 3 · 1.2 B Higher power roots', 'Paragraph 1.2', nm('1.2', ['nthRootCalc', 'nthUndefined', 'nthMix', 'nthRootFraction', 'nthRootDecimal', 'calcNth']), nm('1.2', ['nthRootPow'])),
+  L('L4', 'Lesson 4 · 1.3 A Powers of letters', 'Paragraph 1.3', nm('1.3', ['evalPower', 'writeAsPower', 'substitute', 'mulDiv', 'powerOfPower', 'productPower']), nm('1.3', ['longProduct'])),
+  L('L5', 'Lesson 5 · 1.3 B Mixed power questions', 'Paragraph 1.3', nm('1.3', ['productPower', 'addLike', 'likeTermsPoly', 'divideTerms', 'divideToFraction', 'mulDiv']), nm('1.3', ['quotientPower', 'sumOfPowers'])),
   L('L6', 'Lesson 6 · 1.3 B2 Signs and fraction coefficients', 'Paragraph 1.3', nm('1.3', ['signs', 'fracCoef', 'negativeSquare', 'powerOfPower']), nm('1.3', ['fracPowers'])),
-  L('L7', 'Lesson 7 · 1.4 A Brackets', 'Paragraph 1.4', nm('1.4', ['expandBasic', 'minusBracket', 'binomMul', 'threeFactors']), nm('1.4', ['chainBrackets'])),
-  L('L8', 'Lesson 8 · 1.4 B Special products', 'Paragraph 1.4', nm('1.4', ['special', 'identifyForm', 'binomMul']), nm('1.4', ['bigSpecial', 'twoLetters', 'differenceOfSquares2', 'findNumber'])),
-  L('L9', 'Lesson 9 · 1.5 A Fractions with letters', 'Paragraph 1.5', nm('1.5', ['addLikeDen', 'addUnlike', 'cancel']), nm('1.5', ['sumDiff'])),
-  L('L10', 'Lesson 10 · 1.5 B Multiplying and dividing fractions', 'Paragraph 1.5', nm('1.5', ['multFrac', 'cancel', 'simplifyBinom']), nm('1.5', ['binomialDen'])),
-  L('L11', 'Lesson 11 · 1.5 C Dividing fractions', 'Paragraph 1.5', nm('1.5', ['divFrac', 'multFrac', 'simplifyBinom']), nm('1.5', ['divByTerm', 'threeFracs'])),
+  L('L7', 'Lesson 7 · 1.4 A Brackets', 'Paragraph 1.4', nm('1.4', ['expandBasic', 'monoTimesBinom', 'minusBracket', 'binomMul', 'threeFactors']), nm('1.4', ['chainBrackets'])),
+  L('L8', 'Lesson 8 · 1.4 B Special products', 'Paragraph 1.4', nm('1.4', ['special', 'identifyForm', 'powerSpecial', 'reverseSpecial', 'binomMul']), nm('1.4', ['bigSpecial', 'twoLetters', 'differenceOfSquares2', 'findNumber'])),
+  L('L9', 'Lesson 9 · 1.5 A Fractions with letters', 'Paragraph 1.5', nm('1.5', ['addLikeDen', 'addUnlike', 'numberAndFraction', 'numFracAdd', 'cancel']), nm('1.5', ['sumDiff'])),
+  L('L10', 'Lesson 10 · 1.5 B Multiplying and dividing fractions', 'Paragraph 1.5', nm('1.5', ['multFrac', 'numFracMulDiv', 'cancel', 'simplifyBinom', 'powerOfFraction']), nm('1.5', ['binomialDen'])),
+  L('L11', 'Lesson 11 · 1.5 C Dividing fractions', 'Paragraph 1.5', nm('1.5', ['divFrac', 'multFrac', 'intDivFraction', 'simplifyBinom']), nm('1.5', ['divByTerm', 'threeFracs'])),
   L('L12', 'Test preparation · whole chapter', 'Mixed', [].concat(...['1.1', '1.2', '1.3', '1.4', '1.5'].map(ALL)), [].concat(...['1.1', '1.2', '1.3', '1.4', '1.5'].map(ALLX)), { rev: true })
 ];
 return { key: 'nx-3ht-ch1-v1', SECTIONS, LESSONS, G, XG, defaultMode: 'para' };

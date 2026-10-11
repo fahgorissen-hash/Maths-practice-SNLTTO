@@ -458,7 +458,7 @@ function cuboidSVG(hl) {
 }
 function netSVG(cells, nums, blank) {
   const U = 38; const xs = cells.map(c => c[0]), ys = cells.map(c => c[1]); const x0 = Math.min(...xs), y0 = Math.min(...ys), w = Math.max(...xs) - x0 + 1, h = Math.max(...ys) - y0 + 1;
-  let s = ''; cells.forEach((c, i) => { const X = 8 + (c[0] - x0) * U, Y = 8 + (c[1] - y0) * U; s += '<rect x="' + X + '" y="' + Y + '" width="' + U + '" height="' + U + '" fill="' + (blank === i ? '#fff4d6' : '#eaf2fb') + '" stroke="#345" stroke-width="2"/>'; if (nums) s += '<text x="' + (X + U / 2) + '" y="' + (Y + U / 2 + 7) + '" font-size="20" text-anchor="middle" font-weight="700" fill="#123">' + (blank === i ? '?' : nums[i]) + '</text>'; });
+  let s = ''; cells.forEach((c, i) => { const X = 8 + (c[0] - x0) * U, Y = 8 + (c[1] - y0) * U; s += '<rect x="' + X + '" y="' + Y + '" width="' + U + '" height="' + U + '" fill="' + (blank === i ? '#fff4d6' : '#eaf2fb') + '" stroke="#345" stroke-width="2"/>'; if (nums) s += '<text x="' + (X + U / 2) + '" y="' + (Y + U / 2 + 7) + '" font-size="20" text-anchor="middle" font-weight="700" fill="#123">' + (blank === i ? '?' : nums[i] == null ? '' : nums[i]) + '</text>'; });
   return svg(w * U + 16, h * U + 16, s).replace('class="fig"', 'class="fig" style="max-width:' + Math.min(360, w * U + 16) + 'px"');
 }
 function foldNet(cells) {
@@ -687,8 +687,9 @@ G['2.5'] = [
   },
   function diceNet(l) {
     const cells = randNet(true), fold = foldNet(cells); const pairs = shuffle([[1, 6], [2, 5], [3, 4]]).map(x => Math.random() < .5 ? x : [x[1], x[0]]);
-    const num = fold.map(face => pairs[Math.floor(face / 2)][face % 2]); const blank = ri(0, 5); const opp = fold.findIndex(face => face === (fold[blank] ^ 1)); const ans = num[blank];
-    return nu(p('This is the net of a <b>dice</b>. On a dice, the numbers on opposite faces add up to 7. Which number belongs on the square with the question mark?') + netSVG(cells, num, blank), ans, 'Find the face that is opposite the question mark when you fold the net. Then the number on it plus the missing number must be 7.', 'The opposite face has ' + num[opp] + ', so the missing number is 7 − ' + num[opp] + ' = ' + ans + '.');
+    const numAll = fold.map(face => pairs[Math.floor(face / 2)][face % 2]); const blank = ri(0, 5); const opp = fold.findIndex(face => face === (fold[blank] ^ 1)); const ans = numAll[blank];
+    const others = shuffle([0, 1, 2, 3, 4, 5].filter(i => i !== blank && i !== opp)).slice(0, 2); const num = numAll.map((v, i) => (i === opp || others.includes(i)) ? v : null);
+    return nu(p('This is the net of a <b>dice</b>. On a dice, the numbers on opposite faces add up to 7. Which number belongs on the square with the question mark?') + netSVG(cells, num, blank), ans, 'Find the face that is opposite the question mark when you fold the net. Then the number on it plus the missing number must be 7.', 'The opposite face has ' + numAll[opp] + ', so the missing number is 7 − ' + num[opp] + ' = ' + ans + '.');
   },
   function surfCuboid(l) {
     const a = ri(2, 9), b = ri(2, 8), c = ri(2, 8); const s = 2 * (a * b + a * c + b * c); if (l === 0) { const e = ri(2, 9); return nu(p('What is the <b>surface area</b> of a cube with edges of <b>' + e + '</b> cm? (in cm²)'), 6 * e * e, 'A cube has 6 equal square faces.', '6 · ' + e + '² = ' + 6 * e * e + ' cm².'); }

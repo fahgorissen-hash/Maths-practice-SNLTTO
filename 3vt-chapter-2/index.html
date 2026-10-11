@@ -682,6 +682,44 @@ XG['2.5'] = [
   }
 ];
 
+/* ---------- additions after the assignment-by-assignment check ---------- */
+const radS = (c, r) => (c === 1 && r > 1 ? '' : String(c)) + (r > 1 ? '√' + r : '');
+G['2.2'].push(
+  function pythSimilar(l) {
+    const T = pick([[3, 4, 5], [6, 8, 10], [5, 12, 13], [8, 15, 17]]); const k = pick([2, 3, 1.5, 2.5]); const [a, b] = T; const h = Math.hypot(a, b);
+    return nu(p('Triangle KLM is right-angled at L with KL = ' + a + ' and LM = ' + b + '. Triangle PQR ~ KLM (P ↔ K, Q ↔ L, R ↔ M). In triangle PQR, PQ = ' + f(a * k) + '. Calculate <b>PR</b> (the hypotenuse of PQR).'), h * k, 'First find KM with Pythagoras. Then use the scale factor PQ ÷ KL.', 'KM = √(' + a + '² + ' + b + '²) = ' + f(h) + '. Scale factor = ' + f(a * k) + ' ÷ ' + a + ' = ' + f(k) + '. PR = ' + f(h) + ' × ' + f(k) + ' = ' + f(h * k) + '.');
+  },
+  function rightSimilar(l) {
+    const T = pick([[3, 4, 5], [6, 8, 10], [5, 12, 13], [8, 15, 17], [9, 12, 15]]); const k = pick([2, 3, 1.5]); const same = pick([true, false, true]); const [a, b, c] = T;
+    const a2 = a * k, b2 = same ? b * k : b * k + pick([1, 2]);
+    return ch(p('Triangle 1 is right-angled with legs ' + a + ' and ' + b + '. Triangle 2 is right-angled with legs ' + f(a2) + ' and ' + f(b2) + '. Are the triangles similar?'), same ? 'Yes, ssr (two sides in the same ratio, with the right angle)' : 'No', [same ? 'No' : 'Yes, ssr (two sides in the same ratio, with the right angle)'], 'Both triangles have a right angle. Check whether the two legs have the same ratio: if so, they are similar by ssr.', f(a2) + '/' + a + ' = ' + f(a2 / a) + (same ? ' and ' + f(b2) + '/' + b + ' = ' + f(b2 / b) + ': equal, so similar.' : ' but ' + f(b2) + '/' + b + ' = ' + f(b2 / b) + ': not equal, so not similar.'));
+  },
+  function specialTriangle(l) {
+    const t = pick(l === 0 ? ['45a', '30a'] : ['45a', '45b', '30a', '30b', '30c']);
+    if (t === '45a') { const a = ri(2, 9); return ex(p('A right-angled triangle has angles 45°, 45° and 90°. The legs are ' + a + ' cm. How long is the hypotenuse? (Exact answer, for example <b>3√2</b>.)'), radS(a, 2), 'root', 'In a 45°-45°-90° triangle the sides are in the ratio 1 : 1 : √2.', 'Hypotenuse = ' + a + ' · √2 = ' + M(radS(a, 2)) + ' cm.'); }
+    if (t === '45b') { const a = ri(2, 9); return nu(p('A right-angled triangle has angles 45°, 45° and 90°. The hypotenuse is ' + M(a + '√2') + ' cm. How long is a leg (in cm)?'), a, 'The sides are in the ratio 1 : 1 : √2, so the leg = hypotenuse ÷ √2.', 'Leg = ' + M(a + '√2') + ' ÷ √2 = ' + a + ' cm.'); }
+    if (t === '30a') { const s = ri(2, 9); return ex(p('A right-angled triangle has angles 30°, 60° and 90°. The shortest side (opposite 30°) is ' + s + ' cm. How long is the <b>longer leg</b>? (Exact answer, for example <b>4√3</b>.)'), radS(s, 3), 'root', 'In a 30°-60°-90° triangle the sides are in the ratio 1 : √3 : 2.', 'Longer leg = ' + s + ' · √3 = ' + M(radS(s, 3)) + ' cm.'); }
+    if (t === '30b') { const s = ri(2, 9); return nu(p('A right-angled triangle has angles 30°, 60° and 90°. The shortest side is ' + s + ' cm. How long is the <b>hypotenuse</b> (in cm)?'), 2 * s, 'The sides are in the ratio 1 : √3 : 2.', 'Hypotenuse = 2 · ' + s + ' = ' + 2 * s + ' cm.'); }
+    const s = ri(2, 8); return nu(p('A right-angled triangle has angles 30°, 60° and 90°. The longer leg is ' + M(s + '√3') + ' cm. How long is the shortest side (in cm)?'), s, 'The sides are in the ratio 1 : √3 : 2, so the shortest side = longer leg ÷ √3.', 'Shortest side = ' + M(s + '√3') + ' ÷ √3 = ' + s + ' cm.');
+  }
+);
+G['2.3'].push(
+  function exactRatios(l) {
+    let a, b; do { a = ri(2, 8); b = ri(2, 8); } while (a === b || gcd(a, b) > 1 && l === 0 || Number.isInteger(Math.sqrt(a * a + b * b))); const h2 = a * a + b * b; const [o, r] = sqrtSplit(h2); const which = pick(['sin', 'cos']);
+    const num = which === 'sin' ? a : b; const g = gcd(num, o); const nn = num / g, dd = o / g; // ratio = nn/(dd*sqrt r) = nn*sqrt(r)/(dd*r)
+    const den = dd * r; const gg = gcd(nn, den); const ans = (nn / gg === 1 ? '' : nn / gg) + '√' + r + '/' + (den / gg);
+    return ex(p('In a right-angled triangle the legs are ' + a + ' and ' + b + ' (angle α is opposite the leg ' + a + '). Calculate <b>' + which + ' α</b> exactly, without a root in the denominator. (Type for example <b>3√13/13</b>.)'), ans, 'root', 'First the hypotenuse: √(' + a + '² + ' + b + '²) = ' + M(radS(o, r)) + '. Then ' + (which === 'sin' ? 'opposite ÷ hypotenuse' : 'adjacent ÷ hypotenuse') + '. Rationalise the denominator.', which + ' α = ' + num + '/' + M(radS(o, r)) + ' = ' + M(ans) + '.');
+  },
+  function exactTrigValue(l) {
+    const V = [['sin 30°', '1/2'], ['cos 60°', '1/2'], ['sin 60°', '√3/2'], ['cos 30°', '√3/2'], ['tan 30°', '√3/3'], ['tan 60°', '√3'], ['sin 45°', '√2/2'], ['cos 45°', '√2/2'], ['tan 45°', '1']]; const q = pick(V); const all = ['1/2', '√3/2', '√3/3', '√3', '√2/2', '1'];
+    return ch(p('What is the exact value of <b>' + q[0] + '</b>?'), M(q[1]), shuffle(all.filter(x => x !== q[1])).slice(0, 3).map(x => M(x)), 'Use the 30°-60°-90° triangle (sides 1 : √3 : 2) or the 45°-45°-90° triangle (sides 1 : 1 : √2).', q[0] + ' = ' + M(q[1]) + '.');
+  }
+);
+G['2.5'].push(function slopeRun(l) {
+  const pct = pick([5, 8, 10, 12, 14, 20]); const rise = pick([10, 15, 20, 25, 30]); const run = rise * 100 / pct; if (l === 0 && !Number.isInteger(run)) return G['2.5'].find(g => g.name === 'slopeRun')(l);
+  return nu(p('A road has a slope of <b>' + pct + '%</b>. It rises <b>' + rise + ' m</b>. What is the horizontal distance (in m, 1 decimal)?'), Math.round(run * 10) / 10, 'slope % = rise ÷ run × 100%. So run = rise ÷ (slope% ÷ 100).', 'Run = ' + rise + ' ÷ ' + (pct / 100) + ' ≈ ' + f(Math.round(run * 10) / 10) + ' m.');
+});
+
 const SECTIONS = [
   { id: '2.1', title: '2.1 Similar figures', sub: 'Corresponding angles and sides, scale factor' },
   { id: '2.2', title: '2.2 Similar triangles', sub: 'aa, ssr, scale factor, Pythagoras' },
@@ -694,13 +732,13 @@ const nm = (sec, names) => names.map(n => [sec, n]);
 const L = (id, title, sub, date, gens, xg, extra) => Object.assign({ id, title, sub, date, gens, xg }, extra || {});
 const LESSONS = [
   L('L0', 'Lesson · 2.1 Similar figures', '2.1', null, nm('2.1', ['quadAngle', 'polySide', 'similarFigures', 'aspectRatio', ]), nm('2.1', ['insideRect', 'twoFactors'])),
-  L('L0b', 'Lesson · 2.2 Similar triangles', '2.2', null, nm('2.2', ['missingAngle', 'anglePair', 'aaOrSss', 'similarSide', 'matchingOrder']), nm('2.2', ['ratioTable', 'nestedTri', 'shadow'])),
+  L('L0b', 'Lesson · 2.2 Similar triangles', '2.2', null, nm('2.2', ['missingAngle', 'anglePair', 'aaOrSss', 'similarSide', 'matchingOrder', 'pythSimilar', 'rightSimilar', 'specialTriangle']), nm('2.2', ['ratioTable', 'nestedTri', 'shadow'])),
   L('L1', 'Lesson · 2.3 A Sine, cosine and tangent', 'Thu 1 Oct', '2026-10-01', nm('2.3', ['whichSide', 'soh', 'ratioFromTriangle']), nm('2.3', ['tanRatioSide', 'exactTrig'])),
   L('L2', 'Lesson · 2.3 B Why the ratios work', 'Fri 2 Oct', '2026-10-02', nm('2.3', ['sameAngleSame', 'ratioFromTriangle', 'tanFromSinCos', 'identity']), nm('2.3', ['sinHyp', 'tanRatioSide'])),
-  L('L3', 'Lesson · 2.3 C Ratios explored', 'Tue 6 Oct', '2026-10-06', nm('2.3', ['soh', 'ratioFromTriangle', 'tanFromSinCos', 'identity']), ALLX('2.3')),
+  L('L3', 'Lesson · 2.3 C Ratios explored', 'Tue 6 Oct', '2026-10-06', nm('2.3', ['soh', 'ratioFromTriangle', 'tanFromSinCos', 'identity', 'exactRatios', 'exactTrigValue']), ALLX('2.3')),
   L('L4', 'Lesson · 2.4 A Calculating sides', 'Thu 8 Oct', '2026-10-08', nm('2.4', ['sideKnownHyp', 'sideTan', 'hypFromSide', 'thirdAngle']), nm('2.4', ['ladder', 'bothSides'])),
   L('L5', 'Lesson · 2.4 B Calculating angles', 'Fri 9 Oct', '2026-10-09', nm('2.4', ['angleInverse', 'angleFromTwo', 'thirdAngle']), nm('2.4', ['angleOfElevation', 'ladder'])),
-  L('L6', 'Lesson · 2.5 A Slopes and auxiliary lines', 'Tue 27 Oct', '2026-10-27', nm('2.5', ['slopePct', 'slopeToAngle', 'angleToSlope', 'steeper', 'isoscelesBase', 'isoscelesAngle']), nm('2.5', ['slopeLength', 'triangleAltitude'])),
+  L('L6', 'Lesson · 2.5 A Slopes and auxiliary lines', 'Tue 27 Oct', '2026-10-27', nm('2.5', ['slopePct', 'slopeToAngle', 'slopeRun', 'angleToSlope', 'steeper', 'isoscelesBase', 'isoscelesAngle']), nm('2.5', ['slopeLength', 'triangleAltitude'])),
   L('L7', 'Lesson · 2.5 B Trigonometry in solids', 'Thu 29 Oct', '2026-10-29', nm('2.5', ['cuboidDiag', 'pyramidAngle', 'isoscelesAngle']), nm('2.5', ['cubeAngle', 'triangleAltitude'])),
   L('L8', 'Revision · mock test chapters 1 and 2', 'Fri 30 Oct', '2026-10-30', [].concat(...['2.1', '2.2', '2.3', '2.4', '2.5'].map(ALL)), [].concat(...['2.1', '2.2', '2.3', '2.4', '2.5'].map(ALLX)), { rev: true })
 ];
