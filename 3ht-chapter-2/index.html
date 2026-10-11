@@ -392,6 +392,7 @@ function check(q, u) {                      // -> {ok, why?, msg?}
   if (q.type === 'point') { const p = parsePoint(u); return { ok: !!p && Math.abs(p[0] - q.ans[0]) < 1e-9 && Math.abs(p[1] - q.ans[1]) < 1e-9 }; }
   if (q.type === 'choice') return { ok: Number(u) === q.ans };
   if (q.type === 'expr') return gradeExpr(q, u);
+  if (q.type === 'click') { const got = Array.isArray(u) ? u : []; if (q.valid) { let ok = false; try { ok = !!q.valid(got); } catch (e) { } return { ok }; } const k = p => p[0] + ',' + p[1]; return { ok: got.map(k).sort().join('|') === (q.ans || []).map(k).sort().join('|') }; }
   return { ok: false };
 }
 const grade = (q, u) => check(q, u).ok;
@@ -402,6 +403,7 @@ function answerText(q) {
   if (q.type === 'point') return '(' + f(q.ans[0]) + ', ' + f(q.ans[1]) + ')';
   if (q.type === 'choice') return q.opts[q.ans];
   if (q.type === 'expr') return M(q.ans, q.noVars ? { noVars: true } : {});
+  if (q.type === 'click') return (q.ans || []).map(p => '(' + f(p[0]) + ', ' + f(p[1]) + ')').join(' and ');
   return '';
 }
 
@@ -442,7 +444,50 @@ function engine(def) {
   }
   return { KEY: def.key, SECTIONS, LESSONS, G, XG, make, makeTest, grade, check, answerText, evalNum: s => evalAst(parse(String(s), { noVars: true }), {}), parseNum, parsePoint, f, M, parse, defaultMode: def.defaultMode || 'lesson' };
 }
-const U = { ri, pick, shuffle, nz, f, gcd, lcm, isPrime, primeFactors, squarefree, sqrtSplit, parse, evalAst, numEq, R, M, fr, mixed, tbl, fmtNum, ratText, formCheck, gradeExpr, toRF, flat, monoTerm, Poly, engine, esc, parseNum };
+
+/* ---------- click grid (shared) ---------- */
+let _gid = 0;
+function clipLine(p, d, xmin, xmax, ymin, ymax) {   // line through p with direction d, clipped to the rectangle
+  let t0 = -1e9, t1 = 1e9;
+  for (const [pp, dd, lo, hi] of [[p[0], d[0], xmin, xmax], [p[1], d[1], ymin, ymax]]) {
+    if (Math.abs(dd) < 1e-12) { if (pp < lo || pp > hi) return null; continue; }
+    let a = (lo - pp) / dd, b = (hi - pp) / dd; if (a > b) [a, b] = [b, a]; t0 = Math.max(t0, a); t1 = Math.min(t1, b);
+  }
+  if (t0 > t1) return null; return { a: [p[0] + d[0] * t0, p[1] + d[1] * t0], b: [p[0] + d[0] * t1, p[1] + d[1] * t1] };
+}
+function gridSVG(o) {
+  const u = o.u || 26, pad = 24, xmin = o.xmin, xmax = o.xmax, ymin = o.ymin, ymax = o.ymax, cells = !!o.cells;
+  const w = (xmax - xmin + (cells ? 1 : 0)) * u + 2 * pad, h = (ymax - ymin + (cells ? 1 : 0)) * u + 2 * pad;
+  const off = cells ? u / 2 : 0;
+  const X = x => pad + off + (x - xmin) * u, Y = y => pad + off + (ymax - y) * u;
+  const id = 'g' + (++_gid);
+  let s = '<svg class="grid" viewBox="0 0 ' + w + ' ' + h + '" role="img" aria-label="grid"' + (o.click ? ' data-click="1"' : '') + ' data-xmin="' + xmin + '" data-ymax="' + ymax + '" data-u="' + u + '" data-pad="' + (pad + off) + '" data-w="' + w + '"' + (cells ? ' data-cell="1"' : '') + '>';
+  s += '<defs><clipPath id="' + id + '"><rect x="' + (X(xmin) - off) + '" y="' + (Y(ymax) - off) + '" width="' + (w - 2 * pad) + '" height="' + (h - 2 * pad) + '"/></clipPath></defs>';
+  s += '<rect x="0" y="0" width="' + w + '" height="' + h + '" fill="#fff"/>';
+  if (cells) {
+    for (let x = xmin; x <= xmax + 1; x++) s += '<line x1="' + (X(x) - u / 2) + '" y1="' + pad + '" x2="' + (X(x) - u / 2) + '" y2="' + (h - pad) + '" stroke="#b9c6d3" stroke-width="1"/>';
+    for (let y = ymin; y <= ymax + 1; y++) s += '<line x1="' + pad + '" y1="' + (Y(y) + u / 2) + '" x2="' + (w - pad) + '" y2="' + (Y(y) + u / 2) + '" stroke="#b9c6d3" stroke-width="1"/>';
+    (o.fill || []).forEach(p => { s += '<rect x="' + (X(p[0]) - u / 2 + 1) + '" y="' + (Y(p[1]) - u / 2 + 1) + '" width="' + (u - 2) + '" height="' + (u - 2) + '" fill="#9cc3ea" stroke="#345" stroke-width="1.2"/>'; });
+  } else {
+    for (let x = xmin; x <= xmax; x++) s += '<line x1="' + X(x) + '" y1="' + Y(ymin) + '" x2="' + X(x) + '" y2="' + Y(ymax) + '" stroke="#dbe3ea" stroke-width="1"/>';
+    for (let y = ymin; y <= ymax; y++) s += '<line x1="' + X(xmin) + '" y1="' + Y(y) + '" x2="' + X(xmax) + '" y2="' + Y(y) + '" stroke="#dbe3ea" stroke-width="1"/>';
+    if (!o.noAxes) {
+      s += '<line x1="' + X(xmin) + '" y1="' + Y(0) + '" x2="' + X(xmax) + '" y2="' + Y(0) + '" stroke="#334" stroke-width="1.6"/>';
+      s += '<line x1="' + X(0) + '" y1="' + Y(ymin) + '" x2="' + X(0) + '" y2="' + Y(ymax) + '" stroke="#334" stroke-width="1.6"/>';
+      const stx = xmax - xmin > 12 ? 2 : 1, sty = ymax - ymin > 12 ? 2 : 1;
+      for (let x = xmin; x <= xmax; x++) if (x !== 0 && x % stx === 0) s += '<text x="' + X(x) + '" y="' + (Y(0) + 14) + '" font-size="10" text-anchor="middle" fill="#556">' + f(x) + '</text>';
+      for (let y = ymin; y <= ymax; y++) if (y !== 0 && y % sty === 0) s += '<text x="' + (X(0) - 5) + '" y="' + (Y(y) + 3.5) + '" font-size="10" text-anchor="end" fill="#556">' + f(y) + '</text>';
+    }
+  }
+  (o.polys || []).forEach(g => { s += '<polygon points="' + g.pts.map(p => X(p[0]) + ',' + Y(p[1])).join(' ') + '" fill="' + (g.fill || 'rgba(27,95,168,.12)') + '" stroke="' + (g.stroke || '#1b5fa8') + '" stroke-width="2.2" clip-path="url(#' + id + ')"/>'; });
+  (o.segs || []).forEach(g => { s += '<line x1="' + X(g.a[0]) + '" y1="' + Y(g.a[1]) + '" x2="' + X(g.b[0]) + '" y2="' + Y(g.b[1]) + '" stroke="' + (g.color || '#1b5fa8') + '" stroke-width="' + (g.w || 2.4) + '"' + (g.dash ? ' stroke-dasharray="6 4"' : '') + ' stroke-linecap="round" clip-path="url(#' + id + ')"/>'; });
+  (o.pts || []).forEach(p => {
+    s += '<circle cx="' + X(p.x) + '" cy="' + Y(p.y) + '" r="4.6" fill="' + (p.color || '#1b5fa8') + '" stroke="#fff" stroke-width="1.2"/>';
+    if (p.label) s += '<text x="' + (X(p.x) + 7) + '" y="' + (Y(p.y) - 7) + '" font-size="13" font-weight="700" fill="#123">' + p.label + '</text>';
+  });
+  return s + '<g class="marks"></g></svg>';
+}
+const U = { gridSVG, clipLine, ri, pick, shuffle, nz, f, gcd, lcm, isPrime, primeFactors, squarefree, sqrtSplit, parse, evalAst, numEq, R, M, fr, mixed, tbl, fmtNum, ratText, formCheck, gradeExpr, toRF, flat, monoTerm, Poly, engine, esc, parseNum };
 if (typeof module !== 'undefined' && module.exports) module.exports = U; else root.NX = U;
 })(typeof window !== 'undefined' ? window : globalThis);
 
@@ -641,6 +686,71 @@ G['2.2'].push(function sidesNotSimilar(l) {
   const same = false; return ch(p('Triangle 1 has sides ' + A.join(', ') + ' cm. Triangle 2 has sides ' + B.join(', ') + ' cm. Are they similar?'), 'No', ['Yes, sss'], 'Divide each side of triangle 2 by the corresponding side of triangle 1. If the three ratios are not equal, the triangles are not similar.', B.map((x, i) => f(x) + '/' + A[i] + ' = ' + f(x / A[i])).join(', ') + ': not all equal, so not similar.');
 });
 
+
+/* ---------- click-on-the-grid (drawing) questions ---------- */
+const GR = NX.gridSVG, CLP = NX.clipLine;
+const ptT = (x, y) => '(' + f(x) + ', ' + f(y) + ')';
+const clickQ = (html, targets, reveal, hint, steps, valid, extra) => Object.assign({ type: 'click', html, ans: targets, targets, reveal: reveal || { segs: [], pts: targets }, hint, steps, valid }, extra || {});
+const same = (a, b) => a[0] === b[0] && a[1] === b[1];
+G['2.1'].push(function clickSimilarRect(l) {
+  for (;;) {
+    const w = ri(2, 4) * (l === 2 ? 2 : 1), h = ri(2, 3) * (l === 2 ? 2 : 1), k = l === 0 ? 2 : l === 1 ? pick([2, 3]) : pick([1.5, 2.5, 3]);
+    const x0 = ri(0, 2), y0 = ri(0, 2), X = x0 + w * k, Y = y0 + h * k;
+    if (!Number.isInteger(w * k) || !Number.isInteger(h * k) || X > 12 || Y > 12 || w + x0 > 12) continue;
+    const corners = [[x0, y0], [x0 + w, y0], [x0 + w, y0 + h], [x0, y0 + h]];
+    return clickQ(p('Rectangle ABCD has its lower-left corner at ' + ptT(x0, y0) + ' and sides of ' + w + ' and ' + h + '. Rectangle EFGH is <b>similar</b> to ABCD with scale factor <b>' + f(k) + '</b> and has the same lower-left corner. Click the <b>upper-right corner</b> of EFGH.') +
+      GR({ xmin: 0, xmax: 12, ymin: 0, ymax: 12, click: true, polys: [{ pts: corners }] }), [[X, Y]], { segs: [{ a: [x0, y0], b: [X, y0] }, { a: [X, y0], b: [X, Y] }, { a: [X, Y], b: [x0, Y] }, { a: [x0, Y], b: [x0, y0] }], pts: [[X, Y]] },
+      'Multiply the width and the height of ABCD by the scale factor. Then go that far to the right and up from the lower-left corner.',
+      'Width of EFGH: ' + w + ' × ' + f(k) + ' = ' + f(w * k) + '. Height: ' + h + ' × ' + f(k) + ' = ' + f(h * k) + '. The upper-right corner is ' + ptT(x0, y0) + ' + (' + f(w * k) + ', ' + f(h * k) + ') = ' + ptT(X, Y) + '.');
+  }
+});
+
+G['2.4'].push(function clickMidpoint(l) {
+  const r = [5, 6, 7][l]; let a, b;
+  do { a = [ri(-r, r), ri(-r, r)]; b = [ri(-r, r), ri(-r, r)]; } while ((a[0] + b[0]) % 2 || (a[1] + b[1]) % 2 || Math.abs(a[0] - b[0]) + Math.abs(a[1] - b[1]) < 4);
+  const m = [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2];
+  return clickQ(p('Click the <b>midpoint</b> of line segment AB.') + GR({ xmin: -r, xmax: r, ymin: -r, ymax: r, click: true, segs: [{ a, b, color: '#345', w: 2 }], pts: [{ x: a[0], y: a[1], label: 'A' }, { x: b[0], y: b[1], label: 'B' }] }), [m], null,
+    'Add the x-coordinates of A and B and divide by 2. Do the same for the y-coordinates.',
+    'x = (' + f(a[0]) + ' + ' + f(b[0]) + ') ÷ 2 = ' + f(m[0]) + ' and y = (' + f(a[1]) + ' + ' + f(b[1]) + ') ÷ 2 = ' + f(m[1]) + '. The midpoint is ' + ptT(m[0], m[1]) + '.');
+});
+G['2.4'].push(function clickCentroid(l) {
+  const r = [5, 6, 7][l]; let A, B, C;
+  for (;;) {
+    A = [ri(-r, r), ri(-r, r)]; B = [ri(-r, r), ri(-r, r)]; C = [ri(-r, r), ri(-r, r)];
+    if ((A[0] + B[0] + C[0]) % 3 || (A[1] + B[1] + C[1]) % 3) continue;
+    if (Math.abs((B[0] - A[0]) * (C[1] - A[1]) - (C[0] - A[0]) * (B[1] - A[1])) < 8) continue; break;
+  }
+  const g = [(A[0] + B[0] + C[0]) / 3, (A[1] + B[1] + C[1]) / 3];
+  return clickQ(p('Click the <b>centroid</b> of triangle ABC (the point where the medians meet).') + GR({ xmin: -r, xmax: r, ymin: -r, ymax: r, click: true, polys: [{ pts: [A, B, C] }], pts: [{ x: A[0], y: A[1], label: 'A' }, { x: B[0], y: B[1], label: 'B' }, { x: C[0], y: C[1], label: 'C' }] }), [g], null,
+    'The centroid has the average of the three x-coordinates and the average of the three y-coordinates.',
+    'x = (' + f(A[0]) + ' + ' + f(B[0]) + ' + ' + f(C[0]) + ') ÷ 3 = ' + f(g[0]) + ' and y = (' + f(A[1]) + ' + ' + f(B[1]) + ' + ' + f(C[1]) + ') ÷ 3 = ' + f(g[1]) + '. The centroid is ' + ptT(g[0], g[1]) + '.');
+});
+G['2.3'].push(function clickPerpBisector(l) {
+  const r = 6, d = ri(1, 3), t = l === 0 ? pick(['h', 'v']) : pick(['h', 'v', 'd1', 'd2']);
+  let a, b, dir;
+  if (t === 'h') { a = [ri(-r, r - 2 * d), ri(-r + 1, r - 1)]; b = [a[0] + 2 * d, a[1]]; dir = [0, 1]; }
+  else if (t === 'v') { a = [ri(-r + 1, r - 1), ri(-r, r - 2 * d)]; b = [a[0], a[1] + 2 * d]; dir = [1, 0]; }
+  else if (t === 'd1') { a = [ri(-r, r - 2 * d), ri(-r, r - 2 * d)]; b = [a[0] + 2 * d, a[1] + 2 * d]; dir = [1, -1]; }
+  else { a = [ri(-r, r - 2 * d), ri(r - 0, r) - 0]; a = [ri(-r, r - 2 * d), ri(-r + 2 * d, r)]; b = [a[0] + 2 * d, a[1] - 2 * d]; dir = [1, 1]; }
+  const m = [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2], ln = CLP(m, dir, -r, r, -r, r);
+  const dist2 = q => (q[0] - a[0]) ** 2 + (q[1] - a[1]) ** 2 - ((q[0] - b[0]) ** 2 + (q[1] - b[1]) ** 2);
+  return clickQ(p('Click <b>two points</b> on the <b>perpendicular bisector</b> of line segment AB.') + GR({ xmin: -r, xmax: r, ymin: -r, ymax: r, click: true, segs: [{ a, b, color: '#345', w: 2 }], pts: [{ x: a[0], y: a[1], label: 'A' }, { x: b[0], y: b[1], label: 'B' }] }),
+    [m], { segs: ln ? [{ a: ln.a, b: ln.b }] : [], pts: [m] },
+    'Every point on the perpendicular bisector is the same distance from A and from B. It goes through the midpoint of AB at a right angle.',
+    'The midpoint of AB is ' + ptT(m[0], m[1]) + '. The perpendicular bisector goes through this point at a right angle to AB (green line). Every point on it is the same distance from A and B.',
+    u => u.length === 2 && !same(u[0], u[1]) && u.every(q => dist2(q) === 0), { ans: [m, [m[0] + dir[0], m[1] + dir[1]]] });
+});
+G['2.3'].push(function clickAngleBisector(l) {
+  const r = 7, dirs = [[[1, 0], [0, 1]], [[0, 1], [-1, 0]], [[-1, 0], [0, -1]], [[0, -1], [1, 0]]], [d1, d2] = pick(dirs), bd = [d1[0] + d2[0], d1[1] + d2[1]];
+  const V = [ri(-3, 3), ri(-3, 3)], ray = d => CLP(V, d, -r, r, -r, r), end = d => { const c = ray(d); return Math.hypot(c.a[0] - V[0], c.a[1] - V[1]) < Math.hypot(c.b[0] - V[0], c.b[1] - V[1]) ? c.b : c.a; };
+  const e1 = end(d1), e2 = end(d2), eb = end(bd);
+  return clickQ(p('The figure shows an angle of 90° with vertex V. Click <b>two points</b> on the <b>angle bisector</b>.') + GR({ xmin: -r, xmax: r, ymin: -r, ymax: r, click: true, segs: [{ a: V, b: e1, color: '#345', w: 2.4 }, { a: V, b: e2, color: '#345', w: 2.4 }], pts: [{ x: V[0], y: V[1], label: 'V' }] }),
+    [[V[0] + bd[0], V[1] + bd[1]]], { segs: [{ a: V, b: eb }], pts: [] },
+    'The angle bisector cuts the angle in two equal parts: 45° and 45°. Every point on it is the same distance from both arms.',
+    'The angle bisector starts at V and makes 45° with both arms: it goes one step along each arm\'s direction at the same time (green line).',
+    u => u.length === 2 && !same(u[0], u[1]) && u.every(q => { const x = q[0] - V[0], y = q[1] - V[1]; return (x * bd[1] - y * bd[0]) === 0 && (x * bd[0] + y * bd[1]) > 0; }), { ans: [[V[0] + bd[0], V[1] + bd[1]], [V[0] + 2 * bd[0], V[1] + 2 * bd[1]]] });
+});
+
 const SECTIONS = [
   { id: '2.1', title: '2.1 Similar figures', sub: 'Corresponding angles and sides, scale factor' },
   { id: '2.2', title: '2.2 Similar triangles', sub: 'aa, sss, proofs, scale factor' },
@@ -651,19 +761,19 @@ const ALL = sec => (G[sec] || []).map(fn => [sec, fn.name]), ALLX = sec => (XG[s
 const nm = (sec, names) => names.map(n => [sec, n]);
 const L = (id, title, sub, date, gens, xg, extra) => Object.assign({ id, title, sub, date, gens, xg }, extra || {});
 const LESSONS = [
-  L('L0', 'Lesson · 2.1 A Similar figures', '2.1 A', null, nm('2.1', ['quadAngle', 'polySide', 'similarFigures', 'aspectRatio']), nm('2.1', ['insideRect', 'twoFactors'])),
+  L('L0', 'Lesson · 2.1 A Similar figures', '2.1 A', null, nm('2.1', ['quadAngle', 'polySide', 'similarFigures', 'aspectRatio', 'clickSimilarRect']), nm('2.1', ['insideRect', 'twoFactors'])),
   L('L1', 'Lesson · 2.1 B Similar figures', 'Thu 1 Oct', '2026-10-01', nm('2.1', ['quadAngle', 'polySide', 'similarFigures']).concat(nm('2.2', ['scaleFactor', 'similarSide', 'anglePair'])), nm('2.1', ['insideRect', 'twoFactors']).concat(nm('2.2', ['ratioTable', 'areaFactor']))),
   L('L2', 'Lesson · 2.2 A Similar triangles', 'Fri 2 Oct', '2026-10-02', nm('2.2', ['missingAngle', 'similarSide', 'matchingOrder', 'aaOrSss', 'sidesNotSimilar']), nm('2.2', ['ratioTable', 'shadow'])),
   L('L3', 'Lesson · 2.2 B Proving similarity', 'Wed 7 Oct', '2026-10-07', nm('2.2', ['anglePair', 'aaOrSss', 'matchingOrder', 'similarSide', 'pythSimilar']), nm('2.2', ['nestedTri', 'shadow', 'areaFactor'])),
-  L('L4', 'Lesson · 2.3 A Angle bisector', 'Thu 8 Oct', '2026-10-08', nm('2.3', ['bisectAngle', 'whichWord', 'equidistantPoint']), nm('2.3', ['bisectedFull', 'triangleBis'])),
-  L('L5', 'Lesson · 2.3 B Perpendicular bisector', 'Fri 9 Oct', '2026-10-09', nm('2.3', ['whichWord', 'equidistantPoint', 'closerTo', 'trueFalseBis']), nm('2.3', ['triangleBis'])),
+  L('L4', 'Lesson · 2.3 A Angle bisector', 'Thu 8 Oct', '2026-10-08', nm('2.3', ['bisectAngle', 'whichWord', 'equidistantPoint', 'clickAngleBisector']), nm('2.3', ['bisectedFull', 'triangleBis'])),
+  L('L5', 'Lesson · 2.3 B Perpendicular bisector', 'Fri 9 Oct', '2026-10-09', nm('2.3', ['whichWord', 'equidistantPoint', 'closerTo', 'trueFalseBis', 'clickPerpBisector']), nm('2.3', ['triangleBis'])),
   L('L6', 'Lesson · 2.4 A Altitudes', 'Wed 28 Oct', '2026-10-28', nm('2.4', ['orthoPlace', 'altitudeArea', 'twoAltitudes', 'whichLine']), nm('2.4', ['missingVertex'])),
-  L('L7', 'Lesson · 2.4 B Medians', 'Thu 29 Oct', '2026-10-29', nm('2.4', ['midpoint', 'centroid', 'centroidRatio', 'whichLine']), nm('2.4', ['missingVertex', 'missingCentroidVertex', 'zToMidpoint'])),
+  L('L7', 'Lesson · 2.4 B Medians', 'Thu 29 Oct', '2026-10-29', nm('2.4', ['midpoint', 'centroid', 'centroidRatio', 'whichLine', 'clickMidpoint', 'clickCentroid']), nm('2.4', ['missingVertex', 'missingCentroidVertex', 'zToMidpoint'])),
   L('L8', 'Revision · mock test chapters 1 and 2', 'Fri 30 Oct', '2026-10-30', [].concat(...['2.1', '2.2', '2.3', '2.4'].map(ALL)), [].concat(...['2.1', '2.2', '2.3', '2.4'].map(ALLX)), { rev: true })
 ];
 return { key: 'nx-3ht-ch2-v1', SECTIONS, LESSONS, G, XG, defaultMode: 'lesson' };
 }))(NX,{"cls": "3HT"}));
-window.Ch3.GOALS=[["2.1", "I can tell whether figures are similar and find missing angles and sides", ["quadAngle", "polySide", "similarFigures", "aspectRatio", "insideRect", "twoFactors"]], ["2.2", "I can find a scale factor and a missing side of similar triangles", ["scaleFactor", "similarSide", "pythSimilar", "ratioTable", "areaFactor", "shadow", "nestedTri"], "Match corresponding sides: same position in the figure."], ["2.2", "I can prove that triangles are similar (aa, sss)", ["missingAngle", "aaOrSss", "anglePair", "matchingOrder", "sidesNotSimilar"]], ["2.3", "I can use angle bisectors and perpendicular bisectors", ["bisectAngle", "whichWord", "equidistantPoint", "closerTo", "trueFalseBis", "bisectedFull", "triangleBis"]], ["2.4", "I can work with altitudes and the orthocentre", ["orthoPlace", "altitudeArea", "twoAltitudes", "whichLine"]], ["2.4", "I can work with midpoints, medians and the centroid", ["midpoint", "centroid", "centroidRatio", "missingVertex", "missingCentroidVertex", "zToMidpoint"]]];
+window.Ch3.GOALS=[["2.1", "I can tell whether figures are similar and find missing angles and sides", ["quadAngle", "polySide", "similarFigures", "aspectRatio", "insideRect", "twoFactors", "clickSimilarRect"]], ["2.2", "I can find a scale factor and a missing side of similar triangles", ["scaleFactor", "similarSide", "pythSimilar", "ratioTable", "areaFactor", "shadow", "nestedTri"], "Match corresponding sides: same position in the figure."], ["2.2", "I can prove that triangles are similar (aa, sss)", ["missingAngle", "aaOrSss", "anglePair", "matchingOrder", "sidesNotSimilar"]], ["2.3", "I can use angle bisectors and perpendicular bisectors", ["bisectAngle", "whichWord", "equidistantPoint", "closerTo", "trueFalseBis", "bisectedFull", "triangleBis", "clickPerpBisector", "clickAngleBisector"]], ["2.4", "I can work with altitudes and the orthocentre", ["orthoPlace", "altitudeArea", "twoAltitudes", "whichLine"]], ["2.4", "I can work with midpoints, medians and the centroid", ["midpoint", "centroid", "centroidRatio", "missingVertex", "missingCentroidVertex", "zToMidpoint", "clickMidpoint", "clickCentroid"]]];
 </script>
 <script>
 (function(){
@@ -753,6 +863,7 @@ function next(reset){
   if(reset){streak=0;wrongRun=0;recent=[]}
   if(focus){const g=goalById(focus.ids[focus.i%focus.ids.length]);focus.i++;const sec=g.sec;cur=makeFromGoal(g,st.lvl[sec]||0)}
   else cur=E.make(st.sec,curLevel(),recent);
+  if(window.__force)for(let i=0;i<500&&String(cur.gen).replace(/^X/,'')!==window.__force;i++)cur=E.make(st.sec,curLevel(),recent);
   recent.push({g:cur.gen,f:cur.fp});recent=recent.slice(-12);tries=0;done=false;clicked=[];choiceSel=null;protoAngle=null;hintUsed=false;attempts=[];stepLines=[];renderQ();renderNav();
 }
 
@@ -861,7 +972,7 @@ function wireExpr(){
 }
 function drawMarks(sv){
   const u=+sv.dataset.u,pad=+sv.dataset.pad,xmin=+sv.dataset.xmin,ymax=+sv.dataset.ymax;
-  sv.querySelector('.marks').innerHTML=clicked.map(p=>{const cx=pad+(p[0]-xmin)*u,cy=pad+(ymax-p[1])*u;return '<circle cx="'+cx+'" cy="'+cy+'" r="6" fill="#d1471f" stroke="#fff" stroke-width="1.5"/>'}).join('');
+  sv.querySelector('.marks').innerHTML=clicked.map(p=>{const cx=pad+(p[0]-xmin)*u,cy=pad+(ymax-p[1])*u;return sv.dataset.cell?'<rect x="'+(cx-u/2+1)+'" y="'+(cy-u/2+1)+'" width="'+(u-2)+'" height="'+(u-2)+'" fill="#f4a58a" stroke="#d1471f" stroke-width="2"/>':'<circle cx="'+cx+'" cy="'+cy+'" r="6" fill="#d1471f" stroke="#fff" stroke-width="1.5"/>'}).join('');
 }
 function userAns(q){
   if(q.type==='proto')return protoAngle;
@@ -957,7 +1068,7 @@ function revealQ(q){
   const u=+sv.dataset.u,pad=+sv.dataset.pad,xmin=+sv.dataset.xmin,ymax=+sv.dataset.ymax,X=x=>pad+(x-xmin)*u,Y=y=>pad+(ymax-y)*u;
   const R=q.reveal||{segs:[],pts:q.targets};let h='';
   (R.segs||[]).forEach(g=>{h+='<line x1="'+X(g.a[0])+'" y1="'+Y(g.a[1])+'" x2="'+X(g.b[0])+'" y2="'+Y(g.b[1])+'" stroke="#16803c" stroke-width="2.2" stroke-dasharray="6 4" opacity=".75"/>'});
-  (R.pts||[]).forEach(p=>{h+='<circle cx="'+X(p[0])+'" cy="'+Y(p[1])+'" r="5" fill="#16803c" stroke="#fff" stroke-width="1.5"/>'});
+  (R.pts||[]).forEach(p=>{h+=sv.dataset.cell?'<rect x="'+(X(p[0])-u/2+1)+'" y="'+(Y(p[1])-u/2+1)+'" width="'+(u-2)+'" height="'+(u-2)+'" fill="#9be0b3" stroke="#16803c" stroke-width="2" opacity=".85"/>':'<circle cx="'+X(p[0])+'" cy="'+Y(p[1])+'" r="5" fill="#16803c" stroke="#fff" stroke-width="1.5"/>'});
   sv.querySelector('.marks').insertAdjacentHTML('beforebegin','<g class="rev">'+h+'</g>');
 }
 let finT=0;function finish(){finT=Date.now();revealQ(cur);$('#chk').disabled=true;$('#hnt').disabled=true;$('#sol').style.display='none';$('#nxt').style.display='';$('#nxt').focus();document.querySelectorAll('.choice').forEach(b=>b.disabled=true);document.querySelectorAll('#ans input').forEach(i=>i.disabled=true);document.querySelectorAll('#kp button').forEach(i=>i.disabled=true);renderNavSoft();const lp=document.querySelector('details.hl');if(lp){const o=lp.open;lp.outerHTML=logPanel();const n=document.querySelector('details.hl');if(n)n.open=o}}
@@ -1059,7 +1170,7 @@ function startAgain(){
   st={mode:st.mode,secs:{},done:{},stat:{},best:{},tests:[],sec:st.sec,prog:{},lvl:{},res:{},log:[],badges:{},bestRow:0,goalsAll:st.goalsAll,auto:st.auto};mix=false;free=null;focus=null;save();test=null;renderNav();next(true);
 }
 document.getElementById('pbtn').onclick=showProgress;
-window.__dbg=()=>cur;renderNav();next(true);
+window.__dbg=()=>cur;window.__next=()=>next(false);renderNav();next(true);
 })();
 
 </script>

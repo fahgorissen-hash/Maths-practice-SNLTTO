@@ -392,6 +392,7 @@ function check(q, u) {                      // -> {ok, why?, msg?}
   if (q.type === 'point') { const p = parsePoint(u); return { ok: !!p && Math.abs(p[0] - q.ans[0]) < 1e-9 && Math.abs(p[1] - q.ans[1]) < 1e-9 }; }
   if (q.type === 'choice') return { ok: Number(u) === q.ans };
   if (q.type === 'expr') return gradeExpr(q, u);
+  if (q.type === 'click') { const got = Array.isArray(u) ? u : []; if (q.valid) { let ok = false; try { ok = !!q.valid(got); } catch (e) { } return { ok }; } const k = p => p[0] + ',' + p[1]; return { ok: got.map(k).sort().join('|') === (q.ans || []).map(k).sort().join('|') }; }
   return { ok: false };
 }
 const grade = (q, u) => check(q, u).ok;
@@ -402,6 +403,7 @@ function answerText(q) {
   if (q.type === 'point') return '(' + f(q.ans[0]) + ', ' + f(q.ans[1]) + ')';
   if (q.type === 'choice') return q.opts[q.ans];
   if (q.type === 'expr') return M(q.ans, q.noVars ? { noVars: true } : {});
+  if (q.type === 'click') return (q.ans || []).map(p => '(' + f(p[0]) + ', ' + f(p[1]) + ')').join(' and ');
   return '';
 }
 
@@ -442,7 +444,50 @@ function engine(def) {
   }
   return { KEY: def.key, SECTIONS, LESSONS, G, XG, make, makeTest, grade, check, answerText, evalNum: s => evalAst(parse(String(s), { noVars: true }), {}), parseNum, parsePoint, f, M, parse, defaultMode: def.defaultMode || 'lesson' };
 }
-const U = { ri, pick, shuffle, nz, f, gcd, lcm, isPrime, primeFactors, squarefree, sqrtSplit, parse, evalAst, numEq, R, M, fr, mixed, tbl, fmtNum, ratText, formCheck, gradeExpr, toRF, flat, monoTerm, Poly, engine, esc, parseNum };
+
+/* ---------- click grid (shared) ---------- */
+let _gid = 0;
+function clipLine(p, d, xmin, xmax, ymin, ymax) {   // line through p with direction d, clipped to the rectangle
+  let t0 = -1e9, t1 = 1e9;
+  for (const [pp, dd, lo, hi] of [[p[0], d[0], xmin, xmax], [p[1], d[1], ymin, ymax]]) {
+    if (Math.abs(dd) < 1e-12) { if (pp < lo || pp > hi) return null; continue; }
+    let a = (lo - pp) / dd, b = (hi - pp) / dd; if (a > b) [a, b] = [b, a]; t0 = Math.max(t0, a); t1 = Math.min(t1, b);
+  }
+  if (t0 > t1) return null; return { a: [p[0] + d[0] * t0, p[1] + d[1] * t0], b: [p[0] + d[0] * t1, p[1] + d[1] * t1] };
+}
+function gridSVG(o) {
+  const u = o.u || 26, pad = 24, xmin = o.xmin, xmax = o.xmax, ymin = o.ymin, ymax = o.ymax, cells = !!o.cells;
+  const w = (xmax - xmin + (cells ? 1 : 0)) * u + 2 * pad, h = (ymax - ymin + (cells ? 1 : 0)) * u + 2 * pad;
+  const off = cells ? u / 2 : 0;
+  const X = x => pad + off + (x - xmin) * u, Y = y => pad + off + (ymax - y) * u;
+  const id = 'g' + (++_gid);
+  let s = '<svg class="grid" viewBox="0 0 ' + w + ' ' + h + '" role="img" aria-label="grid"' + (o.click ? ' data-click="1"' : '') + ' data-xmin="' + xmin + '" data-ymax="' + ymax + '" data-u="' + u + '" data-pad="' + (pad + off) + '" data-w="' + w + '"' + (cells ? ' data-cell="1"' : '') + '>';
+  s += '<defs><clipPath id="' + id + '"><rect x="' + (X(xmin) - off) + '" y="' + (Y(ymax) - off) + '" width="' + (w - 2 * pad) + '" height="' + (h - 2 * pad) + '"/></clipPath></defs>';
+  s += '<rect x="0" y="0" width="' + w + '" height="' + h + '" fill="#fff"/>';
+  if (cells) {
+    for (let x = xmin; x <= xmax + 1; x++) s += '<line x1="' + (X(x) - u / 2) + '" y1="' + pad + '" x2="' + (X(x) - u / 2) + '" y2="' + (h - pad) + '" stroke="#b9c6d3" stroke-width="1"/>';
+    for (let y = ymin; y <= ymax + 1; y++) s += '<line x1="' + pad + '" y1="' + (Y(y) + u / 2) + '" x2="' + (w - pad) + '" y2="' + (Y(y) + u / 2) + '" stroke="#b9c6d3" stroke-width="1"/>';
+    (o.fill || []).forEach(p => { s += '<rect x="' + (X(p[0]) - u / 2 + 1) + '" y="' + (Y(p[1]) - u / 2 + 1) + '" width="' + (u - 2) + '" height="' + (u - 2) + '" fill="#9cc3ea" stroke="#345" stroke-width="1.2"/>'; });
+  } else {
+    for (let x = xmin; x <= xmax; x++) s += '<line x1="' + X(x) + '" y1="' + Y(ymin) + '" x2="' + X(x) + '" y2="' + Y(ymax) + '" stroke="#dbe3ea" stroke-width="1"/>';
+    for (let y = ymin; y <= ymax; y++) s += '<line x1="' + X(xmin) + '" y1="' + Y(y) + '" x2="' + X(xmax) + '" y2="' + Y(y) + '" stroke="#dbe3ea" stroke-width="1"/>';
+    if (!o.noAxes) {
+      s += '<line x1="' + X(xmin) + '" y1="' + Y(0) + '" x2="' + X(xmax) + '" y2="' + Y(0) + '" stroke="#334" stroke-width="1.6"/>';
+      s += '<line x1="' + X(0) + '" y1="' + Y(ymin) + '" x2="' + X(0) + '" y2="' + Y(ymax) + '" stroke="#334" stroke-width="1.6"/>';
+      const stx = xmax - xmin > 12 ? 2 : 1, sty = ymax - ymin > 12 ? 2 : 1;
+      for (let x = xmin; x <= xmax; x++) if (x !== 0 && x % stx === 0) s += '<text x="' + X(x) + '" y="' + (Y(0) + 14) + '" font-size="10" text-anchor="middle" fill="#556">' + f(x) + '</text>';
+      for (let y = ymin; y <= ymax; y++) if (y !== 0 && y % sty === 0) s += '<text x="' + (X(0) - 5) + '" y="' + (Y(y) + 3.5) + '" font-size="10" text-anchor="end" fill="#556">' + f(y) + '</text>';
+    }
+  }
+  (o.polys || []).forEach(g => { s += '<polygon points="' + g.pts.map(p => X(p[0]) + ',' + Y(p[1])).join(' ') + '" fill="' + (g.fill || 'rgba(27,95,168,.12)') + '" stroke="' + (g.stroke || '#1b5fa8') + '" stroke-width="2.2" clip-path="url(#' + id + ')"/>'; });
+  (o.segs || []).forEach(g => { s += '<line x1="' + X(g.a[0]) + '" y1="' + Y(g.a[1]) + '" x2="' + X(g.b[0]) + '" y2="' + Y(g.b[1]) + '" stroke="' + (g.color || '#1b5fa8') + '" stroke-width="' + (g.w || 2.4) + '"' + (g.dash ? ' stroke-dasharray="6 4"' : '') + ' stroke-linecap="round" clip-path="url(#' + id + ')"/>'; });
+  (o.pts || []).forEach(p => {
+    s += '<circle cx="' + X(p.x) + '" cy="' + Y(p.y) + '" r="4.6" fill="' + (p.color || '#1b5fa8') + '" stroke="#fff" stroke-width="1.2"/>';
+    if (p.label) s += '<text x="' + (X(p.x) + 7) + '" y="' + (Y(p.y) - 7) + '" font-size="13" font-weight="700" fill="#123">' + p.label + '</text>';
+  });
+  return s + '<g class="marks"></g></svg>';
+}
+const U = { gridSVG, clipLine, ri, pick, shuffle, nz, f, gcd, lcm, isPrime, primeFactors, squarefree, sqrtSplit, parse, evalAst, numEq, R, M, fr, mixed, tbl, fmtNum, ratText, formCheck, gradeExpr, toRF, flat, monoTerm, Poly, engine, esc, parseNum };
 if (typeof module !== 'undefined' && module.exports) module.exports = U; else root.NX = U;
 })(typeof window !== 'undefined' ? window : globalThis);
 
@@ -765,6 +810,56 @@ if (VT) XG['2.5'].push(function coneSector(l) {
 /* 2HT study guide leaves these out (composite solids, hemisphere, at least/at most, dice nets, same volume) */
 const SKIP = P.cls === '2HT' ? ['volComposite', 'volHemisphere', 'frustum', 'atLeastAtMost', 'diceNet', 'diceOpposite', 'sameVolume'] : [];
 if (SKIP.length) { [G, XG].forEach(T => Object.keys(T).forEach(k => { T[k] = T[k].filter(fn => !SKIP.includes(fn.name)); })); }
+
+/* ---------- click-on-the-grid (drawing) questions ---------- */
+const GR = NX.gridSVG;
+const clickQ = (html, targets, reveal, hint, steps, valid, extra) => Object.assign({ type: 'click', html, ans: targets, targets, reveal: reveal || { segs: [], pts: targets }, hint, steps, valid }, extra || {});
+const key2 = c => c[0] + ',' + c[1];
+function netOK(cells) {      // do these 6 squares fold into a cube?
+  if (cells.length !== 6) return false;
+  const set = new Set(cells.map(key2)); if (set.size !== 6) return false;
+  for (const [x, y] of cells) if (set.has(key2([x + 1, y])) && set.has(key2([x, y + 1])) && set.has(key2([x + 1, y + 1]))) return false;   // 2 x 2 block
+  const seen = new Map(), start = cells[0], q = [[start, [0, 1, 2, 3, 4, 5]]];   // orientation: top, bottom, north, south, east, west
+  const faces = new Set(); seen.set(key2(start), 1);
+  while (q.length) {
+    const [c, o] = q.shift(); faces.add(o[1]);
+    const [T, B, N, S, E, W] = o;
+    for (const [dx, dy, no] of [[1, 0, [W, E, N, S, T, B]], [-1, 0, [E, W, N, S, B, T]], [0, 1, [S, N, T, B, E, W]], [0, -1, [N, S, B, T, E, W]]]) {
+      const nc = [c[0] + dx, c[1] + dy], k = key2(nc);
+      if (set.has(k) && !seen.has(k)) { seen.set(k, 1); q.push([nc, no]); }
+    }
+  }
+  return seen.size === 6 && faces.size === 6;
+}
+function randomNet() {
+  for (let t = 0; t < 400; t++) {
+    const cells = [[0, 0]];
+    while (cells.length < 6) { const [x, y] = pick(cells), [dx, dy] = pick([[1, 0], [-1, 0], [0, 1], [0, -1]]); if (!cells.some(c => c[0] === x + dx && c[1] === y + dy)) cells.push([x + dx, y + dy]); }
+    const mx = Math.min(...cells.map(c => c[0])), my = Math.min(...cells.map(c => c[1])), w = Math.max(...cells.map(c => c[0])) - mx, h = Math.max(...cells.map(c => c[1])) - my;
+    if (w > 4 || h > 4 || !netOK(cells)) continue;
+    const ox = ri(0, 5 - w), oy = ri(0, 4 - h); return cells.map(c => [c[0] - mx + ox, c[1] - my + oy]);
+  }
+  return [[0, 1], [1, 1], [2, 1], [3, 1], [1, 2], [2, 0]];
+}
+G['2.5'].push(function clickNet(l) {
+  const net = randomNet(), m = l === 2 ? 2 : 1; let miss;
+  for (;;) { miss = shuffle(net.slice()).slice(0, m); const rest = net.filter(c => !miss.some(d => key2(d) === key2(c))); if (rest.length) break; }
+  const fixed = net.filter(c => !miss.some(d => key2(d) === key2(c)));
+  return clickQ(p('These squares are part of a <b>net of a cube</b>. Click the <b>' + (m === 1 ? 'missing square' : m + ' missing squares') + '</b> to complete the net. (There can be more than one correct place.)') +
+    GR({ xmin: 0, xmax: 5, ymin: 0, ymax: 4, cells: true, click: true, fill: fixed, u: 30 }), miss, { segs: [], pts: miss },
+    'When you fold the net, every square must become a different face of the cube. Four squares in a 2 × 2 block can never fold into a cube, and a row of more than four squares is too long.',
+    'One correct net has the square' + (m > 1 ? 's' : '') + ' shown in green. A net of a cube always has 6 squares that fold into 6 different faces.',
+    u => u.length === m && netOK(fixed.concat(u)), { ans: miss });
+});
+G['2.4'].push(function clickFront(l) {
+  const g = randGrid(l === 0 ? 2 : 3, 3, l === 2 ? 4 : 3), cm = colMax(g), H = l === 2 ? 4 : 3, C = cm.length;
+  const tg = []; cm.forEach((h, c) => { for (let y = 0; y < h; y++) tg.push([c, y]); });
+  return clickQ(p('This top view shows the number of cubes on each square. <b>Draw the front view</b>: click the squares you see from the front.') + stackSVG(g) +
+    GR({ xmin: 0, xmax: C - 1, ymin: 0, ymax: H - 1, cells: true, click: true, u: 34 }), tg, { segs: [], pts: tg },
+    'From the front you see, for each column, the tallest stack. Click that many squares above each other, starting at the bottom.',
+    'Column maxima, left to right: ' + cm.join(', ') + '. Click that many squares in each column.');
+});
+
 const SECTIONS = [
   { id: '2.1', title: '2.1 Solids and their parts', sub: 'Names, faces, edges, vertices, diagonals' },
   { id: '2.2', title: '2.2 Volume', sub: VT ? 'Prisms, cones, spheres, composite solids' : 'Prisms, cylinders, pyramids, cones, spheres' },
@@ -782,7 +877,7 @@ if (VT) LESSONS = [
   L('L2', 'Lesson · 2.2 C Volume of a sphere', 'Fri 2 Oct', '2026-10-02', nm('2.2', ['volSphere', 'volHemisphere', 'volReverse', 'volCone']), nm('2.2', ['ballInCylinder', 'doubleRadius', 'meltBall'])),
   L('L3', 'Lesson · 2.2 D Composite solids', 'Tue 6 Oct', '2026-10-06', nm('2.2', ['volComposite', 'volHemisphere', 'volCone', 'volCylinder']), nm('2.2', ['frustum', 'ballInCylinder'])),
   L('L4', 'Lesson · 2.3–2.4 Lines in space and views', 'Wed 7 Oct', '2026-10-07', [].concat(ALL('2.3'), ALL('2.4')), [].concat(ALLX('2.3'), ALLX('2.4'))),
-  L('L5', 'Lesson · 2.5 A Nets', 'Fri 9 Oct', '2026-10-09', nm('2.5', ['cubeNet', 'diceNet', 'cylinderNet']), nm('2.5', ['diceOpposite', 'sameVolume'])),
+  L('L5', 'Lesson · 2.5 A Nets', 'Fri 9 Oct', '2026-10-09', nm('2.5', ['cubeNet', 'diceNet', 'cylinderNet', 'clickNet']), nm('2.5', ['diceOpposite', 'sameVolume'])),
   L('L6', 'Lesson · 2.5 B Surface area', 'Tue 27 Oct', '2026-10-27', nm('2.5', ['surfCuboid', 'surfPrism', 'surfCylinder', 'surfSphere', 'wrapping']), nm('2.5', ['sameVolume', 'cubeEdgeFromSurface'])),
   L('L7', 'Lesson · 2.5 C Exploring surface area', 'Wed 28 Oct', '2026-10-28', nm('2.5', ['surfCone', 'diceNet', 'surfCylinder', 'wrapping', 'surfSphere']), nm('2.5', ['coneSector', 'sameVolume', 'diceOpposite'])),
   L('L8', 'Revision · mock test chapter 2', 'Fri 30 Oct', '2026-10-30', [].concat(...['2.1', '2.2', '2.3', '2.4', '2.5'].map(ALL)), [].concat(...['2.1', '2.2', '2.3', '2.4', '2.5'].map(ALLX)), { rev: true })
@@ -793,7 +888,7 @@ else LESSONS = [
   L('L2', 'Lesson · 2.2 C Volume of pyramids and cones', 'Fri 2 Oct', '2026-10-02', nm('2.2', ['volPyramid', 'volCone', 'volPrism']), nm('2.2', ['pyramidsCube', 'coneInCylinder'])),
   L('L3', 'Lesson · 2.2 D Volume of cones and spheres', 'Wed 7 Oct', '2026-10-07', nm('2.2', ['volCone', 'volSphere', 'volHemisphere', 'volReverse']), nm('2.2', ['ballInCylinder', 'doubleRadius'])),
   L('L4', 'Lesson · 2.3–2.4 Lines in space and views', 'Thu 8 Oct', '2026-10-08', [].concat(ALL('2.3'), ALL('2.4')), [].concat(ALLX('2.3'), ALLX('2.4'))),
-  L('L5', 'Lesson · 2.5 A Nets', 'Fri 9 Oct', '2026-10-09', nm('2.5', ['cubeNet', 'diceNet', 'cylinderNet']), nm('2.5', ['diceOpposite', 'sameVolume'])),
+  L('L5', 'Lesson · 2.5 A Nets', 'Fri 9 Oct', '2026-10-09', nm('2.5', ['cubeNet', 'diceNet', 'cylinderNet', 'clickNet']), nm('2.5', ['diceOpposite', 'sameVolume'])),
   L('L6', 'Lesson · 2.5 B Surface area', 'Wed 28 Oct', '2026-10-28', nm('2.5', ['surfCuboid', 'surfPrism', 'surfCylinder', 'surfSphere', 'wrapping']), nm('2.5', ['sameVolume', 'cubeEdgeFromSurface'])),
   L('L7', 'Revision A · solids and volume', 'Thu 29 Oct', '2026-10-29', [].concat(ALL('2.1'), ALL('2.2')), [].concat(ALLX('2.1'), ALLX('2.2')), { rev: true }),
   L('L8', 'Revision B · lines, views and surface area', 'Fri 30 Oct', '2026-10-30', [].concat(ALL('2.3'), ALL('2.4'), ALL('2.5')), [].concat(ALLX('2.3'), ALLX('2.4'), ALLX('2.5')), { rev: true })
@@ -801,7 +896,7 @@ else LESSONS = [
 LESSONS.forEach(le => { le.gens = le.gens.filter(g => !SKIP.includes(g[1])); le.xg = le.xg.filter(g => !SKIP.includes(g[1])); });
 return { key: 'nx-' + P.cls.toLowerCase() + '-ch2-v1', SECTIONS, LESSONS, G, XG, defaultMode: 'lesson' };
 }))(NX,{"cls": "2VT"}));
-window.Ch3.GOALS=[["2.1", "I can name solids and their parts (faces, edges, vertices)", ["solidName", "lineKind", "countParts", "baseShape", "isPrism"]], ["2.2", "I can calculate the volume of prisms and cylinders", ["volPrism", "volCylinder"], "Volume = area of the base × height. Check the units."], ["2.2", "I can calculate the volume of pyramids, cones and spheres", ["volPyramid", "volCone", "volSphere", "volHemisphere", "volComposite", "volReverse"], "Pyramid and cone have a factor ⅓."], ["2.3", "I can describe how two lines in space are related (parallel, intersecting, skew)", ["lineRelation", "countParallel", "pickSkew"]], ["2.4", "I can read front, side and top views of cube buildings", ["totalCubes", "frontView", "sideView", "viewsToTop"]], ["2.5", "I can recognise nets of cubes and dice", ["cubeNet", "diceNet"]], ["2.5", "I can calculate surface areas of solids", ["surfCuboid", "surfPrism", "surfCylinder", "surfSphere", "surfCone", "wrapping", "cylinderNet"], "Surface area is in square units (cm²)."]];
+window.Ch3.GOALS=[["2.1", "I can name solids and their parts (faces, edges, vertices)", ["solidName", "lineKind", "countParts", "baseShape", "isPrism"]], ["2.2", "I can calculate the volume of prisms and cylinders", ["volPrism", "volCylinder"], "Volume = area of the base × height. Check the units."], ["2.2", "I can calculate the volume of pyramids, cones and spheres", ["volPyramid", "volCone", "volSphere", "volHemisphere", "volComposite", "volReverse"], "Pyramid and cone have a factor ⅓."], ["2.3", "I can describe how two lines in space are related (parallel, intersecting, skew)", ["lineRelation", "countParallel", "pickSkew"]], ["2.4", "I can read front, side and top views of cube buildings", ["totalCubes", "frontView", "sideView", "viewsToTop", "clickFront"]], ["2.5", "I can recognise nets of cubes and dice", ["cubeNet", "diceNet", "clickNet"]], ["2.5", "I can calculate surface areas of solids", ["surfCuboid", "surfPrism", "surfCylinder", "surfSphere", "surfCone", "wrapping", "cylinderNet"], "Surface area is in square units (cm²)."]];
 </script>
 <script>
 (function(){
@@ -891,6 +986,7 @@ function next(reset){
   if(reset){streak=0;wrongRun=0;recent=[]}
   if(focus){const g=goalById(focus.ids[focus.i%focus.ids.length]);focus.i++;const sec=g.sec;cur=makeFromGoal(g,st.lvl[sec]||0)}
   else cur=E.make(st.sec,curLevel(),recent);
+  if(window.__force)for(let i=0;i<500&&String(cur.gen).replace(/^X/,'')!==window.__force;i++)cur=E.make(st.sec,curLevel(),recent);
   recent.push({g:cur.gen,f:cur.fp});recent=recent.slice(-12);tries=0;done=false;clicked=[];choiceSel=null;protoAngle=null;hintUsed=false;attempts=[];stepLines=[];renderQ();renderNav();
 }
 
@@ -999,7 +1095,7 @@ function wireExpr(){
 }
 function drawMarks(sv){
   const u=+sv.dataset.u,pad=+sv.dataset.pad,xmin=+sv.dataset.xmin,ymax=+sv.dataset.ymax;
-  sv.querySelector('.marks').innerHTML=clicked.map(p=>{const cx=pad+(p[0]-xmin)*u,cy=pad+(ymax-p[1])*u;return '<circle cx="'+cx+'" cy="'+cy+'" r="6" fill="#d1471f" stroke="#fff" stroke-width="1.5"/>'}).join('');
+  sv.querySelector('.marks').innerHTML=clicked.map(p=>{const cx=pad+(p[0]-xmin)*u,cy=pad+(ymax-p[1])*u;return sv.dataset.cell?'<rect x="'+(cx-u/2+1)+'" y="'+(cy-u/2+1)+'" width="'+(u-2)+'" height="'+(u-2)+'" fill="#f4a58a" stroke="#d1471f" stroke-width="2"/>':'<circle cx="'+cx+'" cy="'+cy+'" r="6" fill="#d1471f" stroke="#fff" stroke-width="1.5"/>'}).join('');
 }
 function userAns(q){
   if(q.type==='proto')return protoAngle;
@@ -1095,7 +1191,7 @@ function revealQ(q){
   const u=+sv.dataset.u,pad=+sv.dataset.pad,xmin=+sv.dataset.xmin,ymax=+sv.dataset.ymax,X=x=>pad+(x-xmin)*u,Y=y=>pad+(ymax-y)*u;
   const R=q.reveal||{segs:[],pts:q.targets};let h='';
   (R.segs||[]).forEach(g=>{h+='<line x1="'+X(g.a[0])+'" y1="'+Y(g.a[1])+'" x2="'+X(g.b[0])+'" y2="'+Y(g.b[1])+'" stroke="#16803c" stroke-width="2.2" stroke-dasharray="6 4" opacity=".75"/>'});
-  (R.pts||[]).forEach(p=>{h+='<circle cx="'+X(p[0])+'" cy="'+Y(p[1])+'" r="5" fill="#16803c" stroke="#fff" stroke-width="1.5"/>'});
+  (R.pts||[]).forEach(p=>{h+=sv.dataset.cell?'<rect x="'+(X(p[0])-u/2+1)+'" y="'+(Y(p[1])-u/2+1)+'" width="'+(u-2)+'" height="'+(u-2)+'" fill="#9be0b3" stroke="#16803c" stroke-width="2" opacity=".85"/>':'<circle cx="'+X(p[0])+'" cy="'+Y(p[1])+'" r="5" fill="#16803c" stroke="#fff" stroke-width="1.5"/>'});
   sv.querySelector('.marks').insertAdjacentHTML('beforebegin','<g class="rev">'+h+'</g>');
 }
 let finT=0;function finish(){finT=Date.now();revealQ(cur);$('#chk').disabled=true;$('#hnt').disabled=true;$('#sol').style.display='none';$('#nxt').style.display='';$('#nxt').focus();document.querySelectorAll('.choice').forEach(b=>b.disabled=true);document.querySelectorAll('#ans input').forEach(i=>i.disabled=true);document.querySelectorAll('#kp button').forEach(i=>i.disabled=true);renderNavSoft();const lp=document.querySelector('details.hl');if(lp){const o=lp.open;lp.outerHTML=logPanel();const n=document.querySelector('details.hl');if(n)n.open=o}}
@@ -1197,7 +1293,7 @@ function startAgain(){
   st={mode:st.mode,secs:{},done:{},stat:{},best:{},tests:[],sec:st.sec,prog:{},lvl:{},res:{},log:[],badges:{},bestRow:0,goalsAll:st.goalsAll,auto:st.auto};mix=false;free=null;focus=null;save();test=null;renderNav();next(true);
 }
 document.getElementById('pbtn').onclick=showProgress;
-window.__dbg=()=>cur;renderNav();next(true);
+window.__dbg=()=>cur;window.__next=()=>next(false);renderNav();next(true);
 })();
 
 </script>
