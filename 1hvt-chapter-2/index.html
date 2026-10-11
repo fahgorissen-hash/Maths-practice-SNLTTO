@@ -99,7 +99,7 @@ svg.grid[data-click]{cursor:crosshair}
     const w = (xmax - xmin) * u + 2 * pad, h = (ymax - ymin) * u + 2 * pad;
     const X = x => pad + (x - xmin) * u, Y = y => pad + (ymax - y) * u;
     const id = 'c' + (++gid);
-    let s = '<svg class="grid" viewBox="0 0 ' + w + ' ' + h + '" role="img" aria-label="coordinate grid"' +
+    let s = '<svg class="grid" viewBox="0 0 ' + w + ' ' + h + '" role="img" aria-label="grid"' +
       (o.click ? ' data-click="1" data-xmin="' + xmin + '" data-ymax="' + ymax + '" data-u="' + u + '" data-pad="' + pad + '" data-w="' + w + '"' : '') + '>';
     s += '<defs><clipPath id="' + id + '"><rect x="' + X(xmin) + '" y="' + Y(ymax) + '" width="' + (xmax - xmin) * u + '" height="' + (ymax - ymin) * u + '"/></clipPath></defs>';
     s += '<rect x="0" y="0" width="' + w + '" height="' + h + '" fill="#fff"/>';
@@ -163,6 +163,13 @@ svg.grid[data-click]{cursor:crosshair}
   const grp = (o) => gr(Object.assign({ plain: true }, o));
   const inR = (p, r) => Math.abs(p[0]) <= r && Math.abs(p[1]) <= r;
   const clickQ = (html, targets, hint, steps, extra) => Object.assign({ type: 'click', targets, correct: targets, html, hint, steps }, extra || {});
+  const revLine = (P, e) => {            // full line through P with primitive direction e, plus lattice points on it
+    const pts = [], R = 7; let k = 0;
+    while (Math.abs(P[0] + (k + 1) * e[0]) <= R && Math.abs(P[1] + (k + 1) * e[1]) <= R) k++;
+    let j = 0; while (Math.abs(P[0] - (j + 1) * e[0]) <= R && Math.abs(P[1] - (j + 1) * e[1]) <= R) j++;
+    for (let t = -j; t <= k; t++) pts.push([P[0] + t * e[0], P[1] + t * e[1]]);
+    return { seg: { a: pts[0], b: pts[pts.length - 1] }, pts };
+  };
   const NAMES = ['A', 'B', 'C', 'D', 'E', 'F', 'K', 'L', 'M', 'P', 'Q', 'R', 'S', 'T'];
 
   /* 2.1 Lines and distances */
@@ -216,7 +223,7 @@ svg.grid[data-click]{cursor:crosshair}
       const line = horiz ? { a: [-7, k], b: [7, k], color: ptc, label: 'l' } : { a: [k, -7], b: [k, 7], color: ptc, label: 'l' };
       const other = horiz ? { a: [x, -7], b: [x, 7], color: '#16803c', label: 'n', dash: true } : { a: [-7, x], b: [7, x], color: '#16803c', label: 'n', dash: true };
       return clickQ('<p>Click <b>all points</b> on line <b>n</b> (green) that are <b>' + d + ' cm</b> from line <b>l</b> (blue). One square is 1 cm.</p>' + grp({ segs: [line, other], click: true }), t,
-        'Points at distance ' + d + ' from a line lie on both sides of the line. There are two of them.', 'Go ' + d + ' squares from l in both directions along n: ' + t.map(p => pt(p[0], p[1])).join(' and ') + '.');
+        'Points at distance ' + d + ' from a line lie on both sides of the line. There are two of them.', 'Go ' + d + ' squares from l in both directions along n. That gives two points (marked in green).');
     },
     function maxIntersect(l) {
       const n = l === 0 ? ri(2, 3) : ri(3, 4), ans = n * (n - 1) / 2;
@@ -239,7 +246,8 @@ svg.grid[data-click]{cursor:crosshair}
       return { type: 'click', rel, dir: d, base: A, targets: [C, D], correct: [C, D], example: true,
         html: '<p>Click <b>two points</b> that a line <b>' + word + '</b> to line <b>m</b> would pass through' + (rel === 'par' ? ' (not m itself)' : '') + '.</p>' + grp({ segs: [m], click: true }),
         hint: rel === 'par' ? 'A parallel line has the same direction as m. Look at how m goes: steps right and up or down. Start at a point and take the same steps.' : 'A perpendicular line meets m at 90°. Swap the steps of m: if m goes 2 right and 1 up, a perpendicular line goes 1 right and 2 down (or 1 left and 2 up).',
-        steps: 'Many answers are correct. One example: ' + pt(C[0], C[1]) + ' and ' + pt(D[0], D[1]) + '.' };
+        steps: 'Many answers are correct. The green lines show some possible lines; any two points on one of them are right.',
+        reveal: (() => { const L = [revLine(C, e)]; for (let i = 0; i < 2; i++) { let P2, tr = 0; do { P2 = [ri(-5, 5), ri(-5, 5)]; tr++; } while (tr < 50 && (rel === 'par' && (P2[0] - A[0]) * d[1] - (P2[1] - A[1]) * d[0] === 0)); L.push(revLine(P2, e)); } return { segs: L.map(x => x.seg), pts: [].concat(...L.map(x => x.pts)) }; })() };
     }
   ];
 
@@ -398,8 +406,8 @@ svg.grid[data-click]{cursor:crosshair}
         const pts = tri ? [A, B, [A[0] - ri(0, 2), A[1] + ri(1, 3)]] : [A];
         const im = pts.map(p => [2 * P[0] - p[0], 2 * P[1] - p[1]]);
         if (pts.every(p => inR(p, 6)) && im.every(p => inR(p, 6)) && !pts.some(p => p[0] === P[0] && p[1] === P[1])) {
-          return clickQ('<p>Reflect ' + (tri ? 'triangle <b>ABC</b>' : 'point <b>A</b>') + ' in point <b>P</b>. Click ' + (tri ? 'the three corners of the image' : 'the image A′') + '. (Click again to remove a point.)</p>' + gr({ click: true, polys: tri ? [{ v: pts, label: ['A', 'B', 'C'] }] : [], pts: (tri ? [] : [{ x: pts[0][0], y: pts[0][1], label: 'A' }]).concat([{ x: P[0], y: P[1], label: 'P', color: MIR }]) }), im,
-            'The image is at the same distance from P as the original, but on the other side of P. Go from A to P, and just as far again.', 'A′ = ' + pt(im[0][0], im[0][1]) + (tri ? ', B′ = ' + pt(im[1][0], im[1][1]) + ', C′ = ' + pt(im[2][0], im[2][1]) : '') + '.');
+          return clickQ('<p>Reflect ' + (tri ? 'triangle <b>ABC</b>' : 'point <b>A</b>') + ' in point <b>P</b>. Click ' + (tri ? 'the three corners of the image' : 'the image A′') + '. (Click again to remove a point.)</p>' + grp({ click: true, polys: tri ? [{ v: pts, label: ['A', 'B', 'C'] }] : [], pts: (tri ? [] : [{ x: pts[0][0], y: pts[0][1], label: 'A' }]).concat([{ x: P[0], y: P[1], label: 'P', color: MIR }]) }), im,
+            'The image is at the same distance from P as the original, but on the other side of P. Go from A to P, and just as far again.', 'The image is marked in green on the grid.');
         }
       }
     
@@ -415,8 +423,8 @@ svg.grid[data-click]{cursor:crosshair}
         if (pts.every(p => inR(p, 6)) && im.every(p => inR(p, 6)) && !onLine && new Set(pts.map(String)).size === pts.length) {
           const mirror = kind === 'x' ? { a: [k, -7], b: [k, 7], dash: true, color: MIR, label: 'n' } : kind === 'y' ? { a: [-7, k], b: [7, k], dash: true, color: MIR, label: 'n' } : { a: [-7, -7], b: [7, 7], dash: true, color: MIR, label: 'n' };
           const nm = kind === 'x' ? 'x = ' + f(k) : kind === 'y' ? 'y = ' + f(k) : 'y = x';
-          return clickQ('<p>Reflect ' + (tri ? 'triangle <b>ABC</b>' : 'point <b>A</b>') + ' in the mirror line <b>n</b> (' + nm + '). Click ' + (tri ? 'the three corners of the image' : 'the image A′') + '.</p>' + gr({ click: true, segs: [mirror], polys: tri ? [{ v: pts, label: ['A', 'B', 'C'] }] : [], pts: tri ? [] : [{ x: A[0], y: A[1], label: 'A' }] }), im,
-            'The image is at the same distance from the mirror line as the original, on the other side, and the line between them is at 90° to the mirror line.', 'A′ = ' + pt(im[0][0], im[0][1]) + (tri ? ', B′ = ' + pt(im[1][0], im[1][1]) + ', C′ = ' + pt(im[2][0], im[2][1]) : '') + '.');
+          return clickQ('<p>Reflect ' + (tri ? 'triangle <b>ABC</b>' : 'point <b>A</b>') + ' in the mirror line <b>n</b>. Click ' + (tri ? 'the three corners of the image' : 'the image A′') + '.</p>' + grp({ click: true, segs: [mirror], polys: tri ? [{ v: pts, label: ['A', 'B', 'C'] }] : [], pts: tri ? [] : [{ x: A[0], y: A[1], label: 'A' }] }), im,
+            'The image is at the same distance from the mirror line as the original, on the other side, and the line between them is at 90° to the mirror line.', 'The image is marked in green on the grid.');
         }
       }
     
@@ -424,16 +432,16 @@ svg.grid[data-click]{cursor:crosshair}
     },
     function midpoint(l) {
       const a = [ri(-6, 6), ri(-6, 6)], dx = 2 * ri(1, 4) * pick([-1, 1]), dy = 2 * ri(0, 3) * pick([-1, 1]), b = [a[0] + dx, a[1] + dy];
-      if (!inR(b, 8)) return G['2.4'][4](l);
+      if (!inR(b, 6)) return G['2.4'][4](l);
       const m = [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2];
-      return { type: 'point', ans: m, correct: pt(m[0], m[1]), html: '<p>Find the <b>middle</b> of line segment <b>AB</b> with <b>A = ' + pt(a[0], a[1]) + '</b> and <b>B = ' + pt(b[0], b[1]) + '</b>. Give its coordinates.</p>',
-        hint: 'Find the middle of the two x-coordinates and the middle of the two y-coordinates.', steps: 'x: (' + f(a[0]) + ' + ' + par(b[0]) + ') : 2 = ' + f(m[0]) + '. y: (' + f(a[1]) + ' + ' + par(b[1]) + ') : 2 = ' + f(m[1]) + '.' };
+      return clickQ('<p>Click the <b>middle</b> of line segment <b>AB</b>.</p>' + grp({ click: true, segs: [{ a, b, color: ptc }], pts: [{ x: a[0], y: a[1], label: 'A' }, { x: b[0], y: b[1], label: 'B' }] }), [m],
+        'The middle is exactly as far from A as from B. Count the squares from A to B and go half of that way.', 'Go from A to B in two equal parts. The middle is marked in green.');
     },
     function whereIsP(l) {
       const P = [ri(-4, 4), ri(-4, 4)], A = [ri(-5, 5), ri(-5, 5)], A2 = [2 * P[0] - A[0], 2 * P[1] - A[1]];
-      if (!inR(A2, 8) || (A[0] === A2[0] && A[1] === A2[1])) return G['2.4'][5](l);
-      return { type: 'point', ans: P, correct: pt(P[0], P[1]), html: '<p>Point <b>A = ' + pt(A[0], A[1]) + '</b> is reflected in a point <b>P</b>. The image is <b>A′ = ' + pt(A2[0], A2[1]) + '</b>. Where is P?</p>',
-        hint: 'P is exactly in the middle of A and A′.', steps: 'P is the middle of A and A′: ' + pt(P[0], P[1]) + '.' };
+      if (!inR(A2, 6) || (A[0] === A2[0] && A[1] === A2[1])) return G['2.4'][5](l);
+      return clickQ('<p>Point <b>A</b> is reflected in a point <b>P</b>. The image is <b>A′</b>. Click point <b>P</b>.</p>' + grp({ click: true, pts: [{ x: A[0], y: A[1], label: 'A' }, { x: A2[0], y: A2[1], label: 'A′' }] }), [P],
+        'P is exactly in the middle of A and A′.', 'P is the middle of A and A′ (marked in green).');
     },
     function mirrorDist(l) {
       const d = ri(2, 9), line = pick(['line l', 'mirror line n']), mode = pick(['line', 'point']);
@@ -452,9 +460,9 @@ svg.grid[data-click]{cursor:crosshair}
       const P = horiz ? [a1, c1] : [c1, a1], Q = horiz ? [a2, c2] : [c2, a2];
       const line = (k, col, lab) => horiz ? { a: [-7, k], b: [7, k], color: col, label: lab } : { a: [k, -7], b: [k, 7], color: col, label: lab };
       return { type: 'num', ans: d, correct: String(d),
-        html: '<p>Line <b>l</b> goes through <b>P = ' + pt(P[0], P[1]) + '</b> and line <b>m</b> goes through <b>Q = ' + pt(Q[0], Q[1]) + '</b>. Both lines are <b>' + (horiz ? 'horizontal' : 'vertical') + '</b>. What is the distance between l and m? One square is 1 cm. (Give the number of cm.)</p>' + grp({ segs: [line(c1, ptc, 'l'), line(c2, MIR, 'm')], pts: [{ x: P[0], y: P[1], label: 'P', color: ptc }, { x: Q[0], y: Q[1], label: 'Q', color: MIR }] }),
-        hint: 'The lines are ' + (horiz ? 'horizontal' : 'vertical') + ', so only the ' + (horiz ? 'y' : 'x') + '-coordinates matter. The other coordinate does not change the distance.',
-        steps: 'Distance = |' + f(c2) + ' − ' + par(c1) + '| = ' + d + ' cm.' };
+        html: '<p>Line <b>l</b> goes through point <b>P</b> and line <b>m</b> goes through point <b>Q</b>. Both lines are <b>' + (horiz ? 'horizontal' : 'vertical') + '</b>. What is the distance between l and m? One square is 1 cm. (Give the number of cm.)</p>' + grp({ segs: [line(c1, ptc, 'l'), line(c2, MIR, 'm')], pts: [{ x: P[0], y: P[1], label: 'P', color: ptc }, { x: Q[0], y: Q[1], label: 'Q', color: MIR }] }),
+        hint: 'The lines are ' + (horiz ? 'horizontal' : 'vertical') + ', so only the ' + (horiz ? 'up-and-down' : 'left-and-right') + ' distance matters. Where the points are along the lines does not change the distance.',
+        steps: 'Count the squares between the two lines: ' + d + ' cm.' };
     },
     function throughPoint() {
       const dirs = [[1, 0], [0, 1], [1, 1], [1, -1], [2, 1], [1, 2], [2, -1], [1, -2]];
@@ -464,9 +472,9 @@ svg.grid[data-click]{cursor:crosshair}
       let P, T, n = 0;
       do { P = [ri(-5, 5), ri(-5, 5)]; T = [P[0] + e[0], P[1] + e[1]]; n++; } while (n < 200 && (!inR(T, 6) || (rel === 'par' && (P[0] - A[0]) * d[1] - (P[1] - A[1]) * d[0] === 0)));
       return { type: 'click', rel, dir: d, base: A, through: P, targets: [T], correct: [T], example: true,
-        html: '<p>Line <b>n</b> goes through point <b>P = ' + pt(P[0], P[1]) + '</b> and is <b>' + (rel === 'par' ? 'parallel' : 'perpendicular') + '</b> to line <b>m</b>. Click <b>one more point</b> that line n goes through.</p>' + grp({ segs: [{ a: s.a, b: s.b, color: ptc, label: 'm' }], pts: [{ x: P[0], y: P[1], label: 'P', color: MIR }], click: true }),
+        html: '<p>Line <b>n</b> goes through point <b>P</b> and is <b>' + (rel === 'par' ? 'parallel' : 'perpendicular') + '</b> to line <b>m</b>. Click <b>one more point</b> that line n goes through.</p>' + grp({ segs: [{ a: s.a, b: s.b, color: ptc, label: 'm' }], pts: [{ x: P[0], y: P[1], label: 'P', color: MIR }], click: true }),
         hint: rel === 'par' ? 'Look at the steps of m (right and up or down). Start at P and take the same steps.' : 'Look at the steps of m. For a perpendicular line, swap the steps (and change one sign). Start at P.',
-        steps: 'For example ' + pt(T[0], T[1]) + '. Other points on the line are correct too.' };
+        steps: 'Every point on line n is correct. The green line and points show them.', reveal: (() => { const L = revLine(P, e); return { segs: [L.seg], pts: L.pts.filter(p => !(p[0] === P[0] && p[1] === P[1])) }; })() };
     }
   ];
   XG['2.2'] = [
@@ -515,9 +523,9 @@ svg.grid[data-click]{cursor:crosshair}
       let k, A, P, B, C, n = 0;
       do { k = ri(-3, 3); A = [ri(-5, 5), ri(-5, 5)]; P = [ri(-5, 5), ri(-5, 5)]; B = [A[0], 2 * k - A[1]]; C = [2 * P[0] - B[0], 2 * P[1] - B[1]]; n++; }
       while (n < 300 && (!inR(B, 6) || !inR(C, 6) || A[1] === k));
-      return clickQ('<p>Point <b>A</b> is reflected in the <b>horizontal line n</b> (dashed). The image is called <b>A′</b>. Then A′ is reflected in <b>point P</b>, which gives <b>A″</b>. Click <b>A″</b>.</p>' + gr({ click: true, segs: [{ a: [-7, k], b: [7, k], color: '#16803c', label: 'n', dash: true }], pts: [{ x: A[0], y: A[1], label: 'A' }, { x: P[0], y: P[1], label: 'P', color: MIR }] }), [C],
+      return clickQ('<p>Point <b>A</b> is reflected in the <b>mirror line n</b> (dashed). The image is called <b>A′</b>. Then A′ is reflected in <b>point P</b>, which gives <b>A″</b>. Click <b>A″</b>.</p>' + grp({ click: true, segs: [{ a: [-7, k], b: [7, k], color: '#16803c', label: 'n', dash: true }], pts: [{ x: A[0], y: A[1], label: 'A' }, { x: P[0], y: P[1], label: 'P', color: MIR }] }), [C],
         'Do it in two steps. Step 1: A′ is as far below/above n as A is, on the other side. Step 2: A″ is as far from P as A′, on the opposite side (a half turn around P).',
-        'A′ = ' + pt(B[0], B[1]) + ' (the x-coordinate stays, the line is y = ' + f(k) + '). A″ = ' + pt(C[0], C[1]) + ' (point reflection in P).');
+        'A′ is on the other side of the mirror line (same distance). A″ is on the other side of P (same distance). A″ is marked in green.');
     }
   ];
 
@@ -590,7 +598,7 @@ svg.grid[data-click]{cursor:crosshair}
     if (q.type === 'multi') return q.ans.map(f).join(' and ');
     if (q.type === 'point') return pt(q.ans[0], q.ans[1]);
     if (q.type === 'choice') return q.opts[q.ans];
-    if (q.type === 'click') return (q.example ? 'for example ' : '') + q.targets.map(p => pt(p[0], p[1])).join(' and ');
+    if (q.type === 'click') return 'see the green point' + (q.targets.length > 1 ? 's' : '') + ' on the grid';
     return '';
   }
 
@@ -693,7 +701,15 @@ function check(){
     save();fb('no','<b class="h">The answer is: '+E.answerText(q)+'</b>'+q.steps+dn);finish();
   }
 }
-function finish(){$('#chk').disabled=true;$('#hnt').disabled=true;$('#nxt').style.display='';$('#nxt').focus();document.querySelectorAll('.choice').forEach(b=>b.disabled=true);document.querySelectorAll('#ans input').forEach(i=>i.disabled=true);renderNavSoft()}
+function revealQ(q){
+  if(q.type!=='click')return;const sv=document.querySelector('svg.grid[data-click]');if(!sv||sv.querySelector('.rev'))return;
+  const u=+sv.dataset.u,pad=+sv.dataset.pad,xmin=+sv.dataset.xmin,ymax=+sv.dataset.ymax,X=x=>pad+(x-xmin)*u,Y=y=>pad+(ymax-y)*u;
+  const R=q.reveal||{segs:[],pts:q.targets};let h='';
+  (R.segs||[]).forEach(g=>{h+='<line x1="'+X(g.a[0])+'" y1="'+Y(g.a[1])+'" x2="'+X(g.b[0])+'" y2="'+Y(g.b[1])+'" stroke="#16803c" stroke-width="2.2" stroke-dasharray="6 4" opacity=".75"/>'});
+  (R.pts||[]).forEach(p=>{h+='<circle cx="'+X(p[0])+'" cy="'+Y(p[1])+'" r="5" fill="#16803c" stroke="#fff" stroke-width="1.5"/>'});
+  sv.querySelector('.marks').insertAdjacentHTML('beforebegin','<g class="rev">'+h+'</g>');
+}
+function finish(){revealQ(cur);$('#chk').disabled=true;$('#hnt').disabled=true;$('#nxt').style.display='';$('#nxt').focus();document.querySelectorAll('.choice').forEach(b=>b.disabled=true);document.querySelectorAll('#ans input').forEach(i=>i.disabled=true);renderNavSoft()}
 function renderNavSoft(){if(E.SECTIONS.some(s=>st.done[s.id]&&!document.querySelector('#nav .mm')))renderNav();const bars=document.querySelectorAll('#nav .bar i');E.SECTIONS.forEach((s,i)=>{bars[i].style.width=Math.min(GOAL,st.prog[s.id]||0)*100/GOAL+'%'})}
 
 /* ---- test preparation ---- */
@@ -714,7 +730,7 @@ function testShow(){
   const f=$('#in0');if(f)f.focus();
 }
 function testCheck(q,u){
-  done=true;const ok=E.grade(q,u);if(ok)test.score++;
+  done=true;const ok=E.grade(q,u);if(ok)test.score++;revealQ(q);
   test.log.push({q,ok,u});
   fb(ok?'ok':'no',ok?'<b class="h">Correct</b>':'<b class="h">Not correct. The answer is: '+E.answerText(q)+'</b>'+q.steps);
   $('#chk').disabled=true;document.querySelectorAll('.choice').forEach(b=>b.disabled=true);document.querySelectorAll('#ans input').forEach(i=>i.disabled=true);
