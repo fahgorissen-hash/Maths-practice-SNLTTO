@@ -25,6 +25,7 @@ main{background:var(--card);border:1px solid var(--line);border-radius:12px;padd
 header{display:flex;align-items:center;gap:14px;flex-wrap:wrap}header .hd{flex:1;min-width:240px}.pbtn{font:inherit;font-weight:700;background:#fff;color:var(--brand);border:0;border-radius:10px;padding:8px 16px;cursor:pointer;font-size:16px}
 nav button.mm{margin-left:14px;width:calc(100% - 14px);background:#f1edfb;border-color:#cbbdf0;font-weight:700;color:#40318a;font-size:16px}
 .pg h2{margin-top:0}.pg table{border-collapse:collapse;width:100%;font-size:16px;margin:8px 0 14px}.pg th,.pg td{border-bottom:1px solid var(--line);padding:8px 6px;text-align:left;vertical-align:middle}.pg th{color:var(--mut);font-size:14px}.chip{display:inline-block;padding:2px 9px;border-radius:99px;font-size:13px;font-weight:700;margin:1px 2px 1px 0;border:2px solid #cfd8e0;color:#8795a3;background:#fff}.chip.ach{background:var(--okbg);border-color:#8fd1a8;color:var(--ok)}.chip.act{border-color:var(--brand);color:var(--brand);background:var(--brand2)}
+nav .seg{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin:2px 0 8px}nav .seg button{font:inherit;font-size:15px;font-weight:700;padding:7px 4px;border-radius:9px;border:2px solid var(--brand);background:#fff;color:var(--brand);cursor:pointer}nav .seg button.on{background:var(--brand);color:#fff}
 @media print{header .pbtn,nav,.btns{display:none!important}.wrap{display:block}main{border:0}}
 .streak{margin-left:auto;color:var(--mut);font-size:15px}
 .dot{display:inline-block;width:11px;height:11px;border-radius:50%;background:#d6dee6;margin-left:4px}.dot.on{background:var(--ok)}
@@ -184,6 +185,7 @@ svg.grid[data-click]{cursor:crosshair}
       s += '<path d="M' + X(lo, 62) + ' ' + Y(lo, 62) + ' A62 62 0 0 0 ' + X(hi, 62) + ' ' + Y(hi, 62) + '" fill="none" stroke="' + MIR + '" stroke-width="0" />';
       s += '<line x1="' + cx + '" y1="' + cy + '" x2="' + X(a, R + 22) + '" y2="' + Y(a, R + 22) + '" stroke="#223" stroke-width="3" stroke-linecap="round"/>';
     }
+    if (o.arm2 !== undefined) s += '<line x1="' + cx + '" y1="' + cy + '" x2="' + X(o.arm2, R + 22) + '" y2="' + Y(o.arm2, R + 22) + '" stroke="#1b5fa8" stroke-width="3" stroke-linecap="round"/>';
     s += '<circle cx="' + cx + '" cy="' + cy + '" r="4" fill="#223"/><g class="pm"></g></svg>';
     return s;
   }
@@ -283,30 +285,6 @@ svg.grid[data-click]{cursor:crosshair}
   const ATYPES = ['Acute', 'Right', 'Obtuse', 'Straight', 'Reflex', 'Full'];
   const aType = d => d < 90 ? 0 : d === 90 ? 1 : d < 180 ? 2 : d === 180 ? 3 : d < 360 ? 4 : 5;
   G['2.2'] = [
-    function drawAngle(l) {
-      const start = l === 0 ? 'R' : pick(['R', 'L']);
-      const deg = l === 0 ? 10 * ri(2, 16) : l === 1 ? 5 * ri(2, 34) : ri(8, 172), target = start === 'R' ? deg : 180 - deg;
-      return { type: 'proto', target, tol: 2, correct: target,
-        html: '<p>The red arm is one side of an angle. Draw an angle of <b>' + deg + '°</b> with the red arm. Click on the protractor <b>scale</b> where the <b>second arm</b> goes through.</p>' + protractor({ start, click: true }),
-        hint: start === 'R' ? 'The red arm points to the <b>right</b> and goes through the 0 on the right. Use the scale that starts with 0 on the right (the bold numbers) and count up to ' + deg + '.' : 'The red arm points to the <b>left</b> and goes through the 0 on the left. Use the scale that starts with 0 on the left (the small grey numbers) and count up to ' + deg + '.',
-        steps: 'Use the scale that has 0 at the red arm and count up to ' + deg + '°. The green arm shows where the second arm goes.' };
-    },
-    function readAngle(l) {
-      const start = l === 0 ? 'R' : pick(['R', 'L']);
-      const deg = l === 0 ? 10 * ri(2, 16) : l === 1 ? 5 * ri(2, 34) : ri(8, 172), arm = start === 'R' ? deg : 180 - deg;
-      return { type: 'num', ans: deg, tol: 2, correct: String(deg),
-        html: '<p>What is the size of the angle between the red arm and the black arm? (Give the number of degrees. A difference of 2° is fine.)</p>' + protractor({ start, arm }),
-        hint: start === 'R' ? 'The red arm goes through the 0 on the <b>right</b>. Read the scale that starts with 0 on the right (the bold numbers).' : 'The red arm goes through the 0 on the <b>left</b>. Read the scale that starts with 0 on the left (the small grey numbers).',
-        steps: 'Start at the 0 where the red arm is. The black arm is at ' + deg + '°.' };
-    },
-    function pickReading(l) {
-      const start = pick(['R', 'L']), small = l === 2 ? ri(65, 85) : ri(25, 80), deg = Math.random() < .5 ? small : 180 - small, arm = start === 'R' ? deg : 180 - deg;
-      const o = shuffle([deg, 180 - deg]), ans = o.indexOf(deg);
-      return { type: 'choice', opts: o.map(v => v + '°'), ans, correct: ans,
-        html: '<p>The protractor shows two numbers where the black arm crosses the scale. Which one is the size of the angle between the <b>red arm</b> and the <b>black arm</b>?</p>' + protractor({ start, arm }),
-        hint: 'First decide: is the angle smaller or bigger than a right angle (90°)? Then choose the number that fits. Also check where the 0 is.',
-        steps: 'The 0 is where the red arm is. The angle is ' + (deg < 90 ? 'acute (smaller than 90°)' : 'obtuse (bigger than 90°)') + ', so the answer is ' + deg + '°.' };
-    },
     function typeByDegrees(l) {
       const edge = [89, 91, 179, 181, 359, 1, 270, 90, 180, 360];
       const d = l === 2 ? pick(edge) : l === 0 ? pick([25, 45, 60, 90, 120, 135, 180, 200, 250, 360]) : ri(5, 355);
@@ -339,14 +317,14 @@ svg.grid[data-click]{cursor:crosshair}
         steps: m === 0 ? 'The hands are ' + Math.round(d / 30) + ' hours apart: ' + Math.round(d / 30) + ' · 30° = ' + d + '°.' : 'Hour hand: ' + ha + '°, minute hand: ' + ma + '° (from 12). Difference: ' + d + '°.' };
     },
     function compass(l) {
-      const dirs = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'], i = ri(0, 7);
+      const dirs = ['North', 'North-east', 'East', 'South-east', 'South', 'South-west', 'West', 'North-west'], i = ri(0, 7);
       const turns = l === 0 ? [90, 180] : l === 1 ? [45, 90, 135, 180, 270] : [45, 135, 225, 270, 315];
       const t = pick(turns), side = pick(['right', 'left']), j = ((i + (side === 'right' ? 1 : -1) * t / 45) % 8 + 8) % 8;
-      const opts = l === 0 ? ['N', 'E', 'S', 'W'] : dirs, ans = opts.indexOf(dirs[j]);
+      const opts = l === 0 ? ['North', 'East', 'South', 'West'] : dirs, ans = opts.indexOf(dirs[j]);
       if (ans < 0) return G['2.2'][3](l);
       if (l === 0 && i % 2) return G['2.2'][3](l);
       return { type: 'choice', opts, ans, correct: ans, html: '<p>You face <b>' + dirs[i] + '</b>. You turn <b>' + t + '° to the ' + side + '</b> (clockwise = right). In which direction do you face now?</p>',
-        hint: 'Between N, E, S and W there are 90° turns. 45° is half of that. Turning right goes N → E → S → W.', steps: 'Start ' + dirs[i] + ', turn ' + t + '° ' + side + ': ' + dirs[j] + '.' };
+        hint: 'Between North, East, South and West there are 90° turns. 45° is half of that. Turning right goes North → East → South → West.', steps: 'Start ' + dirs[i] + ', turn ' + t + '° ' + side + ': ' + dirs[j] + '.' };
     },
     function vertexName(l) {
       const nm = shuffle(['A', 'B', 'C', 'D', 'K', 'L', 'M', 'P', 'Q', 'R']).slice(0, 3), v = ri(0, 2);
@@ -365,6 +343,30 @@ svg.grid[data-click]{cursor:crosshair}
       const kind = pick([['a right angle', 90], ['a straight angle', 180], ['a full angle', 360]]), a = kind[1] === 360 ? ri(3, 33) * 10 : ri(2, kind[1] / 10 - 2) * 10 + (l === 2 ? ri(1, 9) : 0);
       return { type: 'num', ans: kind[1] - a, correct: String(kind[1] - a), html: '<p>An angle of <b>' + a + '°</b> must be made into <b>' + kind[0] + '</b> (' + kind[1] + '°). How many degrees are missing?</p>',
         hint: 'Subtract: ' + kind[1] + '° − ' + a + '°.', steps: kind[1] + '° − ' + a + '° = ' + (kind[1] - a) + '°.' };
+    },
+    function drawAngle(l) {
+      const start = l === 0 ? 'R' : pick(['R', 'L']);
+      const deg = l === 0 ? 10 * ri(2, 16) : l === 1 ? 5 * ri(2, 34) : ri(8, 172), target = start === 'R' ? deg : 180 - deg;
+      return { type: 'proto', target, tol: 2, correct: target,
+        html: '<p>The red arm is one side of an angle. Draw an angle of <b>' + deg + '°</b> with the red arm. Click on the protractor <b>scale</b> where the <b>second arm</b> goes through.</p>' + protractor({ start, click: true }),
+        hint: start === 'R' ? 'The red arm points to the <b>right</b> and goes through the 0 on the right. Use the scale that starts with 0 on the right (the bold numbers) and count up to ' + deg + '.' : 'The red arm points to the <b>left</b> and goes through the 0 on the left. Use the scale that starts with 0 on the left (the small grey numbers) and count up to ' + deg + '.',
+        steps: 'Use the scale that has 0 at the red arm and count up to ' + deg + '°. The green arm shows where the second arm goes.' };
+    },
+    function readAngle(l) {
+      const start = l === 0 ? 'R' : pick(['R', 'L']);
+      const deg = l === 0 ? 10 * ri(2, 16) : l === 1 ? 5 * ri(2, 34) : ri(8, 172), arm = start === 'R' ? deg : 180 - deg;
+      return { type: 'num', ans: deg, tol: 2, correct: String(deg),
+        html: '<p>What is the size of the angle between the red arm and the black arm? (Give the number of degrees. A difference of 2° is fine.)</p>' + protractor({ start, arm }),
+        hint: start === 'R' ? 'The red arm goes through the 0 on the <b>right</b>. Read the scale that starts with 0 on the right (the bold numbers).' : 'The red arm goes through the 0 on the <b>left</b>. Read the scale that starts with 0 on the left (the small grey numbers).',
+        steps: 'Start at the 0 where the red arm is. The black arm is at ' + deg + '°.' };
+    },
+    function pickReading(l) {
+      const start = pick(['R', 'L']), small = l === 2 ? ri(65, 85) : ri(25, 80), deg = Math.random() < .5 ? small : 180 - small, arm = start === 'R' ? deg : 180 - deg;
+      const o = shuffle([deg, 180 - deg]), ans = o.indexOf(deg);
+      return { type: 'choice', opts: o.map(v => v + '°'), ans, correct: ans,
+        html: '<p>The protractor shows two numbers where the black arm crosses the scale. Which one is the size of the angle between the <b>red arm</b> and the <b>black arm</b>?</p>' + protractor({ start, arm }),
+        hint: 'First decide: is the angle smaller or bigger than a right angle (90°)? Then choose the number that fits. Also check where the 0 is.',
+        steps: 'The 0 is where the red arm is. The angle is ' + (deg < 90 ? 'acute (smaller than 90°)' : 'obtuse (bigger than 90°)') + ', so the answer is ' + deg + '°.' };
     }
   ];
 
@@ -501,6 +503,27 @@ svg.grid[data-click]{cursor:crosshair}
         hint: 'A′ is also ' + d + ' cm from the mirror line, on the other side.', steps: d + ' + ' + d + ' = ' + 2 * d + ' cm.' }
         : { type: 'num', ans: d, correct: String(d), html: '<p>Point A is reflected in point P. The distance between A and A′ is <b>' + 2 * d + ' cm</b>. What is the distance from <b>A to P</b>?</p>',
         hint: 'P is exactly in the middle between A and A′.', steps: f(2 * d) + ' : 2 = ' + d + ' cm.' };
+    },
+    function rhombusFacts(l) {
+      const side = ri(3, 9), a = pick([50, 60, 70, 110, 120, 130]), mode = ri(0, 2);
+      if (mode === 0) return { type: 'num', ans: 4 * side, correct: String(4 * side),
+        html: '<p>ABCD is a <b>rhombus</b>. Side AB is <b>' + side + ' cm</b>. What is the <b>perimeter</b> of the rhombus? (Give the number of cm.)</p>',
+        hint: 'All four sides of a rhombus are equally long.', steps: '4 · ' + side + ' = ' + 4 * side + ' cm.' };
+      if (mode === 1) return { type: 'num', ans: a, correct: String(a),
+        html: '<p>ABCD is a <b>parallelogram</b>. Angle <b>A = ' + a + '°</b>. How big is the <b>opposite</b> angle <b>C</b>? (Give the number of degrees.)</p>',
+        hint: 'In a parallelogram the opposite angles are equal.', steps: 'C is opposite to A, so C = ' + a + '°.' };
+      return { type: 'num', ans: 180 - a, correct: String(180 - a),
+        html: '<p>ABCD is a <b>parallelogram</b>. Angle <b>A = ' + a + '°</b>. How big is the <b>next</b> angle <b>B</b>? (Give the number of degrees.)</p>',
+        hint: 'Two angles next to each other in a parallelogram add up to 180°.', steps: '180 − ' + a + ' = ' + (180 - a) + '°.' };
+    },
+    function compassCircle(l) {
+      const r = ri(2, 8), mode = ri(0, 1);
+      return mode === 0 ? { type: 'num', ans: r, correct: String(r),
+        html: '<p>You draw a circle with your compass. The compass is opened <b>' + r + ' cm</b>. What is the <b>radius</b> of the circle? (Give the number of cm.)</p>',
+        hint: 'The opening of the compass is the distance between the point and the pencil.', steps: 'The radius is ' + r + ' cm.' }
+        : { type: 'num', ans: r, correct: String(r),
+        html: '<p>You want to draw a circle with a <b>diameter of ' + 2 * r + ' cm</b>. How many cm do you open your compass?</p>',
+        hint: 'You open the compass to the radius. The radius is half of the diameter.', steps: 'Radius = ' + 2 * r + ' : 2 = ' + r + ' cm.' };
     }
   ];
 
@@ -537,6 +560,13 @@ svg.grid[data-click]{cursor:crosshair}
         hint: 'A full turn is 360°. Together B and C are 3 times B. So 3 × B = 360° − A.',
         steps: '360 − ' + a + ' = ' + (360 - a) + '. This is 3 × B, so B = ' + b + '° and C = 2 · ' + b + ' = ' + 2 * b + '°.' };
     },
+    function twoArms() {
+      const a = 10 * ri(2, 8), b = a + 5 * ri(4, 14), start = Math.random() < .5 ? 'R' : 'L';
+      const A = start === 'R' ? a : 180 - a, B = start === 'R' ? b : 180 - b;
+      return { type: 'num', ans: b - a, tol: 2, correct: String(b - a),
+        html: '<p>The <b>black arm</b> and the <b>blue arm</b> are the two sides of an angle. Neither arm is on the zero line. What is the size of the angle between the black and the blue arm? (Give the number of degrees. A difference of 2° is fine.)</p>' + protractor({ start, arm: A, arm2: B }),
+        hint: 'Read both arms on the same scale. Then subtract: bigger number minus smaller number.', steps: 'On the scale that starts at the red arm: black = ' + a + '°, blue = ' + b + '°. The angle between them is ' + b + ' − ' + a + ' = ' + (b - a) + '°.' };
+    },
     function clockAngle() {
       const h = ri(1, 11), m = 2 * ri(0, 29);
       const hand = (30 * h + m / 2) % 360, min = 6 * m, diff = Math.abs(hand - min), ang = diff > 180 ? 360 - diff : diff;
@@ -556,6 +586,15 @@ svg.grid[data-click]{cursor:crosshair}
         hint: 'First find the third angle of the triangle (the angles add up to 180°). The outside angle and that angle together make a straight line.',
         steps: 'Third angle: 180 − ' + a + ' − ' + b + ' = ' + (180 - a - b) + '°. Outside angle: 180 − ' + (180 - a - b) + ' = ' + (a + b) + '°.' };
     },
+    function isosceles() {
+      const apex = pick([20, 30, 40, 50, 70, 80, 100, 110, 120, 140]), base = (180 - apex) / 2, rev = Math.random() < .5;
+      return rev ? { type: 'num', ans: apex, correct: String(apex),
+        html: '<p>Triangle ABC is <b>isosceles</b> with <b>AB = AC</b>. The angles at B and C are both <b>' + base + '°</b>. How big is angle <b>A</b>? (Give the number of degrees.)</p>',
+        hint: 'The three angles of a triangle add up to 180°.', steps: '180 − ' + base + ' − ' + base + ' = ' + apex + '°.' }
+        : { type: 'num', ans: base, correct: String(base),
+        html: '<p>Triangle ABC is <b>isosceles</b> with <b>AB = AC</b>. Angle <b>A = ' + apex + '°</b>. How big is angle <b>B</b>? (Give the number of degrees.)</p>',
+        hint: 'AB = AC, so the angles at B and C are equal. Together they make 180° − ' + apex + '°.', steps: '180 − ' + apex + ' = ' + (180 - apex) + '°. Then ' + (180 - apex) + ' : 2 = ' + base + '°.' };
+    },
     function radiiTriangle() {
       const th = pick([40, 50, 60, 70, 80, 100, 120, 140]), base = (180 - th) / 2;
       return { type: 'num', ans: base, correct: String(base),
@@ -571,6 +610,18 @@ svg.grid[data-click]{cursor:crosshair}
     }
   ];
   XG['2.4'] = [
+    function thirdSide() {
+      const a = ri(3, 6), b = a + ri(2, 6), lo = b - a, hi = a + b;
+      const bad = pick([lo - 1 > 0 ? lo - 1 : 1, lo, hi, hi + ri(1, 3)]), good = [];
+      for (let v = lo + 1; v < hi; v++) good.push(v);
+      const g3 = shuffle(good).slice(0, 3);
+      if (g3.length < 3 || g3.includes(bad)) return XG['2.4'][0]();
+      const o = shuffle(g3.concat([bad])), ans = o.indexOf(bad);
+      return { type: 'choice', opts: o.map(v => v + ' cm'), ans, correct: ans,
+        html: '<p>A triangle has two sides of <b>' + a + ' cm</b> and <b>' + b + ' cm</b>. Which length can the <b>third side NOT</b> be?</p>',
+        hint: 'The third side must be shorter than the other two sides together, and longer than their difference.',
+        steps: 'The third side must be longer than ' + b + ' − ' + a + ' = ' + lo + ' cm and shorter than ' + b + ' + ' + a + ' = ' + hi + ' cm. So ' + bad + ' cm is not possible.' };
+    },
     function doubleReflect() {
       let k, A, P, B, C, n = 0;
       do { k = ri(-3, 3); A = [ri(-5, 5), ri(-5, 5)]; P = [ri(-5, 5), ri(-5, 5)]; B = [A[0], 2 * k - A[1]]; C = [2 * P[0] - B[0], 2 * P[1] - B[1]]; n++; }
@@ -588,17 +639,46 @@ svg.grid[data-click]{cursor:crosshair}
     { id: '2.4', title: '2.4 Constructing and reflecting', sub: 'Can you make it? Reflect in a point or line' }
   ];
 
-  function make(sec, lvl, avoid) {
+  /* ---------- lessons (follow the study guide) ---------- */
+  const ALL = (sec) => (G[sec] || []).map(f => [sec, f.name]);
+  const LESSONS = [
+    { id: 'L1', title: 'Lesson 1 · 2.1 Lines and distances', sub: 'Thu 1 Oct', date: '2026-10-01', gens: ALL('2.1'), xg: [['2.1', 'distParallelPoints'], ['2.1', 'throughPoint']] },
+    { id: 'L2', title: 'Lesson 2 · 2.2 Angles', sub: 'Fri 2 Oct', date: '2026-10-02',
+      gens: [['2.2', 'typeByDegrees'], ['2.2', 'typeByPicture'], ['2.2', 'reflex'], ['2.2', 'clock'], ['2.2', 'compass'], ['2.2', 'vertexName'], ['2.2', 'complete']], xg: [['2.2', 'aroundPoint'], ['2.2', 'clockAngle']] },
+    { id: 'L3', title: 'Lesson 3 · 2.2 Measuring and drawing angles', sub: 'Tue 6 Oct', date: '2026-10-06',
+      gens: [['2.2', 'drawAngle'], ['2.2', 'readAngle'], ['2.2', 'pickReading'], ['2.2', 'complete'], ['2.4', 'tools']], xg: [['2.2', 'twoArms'], ['2.2', 'aroundPoint']] },
+    { id: 'L4', title: 'Lesson 4 · 2.3 Triangles', sub: 'Wed 7 Oct', date: '2026-10-07',
+      gens: [['2.3', 'triByAngles'], ['2.3', 'triBySidesFromAngles'], ['2.3', 'triBySides'], ['2.3', 'thirdAngle']], xg: [['2.3', 'exterior'], ['2.3', 'isosceles']] },
+    { id: 'L5', title: 'Lesson 5 · 2.3 Quadrilaterals and circles', sub: 'Thu 8 Oct', date: '2026-10-08',
+      gens: [['2.3', 'quadName'], ['2.3', 'alwaysSometimes'], ['2.3', 'circleConv'], ['2.3', 'diagonals']], xg: [['2.3', 'radiiTriangle'], ['2.3', 'trapezium']] },
+    { id: 'L6', title: 'Lesson 6 · 2.4 Constructing triangles', sub: 'Fri 9 Oct', date: '2026-10-09',
+      gens: [['2.4', 'canMake'], ['2.4', 'tools'], ['2.3', 'thirdAngle']], xg: [['2.4', 'thirdSide'], ['2.3', 'isosceles']] },
+    { id: 'L7', title: 'Lesson 7 · 2.4 Constructing with a compass', sub: 'Tue 27 Oct', date: '2026-10-27',
+      gens: [['2.4', 'tools'], ['2.4', 'compassCircle'], ['2.4', 'rhombusFacts'], ['2.4', 'canMake']], xg: [['2.4', 'thirdSide'], ['2.3', 'radiiTriangle']] },
+    { id: 'L8', title: 'Lesson 8 · 2.4 Reflecting in a point', sub: 'Wed 28 Oct', date: '2026-10-28',
+      gens: [['2.4', 'reflectPoint'], ['2.4', 'midpoint'], ['2.4', 'whereIsP'], ['2.4', 'mirrorDist']], xg: [['2.4', 'doubleReflect']] },
+    { id: 'L9', title: 'Lesson 9 · 2.4 Reflecting in a line', sub: 'Thu 29 Oct', date: '2026-10-29',
+      gens: [['2.4', 'reflectLine'], ['2.4', 'reflectPoint'], ['2.4', 'mirrorDist']], xg: [['2.4', 'doubleReflect']] },
+    { id: 'L10', title: 'Revision · whole chapter', sub: 'Fri 30 Oct', date: '2026-10-30',
+      gens: [].concat(ALL('2.1'), ALL('2.2'), ALL('2.3'), ALL('2.4')), xg: [].concat(...Object.keys(XG).map(k => XG[k].map(f => [k, f.name]))) }
+  ];
+  const fnOf = (list, sec, name) => (list[sec] || []).find(f => f.name === name);
+
+  function make(key, lvl, avoid) {
     const mix = lvl === 'mix'; if (mix) lvl = pick([0, 1, 1, 2, 2, 3, 3]);
-    const X = XG[sec] || [], list = G[sec]; let q, i, tries = 0;
-    if (lvl === 3 && X.length && Math.random() < 0.7) {
-      do { i = ri(0, X.length - 1); tries++; } while (100 + i === avoid && tries < 10);
-      q = X[i](2); q.gen = 100 + i;
+    const lesson = LESSONS.find(x => x.id === key);
+    let gens, xgs;
+    if (lesson) { gens = lesson.gens.map(e => [e[1], fnOf(G, e[0], e[1])]).filter(e => e[1]); xgs = lesson.xg.map(e => [e[1], fnOf(XG, e[0], e[1])]).filter(e => e[1]); }
+    else { gens = (G[key] || []).map(f => [f.name, f]); xgs = (XG[key] || []).map(f => [f.name, f]); }
+    let q, e, tries = 0;
+    if (lvl === 3 && xgs.length && Math.random() < 0.7) {
+      do { e = pick(xgs); tries++; } while (e[0] === avoid && tries < 10 && xgs.length > 1);
+      q = e[1](2);
     } else {
-      do { i = ri(0, list.length - 1); tries++; } while (i === avoid && tries < 10);
-      q = list[i](Math.min(lvl, 2)); q.gen = i;
+      do { e = pick(gens); tries++; } while (e[0] === avoid && tries < 10 && gens.length > 1);
+      q = e[1](Math.min(lvl, 2));
     }
-    q.sec = sec; q.lvl = lvl; q.mix = mix; return q;
+    q.gen = e[0]; q.sec = key; q.lvl = lvl; q.mix = mix; return q;
   }
   function makeTest() {
     const lv = shuffle([0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2]);
@@ -656,7 +736,7 @@ svg.grid[data-click]{cursor:crosshair}
     return '';
   }
 
-  const API = { SECTIONS, G, XG, make, makeTest, grade, answerText, parseNum, parsePoint, f };
+  const API = { SECTIONS, LESSONS, G, XG, make, makeTest, grade, answerText, parseNum, parsePoint, f };
   if (typeof module !== 'undefined' && module.exports) module.exports = API; else root.Ch3 = API;
 })(typeof window !== 'undefined' ? window : globalThis);
 
@@ -666,31 +746,40 @@ svg.grid[data-click]{cursor:crosshair}
 'use strict';
 const E=window.Ch3,$=s=>document.querySelector(s);
 const LV=['Mild','Medium','Spicy','Extra spicy'],GOAL=10;let mix=false;
-let st={done:{},stat:{},best:{},tests:[],sec:'2.1',prog:{},lvl:{}};   // prog: correct count per section, lvl: level per section
+const items=()=>st.mode==='lesson'?E.LESSONS:E.SECTIONS;
+const todayISO=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
+const latestLesson=()=>{const t=todayISO();let L=E.LESSONS[0];E.LESSONS.forEach(x=>{if(x.date<=t&&x.id!=='L10')L=x});return L.id};
+function defaultFor(mode){return mode==='lesson'?latestLesson():E.SECTIONS[0].id}
+function setMode(m){if(st.mode===m)return;st.secs[st.mode]=st.sec;st.mode=m;st.sec=st.secs[m]||defaultFor(m);test=null;mix=false;save();next(true)}
+let st={mode:'lesson',secs:{},done:{},stat:{},best:{},tests:[],sec:'',prog:{},lvl:{}};   // prog: correct count per section, lvl: level per section
 try{const r=JSON.parse(localStorage.getItem('ch2-1hvt-plane-figures-v1')||'null');if(r&&r.prog)st=Object.assign(st,r)}catch(e){}
-st.done=st.done||{};st.stat=st.stat||{};st.best=st.best||{};st.tests=st.tests||[];
-const save=()=>{try{localStorage.setItem('ch2-1hvt-plane-figures-v1',JSON.stringify({sec:st.sec,prog:st.prog,lvl:st.lvl,done:st.done,stat:st.stat,best:st.best,tests:st.tests}))}catch(e){}};
-let protoAngle=null;let cur=null,tries=0,done=false,streak=0,wrongRun=0,lastGen=-1,clicked=[],choiceSel=null;
+if(!st.modeSet&&st.prog&&Object.keys(st.prog).length)st.mode='para';st.secs=st.secs||{};st.done=st.done||{};st.stat=st.stat||{};st.best=st.best||{};st.tests=st.tests||[];
+if(!st.sec||!items().some(x=>x.id===st.sec))st.sec=defaultFor(st.mode);
+const save=()=>{try{localStorage.setItem('ch2-1hvt-plane-figures-v1',JSON.stringify({mode:st.mode,modeSet:1,secs:st.secs,sec:st.sec,prog:st.prog,lvl:st.lvl,done:st.done,stat:st.stat,best:st.best,tests:st.tests}))}catch(e){}};
+let protoAngle=null;let cur=null,tries=0,done=false,streak=0,wrongRun=0,lastGen=null,clicked=[],choiceSel=null;
 let test=null; // {qs,i,score,log}
 
 function renderNav(){
   const n=$('#nav');n.innerHTML='';
-  E.SECTIONS.forEach(s=>{
+  const tg=document.createElement('div');tg.className='seg';tg.innerHTML='<button type="button" class="'+(st.mode==='lesson'?'on':'')+'" data-m="lesson">By lesson</button><button type="button" class="'+(st.mode==='para'?'on':'')+'" data-m="para">By paragraph</button>';
+  tg.querySelectorAll('button').forEach(b=>b.onclick=()=>setMode(b.dataset.m));n.appendChild(tg);
+  const t0=todayISO(),lat=latestLesson();
+  items().forEach(s=>{
     const b=document.createElement('button');b.className='sec';b.setAttribute('aria-current',String(!test&&!mix&&st.sec===s.id));
     const p=Math.min(GOAL,st.prog[s.id]||0);
-    b.innerHTML='<div class="t">'+s.title+'</div><div class="s">'+s.sub+'</div><div class="bar" aria-hidden="true"><i style="width:'+p*100/GOAL+'%"></i></div>';
+    b.innerHTML='<div class="t">'+s.title+'</div><div class="s">'+s.sub+(st.mode==='lesson'&&s.date?(s.date>t0?' · coming up':s.id===lat?' · latest lesson':''):'')+'</div><div class="bar" aria-hidden="true"><i style="width:'+p*100/GOAL+'%"></i></div>';
     b.onclick=()=>{test=null;mix=false;st.sec=s.id;save();next(true)};n.appendChild(b);
-    if(st.done[s.id]){const m=document.createElement('button');m.className='sec mm';m.setAttribute('aria-current',String(!test&&mix&&st.sec===s.id));m.textContent='★ Master Mix '+s.id;m.onclick=()=>{test=null;mix=true;st.sec=s.id;save();next(true)};n.appendChild(m)}
+    if(st.done[s.id]){const m=document.createElement('button');m.className='sec mm';m.setAttribute('aria-current',String(!test&&mix&&st.sec===s.id));m.textContent='★ Master Mix';m.onclick=()=>{test=null;mix=true;st.sec=s.id;save();next(true)};n.appendChild(m)}
   });
   const t=document.createElement('button');t.className='sec';t.setAttribute('aria-current',String(!!test));
   t.innerHTML='<div class="t">Test preparation</div><div class="s">24 mixed questions, no hints</div>';
   t.onclick=startTest;n.appendChild(t);
   const r=document.createElement('button');r.className='reset';r.textContent='Reset my progress';
-  r.onclick=()=>{if(confirm('Delete all your progress on this page?')){st={sec:st.sec,prog:{},lvl:{},done:{},stat:{},best:{},tests:[]};mix=false;save();test=null;renderNav();next(true)}};n.appendChild(r);
+  r.onclick=()=>{if(confirm('Delete all your progress on this page?')){st={mode:st.mode,secs:st.secs,sec:st.sec,prog:{},lvl:{},done:{},stat:{},best:{},tests:[]};mix=false;save();test=null;renderNav();next(true)}};n.appendChild(r);
 }
 function lvl(){return st.lvl[st.sec]||0}
 function next(reset){
-  if(reset){streak=0;wrongRun=0;lastGen=-1}
+  if(reset){streak=0;wrongRun=0;lastGen=null}
   cur=E.make(st.sec,mix?'mix':lvl(),lastGen);lastGen=cur.gen;tries=0;done=false;clicked=[];choiceSel=null;protoAngle=null;renderQ(false);renderNav();
 }
 function qHTML(q,idx){
@@ -777,7 +866,7 @@ function revealQ(q){
   sv.querySelector('.marks').insertAdjacentHTML('beforebegin','<g class="rev">'+h+'</g>');
 }
 function finish(){revealQ(cur);$('#chk').disabled=true;$('#hnt').disabled=true;$('#nxt').style.display='';$('#nxt').focus();document.querySelectorAll('.choice').forEach(b=>b.disabled=true);document.querySelectorAll('#ans input').forEach(i=>i.disabled=true);renderNavSoft()}
-function renderNavSoft(){if(E.SECTIONS.some(s=>st.done[s.id]&&!document.querySelector('#nav .mm')))renderNav();const bars=document.querySelectorAll('#nav .bar i');E.SECTIONS.forEach((s,i)=>{bars[i].style.width=Math.min(GOAL,st.prog[s.id]||0)*100/GOAL+'%'})}
+function renderNavSoft(){if(items().some(s=>st.done[s.id]&&!document.querySelector('#nav .mm')))renderNav();const bars=document.querySelectorAll('#nav .bar i');items().forEach((s,i)=>{bars[i].style.width=Math.min(GOAL,st.prog[s.id]||0)*100/GOAL+'%'})}
 
 /* ---- test preparation ---- */
 function startTest(){test={qs:E.makeTest(),i:0,score:0,log:[]};renderNav();testShow()}
@@ -816,13 +905,13 @@ function testNext(){
 /* ---- progress overview ---- */
 function showProgress(){
   test=null;renderNav();
-  const rows=E.SECTIONS.map(s=>{
+  const rows=items().map(s=>{
     const cur_=st.lvl[s.id]||0,best=Math.max(st.best[s.id]||0,cur_),d=!!st.done[s.id],S=st.stat[s.id]||{n:0,ok:0};
     const chips=LV.map((l,i)=>'<span class="chip '+(d||i<best?'ach':i===cur_&&(S.n>0||cur_>0)?'act':'')+'">'+l+'</span>').join('');
     return '<tr><td><b>'+s.title+'</b></td><td>'+chips+'</td><td>'+(S.n||0)+'</td><td>'+(S.n?Math.round(S.ok*100/S.n)+'%':'–')+'</td><td>'+(d?'★ unlocked':'not yet')+'</td></tr>';
   }).join('');
   const T=st.tests.length?'<h3>Test preparation results</h3><table><tr><th>Date</th><th>Score</th></tr>'+st.tests.slice().reverse().map(t=>'<tr><td>'+t.d+'</td><td>'+t.s+' / '+t.n+'</td></tr>').join('')+'</table>':'<p>You have not done a test preparation yet.</p>';
-  $('#main').innerHTML='<div class="pg"><h2>My progress</h2><p>Green = level reached. Blue = the level you are working on. Reach Extra spicy and answer 3 in a row correctly to unlock the Master Mix.</p><table><tr><th>Section</th><th>Levels</th><th>Questions</th><th>First try</th><th>Master Mix</th></tr>'+rows+'</table>'+T+
+  $('#main').innerHTML='<div class="pg"><h2>My progress ('+(st.mode==='lesson'?'by lesson':'by paragraph')+')</h2><p>Green = level reached. Blue = the level you are working on. Reach Extra spicy and answer 3 in a row correctly to unlock the Master Mix.</p><table><tr><th>'+(st.mode==='lesson'?'Lesson':'Section')+'</th><th>Levels</th><th>Questions</th><th>First try</th><th>Master Mix</th></tr>'+rows+'</table>'+T+
     '<div class="btns"><button class="btn" id="back">Back to practice</button><button class="btn alt" id="prt">Print / save as PDF</button></div></div>';
   $('#back').onclick=()=>next(true);$('#prt').onclick=()=>window.print();
 }
