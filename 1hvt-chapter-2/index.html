@@ -1042,6 +1042,7 @@ function check(){
   if(done)return;const q=cur,u=userAns(q);
   if(empty(q,u)){fb('hint','Fill in your answer first.');return}
   if(test){return testCheck(q,u)}
+  if(q.needStep&&q.type==='num'&&!stepLines.length&&!isNaN(E.parseNum(u))){fb('hint','<b class="h">Show your working first.</b>Type the first calculation you do (for example the part with the brackets or the multiplication), then work towards the final answer.');return}
   let calcWrong=false;
   if(q.type==='num'&&isNaN(E.parseNum(u))&&E.parse){let calc=false;try{E.parse(String(u),{noVars:true});calc=true}catch(e){}
     if(calc){const rr=E.check({type:'expr',ans:String(q.ans),form:'any',noVars:true},u);

@@ -634,7 +634,7 @@ G['1.2'] = [
     N2.push(() => { const a = nz(-9, 9), b = nz(-9, 9), c = nz(-9, 9); const e = pick([-1, 1]) * ri(2, 6); return [f(a) + ' × (' + f(b) + ' + ' + pn(c) + ') − ' + pn(e), a * (b + c) - e, '(' + f(b) + ' + ' + pn(c) + ') = ' + f(b + c) + '; ' + f(a) + ' × ' + pn(b + c) + ' = ' + f(a * (b + c)) + '; ' + f(a * (b + c)) + ' − ' + pn(e) + ' = ' + f(a * (b + c) - e) + '.']; });
     N2.push(() => { const a = nz(-5, 5), b = nz(-5, 5), c = nz(-5, 5), d = nz(-5, 5); return [f(a) + ' + ' + pn(b) + ' × ' + pn(c) + ' − ' + pn(d) + ' × ' + pn(a), a + b * c - d * a, pn(b) + ' × ' + pn(c) + ' = ' + f(b * c) + ' and ' + pn(d) + ' × ' + pn(a) + ' = ' + f(d * a) + '; ' + f(a) + ' + ' + pn(b * c) + ' − ' + pn(d * a) + ' = ' + f(a + b * c - d * a) + '.']; });
     const list = l === 0 ? T1 : l === 1 ? N1 : N2; const [e, v, st] = pick(list)();
-    return nu(p('Calculate <b>' + e + '</b>'), v, 'Brackets first, then × and :, then + and −. Write down every step.', st);
+    return nu(p('Calculate <b>' + e + '</b>'), v, 'Brackets first, then × and :, then + and −. Write down every step.', st, { needStep: true });
   },
   function shopCost(l) {
     const t = ri(0, 2); if (t === 0) { const s = ri(3, 9), r = ri(2, 6), n = ri(3, 8); return nu(p('A taxi costs <b>£ ' + s + '</b> to start and then <b>£ ' + r + '</b> for every kilometre. What do you pay for <b>' + n + ' km</b> (in £)?'), s + r * n, 'Multiply first, then add. Write the calculation as ' + s + ' + ' + r + ' × ' + n + '.', s + ' + ' + r + ' × ' + n + ' = ' + s + ' + ' + r * n + ' = ' + (s + r * n) + '.'); }
@@ -664,7 +664,7 @@ G['1.2'] = [
 XG['1.2'] = [
   function bigOrder(l) {
     const a = nz(-9, 9), b = nz(-9, 9), c = nz(-9, 9), d = nz(-9, 9), e = nz(-5, 5); const v = (a - b) * c + d * e - (-b);
-    return nu(p('Calculate <b>(' + f(a) + ' − ' + pn(b) + ') × ' + pn(c) + ' + ' + pn(d) + ' × ' + pn(e) + ' − ' + pn(-b) + '</b>'), v, 'Brackets first. Then both multiplications. Then work from left to right.', '(' + f(a) + ' − ' + pn(b) + ') = ' + f(a - b) + '; ' + pn(a - b) + ' × ' + pn(c) + ' = ' + f((a - b) * c) + '; ' + pn(d) + ' × ' + pn(e) + ' = ' + f(d * e) + '; ' + f((a - b) * c) + ' + ' + pn(d * e) + ' − ' + pn(-b) + ' = ' + f(v) + '.');
+    return nu(p('Calculate <b>(' + f(a) + ' − ' + pn(b) + ') × ' + pn(c) + ' + ' + pn(d) + ' × ' + pn(e) + ' − ' + pn(-b) + '</b>'), v, 'Brackets first. Then both multiplications. Then work from left to right.', '(' + f(a) + ' − ' + pn(b) + ') = ' + f(a - b) + '; ' + pn(a - b) + ' × ' + pn(c) + ' = ' + f((a - b) * c) + '; ' + pn(d) + ' × ' + pn(e) + ' = ' + f(d * e) + '; ' + f((a - b) * c) + ' + ' + pn(d * e) + ' − ' + pn(-b) + ' = ' + f(v) + '.', { needStep: true });
   },
   function decimalMul(l) {
     const a = pick([-1, 1]) * rd(ri(11, 99) / 10), b = pick([-1, 1]) * pick([0.5, 0.2, 0.1, 2.5]); const r = rd(a * b);
@@ -839,7 +839,7 @@ const bdisp = (r, mx) => r[1] === 1 ? (r[0] < 0 ? '(' + f(r[0]) + ')' : String(r
 const PW = (r, e, mx) => bdisp(r, mx) + '<sup>' + e + '</sup>';
 const rpow = (r, e) => { let x = [1, 1]; for (let i = 0; i < e; i++) x = rmul(x, r); return x; };
 const prodTxt = (r, e, mx) => Array.from({ length: Math.min(e, 6) }, () => r[1] === 1 ? pn(r[0]) : TP(r, mx)).join(' × ') + (e > 6 ? ' × …' : '');
-const resQ = (html, r, hint, steps) => r[1] === 1 ? nu(html, r[0], hint, steps) : rq(html, r, 'lowest', hint, steps);
+const resQ = (html, r, hint, steps, extra) => r[1] === 1 ? nu(html, r[0], hint, steps, extra) : rq(html, r, 'lowest', hint, steps, extra);
 G['1.5'] = [
   function evalPower(l) {
     let html, r, st; const t = ri(0, 3);
@@ -912,7 +912,7 @@ G['1.5'] = [
       else if (t === 3) { const a = ri(2, 4), b = impr(1, 1, 2); html = '2<sup>' + a + '</sup> : ' + T(b, true) + ' − 1'; r = rsub(rdiv([Math.pow(2, a), 1], b), [1, 1]); st = '2<sup>' + a + '</sup> = ' + Math.pow(2, a) + '; ' + Math.pow(2, a) + ' : ' + FR(b) + ' = ' + FR(rdiv([Math.pow(2, a), 1], b)) + '; minus 1 = ' + FR(r) + '.'; }
       else { const a = impr(1, 1, 3), b = properFrac([4, 7, 5]); html = '(' + T(a, true) + ' + ' + T(b) + ') × 2<sup>2</sup> + 3'; const s = radd(a, b); r = radd(rmul(s, [4, 1]), [3, 1]); st = 'Brackets: ' + addSteps(a, b, false) + ' Then × 4: ' + FR(rmul(s, [4, 1])) + '. Then + 3: ' + FR(r) + '.'; }
     }
-    return resQ(p('Calculate <b>' + html + '</b>' + (r[1] === 1 ? '' : '. ' + AF)), r, 'Order of operations: 1) brackets, 2) powers, 3) × and :, 4) + and −.', st);
+    return resQ(p('Calculate <b>' + html + '</b>' + (r[1] === 1 ? '' : '. ' + AF)), r, 'Order of operations: 1) brackets, 2) powers, 3) × and :, 4) + and −.', st, { needStep: true });
   },
   function bracketPlace(l) {
     const a = ri(2, 6), b = ri(2, 6), c = ri(2, 4); const target = (a + b) * c * c; const opts = [['(' + a + ' + ' + b + ') × ' + c + '<sup>2</sup>', (a + b) * c * c], [a + ' + (' + b + ' × ' + c + ')<sup>2</sup>', a + b * b * c * c], ['(' + a + ' + ' + b + ' × ' + c + ')<sup>2</sup>', (a + b * c) * (a + b * c)], [a + ' + ' + b + ' × ' + c + '<sup>2</sup>', a + b * c * c]];
@@ -937,7 +937,7 @@ XG['1.5'] = [
   },
   function longOrder(l) {
     const a = ri(2, 4), b = ri(2, 5), c = ri(2, 3), d = ri(3, 9); const v = -Math.pow(a, 2) * Math.pow(b, c) + (d - b) * Math.pow(a, 3);
-    return nu(p('Calculate <b>−' + a + '<sup>2</sup> × ' + b + '<sup>' + c + '</sup> + (' + d + ' − ' + b + ') × ' + a + '<sup>3</sup></b>'), v, 'Brackets, then powers, then × and :, then + and −. Mind the minus sign in front of the first term!', 'Brackets: ' + (d - b) + '. Powers: ' + a + '<sup>2</sup> = ' + a * a + ', ' + b + '<sup>' + c + '</sup> = ' + Math.pow(b, c) + ', ' + a + '<sup>3</sup> = ' + Math.pow(a, 3) + '. So −' + a * a + ' × ' + Math.pow(b, c) + ' + ' + (d - b) + ' × ' + Math.pow(a, 3) + ' = ' + f(-a * a * Math.pow(b, c)) + ' + ' + (d - b) * Math.pow(a, 3) + ' = ' + f(v) + '.');
+    return nu(p('Calculate <b>−' + a + '<sup>2</sup> × ' + b + '<sup>' + c + '</sup> + (' + d + ' − ' + b + ') × ' + a + '<sup>3</sup></b>'), v, 'Brackets, then powers, then × and :, then + and −. Mind the minus sign in front of the first term!', 'Brackets: ' + (d - b) + '. Powers: ' + a + '<sup>2</sup> = ' + a * a + ', ' + b + '<sup>' + c + '</sup> = ' + Math.pow(b, c) + ', ' + a + '<sup>3</sup> = ' + Math.pow(a, 3) + '. So −' + a * a + ' × ' + Math.pow(b, c) + ' + ' + (d - b) + ' × ' + Math.pow(a, 3) + ' = ' + f(-a * a * Math.pow(b, c)) + ' + ' + (d - b) * Math.pow(a, 3) + ' = ' + f(v) + '.', { needStep: true });
   }
 ];
 
@@ -1175,6 +1175,7 @@ function check(){
   if(done)return;const q=cur,u=userAns(q);
   if(empty(q,u)){fb('hint','Fill in your answer first.');return}
   if(test){return testCheck(q,u)}
+  if(q.needStep&&q.type==='num'&&!stepLines.length&&!isNaN(E.parseNum(u))){fb('hint','<b class="h">Show your working first.</b>Type the first calculation you do (for example the part with the brackets or the multiplication), then work towards the final answer.');return}
   let calcWrong=false;
   if(q.type==='num'&&isNaN(E.parseNum(u))&&E.parse){let calc=false;try{E.parse(String(u),{noVars:true});calc=true}catch(e){}
     if(calc){const rr=E.check({type:'expr',ans:String(q.ans),form:'any',noVars:true},u);
