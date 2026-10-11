@@ -1,0 +1,921 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>2HT Chapter 2 Solid geometry - practice</title>
+<style>
+:root{--bg:#f4f7fa;--card:#fff;--ink:#17222d;--mut:#5b6b7a;--line:#d5dee7;--brand:#1b5fa8;--brand2:#e8f1fb;--ok:#16803c;--okbg:#e6f6ec;--bad:#b3261e;--badbg:#fdecea;--warn:#8a5a00;--warnbg:#fff4d6}
+*{box-sizing:border-box}
+body{margin:0;font-family:Calibri,"Segoe UI",system-ui,sans-serif;background:var(--bg);color:var(--ink);font-size:18px;line-height:1.45}
+header{background:var(--brand);color:#fff;padding:14px 20px}
+header h1{margin:0;font-size:24px}header p{margin:2px 0 0;opacity:.9;font-size:15px}
+.wrap{display:grid;grid-template-columns:290px 1fr;gap:18px;max-width:1150px;margin:18px auto;padding:0 14px}
+nav{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px;align-self:start}
+nav button.sec{display:block;width:100%;text-align:left;background:none;border:2px solid transparent;border-radius:10px;padding:9px 11px;margin:3px 0;font:inherit;cursor:pointer;color:inherit}
+nav button.sec:hover{background:var(--brand2)}
+nav button.sec[aria-current=true]{background:var(--brand2);border-color:var(--brand)}
+nav .t{font-weight:700}nav .s{font-size:14px;color:var(--mut)}
+.bar{height:7px;background:#e3eaf1;border-radius:5px;margin-top:5px;overflow:hidden}.bar i{display:block;height:100%;background:var(--ok);width:0}
+.reset{margin:8px 4px 2px;font-size:14px;color:var(--mut);background:none;border:0;text-decoration:underline;cursor:pointer;font-family:inherit}
+main{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px 22px;min-height:420px}
+.top{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:8px}
+.badge{padding:3px 12px;border-radius:99px;font-weight:700;font-size:15px}
+.l0{background:#dff3e5;color:#0f6a31}.l1{background:#fff0c9;color:#7a5200}.l2{background:#fde0d9;color:#a3341b}.l3{background:#f3d9f5;color:#6b1f78}.lm{background:#e3def7;color:#40318a}
+header{display:flex;align-items:center;gap:14px;flex-wrap:wrap}header .hd{flex:1;min-width:240px}.pbtn{font:inherit;font-weight:700;background:#fff;color:var(--brand);border:0;border-radius:10px;padding:8px 16px;cursor:pointer;font-size:16px}
+nav button.mm{margin-left:14px;width:calc(100% - 14px);background:#f1edfb;border-color:#cbbdf0;font-weight:700;color:#40318a;font-size:16px}
+.pg h2{margin-top:0}.pg table{border-collapse:collapse;width:100%;font-size:16px;margin:8px 0 14px}.pg th,.pg td{border-bottom:1px solid var(--line);padding:8px 6px;text-align:left;vertical-align:middle}.pg th{color:var(--mut);font-size:14px}.chip{display:inline-block;padding:2px 9px;border-radius:99px;font-size:13px;font-weight:700;margin:1px 2px 1px 0;border:2px solid #cfd8e0;color:#8795a3;background:#fff}.chip.ach{background:var(--okbg);border-color:#8fd1a8;color:var(--ok)}.chip.act{border-color:var(--brand);color:var(--brand);background:var(--brand2)}
+nav .seg{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin:2px 0 8px}nav .seg button{font:inherit;font-size:15px;font-weight:700;padding:7px 4px;border-radius:9px;border:2px solid var(--brand);background:#fff;color:var(--brand);cursor:pointer}nav .seg button.on{background:var(--brand);color:#fff}
+@media print{header .pbtn,nav,.btns{display:none!important}.wrap{display:block}main{border:0}}
+.streak{margin-left:auto;color:var(--mut);font-size:15px}
+.dot{display:inline-block;width:11px;height:11px;border-radius:50%;background:#d6dee6;margin-left:4px}.dot.on{background:var(--ok)}
+.q p{margin:.4em 0 .6em;font-size:20px}
+.tbl{border-collapse:collapse;margin:8px 0 12px;font-size:19px}.tbl th,.tbl td{border:1px solid #9fb0bf;padding:5px 13px;text-align:center;min-width:44px}.tbl th{background:var(--brand2)}
+svg.grid{width:100%;max-width:470px;height:auto;border:1px solid var(--line);border-radius:8px;display:block;margin:6px 0 10px;touch-action:manipulation}
+svg.grid[data-click]{cursor:crosshair}
+.ans{margin:8px 0}
+.ans label{display:block;font-size:16px;color:var(--mut);margin-top:6px}
+.ans input[type=text]{font:inherit;font-size:20px;padding:7px 11px;border:2px solid #9fb0bf;border-radius:9px;width:210px}
+.ans input:focus{outline:3px solid #9cc4ee;border-color:var(--brand)}
+.choices{display:grid;gap:8px;max-width:520px}
+.choice{display:block;text-align:left;font:inherit;font-size:19px;padding:10px 14px;border:2px solid #9fb0bf;border-radius:10px;background:#fff;cursor:pointer}
+.choice:hover{border-color:var(--brand)}.choice[aria-pressed=true]{background:var(--brand2);border-color:var(--brand)}
+.btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+.btn{font:inherit;font-weight:700;padding:9px 20px;border-radius:10px;border:2px solid var(--brand);background:var(--brand);color:#fff;cursor:pointer;font-size:18px}
+.btn.alt{background:#fff;color:var(--brand)}.btn:disabled{opacity:.45;cursor:default}
+.fb{margin-top:14px;padding:11px 14px;border-radius:10px;display:none}
+.fb.show{display:block}.fb.ok{background:var(--okbg);border:1px solid #8fd1a8}.fb.no{background:var(--badbg);border:1px solid #eba8a3}.fb.hint{background:var(--warnbg);border:1px solid #e6c874}
+.fb b.h{display:block;margin-bottom:2px}
+.res h2{margin-top:0}.grade{font-size:44px;font-weight:700;color:var(--brand)}
+.rev{border-top:1px solid var(--line);padding:10px 0;font-size:17px}.rev .st{color:var(--mut)}
+@media(max-width:760px){.wrap{grid-template-columns:1fr}nav{display:grid;grid-template-columns:1fr 1fr;gap:4px}nav .reset{grid-column:1/-1}}
+.sr{position:absolute;left:-9999px}
+
+.mx{font-size:1.06em;white-space:nowrap}
+.mx i{font-family:"Cambria Math","Times New Roman",serif;font-style:italic}
+.fr{display:inline-flex;flex-direction:column;vertical-align:middle;text-align:center;margin:0 3px;line-height:1.2}
+.fr .nu{border-bottom:1.6px solid currentColor;padding:0 4px 1px}.fr .de{padding:1px 4px 0}
+.rt{display:inline-block;white-space:nowrap}.rt .ov{border-top:1.6px solid currentColor;padding:0 2px;margin-left:1px}
+.rt .ix{font-size:.62em;position:relative;top:-.5em;margin-right:-1px}
+.q sup{font-size:.7em;line-height:0}
+.kp{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 2px}.kp button{font:inherit;font-size:19px;min-width:42px;padding:5px 10px;border:2px solid #9fb0bf;border-radius:9px;background:#f7fafc;cursor:pointer}.kp button:hover{border-color:var(--brand);background:var(--brand2)}
+.pv{min-height:34px;margin:6px 0 0;font-size:20px;color:#223}.pv .pl{font-size:14px;color:var(--mut);margin-right:6px}
+.ans input[type=text].wide{width:min(520px,100%)}
+.ans input#in0{width:min(420px,100%)}
+.fb .mx{font-size:1.05em}
+.lead{color:var(--mut);font-size:15px;margin:2px 0 0}
+svg.fig{max-width:430px;width:100%;height:auto;display:block;margin:6px 0 10px}
+</style>
+</head>
+<body>
+<header><div class="hd"><h1>2HT · Chapter 2 · Solid geometry</h1><p>Practise as long as you like. The questions adapt to you: Mild, Medium, Spicy and Extra spicy.</p></div><button class="pbtn" id="pbtn" type="button">My progress</button></header>
+<div class="wrap">
+  <nav id="nav" aria-label="Topics"></nav>
+  <main id="main" aria-live="polite"></main>
+</div>
+<script>
+/* NX core: shared helpers, expression parser/grader, renderer, engine builder. No DOM. */
+(function (root) {
+'use strict';
+const ri = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
+const pick = arr => arr[Math.floor(Math.random() * arr.length)];
+const shuffle = arr => { const a = arr.slice(); for (let i = a.length - 1; i > 0; i--) { const j = ri(0, i); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const nz = (a, b) => { let v = 0; while (v === 0) v = ri(a, b); return v; };
+const f = n => (n < 0 ? '−' : '') + (Math.round(Math.abs(n) * 1e6) / 1e6);
+const gcd = (a, b) => { a = Math.abs(a); b = Math.abs(b); while (b) { [a, b] = [b, a % b]; } return a; };
+const lcm = (a, b) => a / gcd(a, b) * b;
+const isPrime = n => { if (n < 2) return false; for (let i = 2; i * i <= n; i++) if (n % i === 0) return false; return true; };
+const primeFactors = n => { const r = []; for (let p = 2; p * p <= n; p++) while (n % p === 0) { r.push(p); n /= p; } if (n > 1) r.push(n); return r; };
+const squarefree = n => { for (let p = 2; p * p <= n; p++) if (n % (p * p) === 0) return false; return true; };
+const sqrtSplit = n => { let o = 1, r = n; for (let p = 2; p * p <= r; p++) while (r % (p * p) === 0) { o *= p; r /= p * p; } return [o, r]; };  // n = o^2 * r
+const SUP = '⁰¹²³⁴⁵⁶⁷⁸⁹';
+
+/* ================= tokenizer / parser ================= */
+function tokenize(src, o) {
+  o = o || {};
+  let s = String(src).replace(/[−–—]/g, '-').replace(/ /g, ' ');
+  s = s.replace(/sqrt/gi, '√').replace(/(?<![a-zA-Z])pi(?![a-zA-Z])/gi, 'π');
+  s = s.replace(/([⁰¹²³⁴⁵⁶⁷⁸⁹]+)√/g, (m, d) => '\u0001' + d.split('').map(c => SUP.indexOf(c)).join('') + ';');
+  s = s.replace(/∛/g, '\u00013;').replace(/∜/g, '\u00014;');
+  s = s.replace(/[⁰¹²³⁴⁻⁵⁶⁷⁸⁹]+/g, m => '^(' + m.split('').map(c => c === '⁻' ? '-' : SUP.indexOf(c)).join('') + ')');
+  const t = []; let i = 0;
+  while (i < s.length) {
+    const c = s[i];
+    if (/\s/.test(c)) { i++; continue; }
+    if (c === '\u0001') { const j = s.indexOf(';', i); t.push({ k: 'sqrt', n: +s.slice(i + 1, j) }); i = j + 1; continue; }
+    if (c === '√') { t.push({ k: 'sqrt', n: 2 }); i++; continue; }
+    let m;
+    if ((m = /^\d+(?:[.,]\d+)?|^[.,]\d+/.exec(s.slice(i)))) { t.push({ k: 'num', v: parseFloat(m[0].replace(',', '.')), s: m[0].replace(',', '.') }); i += m[0].length; continue; }
+    if (c === 'π') { t.push({ k: 'pi' }); i++; continue; }
+    if (/[×·⋅*]/.test(c)) { t.push({ k: 'op', v: '*' }); i++; continue; }
+    if (/[x]/i.test(c) && o.noVars) { t.push({ k: 'op', v: '*' }); i++; continue; }
+    if (/[a-zA-Z]/.test(c)) { if (o.noVars) throw new Error('var'); t.push({ k: 'var', n: c }); i++; continue; }
+    if (c === '÷' || c === ':') { t.push({ k: 'op', v: '÷' }); i++; continue; }
+    if ('+-/^()'.indexOf(c) >= 0) { t.push({ k: 'op', v: c }); i++; continue; }
+    if (c === '[') { t.push({ k: 'op', v: '(' }); i++; continue; }
+    if (c === ']') { t.push({ k: 'op', v: ')' }); i++; continue; }
+    throw new Error('char ' + c);
+  }
+  return t;
+}
+function parse(src, o) {
+  const T = tokenize(src, o); let p = 0;
+  const peek = () => T[p], isOp = v => T[p] && T[p].k === 'op' && T[p].v === v;
+  const startsFactor = () => { const k = T[p]; return k && (k.k === 'num' || k.k === 'var' || k.k === 'pi' || k.k === 'sqrt' || (k.k === 'op' && k.v === '(')); };
+  function expr() {
+    let a = term();
+    while (isOp('+') || isOp('-')) { const op = T[p++].v; const b = term(); a = { t: op === '+' ? 'add' : 'sub', a, b }; }
+    return a;
+  }
+  function term() {
+    let a = unary();
+    for (;;) {
+      if (isOp('*')) { p++; a = { t: 'mul', a, b: unary() }; }
+      else if (isOp('/')) { p++; a = { t: 'div', a, b: unary() }; }
+      else if (isOp('÷')) { p++; a = { t: 'div', a, b: unary(), inl: true }; }
+      else if (startsFactor()) { a = { t: 'mul', a, b: unary(), imp: true }; }
+      else break;
+    }
+    return a;
+  }
+  function unary() {
+    if (isOp('-')) { p++; return { t: 'neg', a: unary() }; }
+    if (isOp('+')) { p++; return unary(); }
+    return power();
+  }
+  function power() {
+    const a = atom();
+    if (isOp('^')) { p++; let sgn = 1; if (isOp('-')) { p++; sgn = -1; } else if (isOp('+')) p++; let b = power(); if (sgn < 0) b = { t: 'neg', a: b }; return { t: 'pow', a, b }; }
+    return a;
+  }
+  function atom() {
+    const k = T[p]; if (!k) throw new Error('end');
+    if (k.k === 'num') { p++; return { t: 'n', v: k.v, s: k.s }; }
+    if (k.k === 'var') { p++; return { t: 'v', n: k.n }; }
+    if (k.k === 'pi') { p++; return { t: 'pi' }; }
+    if (k.k === 'sqrt') {
+      p++; let neg = false;
+      if (isOp('-')) { p++; neg = true; }
+      let r; const q = T[p];
+      if (isOp('(')) r = atom();
+      else if (q && q.k === 'num') { p++; r = { t: 'n', v: q.v, s: q.s }; }
+      else if (q && q.k === 'var') { p++; r = { t: 'v', n: q.n }; }
+      else if (q && q.k === 'pi') { p++; r = { t: 'pi' }; }
+      else throw new Error('sqrt');
+      if (neg) r = { t: 'neg', a: r };
+      return { t: 'sqrt', a: r, k: k.n };
+    }
+    if (isOp('(')) { p++; const e = expr(); if (!isOp(')')) throw new Error('paren'); p++; e.par = true; return e; }
+    throw new Error('atom');
+  }
+  const e = expr(); if (p < T.length) throw new Error('trailing'); return e;
+}
+function evalAst(n, env) {
+  switch (n.t) {
+    case 'n': return n.v; case 'v': { if (!(n.n in env)) env[n.n] = 0.6 + Math.random() * 2.2; return env[n.n]; }
+    case 'pi': return Math.PI; case 'neg': return -evalAst(n.a, env);
+    case 'add': return evalAst(n.a, env) + evalAst(n.b, env); case 'sub': return evalAst(n.a, env) - evalAst(n.b, env);
+    case 'mul': return evalAst(n.a, env) * evalAst(n.b, env); case 'div': return evalAst(n.a, env) / evalAst(n.b, env);
+    case 'pow': return Math.pow(evalAst(n.a, env), evalAst(n.b, env));
+    case 'sqrt': { const x = evalAst(n.a, env); if (n.k % 2 === 1) return (x < 0 ? -1 : 1) * Math.pow(Math.abs(x), 1 / n.k); return x < 0 ? NaN : Math.pow(x, 1 / n.k); }
+  }
+  return NaN;
+}
+function numEq(a, b) {                       // asts equivalent? (random numeric test)
+  for (let i = 0; i < 6; i++) {
+    const env = {}; const x = evalAst(a, env), y = evalAst(b, env);  // vars filled lazily, shared env
+    const y2 = evalAst(b, env);
+    if (!isFinite(x) || !isFinite(y2)) { if (i < 5) continue; return false; }
+    if (Math.abs(x - y2) > 1e-7 * Math.max(1, Math.abs(x), Math.abs(y2))) return false;
+  }
+  return true;
+}
+const isInt = v => Math.abs(v - Math.round(v)) < 1e-9;
+const lit = n => n.t === 'n' ? n.v : (n.t === 'neg' && n.a.t === 'n' ? -n.a.v : null);
+
+/* ----- polynomials: Map(key -> coef) ; key = 'a1b2' sorted ----- */
+const PK = m => Object.keys(m).sort().map(v => v + m[v]).join('');
+const Poly = {
+  c: v => (v === 0 ? {} : { '': v }),
+  v: n => ({ [n + '1']: 1 }),
+  add(a, b, s) { const r = Object.assign({}, a); for (const k in b) { r[k] = (r[k] || 0) + (s || 1) * b[k]; if (Math.abs(r[k]) < 1e-12) delete r[k]; } return r; },
+  mulm(k1, k2) { const m = {}; const re = /([^\d])(\d+)/g; let x; [k1, k2].forEach(k => { re.lastIndex = 0; while ((x = re.exec(k))) m[x[1]] = (m[x[1]] || 0) + +x[2]; }); return PK(m); },
+  mul(a, b) { const r = {}; for (const k1 in a) for (const k2 in b) { const k = Poly.mulm(k1, k2); r[k] = (r[k] || 0) + a[k1] * b[k2]; if (Math.abs(r[k]) < 1e-12) delete r[k]; } return r; },
+  pow(a, n) { let r = Poly.c(1); for (let i = 0; i < n; i++) r = Poly.mul(r, a); return r; },
+  isConst: a => Object.keys(a).every(k => k === ''),
+  cval: a => a[''] || 0
+};
+function toRF(n) {                           // rational function {N,D} or null
+  switch (n.t) {
+    case 'n': return { N: Poly.c(n.v), D: Poly.c(1) };
+    case 'v': return { N: Poly.v(n.n), D: Poly.c(1) };
+    case 'pi': return { N: Poly.v('π'), D: Poly.c(1) };
+    case 'neg': { const a = toRF(n.a); return a && { N: Poly.mul(a.N, Poly.c(-1)), D: a.D }; }
+    case 'add': case 'sub': { const a = toRF(n.a), b = toRF(n.b); if (!a || !b) return null; return { N: Poly.add(Poly.mul(a.N, b.D), Poly.mul(b.N, a.D), n.t === 'add' ? 1 : -1), D: Poly.mul(a.D, b.D) }; }
+    case 'mul': { const a = toRF(n.a), b = toRF(n.b); return a && b && { N: Poly.mul(a.N, b.N), D: Poly.mul(a.D, b.D) }; }
+    case 'div': { const a = toRF(n.a), b = toRF(n.b); if (!a || !b || !Object.keys(b.N).length) return null; return { N: Poly.mul(a.N, b.D), D: Poly.mul(a.D, b.N) }; }
+    case 'pow': { const e = lit(n.b); if (e === null || !isInt(e) || Math.abs(e) > 12) return null; const a = toRF(n.a); if (!a) return null; if (e >= 0) return { N: Poly.pow(a.N, e), D: Poly.pow(a.D, e) }; if (!Object.keys(a.N).length) return null; return { N: Poly.pow(a.D, -e), D: Poly.pow(a.N, -e) }; }
+  }
+  return null;
+}
+/* ----- structural analysis ----- */
+function flat(n, s, out) {
+  if (n.t === 'add') { flat(n.a, s, out); flat(n.b, s, out); }
+  else if (n.t === 'sub') { flat(n.a, s, out); flat(n.b, -s, out); }
+  else if (n.t === 'neg') flat(n.a, -s, out);
+  else out.push({ s, n });
+  return out;
+}
+function monoTerm(n, allowNegExp) {           // {c, vars} or null
+  switch (n.t) {
+    case 'n': return { c: n.v, vars: {} };
+    case 'pi': return { c: 1, vars: { 'π': 1 } };
+    case 'v': return { c: 1, vars: { [n.n]: 1 } };
+    case 'neg': { const a = monoTerm(n.a, allowNegExp); return a && { c: -a.c, vars: a.vars }; }
+    case 'mul': { const a = monoTerm(n.a, allowNegExp), b = monoTerm(n.b, allowNegExp); if (!a || !b) return null; const vars = Object.assign({}, a.vars); for (const k in b.vars) { if (k in vars) return null; vars[k] = b.vars[k]; } return { c: a.c * b.c, vars }; }
+    case 'div': { const a = monoTerm(n.a, allowNegExp), b = monoTerm(n.b, allowNegExp); if (!a || !b || Object.keys(b.vars).length || b.c === 0) return null; return { c: a.c / b.c, vars: a.vars }; }
+    case 'pow': { const e = lit(n.b); if (e === null || !isInt(e)) return null; if (e < 0 && !allowNegExp) return null; if (n.a.t === 'v') return { c: 1, vars: { [n.a.n]: e } }; if (n.a.t === 'pi') return { c: 1, vars: { 'π': e } }; return null; }
+  }
+  return null;
+}
+const hasBrackets = (n) => { if (n.par && n.t !== 'n' && !(n.t === 'neg' && n.a.t === 'n') && !(n.t === 'div' && n.a.t === 'n' && n.b.t === 'n')) return true; for (const k of ['a', 'b']) if (n[k] && hasBrackets(n[k])) return true; return false; };
+function sigOf(vars) { return Object.keys(vars).sort().map(k => k + vars[k]).join(''); }
+
+function formCheck(form, ast, q) {            // returns null if ok else message
+  if (!form || form === 'any') return null;
+  if (form === 'mono') {
+    const t = flat(ast, 1, []); if (t.length !== 1) return 'Write your answer as a single term.';
+    if (!monoTerm(t[0].n, q && q.negExp)) return 'Not fully simplified yet: write it as one number times each letter to a single power.'; return null;
+  }
+  if (form === 'poly') {
+    const t = flat(ast, 1, []); const seen = {};
+    for (const x of t) { const m = monoTerm(x.n); if (!m) return 'Not finished yet: expand the brackets and write every term as a number times letters.'; const s = sigOf(m.vars); if (seen[s]) return 'Not finished yet: add the like terms.'; seen[s] = 1; if (m.c === 0) return 'Remove the terms that are 0.'; }
+    return null;
+  }
+  if (form === 'lowest') {
+    const rf = toRF(ast); if (!rf) return 'I cannot read that as a fraction.';
+    const D = rf.D, N = rf.N; if (Object.keys(D).length !== 1) return 'Write one fraction with a single term in the denominator.';
+    const dk = Object.keys(D)[0]; let dc = D[dk]; if (!isInt(dc)) return null;
+    const cs = Object.keys(N).map(k => N[k]); if (!cs.length) return null;
+    if (cs.some(c => !isInt(c))) { return null; }
+    let g = Math.abs(dc); cs.forEach(c => { g = gcd(g, c); }); if (g > 1) return 'Not fully simplified: the numbers still have a common factor.';
+    const vs = (dk.match(/[^\d]/g) || []);
+    for (const v of vs) { if (Object.keys(N).every(k => k.indexOf(v) >= 0)) return 'Not fully simplified: you can still cancel the letter ' + v + '.'; }
+    // the user must not leave nested fractions / brackets-free requirement: ok
+    return null;
+  }
+  if (form === 'root') {
+    const terms = flat(ast, 1, []); const rads = {};
+    function rootTerm(n) {            // {c, r} or null
+      switch (n.t) {
+        case 'n': return { c: n.v, r: 1 };
+        case 'neg': { const a = rootTerm(n.a); return a && { c: -a.c, r: a.r }; }
+        case 'sqrt': { if (n.k !== 2) return null; const v = lit(n.a); if (v === null || !isInt(v) || v <= 1) return null; if (!squarefree(v)) return { bad: 'sq' }; return { c: 1, r: v }; }
+        case 'mul': { const a = rootTerm(n.a), b = rootTerm(n.b); if (!a || !b || a.bad || b.bad) return a && a.bad ? a : b && b.bad ? b : null; if (a.r > 1 && b.r > 1) return { bad: 'two' }; return { c: a.c * b.c, r: a.r * b.r }; }
+        case 'div': { const a = rootTerm(n.a), b = rootTerm(n.b); if (!a || !b) return null; if (a.bad) return a; if (b.bad) return b; if (b.r > 1) return { bad: 'den' }; if (isInt(a.c) && isInt(b.c) && gcd(a.c, b.c) > 1) return { bad: 'cancel' }; return { c: a.c / b.c, r: a.r }; }
+      }
+      return null;
+    }
+    for (const x of terms) {
+      const r = rootTerm(x.n); if (!r) return 'Not in the simplest form: write each term as a number times √ of a whole number.';
+      if (r.bad === 'sq') return 'Not fully simplified: there is still a square factor under the root.';
+      if (r.bad === 'two') return 'Not fully simplified: combine the roots into one.';
+      if (r.bad === 'den') return 'There is still a root in the denominator.';
+      if (r.bad === 'cancel') return 'Not fully simplified: the fraction can still be cancelled.';
+      if (rads[r.r]) return 'Not finished: add the like radicals.'; rads[r.r] = 1;
+    }
+    return null;
+  }
+  if (form === 'primes') {
+    let bad = null;
+    (function walk(n, inPow) {
+      if (n.t === 'n') { if (!isInt(n.v) || !isPrime(n.v)) bad = 'Every factor must be a prime number.'; }
+      else if (n.t === 'mul') { walk(n.a); walk(n.b); }
+      else if (n.t === 'pow') { walk(n.a); if (n.b.t !== 'n') bad = 'Use whole-number exponents.'; }
+      else bad = 'Write only prime numbers multiplied together, like 2^3 · 5.';
+    })(ast); return bad;
+  }
+  if (form === 'sci') {
+    let n = ast; if (n.t !== 'mul') return 'Write it as a number between 1 and 10 times a power of 10.';
+    const a = lit(n.a), p = n.b; if (a === null || Math.abs(a) < 1 || Math.abs(a) >= 10) return 'The first number must be at least 1 and less than 10.';
+    if (p.t !== 'pow' || lit(p.a) !== 10 || lit(p.b) === null || !isInt(lit(p.b))) return 'Write it as a · 10^n.'; return null;
+  }
+  if (form === 'power') {
+    if (ast.t !== 'pow') return 'Write it as a single power.'; const b = lit(ast.a), e = lit(ast.b);
+    if (b === null || e === null || !isInt(e)) return 'Write it as a single power.'; if (q && q.base !== undefined && b !== q.base) return 'Use the base ' + q.base + '.'; return null;
+  }
+  return null;
+}
+function gradeExpr(q, u) {
+  let ua, ea; const o = q.noVars ? { noVars: true } : {};
+  try { ua = parse(u, o); } catch (e) { return { ok: false, why: 'parse' }; }
+  ea = parse(q.ans, o);
+  if (!numEq(ea, ua)) return { ok: false, why: 'value' };
+  const m = formCheck(q.form, ua, q); if (m) return { ok: false, why: 'form', msg: m };
+  if (q.needPi && !/π|pi/i.test(String(u))) return { ok: false, why: 'form', msg: 'Give the exact answer, with π.' };
+  return { ok: true };
+}
+
+/* ================= rendering ================= */
+function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;'); }
+function R(src, o) {
+  let ast; try { ast = parse(src, o); } catch (e) { return null; }
+  function P(n, strip) {
+    const w = (n.par && !strip) ? x => '(' + x + ')' : x => x;
+    switch (n.t) {
+      case 'n': return w(esc(n.s !== undefined ? String(n.s).replace('.', ',') : n.v));
+      case 'v': return '<i>' + n.n + '</i>';
+      case 'pi': return 'π';
+      case 'neg': return w('−' + P(n.a));
+      case 'add': return w(P(n.a) + ' + ' + P(n.b));
+      case 'sub': return w(P(n.a) + ' − ' + P(n.b));
+      case 'mul': return w(n.imp ? P(n.a) + P(n.b) : P(n.a) + ' · ' + P(n.b));
+      case 'div': return n.inl ? w(P(n.a) + ' ÷ ' + P(n.b)) : w('<span class="fr"><span class="nu">' + P(n.a, true) + '</span><span class="de">' + P(n.b, true) + '</span></span>');
+      case 'pow': return w(P(n.a) + '<sup>' + P(n.b, true) + '</sup>');
+      case 'sqrt': return w('<span class="rt">' + (n.k > 2 ? '<sup class="ix">' + n.k + '</sup>' : '') + '√<span class="ov">' + P(n.a, true) + '</span></span>');
+    }
+    return '';
+  }
+  return '<span class="mx">' + P(ast) + '</span>';
+}
+const M = (s, o) => R(s, o) || esc(s);                       // render math
+const fr = (a, b) => '<span class="mx"><span class="fr"><span class="nu">' + a + '</span><span class="de">' + b + '</span></span></span>';
+const mixed = (w, n, d) => '<span class="mx">' + w + fr(n, d) + '</span>';
+const tbl = (rows) => '<table class="tbl">' + rows.map(r => '<tr>' + r.map((c, i) => (i === 0 ? '<th>' : '<td>') + c + (i === 0 ? '</th>' : '</td>')).join('') + '</tr>').join('') + '</table>';
+
+/* ---- number formatting for answers ---- */
+function fmtNum(n) { if (isInt(n)) return f(Math.round(n)); return f(Math.round(n * 1e4) / 1e4).replace('.', ','); }
+function ratText(n, d) { const g = gcd(n, d); n /= g; d /= g; if (d < 0) { n = -n; d = -d; } return d === 1 ? String(n) : n + '/' + d; }
+
+/* ================= grading ================= */
+function parseNum(s) {
+  if (s === null || s === undefined) return NaN;
+  s = String(s).replace(/[−–—]/g, '-').replace(/\s+/g, '').replace(',', '.');
+  const fr_ = s.match(/^([+-]?\d+\.?\d*)\/([+-]?\d+\.?\d*)$/);
+  if (fr_ && parseFloat(fr_[2]) !== 0) return parseFloat(fr_[1]) / parseFloat(fr_[2]);
+  if (!/^[+-]?(\d+\.?\d*|\.\d+)$/.test(s)) return NaN;
+  return parseFloat(s);
+}
+function parsePoint(s) {
+  s = String(s || '').replace(/[−–—]/g, '-').replace(/\s+/g, '').replace(/^\(|\)$/g, '');
+  const m = s.split(/[;,]/); if (m.length === 2 && /^[+-]?\d+(\.\d+)?$/.test(m[0]) && /^[+-]?\d+(\.\d+)?$/.test(m[1])) return [parseFloat(m[0]), parseFloat(m[1])];
+  return null;
+}
+function check(q, u) {                      // -> {ok, why?, msg?}
+  if (q.type === 'num') { const n = parseNum(u); if (isNaN(n)) return { ok: false, why: 'parse' }; return { ok: Math.abs(n - q.ans) <= (q.tol || 1e-9) }; }
+  if (q.type === 'multi') { const ok = Array.isArray(u) && u.length === q.ans.length && u.every((v, i) => { const n = parseNum(v); return !isNaN(n) && Math.abs(n - q.ans[i]) <= (q.tol || 1e-9); }); return { ok }; }
+  if (q.type === 'point') { const p = parsePoint(u); return { ok: !!p && Math.abs(p[0] - q.ans[0]) < 1e-9 && Math.abs(p[1] - q.ans[1]) < 1e-9 }; }
+  if (q.type === 'choice') return { ok: Number(u) === q.ans };
+  if (q.type === 'expr') return gradeExpr(q, u);
+  return { ok: false };
+}
+const grade = (q, u) => check(q, u).ok;
+function answerText(q) {
+  if (q.ansText) return q.ansText;
+  if (q.type === 'num') return fmtNum(q.ans);
+  if (q.type === 'multi') return q.ans.map(fmtNum).join(' and ');
+  if (q.type === 'point') return '(' + f(q.ans[0]) + ', ' + f(q.ans[1]) + ')';
+  if (q.type === 'choice') return q.opts[q.ans];
+  if (q.type === 'expr') return M(q.ans, q.noVars ? { noVars: true } : {});
+  return '';
+}
+
+/* ================= engine builder ================= */
+function engine(def) {
+  const { SECTIONS, LESSONS, G, XG } = def;
+  const fnOf = (list, sec, name) => (list[sec] || []).find(x => x.name === name);
+  function makeOne(key, lvl) {
+    const mixq = lvl === 'mix'; if (mixq) lvl = pick([0, 1, 1, 2, 2, 3, 3]);
+    const lesson = LESSONS.find(x => x.id === key);
+    let gens, xgs;
+    if (lesson) { gens = lesson.gens.map(e => [e[1], fnOf(G, e[0], e[1])]).filter(e => e[1]); xgs = (lesson.xg || []).map(e => [e[1], fnOf(XG, e[0], e[1])]).filter(e => e[1]); }
+    else { gens = (G[key] || []).map(x => [x.name, x]); xgs = (XG[key] || []).map(x => [x.name, x]); }
+    let q, e;
+    if (lvl === 3 && xgs.length && Math.random() < 0.7) { e = pick(xgs); q = e[1](2); }
+    else { e = pick(gens); q = e[1](Math.min(lvl, 2)); }
+    q.gen = e[0]; q.sec = key; q.lvl = lvl; q.mix = mixq; return q;
+  }
+  const fingerprint = q => String(q.html || '').replace(/<svg[\s\S]*?<\/svg>/g, '') + '|' + JSON.stringify(q.ans);
+  function make(key, lvl, recent) {
+    recent = Array.isArray(recent) ? recent : [];
+    const fps = recent.map(r => r.f), gens = recent.slice(-3).map(r => r.g);
+    let q;
+    for (let t = 0; t < 60; t++) {
+      try { q = makeOne(key, lvl); } catch (e) { if (t > 50) throw e; continue; }
+      q.fp = fingerprint(q);
+      if (fps.includes(q.fp)) continue;
+      if (t < 30 && gens.includes(q.gen)) continue;
+      break;
+    }
+    return q;
+  }
+  function makeTest() {
+    const n = SECTIONS.length, N = 24;
+    const lv = shuffle([0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2]);
+    const secs = []; for (let i = 0; i < N; i++) secs.push(SECTIONS[i % n].id);
+    const seen = []; return shuffle(secs).map((s, i) => { const q = make(s, lv[i], seen); seen.push({ g: null, f: q.fp }); q.hint = null; return q; });
+  }
+  return { KEY: def.key, SECTIONS, LESSONS, G, XG, make, makeTest, grade, check, answerText, parseNum, parsePoint, f, M, parse, defaultMode: def.defaultMode || 'lesson' };
+}
+const U = { ri, pick, shuffle, nz, f, gcd, lcm, isPrime, primeFactors, squarefree, sqrtSplit, parse, evalAst, numEq, R, M, fr, mixed, tbl, fmtNum, ratText, formCheck, gradeExpr, toRF, flat, monoTerm, Poly, engine, esc, parseNum };
+if (typeof module !== 'undefined' && module.exports) module.exports = U; else root.NX = U;
+})(typeof window !== 'undefined' ? window : globalThis);
+
+</script>
+<script>
+window.Ch3=NX.engine((/* 2VT / 2HT Chapter 2: solid geometry (book: 2TTOA ch 2). Params: P.cls */
+(function (NX, P) {
+const { ri, pick, shuffle, nz, f, gcd, M, fr, fmtNum, ratText } = NX;
+const VT = P.cls === '2VT';
+const ch = (html, right, wrongs, hint, steps, extra) => { let o = [right]; wrongs.forEach(w => { if (!o.includes(w)) o.push(w); }); const opts = shuffle(o); return Object.assign({ type: 'choice', opts, ans: opts.indexOf(right), html, hint, steps }, extra || {}); };
+const ex = (html, ans, form, hint, steps, extra) => Object.assign({ type: 'expr', html, ans, form, hint, steps }, extra || {});
+const nu = (html, ans, hint, steps, extra) => Object.assign({ type: 'num', html, ans, hint, steps }, extra || {});
+const p = x => '<p>' + x + '</p>';
+const G = {}, XG = {};
+const piAns = (n, d) => { const g = gcd(n, d); n /= g; d /= g; return d === 1 ? n + 'π' : n + 'π/' + d; };
+const piTxt = (n, d) => M(piAns(n, d));
+const ex_pi = (html, n, d, hint, steps) => ex(html, piAns(n, d), 'poly', hint, steps, { needPi: true, keys: ['π', '/', '^', '(', ')'] });
+const ROUND = ' Round your answer to <b>1 decimal</b>.';
+const rnd1 = x => Math.round(x * 10) / 10;
+const r1q = (html, v, hint, steps) => nu(html, rnd1(v), hint, steps, { tol: 0.051, ansText: fmtNum(rnd1(v)) });
+
+/* ---------- SVG helpers ---------- */
+const svg = (w, h, body) => '<svg class="fig" viewBox="0 0 ' + w + ' ' + h + '" role="img" xmlns="http://www.w3.org/2000/svg">' + body + '</svg>';
+const V3 = { A: [0, 0, 0], B: [1, 0, 0], C: [1, 1, 0], D: [0, 1, 0], E: [0, 0, 1], F: [1, 0, 1], G: [1, 1, 1], H: [0, 1, 1] };
+function cuboidSVG(hl) {
+  const W = 140, H = 95, dx = 66, dy = 42, ox = 30, oy = 166;
+  const P2 = k => { const v = V3[k]; return [ox + v[0] * W + v[1] * dx, oy - v[2] * H - v[1] * dy]; };
+  const edges = ['AB', 'BC', 'CD', 'DA', 'EF', 'FG', 'GH', 'HE', 'AE', 'BF', 'CG', 'DH']; const hidden = ['DA', 'CD', 'DH'];
+  let s = '';
+  edges.forEach(e => { const a = P2(e[0]), b = P2(e[1]); s += '<line x1="' + a[0] + '" y1="' + a[1] + '" x2="' + b[0] + '" y2="' + b[1] + '" stroke="#445" stroke-width="2"' + (hidden.includes(e) ? ' stroke-dasharray="5 4" opacity=".7"' : '') + '/>'; });
+  (hl || []).forEach((e, i) => { const a = P2(e[0]), b = P2(e[1]); s += '<line x1="' + a[0] + '" y1="' + a[1] + '" x2="' + b[0] + '" y2="' + b[1] + '" stroke="' + (i ? '#16803c' : '#d1471f') + '" stroke-width="4" stroke-linecap="round"/>'; });
+  Object.keys(V3).forEach(k => { const a = P2(k); const up = V3[k][2] === 1, back = V3[k][1] === 1; s += '<circle cx="' + a[0] + '" cy="' + a[1] + '" r="3" fill="#223"/><text x="' + (a[0] + (back ? 7 : -17)) + '" y="' + (a[1] + (up ? -7 : 16)) + '" font-size="15" font-weight="700" fill="#123">' + k + '</text>'; });
+  return svg(300, 190, s);
+}
+function netSVG(cells, nums, blank) {
+  const U = 38; const xs = cells.map(c => c[0]), ys = cells.map(c => c[1]); const x0 = Math.min(...xs), y0 = Math.min(...ys), w = Math.max(...xs) - x0 + 1, h = Math.max(...ys) - y0 + 1;
+  let s = ''; cells.forEach((c, i) => { const X = 8 + (c[0] - x0) * U, Y = 8 + (c[1] - y0) * U; s += '<rect x="' + X + '" y="' + Y + '" width="' + U + '" height="' + U + '" fill="' + (blank === i ? '#fff4d6' : '#eaf2fb') + '" stroke="#345" stroke-width="2"/>'; if (nums) s += '<text x="' + (X + U / 2) + '" y="' + (Y + U / 2 + 7) + '" font-size="20" text-anchor="middle" font-weight="700" fill="#123">' + (blank === i ? '?' : nums[i]) + '</text>'; });
+  return svg(w * U + 16, h * U + 16, s).replace('class="fig"', 'class="fig" style="max-width:' + Math.min(360, w * U + 16) + 'px"');
+}
+function foldNet(cells) {
+  const key = (x, y) => x + ',' + y, idx = {}; cells.forEach((c, i) => idx[key(c[0], c[1])] = i);
+  const roll = (o, d) => { const { b, t, n, s, e, w } = o; if (d === 'E') return { b: e, t: w, n, s, e: t, w: b }; if (d === 'W') return { b: w, t: e, n, s, e: b, w: t }; if (d === 'N') return { b: n, t: s, n: t, s: b, e, w }; return { b: s, t: n, n: b, s: t, e, w }; };
+  const res = new Array(cells.length).fill(-1), seen = new Set([0]); res[0] = 0; const st = [[0, { b: 0, t: 1, n: 2, s: 3, e: 4, w: 5 }]];
+  while (st.length) { const [i, o] = st.pop(); const [x, y] = cells[i]; for (const [dx, dy, d] of [[1, 0, 'E'], [-1, 0, 'W'], [0, -1, 'N'], [0, 1, 'S']]) { const j = idx[key(x + dx, y + dy)]; if (j === undefined || seen.has(j)) continue; seen.add(j); const o2 = roll(o, d); res[j] = o2.b; st.push([j, o2]); } }
+  return new Set(res).size === 6 ? res : null;
+}
+function randHexomino() {
+  for (;;) {
+    const cells = [[0, 0]]; const has = (x, y) => cells.some(c => c[0] === x && c[1] === y);
+    while (cells.length < 6) { const c = pick(cells), d = pick([[1, 0], [-1, 0], [0, 1], [0, -1]]); const x = c[0] + d[0], y = c[1] + d[1]; if (!has(x, y)) cells.push([x, y]); }
+    const xs = cells.map(c => c[0]), ys = cells.map(c => c[1]); if (Math.max(...xs) - Math.min(...xs) > 4 || Math.max(...ys) - Math.min(...ys) > 4) continue; return cells;
+  }
+}
+function randNet(wantValid) { for (let i = 0; i < 400; i++) { const c = randHexomino(); const ok = !!foldNet(c); if (ok === wantValid) { if (wantValid && Math.random() < .5) continue; return c; } } return randHexomino(); }
+function stackSVG(g, front, rightView) {   // g: rows (back .. front, top to bottom) of heights
+  const U = 44, R = g.length, C = g[0].length; let s = '';
+  for (let r = 0; r < R; r++) for (let c = 0; c < C; c++) { s += '<rect x="' + (30 + c * U) + '" y="' + (14 + r * U) + '" width="' + U + '" height="' + U + '" fill="#eaf2fb" stroke="#345" stroke-width="2"/><text x="' + (30 + c * U + U / 2) + '" y="' + (14 + r * U + U / 2 + 7) + '" font-size="20" font-weight="700" text-anchor="middle" fill="#123">' + g[r][c] + '</text>'; }
+  const yb = 14 + R * U + 20; s += '<text x="' + (30 + C * U / 2) + '" y="' + yb + '" font-size="14" text-anchor="middle" fill="#a3341b" font-weight="700">▲ front</text>';
+  s += '<text x="' + (30 + C * U + 8) + '" y="' + (14 + R * U / 2 + 5) + '" font-size="14" fill="#16803c" font-weight="700">right ▶</text>';
+  return svg(30 + C * U + 80, yb + 10, s);
+}
+const colMax = g => g[0].map((_, c) => Math.max(...g.map(r => r[c])));        // front view, left to right
+const rowMaxFront = g => g.map(r => Math.max(...r)).reverse();                 // side view from the right, left to right = front to back
+
+/* ---------- 2.2 Volume ---------- */
+G['2.2'] = [
+  function volPrism(l) {
+    if (l === 0) { const a = ri(2, 9), b = ri(2, 8), c = ri(2, 9); return nu(p('A box (cuboid) is <b>' + a + '</b> cm long, <b>' + b + '</b> cm wide and <b>' + c + '</b> cm high. What is its volume in cm³?'), a * b * c, 'Volume of a prism = area of the base · height.', a + ' · ' + b + ' · ' + c + ' = ' + a * b * c + ' cm³.'); }
+    if (l === 1) { const b = 2 * ri(2, 6), h = ri(3, 9), L = ri(3, 10); return nu(p('A prism has a triangular base with base <b>' + b + '</b> cm and height <b>' + h + '</b> cm. The prism is <b>' + L + '</b> cm long. What is its volume in cm³?'), b * h / 2 * L, 'First find the area of the base: ½ · base · height. Then multiply by the length of the prism.', 'Base area = ½ · ' + b + ' · ' + h + ' = ' + b * h / 2 + ' cm². Volume = ' + b * h / 2 + ' · ' + L + ' = ' + b * h / 2 * L + ' cm³.'); }
+    const T = pick([[6, 8, 10], [5, 12, 13], [9, 12, 15], [8, 15, 17]]), L = ri(5, 12); return nu(p('The base of a prism is a right-angled triangle with legs <b>' + T[0] + '</b> cm and <b>' + T[1] + '</b> cm (and hypotenuse ' + T[2] + ' cm). The prism is <b>' + L + '</b> cm high. What is its volume in cm³?'), T[0] * T[1] / 2 * L, 'The two legs of a right-angled triangle are its base and height. The hypotenuse is not needed.', 'Base area = ½ · ' + T[0] + ' · ' + T[1] + ' = ' + T[0] * T[1] / 2 + '. Volume = ' + T[0] * T[1] / 2 + ' · ' + L + ' = ' + T[0] * T[1] / 2 * L + ' cm³.');
+  },
+  function volCylinder(l) {
+    if (l === 0) { const r = ri(2, 6), h = ri(2, 10); return ex_pi(p('A cylinder has radius <b>' + r + '</b> cm and height <b>' + h + '</b> cm. Give its volume in cm³ as an <b>exact</b> answer with π. (Type for example <b>20π</b>.)'), r * r * h, 1, 'V = π · r² · h. Leave π in your answer.', 'V = π · ' + r + '² · ' + h + ' = ' + piTxt(r * r * h, 1) + ' cm³.'); }
+    if (l === 1) { const r = ri(2, 7), h = ri(3, 12); return ex_pi(p('A cylinder has <b>diameter ' + 2 * r + '</b> cm and height <b>' + h + '</b> cm. Give its exact volume in cm³.'), r * r * h, 1, 'The radius is half of the diameter.', 'r = ' + r + '. V = π · ' + r + '² · ' + h + ' = ' + piTxt(r * r * h, 1) + ' cm³.'); }
+    const r = ri(3, 8), h = ri(6, 20); const v = Math.PI * r * r * h / 1000; return nu(p('A cylindrical tank has radius <b>' + r + '</b> cm and height <b>' + h + '</b> cm. How many <b>litres</b> does it hold? (1 litre = 1000 cm³.) Round to 2 decimals.'), Math.round(v * 100) / 100, 'First the volume in cm³, then divide by 1000 to get litres.', 'V = π · ' + r + '² · ' + h + ' ≈ ' + rnd1(Math.PI * r * r * h) + ' cm³ ≈ ' + (Math.round(v * 100) / 100).toString().replace('.', ',') + ' litres.', { tol: 0.0051, ansText: String(Math.round(v * 100) / 100).replace('.', ',') });
+  },
+  function volPyramid(l) {
+    for (let t = 0; t < 50; t++) {
+      if (l === 0) { const s = 3 * ri(1, 4), h = ri(2, 9); return nu(p('A pyramid has a square base with sides of <b>' + s + '</b> cm. The pyramid is <b>' + h + '</b> cm high. What is its volume in cm³?'), s * s * h / 3, 'V = ⅓ · (area of the base) · height.', 'V = ⅓ · ' + s * s + ' · ' + h + ' = ' + s * s * h / 3 + ' cm³.'); }
+      const a = ri(3, 12), b = ri(3, 12), h = ri(3, 12); if ((a * b * h) % 3) continue;
+      if (l === 1) return nu(p('A pyramid has a rectangular base of <b>' + a + '</b> cm by <b>' + b + '</b> cm and a height of <b>' + h + '</b> cm. What is its volume in cm³?'), a * b * h / 3, 'V = ⅓ · base area · height.', 'Base area = ' + a + ' · ' + b + ' = ' + a * b + '. V = ⅓ · ' + a * b + ' · ' + h + ' = ' + a * b * h / 3 + ' cm³.');
+      const T = pick([[6, 8], [5, 12], [9, 12], [6, 6]]), hh = ri(3, 12); if ((T[0] * T[1] / 2 * hh) % 3) continue; return nu(p('A pyramid has a right-angled triangle as its base (legs <b>' + T[0] + '</b> cm and <b>' + T[1] + '</b> cm). The pyramid is <b>' + hh + '</b> cm high. What is its volume in cm³?'), T[0] * T[1] / 2 * hh / 3, 'First the area of the triangle, then ⅓ · base area · height.', 'Base area = ½ · ' + T[0] + ' · ' + T[1] + ' = ' + T[0] * T[1] / 2 + '. V = ⅓ · ' + T[0] * T[1] / 2 + ' · ' + hh + ' = ' + T[0] * T[1] / 2 * hh / 3 + ' cm³.');
+    }
+  },
+  function volCone(l) {
+    if (l === 0) { const r = 3 * ri(1, 3), h = ri(2, 9); return ex_pi(p('A cone has radius <b>' + r + '</b> cm and height <b>' + h + '</b> cm. Give its exact volume in cm³.'), r * r * h, 3, 'V = ⅓ · π · r² · h. Leave π in your answer.', 'V = ⅓ · π · ' + r + '² · ' + h + ' = ' + piTxt(r * r * h, 3) + ' cm³.'); }
+    if (l === 1) { const r = ri(2, 8), h = ri(2, 12); return ex_pi(p('A cone has radius <b>' + r + '</b> cm and height <b>' + h + '</b> cm. Give its exact volume in cm³. (Type for example <b>20π/3</b>.)'), r * r * h, 3, 'V = ⅓ · π · r² · h. You may leave a fraction.', 'V = ⅓ · π · ' + r + '² · ' + h + ' = ' + piTxt(r * r * h, 3) + ' cm³.'); }
+    const T = pick([[3, 4, 5], [6, 8, 10], [5, 12, 13], [9, 12, 15]]); const r = T[0], h = T[1];
+    return ex_pi(p('A cone has radius <b>' + r + '</b> cm and slant height <b>' + T[2] + '</b> cm. Give its exact volume in cm³.'), r * r * h, 3, 'Use Pythagoras to find the height of the cone first: h² + r² = (slant height)².', 'h = √(' + T[2] + '² − ' + r + '²) = ' + h + '. V = ⅓ · π · ' + r + '² · ' + h + ' = ' + piTxt(r * r * h, 3) + ' cm³.');
+  },
+  function volSphere(l) {
+    if (l === 0) { const r = 3 * ri(1, 3); return ex_pi(p('A sphere has radius <b>' + r + '</b> cm. Give its exact volume in cm³.'), 4 * r * r * r, 3, 'V = 4/3 · π · r³.', 'V = 4/3 · π · ' + r + '³ = ' + piTxt(4 * r * r * r, 3) + ' cm³.'); }
+    if (l === 1) { const r = ri(2, 9); return ex_pi(p('A ball has <b>diameter ' + 2 * r + '</b> cm. Give its exact volume in cm³.'), 4 * r * r * r, 3, 'Radius = half the diameter. V = 4/3 · π · r³.', 'r = ' + r + '. V = 4/3 · π · ' + r + '³ = ' + piTxt(4 * r * r * r, 3) + ' cm³.'); }
+    const r = ri(2, 12) + (Math.random() < .5 ? .5 : 0); return r1q(p('A sphere has radius <b>' + String(r).replace('.', ',') + '</b> cm. What is its volume in cm³?' + ROUND), 4 / 3 * Math.PI * r * r * r, 'Use V = 4/3 · π · r³ with the π button on your calculator.', 'V = 4/3 · π · ' + r + '³ ≈ ' + fmtNum(rnd1(4 / 3 * Math.PI * r * r * r)) + ' cm³.');
+  },
+  function volHemisphere(l) {
+    const r = l === 0 ? 3 * ri(1, 3) : ri(2, 9), dia = l === 2 && Math.random() < .6;
+    return ex_pi(p('A hemisphere (half a ball) has ' + (dia ? '<b>diameter ' + 2 * r + '</b> cm' : 'radius <b>' + r + '</b> cm') + '. Give its exact volume in cm³.'), 2 * r * r * r, 3, 'A hemisphere is half a sphere: V = ½ · 4/3 · π · r³.', 'V = ½ · 4/3 · π · ' + r + '³ = ' + piTxt(2 * r * r * r, 3) + ' cm³.');
+  },
+  function volComposite(l) {
+    const k = pick(l === 0 ? ['cubePyr'] : ['cubePyr', 'silo', 'hole']);
+    if (k === 'cubePyr') { const s = pick([3, 4, 5, 6]), h = pick([3, 6, 9, 12].filter(x => (s * s * x) % 3 === 0)); return nu(p('A solid is made of a cube with edges of <b>' + s + '</b> cm with a pyramid on top. The pyramid has the top face of the cube as its base and is <b>' + h + '</b> cm high. What is the total volume in cm³?'), s * s * s + s * s * h / 3, 'Split the solid into two parts, find both volumes and add them.', 'Cube: ' + s + '³ = ' + s * s * s + '. Pyramid: ⅓ · ' + s * s + ' · ' + h + ' = ' + s * s * h / 3 + '. Total = ' + (s * s * s + s * s * h / 3) + ' cm³.'); }
+    if (k === 'silo') { const r = ri(2, 5), h = ri(4, 10); return ex_pi(p('A silo is a cylinder with radius <b>' + r + '</b> m and height <b>' + h + '</b> m, with a hemisphere on top (same radius). Give the exact volume in m³.'), 3 * r * r * h + 2 * r * r * r, 3, 'Add the cylinder and the hemisphere: π r² h + ½ · 4/3 · π r³.', 'Cylinder: π · ' + r + '² · ' + h + ' = ' + r * r * h + 'π. Hemisphere: ' + piTxt(2 * r * r * r, 3) + '. Total = ' + piTxt(3 * r * r * h + 2 * r * r * r, 3) + ' m³.'); }
+    const R = ri(4, 8), h = pick([6, 9, 12]), r = ri(2, R - 1), hh = pick([3, 6, 9].filter(x => x < h)); if (!hh) return G['2.2'][6](l);
+    return ex_pi(p('A cylinder with radius <b>' + R + '</b> cm and height <b>' + h + '</b> cm has a conical hole drilled in it (radius <b>' + r + '</b> cm, depth <b>' + hh + '</b> cm). Give the exact volume of the remaining solid in cm³.'), 3 * R * R * h - r * r * hh, 3, 'Subtract: volume of the cylinder minus volume of the cone-shaped hole.', 'Cylinder: ' + R * R * h + 'π. Cone: ' + piTxt(r * r * hh, 3) + '. Difference = ' + piTxt(3 * R * R * h - r * r * hh, 3) + ' cm³.');
+  },
+  function volReverse(l) {
+    const k = pick(l === 0 ? ['cyl'] : ['cyl', 'cone', 'sph']);
+    if (k === 'cyl') { const r = ri(2, 7), h = ri(2, 10); return nu(p('A cylinder has volume <b>' + r * r * h + 'π</b> cm³ and height <b>' + h + '</b> cm. What is its radius in cm?'), r, 'V = π r² h. Divide both sides by π · h, then take the square root.', 'r² = ' + r * r * h + ' ÷ ' + h + ' = ' + r * r + ', so r = ' + r + ' cm.'); }
+    if (k === 'cone') { const r = ri(2, 7), h = 3 * ri(1, 4); return nu(p('A cone has volume <b>' + r * r * h / 3 + 'π</b> cm³ and radius <b>' + r + '</b> cm. What is its height in cm?'), h, 'V = ⅓ π r² h. Multiply by 3 and divide by π r².', 'h = 3 · ' + r * r * h / 3 + ' ÷ ' + r * r + ' = ' + h + ' cm.'); }
+    const r = ri(2, 6); return nu(p('A sphere has volume <b>' + piAns(4 * r * r * r, 3) + '</b> cm³ (that is ' + piTxt(4 * r * r * r, 3) + ' cm³). What is its radius in cm?'), r, 'V = 4/3 π r³. Multiply by 3/4 and divide by π, then take the cube root.', 'r³ = ' + r * r * r + ', so r = ' + r + ' cm.');
+  }
+];
+XG['2.2'] = [
+  function ballInCylinder(l) {
+    const r = ri(2, 6);
+    return ch(p('A ball with radius <b>' + r + '</b> cm fits exactly inside a cylinder with radius ' + r + ' cm and height ' + 2 * r + ' cm. What fraction of the cylinder is filled by the ball?'), '2/3', ['1/2', '3/4', '1/3', '3/5'], 'Write both volumes with π. Cylinder: π r² · 2r. Ball: 4/3 π r³.', 'Cylinder = ' + 2 * r * r * r + 'π. Ball = ' + piTxt(4 * r * r * r, 3) + '. Ratio = (4/3) ÷ 2 = 2/3.');
+  },
+  function coneInCylinder(l) {
+    const r = ri(2, 7), h = ri(3, 10);
+    return nu(p('A cone and a cylinder have the same radius <b>' + r + '</b> cm and the same height <b>' + h + '</b> cm. The cylinder has volume ' + r * r * h + 'π cm³. How many cm³ <b>more</b> than the cone is that, as a multiple of π? (Give the number in front of π, as a fraction like 20/3 or a decimal.)'), r * r * h * 2 / 3, 'The cone has ⅓ of the volume of the cylinder.', 'Cone: ' + piTxt(r * r * h, 3) + '. Difference: ' + r * r * h + ' − ' + r * r * h / 3 + ' = ' + fmtNum(2 * r * r * h / 3) + ' (times π).', { ansText: M(ratText(2 * r * r * h, 3)) });
+  },
+  function doubleRadius(l) {
+    const k = pick(['sphere', 'cone', 'cyl']), n = pick([2, 3]);
+    return nu(p('The radius of a ' + (k === 'cone' ? 'cone (height unchanged)' : k === 'cyl' ? 'cylinder (height unchanged)' : 'sphere') + ' is made <b>' + n + ' times as big</b>. By what factor does the volume change?'), k === 'sphere' ? Math.pow(n, 3) : n * n, k === 'sphere' ? 'V = 4/3 π r³: if r is multiplied by ' + n + ', then r³ is multiplied by ' + n + '³.' : 'V has r²: if r is multiplied by ' + n + ', then r² is multiplied by ' + n + '².', 'The volume is multiplied by ' + (k === 'sphere' ? n + '³ = ' + Math.pow(n, 3) : n + '² = ' + n * n) + '.');
+  },
+  function frustum(l) {
+    const r = pick([2, 3, 4]), h = pick([3, 6]); const R = 2 * r, H = 2 * h; const v = (R * R * H - r * r * h) / 3;
+    return ex_pi(p('A cone with radius <b>' + R + '</b> cm and height <b>' + H + '</b> cm has its top cut off. The piece cut off is a small cone with radius <b>' + r + '</b> cm and height <b>' + h + '</b> cm. Give the exact volume of what is left (the frustum) in cm³.'), R * R * H - r * r * h, 3, 'Subtract: big cone minus small cone.', 'Big cone: ' + piTxt(R * R * H, 3) + '. Small cone: ' + piTxt(r * r * h, 3) + '. Frustum = ' + piTxt(R * R * H - r * r * h, 3) + ' cm³.');
+  },
+  function pyramidsCube(l) {
+    const s = ri(3, 8); return nu(p('A cube has edges of <b>' + s + '</b> cm. A pyramid has one face of the cube as its base and its tip in the opposite corner of the cube. How many cm³ is the volume of this pyramid?'), s * s * s / 3, 'Three of these pyramids together fill the whole cube.', 'Cube = ' + s * s * s + ' cm³. Pyramid = ⅓ of that = ' + fmtNum(s * s * s / 3) + ' cm³.', { ansText: M(ratText(s * s * s, 3)) });
+  }
+];
+if (VT) XG['2.2'].push(function meltBall(l) {
+  const r = pick([3, 6]), n = pick([8, 27]); const R = Math.cbrt(n) * r;
+  return nu(p(n + ' small balls, each with radius <b>' + r + '</b> cm, are melted into one big ball. What is the radius of the big ball in cm?'), R, 'The volume stays the same: ' + n + ' · (4/3 π r³) = 4/3 π R³.', 'R³ = ' + n + ' · ' + r + '³, so R = ∛' + n + ' · ' + r + ' = ' + R + ' cm.');
+});
+
+/* ---------- 2.3 Lines in space ---------- */
+const sub = (a, b) => a.map((v, i) => v - b[i]), dot = (a, b) => a.reduce((s, v, i) => s + v * b[i], 0), cross = (a, b) => [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]];
+function relation(l1, l2) { const d1 = sub(V3[l1[1]], V3[l1[0]]), d2 = sub(V3[l2[1]], V3[l2[0]]); const cr = cross(d1, d2); if (cr.every(v => v === 0)) return 'parallel'; return dot(sub(V3[l2[0]], V3[l1[0]]), cr) === 0 ? 'intersecting' : 'skew'; }
+const EDGES = ['AB', 'BC', 'CD', 'DA', 'EF', 'FG', 'GH', 'HE', 'AE', 'BF', 'CG', 'DH'], FD = ['AC', 'BD', 'EG', 'FH', 'AF', 'BE', 'BG', 'CF', 'CH', 'DG', 'DE', 'AH'], SD = ['AG', 'BH', 'CE', 'DF'];
+const same = (a, b) => a === b || a === b[1] + b[0];
+G['2.3'] = [
+  function lineRelation(l) {
+    const pool = l === 0 ? EDGES : l === 1 ? EDGES.concat(FD) : EDGES.concat(FD, SD);
+    let a, b, r; for (let t = 0; t < 100; t++) { a = pick(l === 0 ? EDGES : pool); b = pick(pool); if (same(a, b)) continue; r = relation(a, b); const want = pick(['parallel', 'intersecting', 'skew']); if (r === want) break; }
+    const opts = ['parallel', 'intersecting', 'skew']; const rightName = r;
+    return ch(p('The figure shows a cuboid ABCD.EFGH. How are the lines <b>' + a + '</b> and <b>' + b + '</b> positioned relative to each other?') + cuboidSVG([a, b]), rightName, opts.filter(x => x !== rightName), 'Parallel: same direction, never meet. Intersecting: they meet in a point. Skew: not parallel, and they never meet (they are in different planes).', 'Lines ' + a + ' and ' + b + ' are ' + rightName + '.', { keys: [] });
+  },
+  function countParallel(l) {
+    const e = pick(EDGES); const par = EDGES.filter(x => !same(x, e) && relation(e, x) === 'parallel').length;
+    return nu(p('How many <b>edges</b> of the cuboid are parallel to edge <b>' + e + '</b>? (Do not count ' + e + ' itself.)') + cuboidSVG([e]), par, 'A cuboid has 12 edges in 3 directions, 4 edges in each direction.', 'There are 4 edges in each direction. Without ' + e + ' itself, 3 are parallel to it.');
+  },
+  function pickSkew(l) {
+    const pool = l === 0 ? EDGES : EDGES.concat(FD); let sk = null, others = [];
+    for (let t = 0; t < 300 && (!sk || others.length < 3); t++) { const a = pick(pool), b = pick(pool); if (same(a, b)) continue; const r = relation(a, b); const lab = a + ' and ' + b; if (r === 'skew' && !sk) sk = lab; else if (r !== 'skew' && others.length < 3 && !others.includes(lab) && !(sk && lab === sk)) others.push(lab); }
+    if (!sk || others.length < 3) return G['2.3'][1](l);
+    return ch(p('Which pair of lines of the cuboid is <b>skew</b>?') + cuboidSVG([]), sk, others, 'Skew lines are not parallel and never meet. Pairs that meet in a vertex are intersecting, and pairs with the same direction are parallel.', sk + ' is the skew pair: they do not meet and they are not parallel.');
+  }
+];
+XG['2.3'] = [
+  function skewCount(l) {
+    const e = pick(EDGES); const sk = EDGES.filter(x => relation(e, x) === 'skew').length; return nu(p('How many <b>edges</b> of the cuboid are <b>skew</b> to edge <b>' + e + '</b>?') + cuboidSVG([e]), sk, 'Of the 11 other edges: 3 are parallel, 4 meet edge ' + e + ' in a vertex. The rest are skew.', '11 − 3 (parallel) − 4 (intersecting) = ' + sk + ' skew edges.');
+  },
+  function diagRelation(l) {
+    let a, b, r; for (let t = 0; t < 200; t++) { a = pick(FD.concat(SD)); b = pick(EDGES.concat(FD)); if (same(a, b)) continue; r = relation(a, b); if (r === pick(['parallel', 'intersecting', 'skew', 'skew'])) break; }
+    return ch(p('How are the lines <b>' + a + '</b> and <b>' + b + '</b> of the cuboid positioned?') + cuboidSVG([a, b]), r, ['parallel', 'intersecting', 'skew'].filter(x => x !== r), 'Check first whether the two lines lie in one flat plane (like one face). If they do not, they are skew (unless they are parallel).', 'Lines ' + a + ' and ' + b + ' are ' + r + '.');
+  },
+  function spaceDiagonals(l) {
+    return nu(p('How many <b>space diagonals</b> does a cuboid have? (A space diagonal joins two vertices that are not on the same face.)'), 4, 'Pick a vertex: only one vertex is on the opposite side of the cuboid. Do not count a line twice.', 'There are 8 vertices and each has one opposite vertex: 8 ÷ 2 = 4 space diagonals.');
+  }
+];
+
+/* ---------- 2.4 Views ---------- */
+function randGrid(R, C, mx) { for (;;) { const g = Array.from({ length: R }, () => Array.from({ length: C }, () => ri(0, mx))); if (g.flat().some(v => v > 0) && colMax(g).every(v => v > 0) && g.every(r => Math.max(...r) > 0)) return g; } }
+G['2.4'] = [
+  function totalCubes(l) {
+    const g = randGrid(l === 0 ? 2 : 3, l === 0 ? 2 : 3, l === 2 ? 4 : 3); const t = g.flat().reduce((a, b) => a + b, 0);
+    return nu(p('This <b>top view</b> of a building of cubes shows how many cubes are stacked on each square. How many cubes are there in total?') + stackSVG(g), t, 'Add all the numbers in the top view.', g.map(r => r.join(' + ')).join(' + ') + ' = ' + t + ' cubes.');
+  },
+  function frontView(l) {
+    const g = randGrid(l === 0 ? 2 : 3, 3, l === 2 ? 4 : 3); const cm = colMax(g);
+    return Object.assign(nu(p('This top view shows the number of cubes on each square. Give the <b>front view</b>: the highest stack in each column, from <b>left to right</b>.') + stackSVG(g), cm, 'In the front view you see, for each column, the tallest stack in that column.', 'Column maxima, left to right: ' + cm.join(', ') + '.'), { type: 'multi', fields: cm.map((_, i) => 'column ' + (i + 1) + ' (' + (i === 0 ? 'left' : i === cm.length - 1 ? 'right' : 'middle') + ')'), ans: cm });
+  },
+  function sideView(l) {
+    const g = randGrid(l === 0 ? 2 : 3, l === 0 ? 2 : 3, l === 2 ? 4 : 3); const rm = rowMaxFront(g);
+    return Object.assign(nu(p('This top view shows the number of cubes on each square. Give the <b>side view from the right</b>: the highest stack in each row. Start with the row nearest to you (the <b>front</b>) on the left.') + stackSVG(g), rm, 'Looking from the right you see, for each row, the tallest stack in that row. The front row is on your left.', 'Row maxima from front to back: ' + rm.join(', ') + '.'), { type: 'multi', fields: rm.map((_, i) => 'row ' + (i + 1) + (i === 0 ? ' (front)' : i === rm.length - 1 ? ' (back)' : '')), ans: rm });
+  },
+  function viewsToTop(l) {
+    const g = randGrid(2, 2, 3); const cm = colMax(g), rm = rowMaxFront(g); const mx = Array.from({ length: 2 }, (_, i) => Array.from({ length: 2 }, (_, j) => Math.min(cm[j], rm[i]))).flat().reduce((a, b) => a + b, 0);
+    return nu(p('A building of cubes has this <b>front view</b>: the columns have <b>' + cm.join(' and ') + '</b> cubes (left to right). Its <b>side view from the right</b> has columns of <b>' + rm.join(' and ') + '</b> cubes (front to back). What is the <b>largest</b> number of cubes the building can have?'), mx, 'For every square, the stack cannot be higher than its column in the front view and also not higher than its row in the side view.', 'Each square gets the smaller of the two numbers: the total is ' + mx + ' cubes.');
+  }
+];
+function totalsFor(f_, s_) { const R = s_.length, C = f_.length, tot = new Set(), g = Array(R * C).fill(0);
+  (function rec(i) { if (i === R * C) { for (let c = 0; c < C; c++) { let m = 0; for (let r = 0; r < R; r++) m = Math.max(m, g[r * C + c]); if (m !== f_[c]) return; } for (let r = 0; r < R; r++) { let m = 0; for (let c = 0; c < C; c++) m = Math.max(m, g[r * C + c]); if (m !== s_[r]) return; } tot.add(g.reduce((a, b) => a + b, 0)); return; }
+    const r = Math.floor(i / C), c = i % C, lim = Math.min(f_[c], s_[r]); for (let v = 0; v <= lim; v++) { g[i] = v; rec(i + 1); } g[i] = 0; })(0);
+  return [...tot].sort((a, b) => a - b); }
+function minMax(f_, s_) { const a = totalsFor(f_, s_); return [a[0], a[a.length - 1], a]; }
+XG['2.4'] = [
+  function atLeastAtMost(l) {
+    let f_, s_; do { f_ = [ri(1, 3), ri(1, 3), ri(1, 3)]; s_ = [ri(1, 3), ri(1, 3), ri(1, 3)]; } while (Math.max(...f_) !== Math.max(...s_) || minMax(f_, s_)[0] === minMax(f_, s_)[1]);
+    const [mn, mx] = minMax(f_, s_); const askMax = Math.random() < .5;
+    return nu(p('A building of cubes has a <b>front view</b> with columns of ' + f_.join(', ') + ' cubes (left to right) and a <b>side view from the right</b> with columns of ' + s_.join(', ') + ' cubes (front to back). What is the ' + (askMax ? '<b>largest</b>' : '<b>smallest</b>') + ' number of cubes it can consist of?'), askMax ? mx : mn, askMax ? 'Fill every square with the smaller of its column number and its row number, then add.' : 'Place as few cubes as possible: every height that is seen must be built at least once in its column and once in its row, so share a cube whenever you can.', askMax ? 'Largest = ' + mx + ' cubes.' : 'Smallest = ' + mn + ' cubes (largest would be ' + mx + ').');
+  },
+  function sameViews(l) {
+    const f_ = pick([[3, 2, 1], [2, 3, 1], [3, 1, 2]]), s_ = [3, 2, 1]; const [mn, mx, all] = minMax(f_, s_);
+    return nu(p('Front view columns: <b>' + f_.join(', ') + '</b> cubes (left to right). Side view columns from the right (front to back): <b>' + s_.join(', ') + '</b>. How many <b>different numbers of cubes</b> can the building consist of?'), all.length, 'Find the smallest and the largest number of cubes. Then check which numbers in between are possible.', 'Possible totals: ' + all.join(', ') + '. That is ' + all.length + ' different numbers.');
+  }
+];
+
+/* ---------- 2.5 Nets and surface area ---------- */
+const sphereSurf = r => 4 * r * r;
+G['2.5'] = [
+  function cubeNet(l) {
+    const valid = Math.random() < .5; const c = randNet(valid);
+    return ch(p('Can this net be folded into a <b>cube</b>?') + netSVG(c), valid ? 'Yes' : 'No', [valid ? 'No' : 'Yes'], 'Imagine folding every square up, like a box. No two squares may end up on the same face, and no face may be left out. A row of 4 squares in a line, with one square at each side, always works.', valid ? 'Yes: when you fold it, all six faces are different.' : 'No: when you fold it, two squares land on the same face (and one face is missing).');
+  },
+  function diceNet(l) {
+    const cells = randNet(true), fold = foldNet(cells); const pairs = shuffle([[1, 6], [2, 5], [3, 4]]).map(x => Math.random() < .5 ? x : [x[1], x[0]]);
+    const num = fold.map(face => pairs[Math.floor(face / 2)][face % 2]); const blank = ri(0, 5); const opp = fold.findIndex(face => face === (fold[blank] ^ 1)); const ans = num[blank];
+    return nu(p('This is the net of a <b>dice</b>. On a dice, the numbers on opposite faces add up to 7. Which number belongs on the square with the question mark?') + netSVG(cells, num, blank), ans, 'Find the face that is opposite the question mark when you fold the net. Then the number on it plus the missing number must be 7.', 'The opposite face has ' + num[opp] + ', so the missing number is 7 − ' + num[opp] + ' = ' + ans + '.');
+  },
+  function surfCuboid(l) {
+    const a = ri(2, 9), b = ri(2, 8), c = ri(2, 8); const s = 2 * (a * b + a * c + b * c); if (l === 0) { const e = ri(2, 9); return nu(p('What is the <b>surface area</b> of a cube with edges of <b>' + e + '</b> cm? (in cm²)'), 6 * e * e, 'A cube has 6 equal square faces.', '6 · ' + e + '² = ' + 6 * e * e + ' cm².'); }
+    return nu(p('A box is <b>' + a + '</b> cm long, <b>' + b + '</b> cm wide and <b>' + c + '</b> cm high. What is its surface area in cm²?'), s, 'A box has three pairs of equal faces: top and bottom, front and back, left and right.', '2 · (' + a + '·' + b + ' + ' + a + '·' + c + ' + ' + b + '·' + c + ') = 2 · ' + (a * b + a * c + b * c) + ' = ' + s + ' cm².');
+  },
+  function surfPrism(l) {
+    const T = pick([[3, 4, 5], [6, 8, 10], [5, 12, 13], [9, 12, 15]]), L = ri(4, 12); const base = T[0] * T[1] / 2, per = T[0] + T[1] + T[2];
+    return nu(p('A prism has a right-angled triangle as its base, with sides <b>' + T.join(', ') + '</b> cm. The prism is <b>' + L + '</b> cm long. What is its surface area in cm²?'), 2 * base + per * L, 'Surface area = 2 · (area of the base) + (perimeter of the base) · (length of the prism).', 'Two triangles: 2 · ' + base + ' = ' + 2 * base + '. Three rectangles: ' + per + ' · ' + L + ' = ' + per * L + '. Total = ' + (2 * base + per * L) + ' cm².');
+  },
+  function surfCylinder(l) {
+    const r = ri(2, 7), h = ri(2, 10);
+    return ex_pi(p('A cylinder has radius <b>' + r + '</b> cm and height <b>' + h + '</b> cm. Give its exact surface area in cm². (The cylinder has a top and a bottom.)'), 2 * r * r + 2 * r * h, 1, 'Surface area = 2 circles (2 · π r²) + the curved face, a rectangle with width 2πr and height h.', 'Circles: 2 · π · ' + r + '² = ' + 2 * r * r + 'π. Curved face: 2π · ' + r + ' · ' + h + ' = ' + 2 * r * h + 'π. Total = ' + piTxt(2 * r * r + 2 * r * h, 1) + ' cm².');
+  },
+  function surfSphere(l) {
+    const r = ri(2, 9); if (l < 2) return ex_pi(p('A sphere has radius <b>' + r + '</b> cm. Give its exact surface area in cm².'), 4 * r * r, 1, 'Surface area of a sphere = 4 · π · r².', '4 · π · ' + r + '² = ' + piTxt(4 * r * r, 1) + ' cm².');
+    const rr = ri(3, 12) + .5; return r1q(p('A sphere has radius <b>' + String(rr).replace('.', ',') + '</b> cm. What is its surface area in cm²?' + ROUND), 4 * Math.PI * rr * rr, 'Use 4 · π · r² with the π button.', '4π · ' + rr + '² ≈ ' + fmtNum(rnd1(4 * Math.PI * rr * rr)) + ' cm².');
+  },
+  function wrapping(l) {
+    const A = [ri(2, 8), ri(2, 8), ri(2, 8)], B = [ri(2, 8), ri(2, 8), ri(2, 8)]; const s = x => 2 * (x[0] * x[1] + x[0] * x[2] + x[1] * x[2]); if (s(A) === s(B)) return G['2.5'][6](l);
+    const t = s(A) > s(B) ? 'Box A' : 'Box B';
+    return ch(p('Box A measures ' + A.join(' × ') + ' cm. Box B measures ' + B.join(' × ') + ' cm. Which box needs <b>more wrapping paper</b>?'), t, [s(A) > s(B) ? 'Box B' : 'Box A', 'They need the same'], 'Wrapping paper covers the surface: calculate the surface area of both boxes.', 'Box A: ' + s(A) + ' cm². Box B: ' + s(B) + ' cm². So ' + t + ' needs more.');
+  },
+  function cylinderNet(l) {
+    const r = ri(2, 8), h = ri(3, 12); return ex_pi(p('The net of a cylinder has a rectangle for the curved face. The cylinder has radius <b>' + r + '</b> cm. How wide is the rectangle (in cm)? Give an exact answer.'), 2 * r, 1, 'The width of the rectangle wraps around the circle once: it equals the circumference of the circle.', 'Circumference = 2 · π · ' + r + ' = ' + piTxt(2 * r, 1) + ' cm.');
+  }
+];
+if (VT) G['2.5'].push(function surfCone(l) {
+  const T = pick([[3, 4, 5], [6, 8, 10], [5, 12, 13], [9, 12, 15], [4, 3, 5]]); const r = T[0], sl = T[2];
+  return ex_pi(p('A cone has radius <b>' + r + '</b> cm and slant height <b>' + sl + '</b> cm. Give its exact surface area in cm² (including the base).'), r * r + r * sl, 1, 'The curved face is a sector of a circle with radius equal to the slant height. Its area is π · r · (slant height). Add the base circle π r².', 'Base: π · ' + r + '² = ' + r * r + 'π. Curved face: π · ' + r + ' · ' + sl + ' = ' + r * sl + 'π. Total = ' + piTxt(r * r + r * sl, 1) + ' cm².');
+});
+XG['2.5'] = [
+  function sameVolume(l) {
+    const V = pick([36, 48, 64, 72, 96]); const opts = []; for (let a = 1; a <= V; a++) if (V % a === 0) for (let b = a; b <= V / a; b++) if ((V / a) % b === 0) { const c = V / a / b; if (c >= b) opts.push([a, b, c]); }
+    const S = o => 2 * (o[0] * o[1] + o[0] * o[2] + o[1] * o[2]); const pk = shuffle(opts.filter(o => o[0] >= 1)).slice(0, 3); if (pk.length < 3) return XG['2.5'][0](l); const sm = pk.reduce((a, b) => S(a) < S(b) ? a : b);
+    if (pk.filter(o => S(o) === S(sm)).length > 1) return XG['2.5'][0](l);
+    const nm = o => o.join(' × ');
+    return ch(p('Three boxes all have a volume of <b>' + V + '</b> cm³: <b>' + pk.map(nm).join('</b>, <b>') + '</b> (in cm). Which box needs the <b>least</b> cardboard (smallest surface area)?'), nm(sm), pk.filter(o => o !== sm).map(nm), 'Work out the surface area of all three boxes and compare. The box closest to a cube is the best.', pk.map(o => nm(o) + ': ' + S(o) + ' cm²').join('; ') + '.');
+  },
+  function diceOpposite(l) {
+    return ch(p('On a standard dice, opposite faces add up to 7. The three faces you can see at one corner show <b>1, 2 and 3</b>. What is the <b>sum of the three faces you cannot see</b>?'), '15', ['12', '18', '9', '21'], 'The numbers on a dice add up to 1 + 2 + 3 + 4 + 5 + 6 = 21.', 'The three hidden faces are 6, 5 and 4: 6 + 5 + 4 = 15 (or 21 − 6).');
+  },
+  function cubeEdgeFromSurface(l) {
+    const e = ri(3, 12); return nu(p('The surface area of a cube is <b>' + 6 * e * e + '</b> cm². How long is an edge of the cube (in cm)?'), e, 'A cube has 6 equal faces. Find the area of one face first.', 'One face = ' + 6 * e * e + ' ÷ 6 = ' + e * e + ' cm², so the edge is √' + e * e + ' = ' + e + ' cm.');
+  }
+];
+if (VT) XG['2.5'].push(function coneSector(l) {
+  const R = pick([6, 8, 9, 12]), frac = pick([[1, 2], [1, 4], [1, 3], [3, 4]]); if ((R * frac[0]) % frac[1]) return XG['2.5'][3](l); const r = R * frac[0] / frac[1];
+  return nu(p('The curved face of a cone is a sector of a circle with radius <b>' + R + '</b> cm and angle <b>' + (360 * frac[0] / frac[1]) + '°</b> (' + (frac[0] === 1 && frac[1] === 2 ? 'a half circle' : frac[0] + '/' + frac[1] + ' of a circle') + '). What is the radius of the base circle of the cone in cm?'), r, 'The arc of the sector wraps around the base: arc length = circumference of the base circle.', 'Arc = ' + frac[0] + '/' + frac[1] + ' · 2π · ' + R + '. Base circumference = 2π r. So r = ' + frac[0] + '/' + frac[1] + ' · ' + R + ' = ' + fmtNum(r) + ' cm.');
+});
+
+/* ---------- sections and lessons ---------- */
+const SECTIONS = [
+  { id: '2.2', title: '2.2 Volume', sub: VT ? 'Prisms, cones, spheres, composite solids' : 'Prisms, cylinders, pyramids, cones, spheres' },
+  { id: '2.3', title: '2.3 Lines in space', sub: 'Parallel, intersecting, skew' },
+  { id: '2.4', title: '2.4 Views', sub: 'Front, side and top view of cube buildings' },
+  { id: '2.5', title: '2.5 Nets and surface area', sub: VT ? 'Nets, surface area, cone nets' : 'Nets, surface area' }
+];
+const ALL = sec => (G[sec] || []).map(fn => [sec, fn.name]), ALLX = sec => (XG[sec] || []).map(fn => [sec, fn.name]);
+const L = (id, title, sub, date, gens, xg, extra) => Object.assign({ id, title, sub, date, gens, xg }, extra || {});
+const nm = (sec, names) => names.map(n => [sec, n]);
+let LESSONS;
+if (VT) LESSONS = [
+  L('L1', 'Volume of prisms, cylinders, pyramids and cones', '2.2 A–B', null, nm('2.2', ['volPrism', 'volCylinder', 'volPyramid', 'volCone']), nm('2.2', ['coneInCylinder', 'pyramidsCube'])),
+  L('L2', 'Lesson · 2.2 C Volume of a sphere', 'Fri 2 Oct', '2026-10-02', nm('2.2', ['volSphere', 'volHemisphere', 'volReverse', 'volCone']), nm('2.2', ['ballInCylinder', 'doubleRadius', 'meltBall'])),
+  L('L3', 'Lesson · 2.2 D Composite solids', 'Tue 6 Oct', '2026-10-06', nm('2.2', ['volComposite', 'volHemisphere', 'volCone', 'volCylinder']), nm('2.2', ['frustum', 'ballInCylinder'])),
+  L('L4', 'Lesson · 2.3–2.4 Lines in space and views', 'Wed 7 Oct', '2026-10-07', [].concat(ALL('2.3'), ALL('2.4')), [].concat(ALLX('2.3'), ALLX('2.4'))),
+  L('L5', 'Lesson · 2.5 A Nets', 'Fri 9 Oct', '2026-10-09', nm('2.5', ['cubeNet', 'diceNet', 'cylinderNet']), nm('2.5', ['diceOpposite', 'sameVolume'])),
+  L('L6', 'Lesson · 2.5 B Surface area', 'Tue 27 Oct', '2026-10-27', nm('2.5', ['surfCuboid', 'surfPrism', 'surfCylinder', 'surfSphere', 'wrapping']), nm('2.5', ['sameVolume', 'cubeEdgeFromSurface'])),
+  L('L7', 'Lesson · 2.5 C Exploring surface area', 'Wed 28 Oct', '2026-10-28', nm('2.5', ['surfCone', 'diceNet', 'surfCylinder', 'wrapping', 'surfSphere']), nm('2.5', ['coneSector', 'sameVolume', 'diceOpposite'])),
+  L('L8', 'Revision · mock test chapter 2', 'Fri 30 Oct', '2026-10-30', [].concat(...['2.2', '2.3', '2.4', '2.5'].map(ALL)), [].concat(...['2.2', '2.3', '2.4', '2.5'].map(ALLX)), { rev: true })
+];
+else LESSONS = [
+  L('L1', 'Lesson · 2.2 B Volume of prisms and cylinders', 'Thu 1 Oct', '2026-10-01', nm('2.2', ['volPrism', 'volCylinder']), nm('2.2', ['doubleRadius'])),
+  L('L2', 'Lesson · 2.2 C Volume of pyramids and cones', 'Fri 2 Oct', '2026-10-02', nm('2.2', ['volPyramid', 'volCone', 'volPrism']), nm('2.2', ['pyramidsCube', 'coneInCylinder'])),
+  L('L3', 'Lesson · 2.2 D Volume of cones and spheres', 'Wed 7 Oct', '2026-10-07', nm('2.2', ['volCone', 'volSphere', 'volHemisphere', 'volReverse']), nm('2.2', ['ballInCylinder', 'doubleRadius'])),
+  L('L4', 'Lesson · 2.3–2.4 Lines in space and views', 'Thu 8 Oct', '2026-10-08', [].concat(ALL('2.3'), ALL('2.4')), [].concat(ALLX('2.3'), ALLX('2.4'))),
+  L('L5', 'Lesson · 2.5 A Nets', 'Fri 9 Oct', '2026-10-09', nm('2.5', ['cubeNet', 'diceNet', 'cylinderNet']), nm('2.5', ['diceOpposite', 'sameVolume'])),
+  L('L6', 'Lesson · 2.5 B Surface area', 'Wed 28 Oct', '2026-10-28', nm('2.5', ['surfCuboid', 'surfPrism', 'surfCylinder', 'surfSphere', 'wrapping']), nm('2.5', ['sameVolume', 'cubeEdgeFromSurface'])),
+  L('L7', 'Revision A · solids and volume', 'Thu 29 Oct', '2026-10-29', ALL('2.2'), ALLX('2.2'), { rev: true }),
+  L('L8', 'Revision B · lines, views and surface area', 'Fri 30 Oct', '2026-10-30', [].concat(ALL('2.3'), ALL('2.4'), ALL('2.5')), [].concat(ALLX('2.3'), ALLX('2.4'), ALLX('2.5')), { rev: true })
+];
+return { key: 'nx-' + P.cls.toLowerCase() + '-ch2-v1', SECTIONS, LESSONS, G, XG, defaultMode: 'lesson' };
+}))(NX,{"cls": "2HT"}));
+</script>
+<script>
+
+(function(){
+'use strict';
+const E=window.Ch3,$=s=>document.querySelector(s);
+const LV=['Mild','Medium','Spicy','Extra spicy'],GOAL=10;let mix=false;
+const items=()=>st.mode==='lesson'?E.LESSONS:E.SECTIONS;
+const todayISO=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
+const latestLesson=()=>{const t=todayISO();let L=E.LESSONS[0];E.LESSONS.forEach(x=>{if(x.date&&x.date<=t&&!x.rev)L=x});return L.id};
+function defaultFor(mode){return mode==='lesson'?latestLesson():E.SECTIONS[0].id}
+function setMode(m){if(st.mode===m)return;st.secs[st.mode]=st.sec;st.mode=m;st.sec=st.secs[m]||defaultFor(m);test=null;mix=false;save();next(true)}
+let st={mode:E.defaultMode||'lesson',secs:{},done:{},stat:{},best:{},tests:[],sec:'',prog:{},lvl:{}};   // prog: correct count per section, lvl: level per section
+try{const r=JSON.parse(localStorage.getItem(E.KEY)||'null');if(r&&r.prog)st=Object.assign(st,r)}catch(e){}
+if(!st.modeSet&&st.prog&&Object.keys(st.prog).length)st.mode='para';st.secs=st.secs||{};st.done=st.done||{};st.stat=st.stat||{};st.best=st.best||{};st.tests=st.tests||[];
+if(!st.sec||!items().some(x=>x.id===st.sec))st.sec=defaultFor(st.mode);
+const save=()=>{try{localStorage.setItem(E.KEY,JSON.stringify({mode:st.mode,modeSet:1,secs:st.secs,sec:st.sec,prog:st.prog,lvl:st.lvl,done:st.done,stat:st.stat,best:st.best,tests:st.tests}))}catch(e){}};
+let protoAngle=null;let cur=null,tries=0,done=false,streak=0,wrongRun=0,recent=[],clicked=[],choiceSel=null;
+let test=null; // {qs,i,score,log}
+
+function renderNav(){
+  const n=$('#nav');n.innerHTML='';
+  const tg=document.createElement('div');tg.className='seg';tg.innerHTML='<button type="button" class="'+(st.mode==='lesson'?'on':'')+'" data-m="lesson">By lesson</button><button type="button" class="'+(st.mode==='para'?'on':'')+'" data-m="para">By paragraph</button>';
+  tg.querySelectorAll('button').forEach(b=>b.onclick=()=>setMode(b.dataset.m));n.appendChild(tg);
+  const t0=todayISO(),lat=latestLesson();
+  items().forEach(s=>{
+    const b=document.createElement('button');b.className='sec';b.setAttribute('aria-current',String(!test&&!mix&&st.sec===s.id));
+    const p=Math.min(GOAL,st.prog[s.id]||0);
+    b.innerHTML='<div class="t">'+s.title+'</div><div class="s">'+s.sub+(st.mode==='lesson'&&s.date?(s.date>t0?' · coming up':s.id===lat?' · latest lesson':''):'')+'</div><div class="bar" aria-hidden="true"><i style="width:'+p*100/GOAL+'%"></i></div>';
+    b.onclick=()=>{test=null;mix=false;st.sec=s.id;save();next(true)};n.appendChild(b);
+    if(st.done[s.id]){const m=document.createElement('button');m.className='sec mm';m.setAttribute('aria-current',String(!test&&mix&&st.sec===s.id));m.textContent='★ Master Mix';m.onclick=()=>{test=null;mix=true;st.sec=s.id;save();next(true)};n.appendChild(m)}
+  });
+  const t=document.createElement('button');t.className='sec';t.setAttribute('aria-current',String(!!test));
+  t.innerHTML='<div class="t">Test preparation</div><div class="s">24 mixed questions, no hints</div>';
+  t.onclick=startTest;n.appendChild(t);
+  const r=document.createElement('button');r.className='reset';r.textContent='Reset my progress';
+  r.onclick=()=>{if(confirm('Delete all your progress on this page?')){st={mode:st.mode,secs:st.secs,sec:st.sec,prog:{},lvl:{},done:{},stat:{},best:{},tests:[]};mix=false;save();test=null;renderNav();next(true)}};n.appendChild(r);
+}
+function lvl(){return st.lvl[st.sec]||0}
+function next(reset){
+  if(reset){streak=0;wrongRun=0;recent=[]}
+  cur=E.make(st.sec,mix?'mix':lvl(),recent);recent.push({g:cur.gen,f:cur.fp});recent=recent.slice(-12);tries=0;done=false;clicked=[];choiceSel=null;protoAngle=null;renderQ(false);renderNav();
+}
+function qHTML(q,idx){
+  let h='<div class="q">'+q.html+'</div><div class="ans" id="ans">';
+  if(q.type==='num')h+='<label class="sr" for="in0">Your answer</label><input type="text" id="in0" inputmode="text" autocomplete="off" placeholder="your answer">';
+  else if(q.type==='expr')h+='<label class="sr" for="in0">Your answer</label><input type="text" id="in0" inputmode="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="type your answer"><div class="kp" id="kp">'+(q.keys||['√','^','/','·','(',')','π']).map(k=>'<button type="button" data-k="'+k+'">'+k+'</button>').join('')+'<button type="button" data-k="⌫" aria-label="delete">⌫</button></div><div class="pv" id="pv" aria-live="polite"></div>';
+  else if(q.type==='point')h+='<label class="sr" for="in0">Your answer</label><input type="text" id="in0" autocomplete="off" placeholder="(x, y)">';
+  else if(q.type==='multi')q.fields.forEach((f,i)=>{h+='<label for="in'+i+'">'+f+'</label><input type="text" id="in'+i+'" autocomplete="off">'});
+  else if(q.type==='choice'){h+='<div class="choices">'+q.opts.map((o,i)=>'<button type="button" class="choice" data-i="'+i+'" aria-pressed="false">'+o+'</button>').join('')+'</div>'}
+  h+='</div>';return h;
+}
+function renderQ(){
+  const m=$('#main'),q=cur;
+  m.innerHTML='<div class="top">'+(q.mix?'<span class="badge lm">Master Mix</span> ':'')+'<span class="badge l'+q.lvl+'">'+LV[q.lvl]+'</span><span class="streak">In a row: '+[0,1,2].map(i=>'<span class="dot'+(i<streak?' on':'')+'"></span>').join('')+' &nbsp; Done: '+Math.min(GOAL,st.prog[st.sec]||0)+'/'+GOAL+'</span></div>'+
+   qHTML(q)+'<div class="btns"><button class="btn" id="chk">Check</button><button class="btn alt" id="hnt">Hint</button><button class="btn alt" id="nxt" style="display:none">Next question</button></div><div class="fb" id="fb"></div>';
+  wire();
+  const f=$('#in0');if(f)f.focus();
+}
+function wire(){
+  wireProto();$('#chk').onclick=check;$('#hnt').onclick=hint;$('#nxt').onclick=()=>test?testNext():next(false);
+  document.querySelectorAll('.choice').forEach(b=>b.onclick=()=>{if(done)return;choiceSel=+b.dataset.i;document.querySelectorAll('.choice').forEach(x=>x.setAttribute('aria-pressed',String(x===b)))});
+  document.querySelectorAll('#ans input').forEach(i=>i.addEventListener('keydown',e=>{if(e.key==='Enter')check()}));
+  wireExpr();
+  const sv=document.querySelector('svg.grid[data-click]');
+  if(sv)sv.addEventListener('click',ev=>{
+    if(done)return;const r=sv.getBoundingClientRect(),W=+sv.dataset.w,u=+sv.dataset.u,pad=+sv.dataset.pad;
+    const px=(ev.clientX-r.left)*W/r.width,py=(ev.clientY-r.top)*W/r.width;
+    const x=Math.round((px-pad)/u)+ +sv.dataset.xmin,y=+sv.dataset.ymax-Math.round((py-pad)/u);
+    const k=clicked.findIndex(p=>p[0]===x&&p[1]===y);if(k>=0)clicked.splice(k,1);else clicked.push([x,y]);drawMarks(sv);
+  });
+}
+function wireExpr(){
+  const kp=document.getElementById('kp');if(!kp)return;const inp=$('#in0'),pv=$('#pv');
+  const upd=()=>{const v=inp.value.trim();if(!v){pv.innerHTML='';return}let h=null;try{h=E.M(v,cur.noVars?{noVars:true}:{})}catch(e){}pv.innerHTML=h&&E.parse&&(()=>{try{E.parse(v,cur.noVars?{noVars:true}:{});return true}catch(e){return false}})()?'<span class="pl">Your answer reads:</span> '+h:'<span class="pl">I cannot read that yet. Check your brackets and symbols.</span>'};
+  inp.addEventListener('input',upd);
+  kp.querySelectorAll('button').forEach(b=>b.onclick=()=>{if(done)return;const k=b.dataset.k,s=inp.selectionStart,e=inp.selectionEnd,v=inp.value;
+    if(k==='⌫'){if(s!==e){inp.value=v.slice(0,s)+v.slice(e);inp.setSelectionRange(s,s)}else if(s>0){inp.value=v.slice(0,s-1)+v.slice(s);inp.setSelectionRange(s-1,s-1)}}
+    else{inp.value=v.slice(0,s)+k+v.slice(e);const n=s+k.length;inp.setSelectionRange(n,n)}
+    inp.focus();upd()});
+}
+function drawMarks(sv){
+  const u=+sv.dataset.u,pad=+sv.dataset.pad,xmin=+sv.dataset.xmin,ymax=+sv.dataset.ymax;
+  sv.querySelector('.marks').innerHTML=clicked.map(p=>{const cx=pad+(p[0]-xmin)*u,cy=pad+(ymax-p[1])*u;return '<circle cx="'+cx+'" cy="'+cy+'" r="6" fill="#d1471f" stroke="#fff" stroke-width="1.5"/>'}).join('');
+}
+function userAns(q){
+  if(q.type==='proto')return protoAngle;
+  if(q.type==='num'||q.type==='point'||q.type==='expr')return $('#in0').value;
+  if(q.type==='multi')return q.fields.map((_,i)=>$('#in'+i).value);
+  if(q.type==='choice')return choiceSel;
+  return clicked;
+}
+function fb(cls,t){const b=$('#fb');b.className='fb show '+cls;b.innerHTML=t}
+function hint(){if(cur.hint)fb('hint','<b class="h">Hint</b>'+cur.hint)}
+function empty(q,u){if(q.type==='proto')return u===null;if(q.type==='num'||q.type==='point'||q.type==='expr')return !String(u).trim();if(q.type==='multi')return u.some(v=>!String(v).trim());if(q.type==='choice')return u===null;return u.length===0}
+function check(){
+  if(done)return;const q=cur,u=userAns(q);
+  if(empty(q,u)){fb('hint','Fill in your answer first.');return}
+  if(test){return testCheck(q,u)}
+  const R_=E.check(q,u),ok=R_.ok;tries++;
+  const S=st.stat[st.sec]=st.stat[st.sec]||{n:0,ok:0};
+  if(ok){
+    done=true;st.prog[st.sec]=(st.prog[st.sec]||0)+1;S.n++;if(tries===1)S.ok++;
+    if(tries===1){streak++;wrongRun=0}
+    let up='';
+    if(!mix&&streak>=3){streak=0;
+      if(lvl()<3){st.lvl[st.sec]=lvl()+1;st.best[st.sec]=Math.max(st.best[st.sec]||0,lvl());up=' <b>Level up: '+LV[lvl()]+'!</b>'+(lvl()===3?' These are challenge questions.':'')}
+      else if(!st.done[st.sec]){st.done[st.sec]=true;up=' <b>Extra spicy completed! ★ Master Mix is now unlocked for this section (see the menu).</b>'}}
+    save();fb('ok','<b class="h">Correct!'+(tries>1?' (second try)':'')+'</b>'+q.steps+up);finish();
+  }else if(tries===1){
+    streak=0;fb('no','<b class="h">Not yet. Try again.</b>'+(R_.why==='form'?(R_.msg||'That has the right value, but it is not in the form asked for.')+' ':R_.why==='parse'?'I could not read that answer. ':'')+(q.hint?q.hint:''));
+  }else{
+    done=true;wrongRun++;S.n++;let dn='';
+    if(!mix&&wrongRun>=2&&lvl()>0){st.lvl[st.sec]=lvl()-1;wrongRun=0;dn=' <i>Next questions will be a bit easier.</i>'}
+    save();fb('no','<b class="h">The answer is: '+E.answerText(q)+'</b>'+q.steps+dn);finish();
+  }
+}
+function wireProto(){
+  const sv=document.querySelector('svg.proto[data-proto]');if(!sv)return;
+  sv.addEventListener('click',ev=>{if(done)return;
+    const r=sv.getBoundingClientRect(),W=+sv.dataset.w,H=+sv.dataset.h,cx=+sv.dataset.cx,cy=+sv.dataset.cy,R=+sv.dataset.r;
+    const px=(ev.clientX-r.left)*W/r.width,py=(ev.clientY-r.top)*H/r.height;
+    let a=Math.atan2(cy-py,px-cx)*180/Math.PI;if(py>cy)a=px>=cx?0:180;a=Math.max(0,Math.min(180,Math.round(a)));protoAngle=a;
+    const t=a*Math.PI/180,x2=cx+(R+22)*Math.cos(t),y2=cy-(R+22)*Math.sin(t),xd=cx+R*Math.cos(t),yd=cy-R*Math.sin(t);
+    sv.querySelector('.pm').innerHTML='<line x1="'+cx+'" y1="'+cy+'" x2="'+x2+'" y2="'+y2+'" stroke="#223" stroke-width="3" stroke-linecap="round"/><circle cx="'+xd+'" cy="'+yd+'" r="6" fill="#d1471f" stroke="#fff" stroke-width="1.5"/>';
+  });
+}
+function revealQ(q){
+  if(q.type==='proto'){const sv=document.querySelector('svg.proto');if(!sv||sv.querySelector('.rev'))return;const cx=+190,cy=188,R=160,t=q.target*Math.PI/180;
+    sv.insertAdjacentHTML('beforeend','<g class="rev"><line x1="'+cx+'" y1="'+cy+'" x2="'+(cx+(R+22)*Math.cos(t))+'" y2="'+(cy-(R+22)*Math.sin(t))+'" stroke="#16803c" stroke-width="3" stroke-dasharray="7 4"/><circle cx="'+(cx+R*Math.cos(t))+'" cy="'+(cy-R*Math.sin(t))+'" r="5.5" fill="#16803c" stroke="#fff" stroke-width="1.5"/></g>');return}
+  if(q.type!=='click')return;const sv=document.querySelector('svg.grid[data-click]');if(!sv||sv.querySelector('.rev'))return;
+  const u=+sv.dataset.u,pad=+sv.dataset.pad,xmin=+sv.dataset.xmin,ymax=+sv.dataset.ymax,X=x=>pad+(x-xmin)*u,Y=y=>pad+(ymax-y)*u;
+  const R=q.reveal||{segs:[],pts:q.targets};let h='';
+  (R.segs||[]).forEach(g=>{h+='<line x1="'+X(g.a[0])+'" y1="'+Y(g.a[1])+'" x2="'+X(g.b[0])+'" y2="'+Y(g.b[1])+'" stroke="#16803c" stroke-width="2.2" stroke-dasharray="6 4" opacity=".75"/>'});
+  (R.pts||[]).forEach(p=>{h+='<circle cx="'+X(p[0])+'" cy="'+Y(p[1])+'" r="5" fill="#16803c" stroke="#fff" stroke-width="1.5"/>'});
+  sv.querySelector('.marks').insertAdjacentHTML('beforebegin','<g class="rev">'+h+'</g>');
+}
+function finish(){revealQ(cur);$('#chk').disabled=true;$('#hnt').disabled=true;$('#nxt').style.display='';$('#nxt').focus();document.querySelectorAll('.choice').forEach(b=>b.disabled=true);document.querySelectorAll('#ans input').forEach(i=>i.disabled=true);document.querySelectorAll('#kp button').forEach(i=>i.disabled=true);renderNavSoft()}
+function renderNavSoft(){if(items().some(s=>st.done[s.id]&&!document.querySelector('#nav .mm')))renderNav();const bars=document.querySelectorAll('#nav .bar i');items().forEach((s,i)=>{bars[i].style.width=Math.min(GOAL,st.prog[s.id]||0)*100/GOAL+'%'})}
+
+/* ---- test preparation ---- */
+function startTest(){test={qs:E.makeTest(),i:0,score:0,log:[]};renderNav();testShow()}
+function testShow(){
+  const q=cur=test.qs[test.i];done=false;clicked=[];choiceSel=null;protoAngle=null;
+  $('#main').innerHTML='<div class="top"><span class="badge l1">Test preparation</span><span class="streak">Question '+(test.i+1)+' of '+test.qs.length+'</span></div>'+qHTML(q)+
+   '<div class="btns"><button class="btn" id="chk">Check</button><button class="btn alt" id="nxt" style="display:none">'+(test.i===test.qs.length-1?'See my result':'Next question')+'</button></div><div class="fb" id="fb"></div>';
+  wireProto();$('#chk').onclick=check;$('#nxt').onclick=testNext;
+  const wiring=$('#hnt');
+  const tmp=document.createElement('button');tmp.id='hnt';tmp.style.display='none';$('.btns').appendChild(tmp);
+  document.querySelectorAll('.choice').forEach(b=>b.onclick=()=>{if(done)return;choiceSel=+b.dataset.i;document.querySelectorAll('.choice').forEach(x=>x.setAttribute('aria-pressed',String(x===b)))});
+  document.querySelectorAll('#ans input').forEach(i=>i.addEventListener('keydown',e=>{if(e.key==='Enter')check()}));
+  wireExpr();
+  const sv=document.querySelector('svg.grid[data-click]');
+  if(sv)sv.addEventListener('click',ev=>{if(done)return;const r=sv.getBoundingClientRect(),W=+sv.dataset.w,u=+sv.dataset.u,pad=+sv.dataset.pad;
+    const x=Math.round(((ev.clientX-r.left)*W/r.width-pad)/u)+ +sv.dataset.xmin,y=+sv.dataset.ymax-Math.round(((ev.clientY-r.top)*W/r.width-pad)/u);
+    const k=clicked.findIndex(p=>p[0]===x&&p[1]===y);if(k>=0)clicked.splice(k,1);else clicked.push([x,y]);drawMarks(sv)});
+  const f=$('#in0');if(f)f.focus();
+}
+function testCheck(q,u){
+  done=true;const ok=E.grade(q,u);if(ok)test.score++;revealQ(q);
+  test.log.push({q,ok,u});
+  fb(ok?'ok':'no',ok?'<b class="h">Correct</b>':'<b class="h">Not correct. The answer is: '+E.answerText(q)+'</b>'+q.steps);
+  $('#chk').disabled=true;document.querySelectorAll('.choice').forEach(b=>b.disabled=true);document.querySelectorAll('#ans input').forEach(i=>i.disabled=true);document.querySelectorAll('#kp button').forEach(i=>i.disabled=true);
+  $('#nxt').style.display='';$('#nxt').focus();
+}
+function testNext(){
+  test.i++;if(test.i<test.qs.length)return testShow();
+  const n=test.qs.length,g=Math.round((test.score/n*9+1)*10)/10;
+  const wrong=test.log.filter(x=>!x.ok);st.tests.push({d:new Date().toISOString().slice(0,10),s:test.score,n:n});st.tests=st.tests.slice(-20);save();
+  $('#main').innerHTML='<div class="res"><h2>Your result</h2><div class="grade">'+test.score+' / '+n+'</div><p>That is a '+String(g).replace('.',',')+' on a scale of 1 to 10 (a rough guide only).</p>'+
+   (wrong.length?'<h3>Look at these again</h3>'+wrong.map(x=>'<div class="rev"><div>'+x.q.html+'</div><div><b>Answer: '+E.answerText(x.q)+'</b></div><div class="st">'+x.q.steps+'</div></div>').join(''):'<p><b>Everything correct. Great work!</b></p>')+
+   '<div class="btns"><button class="btn" id="again">Try a new test</button></div></div>';
+  $('#again').onclick=startTest;
+}
+
+/* ---- progress overview ---- */
+function showProgress(){
+  test=null;renderNav();
+  const rows=items().map(s=>{
+    const cur_=st.lvl[s.id]||0,best=Math.max(st.best[s.id]||0,cur_),d=!!st.done[s.id],S=st.stat[s.id]||{n:0,ok:0};
+    const chips=LV.map((l,i)=>'<span class="chip '+(d||i<best?'ach':i===cur_&&(S.n>0||cur_>0)?'act':'')+'">'+l+'</span>').join('');
+    return '<tr><td><b>'+s.title+'</b></td><td>'+chips+'</td><td>'+(S.n||0)+'</td><td>'+(S.n?Math.round(S.ok*100/S.n)+'%':'–')+'</td><td>'+(d?'★ unlocked':'not yet')+'</td></tr>';
+  }).join('');
+  const T=st.tests.length?'<h3>Test preparation results</h3><table><tr><th>Date</th><th>Score</th></tr>'+st.tests.slice().reverse().map(t=>'<tr><td>'+t.d+'</td><td>'+t.s+' / '+t.n+'</td></tr>').join('')+'</table>':'<p>You have not done a test preparation yet.</p>';
+  $('#main').innerHTML='<div class="pg"><h2>My progress ('+(st.mode==='lesson'?'by lesson':'by paragraph')+')</h2><p>Green = level reached. Blue = the level you are working on. Reach Extra spicy and answer 3 in a row correctly to unlock the Master Mix.</p><table><tr><th>'+(st.mode==='lesson'?'Lesson':'Section')+'</th><th>Levels</th><th>Questions</th><th>First try</th><th>Master Mix</th></tr>'+rows+'</table>'+T+
+    '<div class="btns"><button class="btn" id="back">Back to practice</button><button class="btn alt" id="prt">Print / save as PDF</button></div></div>';
+  $('#back').onclick=()=>next(true);$('#prt').onclick=()=>window.print();
+}
+document.getElementById('pbtn').onclick=showProgress;
+window.__dbg=()=>cur;renderNav();next(true);
+})();
+
+</script>
+</body>
+</html>
