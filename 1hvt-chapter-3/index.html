@@ -1,0 +1,593 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chapter 3 Relations - practice</title>
+<style>
+:root{--bg:#f4f7fa;--card:#fff;--ink:#17222d;--mut:#5b6b7a;--line:#d5dee7;--brand:#1b5fa8;--brand2:#e8f1fb;--ok:#16803c;--okbg:#e6f6ec;--bad:#b3261e;--badbg:#fdecea;--warn:#8a5a00;--warnbg:#fff4d6}
+*{box-sizing:border-box}
+body{margin:0;font-family:Calibri,"Segoe UI",system-ui,sans-serif;background:var(--bg);color:var(--ink);font-size:18px;line-height:1.45}
+header{background:var(--brand);color:#fff;padding:14px 20px}
+header h1{margin:0;font-size:24px}header p{margin:2px 0 0;opacity:.9;font-size:15px}
+.wrap{display:grid;grid-template-columns:290px 1fr;gap:18px;max-width:1150px;margin:18px auto;padding:0 14px}
+nav{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px;align-self:start}
+nav button.sec{display:block;width:100%;text-align:left;background:none;border:2px solid transparent;border-radius:10px;padding:9px 11px;margin:3px 0;font:inherit;cursor:pointer;color:inherit}
+nav button.sec:hover{background:var(--brand2)}
+nav button.sec[aria-current=true]{background:var(--brand2);border-color:var(--brand)}
+nav .t{font-weight:700}nav .s{font-size:14px;color:var(--mut)}
+.bar{height:7px;background:#e3eaf1;border-radius:5px;margin-top:5px;overflow:hidden}.bar i{display:block;height:100%;background:var(--ok);width:0}
+.reset{margin:8px 4px 2px;font-size:14px;color:var(--mut);background:none;border:0;text-decoration:underline;cursor:pointer;font-family:inherit}
+main{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px 22px;min-height:420px}
+.top{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:8px}
+.badge{padding:3px 12px;border-radius:99px;font-weight:700;font-size:15px}
+.l0{background:#dff3e5;color:#0f6a31}.l1{background:#fff0c9;color:#7a5200}.l2{background:#fde0d9;color:#a3341b}
+.streak{margin-left:auto;color:var(--mut);font-size:15px}
+.dot{display:inline-block;width:11px;height:11px;border-radius:50%;background:#d6dee6;margin-left:4px}.dot.on{background:var(--ok)}
+.q p{margin:.4em 0 .6em;font-size:20px}
+.tbl{border-collapse:collapse;margin:8px 0 12px;font-size:19px}.tbl th,.tbl td{border:1px solid #9fb0bf;padding:5px 13px;text-align:center;min-width:44px}.tbl th{background:var(--brand2)}
+svg.grid{width:100%;max-width:470px;height:auto;border:1px solid var(--line);border-radius:8px;display:block;margin:6px 0 10px;touch-action:manipulation}
+svg.grid[data-click]{cursor:crosshair}
+.ans{margin:8px 0}
+.ans label{display:block;font-size:16px;color:var(--mut);margin-top:6px}
+.ans input[type=text]{font:inherit;font-size:20px;padding:7px 11px;border:2px solid #9fb0bf;border-radius:9px;width:210px}
+.ans input:focus{outline:3px solid #9cc4ee;border-color:var(--brand)}
+.choices{display:grid;gap:8px;max-width:520px}
+.choice{display:block;text-align:left;font:inherit;font-size:19px;padding:10px 14px;border:2px solid #9fb0bf;border-radius:10px;background:#fff;cursor:pointer}
+.choice:hover{border-color:var(--brand)}.choice[aria-pressed=true]{background:var(--brand2);border-color:var(--brand)}
+.btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+.btn{font:inherit;font-weight:700;padding:9px 20px;border-radius:10px;border:2px solid var(--brand);background:var(--brand);color:#fff;cursor:pointer;font-size:18px}
+.btn.alt{background:#fff;color:var(--brand)}.btn:disabled{opacity:.45;cursor:default}
+.fb{margin-top:14px;padding:11px 14px;border-radius:10px;display:none}
+.fb.show{display:block}.fb.ok{background:var(--okbg);border:1px solid #8fd1a8}.fb.no{background:var(--badbg);border:1px solid #eba8a3}.fb.hint{background:var(--warnbg);border:1px solid #e6c874}
+.fb b.h{display:block;margin-bottom:2px}
+.res h2{margin-top:0}.grade{font-size:44px;font-weight:700;color:var(--brand)}
+.rev{border-top:1px solid var(--line);padding:10px 0;font-size:17px}.rev .st{color:var(--mut)}
+@media(max-width:760px){.wrap{grid-template-columns:1fr}nav{display:grid;grid-template-columns:1fr 1fr;gap:4px}nav .reset{grid-column:1/-1}}
+.sr{position:absolute;left:-9999px}
+</style>
+</head>
+<body>
+<header><h1>Chapter 3 &middot; Relations</h1><p>Practise as long as you like. The questions adapt to you: Mild, Medium, Spicy.</p></header>
+<div class="wrap">
+  <nav id="nav" aria-label="Topics"></nav>
+  <main id="main" aria-live="polite"></main>
+</div>
+<script>
+/* Chapter 3 Relations - question engine (no DOM). Works in browser and in node. */
+(function (root) {
+  'use strict';
+  const ri = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
+  const pick = arr => arr[Math.floor(Math.random() * arr.length)];
+  const shuffle = arr => { const a = arr.slice(); for (let i = a.length - 1; i > 0; i--) { const j = ri(0, i); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+  const nz = (a, b) => { let v = 0; while (v === 0) v = ri(a, b); return v; };
+  const f = n => (n < 0 ? '−' : '') + Math.abs(n);           // number with real minus
+  const par = n => n < 0 ? '(' + f(n) + ')' : String(n);           // (−2)
+  const pt = (x, y) => '(' + f(x) + ', ' + f(y) + ')';
+  const linTxt = (a, b, v) => {                                    // "3x − 2"
+    v = v || 'x'; let s = '';
+    if (a === 1) s = v; else if (a === -1) s = '−' + v; else if (a !== 0) s = f(a) + v;
+    if (b !== 0) s += (s === '' ? f(b) : (b < 0 ? ' − ' : ' + ') + Math.abs(b));
+    return s === '' ? '0' : s;
+  };
+  const quadTxt = (a, c) => {                                      // "−x² + 3"
+    let s = a === 1 ? 'x²' : a === -1 ? '−x²' : f(a) + 'x²';
+    if (c !== 0) s += (c < 0 ? ' − ' : ' + ') + Math.abs(c);
+    return s;
+  };
+  const ev = (a, b, x) => a * x + b;
+  const subStep = (a, b, x, v) => {
+    v = v || 'x';
+    let s = a === 0 ? '' : (a === 1 ? par(x) : a === -1 ? '−' + par(x) : f(a) + ' · ' + par(x));
+    if (b !== 0) s += (s === '' ? f(b) : (b < 0 ? ' − ' : ' + ') + Math.abs(b));
+    return s + ' = ' + f(ev(a, b, x));
+  };
+  const tbl = (xs, ys, xl, yl) => {
+    let h = '<table class="tbl"><tr><th>' + (xl || 'x') + '</th>' + xs.map(x => '<td>' + f(x) + '</td>').join('') + '</tr>';
+    h += '<tr><th>' + (yl || 'y') + '</th>' + ys.map(y => '<td>' + (y === null ? '?' : f(y)) + '</td>').join('') + '</tr></table>';
+    return h;
+  };
+
+  /* ---------- SVG grid ---------- */
+  let gid = 0;
+  function grid(o) {
+    const u = 26, pad = 24, xmin = o.xmin, xmax = o.xmax, ymin = o.ymin, ymax = o.ymax;
+    const w = (xmax - xmin) * u + 2 * pad, h = (ymax - ymin) * u + 2 * pad;
+    const X = x => pad + (x - xmin) * u, Y = y => pad + (ymax - y) * u;
+    const id = 'c' + (++gid);
+    let s = '<svg class="grid" viewBox="0 0 ' + w + ' ' + h + '" role="img" aria-label="coordinate grid"' +
+      (o.click ? ' data-click="1" data-xmin="' + xmin + '" data-ymax="' + ymax + '" data-u="' + u + '" data-pad="' + pad + '" data-w="' + w + '"' : '') + '>';
+    s += '<defs><clipPath id="' + id + '"><rect x="' + X(xmin) + '" y="' + Y(ymax) + '" width="' + (xmax - xmin) * u + '" height="' + (ymax - ymin) * u + '"/></clipPath></defs>';
+    s += '<rect x="0" y="0" width="' + w + '" height="' + h + '" fill="#fff"/>';
+    for (let x = xmin; x <= xmax; x++) s += '<line x1="' + X(x) + '" y1="' + Y(ymin) + '" x2="' + X(x) + '" y2="' + Y(ymax) + '" stroke="#dbe3ea" stroke-width="1"/>';
+    for (let y = ymin; y <= ymax; y++) s += '<line x1="' + X(xmin) + '" y1="' + Y(y) + '" x2="' + X(xmax) + '" y2="' + Y(y) + '" stroke="#dbe3ea" stroke-width="1"/>';
+    s += '<line x1="' + X(xmin) + '" y1="' + Y(0) + '" x2="' + X(xmax) + '" y2="' + Y(0) + '" stroke="#334" stroke-width="1.6"/>';
+    s += '<line x1="' + X(0) + '" y1="' + Y(ymin) + '" x2="' + X(0) + '" y2="' + Y(ymax) + '" stroke="#334" stroke-width="1.6"/>';
+    s += '<text x="' + (X(xmax) + 4) + '" y="' + (Y(0) + 4) + '" font-size="12" font-style="italic" fill="#334">x</text>';
+    s += '<text x="' + (X(0) + 6) + '" y="' + (Y(ymax) - 8) + '" font-size="12" font-style="italic" fill="#334">y</text>';
+    const stx = xmax - xmin > 12 ? 2 : 1, sty = ymax - ymin > 12 ? 2 : 1;
+    for (let x = xmin; x <= xmax; x++) if (x !== 0 && x % stx === 0) s += '<text x="' + X(x) + '" y="' + (Y(0) + 14) + '" font-size="10" text-anchor="middle" fill="#556">' + f(x) + '</text>';
+    for (let y = ymin; y <= ymax; y++) if (y !== 0 && y % sty === 0) s += '<text x="' + (X(0) - 5) + '" y="' + (Y(y) + 3.5) + '" font-size="10" text-anchor="end" fill="#556">' + f(y) + '</text>';
+    (o.curves || []).forEach(c => {
+      let d = '', pen = false;
+      for (let x = xmin; x <= xmax + 1e-9; x += 0.05) {
+        const y = c.f(x);
+        if (y < ymin - 2 || y > ymax + 2) { pen = false; continue; }
+        d += (pen ? 'L' : 'M') + X(x).toFixed(1) + ' ' + Y(y).toFixed(1); pen = true;
+      }
+      s += '<path d="' + d + '" fill="none" stroke="' + (c.color || '#d1471f') + '" stroke-width="2.4" clip-path="url(#' + id + ')"/>';
+    });
+    (o.pts || []).forEach(p => {
+      s += '<circle cx="' + X(p.x) + '" cy="' + Y(p.y) + '" r="4.6" fill="' + (p.color || '#1b5fa8') + '" stroke="#fff" stroke-width="1.2"/>';
+      if (p.label) s += '<text x="' + (X(p.x) + 7) + '" y="' + (Y(p.y) - 7) + '" font-size="13" font-weight="700" fill="#123">' + p.label + '</text>';
+    });
+    s += '<g class="marks"></g></svg>';
+    return s;
+  }
+
+  /* ---------- Question builders. Each returns a question object ----------
+     type: num | multi | point | choice | click
+     correct: a right answer in "user format" (used by tests)                  */
+  const G = {};   // section id -> array of generators (lvl)=>Q
+
+  /* 3.1 Coordinates */
+  G['3.1'] = [
+    function readPoint(l) {
+      const r = [4, 6, 8][l], x = l === 0 ? ri(1, r) : nz(-r, r), y = l === 0 ? ri(1, r) : nz(-r, r);
+      return { type: 'point', ans: [x, y], correct: pt(x, y),
+        html: '<p>Which are the coordinates of point <b>P</b>?</p>' + grid({ xmin: -r, xmax: r, ymin: -r, ymax: r, pts: [{ x, y, label: 'P' }] }),
+        hint: 'Start at the origin. Go left or right first (x), then up or down (y).',
+        steps: 'x = ' + f(x) + ', y = ' + f(y) + ', so P = ' + pt(x, y) + '.' };
+    },
+    function quadrant(l) {
+      const x = nz(-6, 6), y = nz(-6, 6);
+      const q = x > 0 && y > 0 ? 0 : x < 0 && y > 0 ? 1 : x < 0 && y < 0 ? 2 : 3;
+      const showGrid = l === 0;
+      const html = '<p>In which quadrant is the point <b>' + pt(x, y) + '</b>?</p>' + (showGrid ? grid({ xmin: -6, xmax: 6, ymin: -6, ymax: 6, pts: [{ x, y }] }) : '');
+      return { type: 'choice', opts: ['Quadrant I', 'Quadrant II', 'Quadrant III', 'Quadrant IV'], ans: q, correct: q, html,
+        hint: 'Look at the signs. Quadrant I is (+, +). Then go anticlockwise: II, III, IV.',
+        steps: 'x is ' + (x > 0 ? 'positive' : 'negative') + ' and y is ' + (y > 0 ? 'positive' : 'negative') + '. That is quadrant ' + ['I', 'II', 'III', 'IV'][q] + '.' };
+    },
+    function clickPoint(l) {
+      const r = [5, 6, 8][l], x = l === 0 ? ri(1, r) : nz(-r, r), y = l === 0 ? ri(1, r) : nz(-r, r);
+      return { type: 'click', targets: [[x, y]], correct: [[x, y]],
+        html: '<p>Click the point <b>' + pt(x, y) + '</b> on the grid. (Click again to remove a point.)</p>' + grid({ xmin: -r, xmax: r, ymin: -r, ymax: r, click: true }),
+        hint: 'First x (left/right), then y (up/down).', steps: 'Go ' + Math.abs(x) + ' ' + (x >= 0 ? 'right' : 'left') + ' and ' + Math.abs(y) + ' ' + (y >= 0 ? 'up' : 'down') + '.' };
+    },
+    function rectangle(l) {
+      const r = [5, 6, 8][l];
+      let x1 = l === 0 ? ri(1, 3) : ri(-r, -1), x2 = x1 + ri(2, 4), y1 = l === 0 ? ri(1, 3) : ri(-r, -2), y2 = y1 + ri(2, 4);
+      if (x2 > r) x2 = r; if (y2 > r) y2 = r;
+      const names = [['A', x1, y1], ['B', x2, y1], ['C', x2, y2], ['D', x1, y2]];
+      const sh = l === 2 ? ri(0, 3) : 0, shown = [0, 1, 2].map(i => names[(i + sh) % 4]), miss = names[(3 + sh) % 4];
+      const html = '<p>ABCD is a rectangle with its sides parallel to the axes. ' + shown.map(p => p[0] + ' = ' + pt(p[1], p[2])).join(', ') + '. Which are the coordinates of <b>' + miss[0] + '</b>?</p>' +
+        (l < 2 ? grid({ xmin: -r, xmax: r, ymin: -r, ymax: r, pts: shown.map(p => ({ x: p[1], y: p[2], label: p[0] })) }) : '');
+      return { type: 'point', ans: [miss[1], miss[2]], correct: pt(miss[1], miss[2]), html,
+        hint: 'In a rectangle the opposite corners share their x-values or y-values. Look at which x and y are already used.',
+        steps: miss[0] + ' = ' + pt(miss[1], miss[2]) + '.' };
+    },
+    function mirror(l) {
+      const x = nz(-6, 6), y = nz(-6, 6);
+      const modes = l === 0 ? ['x'] : l === 1 ? ['x', 'y'] : ['x', 'y', 'o'];
+      const m = pick(modes);
+      const nm = { x: 'the x-axis', y: 'the y-axis', o: 'the origin (0, 0)' }[m];
+      const a = m === 'x' ? [x, -y] : m === 'y' ? [-x, y] : [-x, -y];
+      return { type: 'point', ans: a, correct: pt(a[0], a[1]),
+        html: '<p>Point <b>A = ' + pt(x, y) + '</b> is reflected in ' + nm + '. Which are the coordinates of the image A′?</p>' + (l === 0 ? grid({ xmin: -6, xmax: 6, ymin: -6, ymax: 6, pts: [{ x, y, label: 'A' }] }) : ''),
+        hint: m === 'x' ? 'Reflecting in the x-axis: the x-coordinate stays, the y-coordinate changes sign.' : m === 'y' ? 'Reflecting in the y-axis: the y-coordinate stays, the x-coordinate changes sign.' : 'Reflecting in the origin: both coordinates change sign.',
+        steps: 'A′ = ' + pt(a[0], a[1]) + '.' };
+    },
+    function axisDist(l) {
+      const x = nz(-7, 7), y = nz(-7, 7), toX = Math.random() < 0.5;
+      return { type: 'num', ans: toX ? Math.abs(y) : Math.abs(x), correct: String(toX ? Math.abs(y) : Math.abs(x)),
+        html: '<p>How far is the point <b>' + pt(x, y) + '</b> from the <b>' + (toX ? 'x' : 'y') + '-axis</b>? (Give a positive number.)</p>' + (l === 0 ? grid({ xmin: -7, xmax: 7, ymin: -7, ymax: 7, pts: [{ x, y }] }) : ''),
+        hint: toX ? 'The distance to the x-axis is how far up or down you go: use the y-coordinate.' : 'The distance to the y-axis is how far left or right you go: use the x-coordinate.',
+        steps: 'Distance = |' + f(toX ? y : x) + '| = ' + Math.abs(toX ? y : x) + '.' };
+    }
+  ];
+
+  /* 3.2 Formulas and tables */
+  G['3.2'] = [
+    function substitute(l) {
+      let a, b, x, kind = 'lin';
+      if (l === 0) { a = ri(2, 5); b = 0; x = ri(1, 6); }
+      else if (l === 1) { a = nz(-4, 5); b = nz(-6, 6); x = ri(-4, 5); }
+      else if (Math.random() < .5) { kind = 'quad'; a = pick([1, 1, 2, -1]); b = ri(-5, 6); x = nz(-4, 4); }
+      else { a = nz(-5, 5); b = nz(-9, 9); x = ri(-6, 6); }
+      const y = kind === 'lin' ? ev(a, b, x) : a * x * x + b;
+      const ftxt = kind === 'lin' ? linTxt(a, b) : quadTxt(a, b);
+      const st = kind === 'lin' ? 'y = ' + subStep(a, b, x) : 'y = ' + (a === 1 ? '' : a === -1 ? '−' : f(a) + ' · ') + par(x) + '²' + (b ? (b < 0 ? ' − ' : ' + ') + Math.abs(b) : '') + ' = ' + f(y);
+      return { type: 'num', ans: y, correct: String(y),
+        html: '<p>Given: <b>y = ' + ftxt + '</b>. Calculate <b>y</b> when <b>x = ' + f(x) + '</b>.</p>',
+        hint: 'Replace x by ' + f(x) + ' and calculate. Do · and powers first, then + and −.', steps: st };
+    },
+    function table(l) {
+      const a = l === 0 ? ri(2, 4) : nz(-4, 4), b = l === 0 ? ri(0, 3) : nz(-5, 5);
+      const xs = l === 0 ? [0, 1, 2, 3] : l === 1 ? shuffle([-3, -2, -1, 0, 1, 2, 3]).slice(0, 4).sort((p, q) => p - q) : shuffle([-5, -3, -2, 0, 2, 4, 6]).slice(0, 4).sort((p, q) => p - q);
+      const show = [0, 1, 2, 3], hid = shuffle(show).slice(0, 2).sort();
+      return { type: 'multi', fields: hid.map(i => 'y when x = ' + f(xs[i])), ans: hid.map(i => ev(a, b, xs[i])), correct: hid.map(i => String(ev(a, b, xs[i]))),
+        html: '<p>Formula: <b>y = ' + linTxt(a, b) + '</b>. Fill in the two missing values in the table.</p>' + tbl(xs, xs.map((x, i) => hid.includes(i) ? null : ev(a, b, x))),
+        hint: 'Do the same calculation for each missing x. Write it out: y = ' + subStep(a, b, xs[hid[0]]).split(' = ')[0] + ' …',
+        steps: hid.map(i => 'x = ' + f(xs[i]) + ': y = ' + subStep(a, b, xs[i])).join('<br>') };
+    },
+    function solveX(l) {
+      let a = l === 0 ? ri(2, 5) : nz(-5, 5), b = l === 0 ? ri(0, 6) : nz(-8, 8), x = l === 0 ? ri(1, 6) : ri(-6, 7);
+      if (l === 2) { a = nz(-6, 6); }
+      const y = ev(a, b, x);
+      return { type: 'num', ans: x, correct: String(x),
+        html: '<p>Given: <b>y = ' + linTxt(a, b) + '</b>. For which <b>x</b> is <b>y = ' + f(y) + '</b>?</p>',
+        hint: 'Write the equation ' + linTxt(a, b) + ' = ' + f(y) + ' and solve it step by step. First remove the ' + (b !== 0 ? f(b) : 'multiplication') + '.',
+        steps: linTxt(a, b) + ' = ' + f(y) + (b !== 0 ? '<br>' + (a === 1 ? 'x' : f(a) + 'x') + ' = ' + f(y - b) : '') + '<br>x = ' + f(x) };
+    },
+    function onGraph(l) {
+      const lin = l < 2 || Math.random() < .5;
+      let a, b, ftxt, fn;
+      if (lin) { a = nz(-4, 4); b = ri(-5, 5); ftxt = linTxt(a, b); fn = x => ev(a, b, x); }
+      else { a = pick([1, -1, 2]); b = ri(-4, 5); ftxt = quadTxt(a, b); fn = x => a * x * x + b; }
+      const x = ri(-4, 4), yes = Math.random() < .5, y = yes ? fn(x) : fn(x) + pick([-2, -1, 1, 2]);
+      return { type: 'choice', opts: ['Yes, it is on the graph', 'No, it is not on the graph'], ans: yes ? 0 : 1, correct: yes ? 0 : 1,
+        html: '<p>Is the point <b>' + pt(x, y) + '</b> on the graph of <b>y = ' + ftxt + '</b>?</p>',
+        hint: 'Put the x-coordinate in the formula. If you get the y-coordinate of the point, it is on the graph.',
+        steps: 'x = ' + f(x) + ' gives y = ' + f(fn(x)) + '. The point has y = ' + f(y) + ', so the answer is ' + (yes ? 'yes' : 'no') + '.' };
+    },
+    function matchFormula(l) {
+      const a = l === 0 ? ri(1, 4) : nz(-4, 4), b = l === 0 ? ri(0, 4) : nz(-5, 5);
+      const xs = l === 0 ? [0, 1, 2] : [-1, 0, 2];
+      const opts = [[a, b], [b === 0 ? a + 1 : b, a], [a, -b === b ? b + 1 : -b], [-a, b]].map(p => linTxt(p[0], p[1]));
+      const uniq = Array.from(new Set(opts)); while (uniq.length < 4) uniq.push(linTxt(a + uniq.length, b + 1));
+      const order = shuffle(uniq.slice(0, 4)), correctTxt = linTxt(a, b);
+      return { type: 'choice', opts: order.map(t => 'y = ' + t), ans: order.indexOf(correctTxt), correct: order.indexOf(correctTxt),
+        html: '<p>Which formula belongs to this table?</p>' + tbl(xs, xs.map(x => ev(a, b, x))),
+        hint: 'Test each formula with one pair from the table, for example x = ' + f(xs[1]) + '. Test a second pair to be sure.',
+        steps: 'x = ' + f(xs[1]) + ' gives y = ' + f(ev(a, b, xs[1])) + '. Only y = ' + correctTxt + ' fits all pairs.' };
+    }
+  ];
+
+  /* 3.3 Graphs of formulas */
+  G['3.3'] = [
+    function readLineY(l) {
+      const a = l === 0 ? pick([1, 2]) : nz(-3, 3), b = l === 0 ? 0 : ri(-3, 3);
+      const k = (() => { let t; do { t = ri(-4, 4); } while (Math.abs(ev(a, b, t)) > 8 || t === 0); return t; })();
+      return { type: 'num', ans: ev(a, b, k), correct: String(ev(a, b, k)),
+        html: '<p>This is the graph of a line. Which <b>y</b> belongs to <b>x = ' + f(k) + '</b>?</p>' + grid({ xmin: -5, xmax: 5, ymin: -8, ymax: 8, curves: [{ f: x => ev(a, b, x) }] }),
+        hint: 'Find x = ' + f(k) + ' on the horizontal axis. Go up or down to the line, then read the y-value.',
+        steps: 'At x = ' + f(k) + ' the line is at y = ' + f(ev(a, b, k)) + '.' };
+    },
+    function lineFormula(l) {
+      const a = l === 0 ? pick([1, 2, 3]) : nz(-3, 3), b = l === 0 ? 0 : ri(-4, 4);
+      return { type: 'multi', fields: ['m (y goes up/down by ... when x goes up 1)', 'b (where the line crosses the y-axis)'], ans: [a, b], correct: [String(a), String(b)],
+        html: '<p>The line has the formula <b>y = mx + b</b>. Find <b>m</b> and <b>b</b>.</p>' + grid({ xmin: -5, xmax: 5, ymin: -8, ymax: 8, curves: [{ f: x => ev(a, b, x) }], pts: [{ x: 0, y: b, color: '#16803c' }, { x: 1, y: a + b, color: '#16803c' }] }),
+        hint: 'b = the y-value at x = 0 (green point). m = how much y changes if you go 1 to the right (compare the two green points).',
+        steps: 'At x = 0: y = ' + f(b) + ', so b = ' + f(b) + '.<br>At x = 1: y = ' + f(a + b) + ', so m = ' + f(a + b) + ' − ' + par(b) + ' = ' + f(a) + '.<br>y = ' + linTxt(a, b) };
+    },
+    function plotLine(l) {
+      const a = l === 0 ? ri(1, 2) : nz(-2, 2), b = l === 0 ? 0 : ri(-3, 3);
+      const xs = l === 2 ? pick([[-2, 2], [-1, 3], [1, 3]]) : pick([[0, 2], [0, 1], [1, 3]]);
+      const t = xs.map(x => [x, ev(a, b, x)]);
+      return { type: 'click', targets: t, correct: t,
+        html: '<p>Draw points of the graph of <b>y = ' + linTxt(a, b) + '</b>. Click the points with <b>x = ' + f(xs[0]) + '</b> and <b>x = ' + f(xs[1]) + '</b>.</p>' + grid({ xmin: -5, xmax: 5, ymin: -8, ymax: 8, click: true }),
+        hint: 'Calculate y for both x-values first. Then click the two points.',
+        steps: t.map(p => 'x = ' + f(p[0]) + ': y = ' + subStep(a, b, p[0])).join('<br>') };
+    },
+    function vertex(l) {
+      const a = l === 2 ? -1 : 1, c = l === 0 ? ri(0, 4) : ri(-5, 5);
+      return { type: 'point', ans: [0, c], correct: pt(0, c),
+        html: '<p>This is the graph of <b>y = ' + quadTxt(a, c) + '</b>. Which are the coordinates of the ' + (a > 0 ? '<b>lowest</b>' : '<b>highest</b>') + ' point?</p>' + grid({ xmin: -5, xmax: 5, ymin: -8, ymax: 8, curves: [{ f: x => a * x * x + c }] }),
+        hint: 'Look where the curve turns. Read the x-value and y-value of that point.',
+        steps: 'At x = 0: y = ' + f(c) + '. The turning point is ' + pt(0, c) + '.' };
+    },
+    function shape(l) {
+      const lin = Math.random() < .5; let ftxt;
+      if (lin) { const a = nz(-4, 4), b = l === 0 ? 0 : ri(-5, 5); ftxt = linTxt(a, b); }
+      else { const a = l === 0 ? 1 : pick([1, -1, 2, -2, 3]), c = l === 0 ? 0 : ri(-5, 5); ftxt = quadTxt(a, c); }
+      return { type: 'choice', opts: ['A straight line', 'A parabola (a U-shaped curve)'], ans: lin ? 0 : 1, correct: lin ? 0 : 1,
+        html: '<p>What does the graph of <b>y = ' + ftxt + '</b> look like?</p>',
+        hint: 'Is there an x² in the formula? If yes, it is a parabola. If x only has a plain x, it is a line.',
+        steps: lin ? 'There is no x², only x. So it is a straight line.' : 'There is an x². So the graph is a parabola.' };
+    },
+    function yAxisCross(l) {
+      const a = nz(-4, 4), b = nz(-8, 8);
+      return { type: 'point', ans: [0, b], correct: pt(0, b),
+        html: '<p>Where does the graph of <b>y = ' + linTxt(a, b) + '</b> cross the <b>y-axis</b>? Give the coordinates.</p>',
+        hint: 'On the y-axis x is 0. Put x = 0 in the formula.', steps: 'x = 0: y = ' + subStep(a, b, 0) + '. The point is ' + pt(0, b) + '.' };
+    }
+  ];
+
+  /* 3.4 Linear or not? Patterns in tables */
+  G['3.4'] = [
+    function isLinear(l) {
+      const lin = Math.random() < .5, xs = l === 0 ? [0, 1, 2, 3, 4] : l === 1 ? [-2, -1, 0, 1, 2] : [-3, -2, -1, 0, 1, 2];
+      let ys, st;
+      if (lin) { const a = nz(-4, 4), b = ri(-5, 6); ys = xs.map(x => ev(a, b, x)); st = 'y changes by ' + f(a) + ' every step: the same each time. It is linear.'; }
+      else { const c = ri(-3, 5), a = l === 2 ? -1 : 1; ys = xs.map(x => a * x * x + c); st = 'The steps are ' + ys.slice(1).map((v, i) => f(v - ys[i])).join(', ') + ': not the same. It is not linear.'; }
+      return { type: 'choice', opts: ['Yes, linear', 'No, not linear'], ans: lin ? 0 : 1, correct: lin ? 0 : 1,
+        html: '<p>Is this a linear relation?</p>' + tbl(xs, ys),
+        hint: 'Look at how y changes from one column to the next. For a linear relation the change is always the same.', steps: st };
+    },
+    function nextValue(l) {
+      const a = nz(-5, 5), b = ri(-6, 8);
+      let xs = [1, 2, 3, 4, 5], ys = xs.map(x => ev(a, b, x)), ask;
+      if (l === 0) { ask = 5; ys[4] = null; }
+      else if (l === 1) { const i = ri(1, 3); ask = xs[i]; ys[i] = null; }
+      else { xs = [1, 2, 3]; ys = xs.map(x => ev(a, b, x)); ask = 10; }
+      const answer = ev(a, b, ask);
+      return { type: 'num', ans: answer, correct: String(answer),
+        html: '<p>The table shows a linear relation. ' + (l === 2 ? 'Calculate <b>y</b> when <b>x = 10</b>.' : 'Fill in the missing value (<b>?</b>).') + '</p>' + tbl(xs, ys),
+        hint: 'Find the change in y for each step of 1 in x. ' + (l === 2 ? 'Then count on, or first find the formula.' : 'Use that change to fill the gap.'),
+        steps: 'y changes by ' + f(a) + ' each step. At x = ' + ask + ': y = ' + f(answer) + '.' };
+    },
+    function findFormula(l) {
+      const a = l === 0 ? ri(1, 4) : nz(-4, 4), b = ri(-5, 6), xs = l === 0 ? [0, 1, 2, 3, 4] : l === 1 ? [1, 2, 3, 4, 5] : [2, 3, 4, 5, 6];
+      return { type: 'multi', fields: ['m (the change in y per step of 1 in x)', 'b (y when x = 0)'], ans: [a, b], correct: [String(a), String(b)],
+        html: '<p>This table belongs to a linear relation <b>y = mx + b</b>. Find <b>m</b> and <b>b</b>.</p>' + tbl(xs, xs.map(x => ev(a, b, x))),
+        hint: 'm is the change in y for each step of 1 in x. Then go back (or forward) to x = 0 to find b.',
+        steps: 'm = ' + f(a) + '. From x = ' + xs[0] + ' (y = ' + f(ev(a, b, xs[0])) + ') go back to x = 0: b = ' + f(b) + '.<br>y = ' + linTxt(a, b) };
+    },
+    function changePer(l) {
+      const a = nz(-6, 6), b = ri(-8, 8), down = l === 2 && Math.random() < .5, v = down ? 'down 1' : 'up 1';
+      return { type: 'num', ans: down ? -a : a, correct: String(down ? -a : a),
+        html: '<p>Given: <b>y = ' + linTxt(a, b) + '</b>. By how much does <b>y</b> change when <b>x goes ' + v + '</b>? (A decrease is a negative number.)</p>',
+        hint: 'Only the number in front of x matters.', steps: 'The number in front of x is ' + f(a) + '. ' + (down ? 'Going down 1 gives the opposite: ' + f(-a) + '.' : 'So y changes by ' + f(a) + '.') };
+    },
+    function growth(l) {
+      const a = nz(-5, 5), b = ri(0, 9);
+      const opts = ['y increases', 'y decreases', 'y stays the same'];
+      const ans = a > 0 ? 0 : 1;
+      return { type: 'choice', opts: opts.slice(0, 2), ans, correct: ans,
+        html: '<p>Given: <b>y = ' + linTxt(a, b) + '</b>. When <b>x gets bigger</b>, what happens to <b>y</b>?</p>',
+        hint: 'Is the number in front of x positive or negative?', steps: 'The number in front of x is ' + f(a) + (a > 0 ? ' (positive): y increases.' : ' (negative): y decreases.') };
+    }
+  ];
+
+  /* 3.5 Relations in context */
+  const CTX = [
+    { t: (s, r) => 'A taxi has a start price of €' + s + ' and costs €' + r + ' for every km.', v: 'k', y: 'C', xn: 'km', yn: 'cost (€)', sn: 'the start price', rn: 'the price per km' },
+    { t: (s, r) => 'A gym has a joining fee of €' + s + ' and costs €' + r + ' per month.', v: 'm', y: 'C', xn: 'months', yn: 'cost (€)', sn: 'the joining fee', rn: 'the price per month' },
+    { t: (s, r) => 'A plant is ' + s + ' cm tall. It grows ' + r + ' cm every week.', v: 'w', y: 'H', xn: 'weeks', yn: 'height (cm)', sn: 'the height at the start', rn: 'the growth per week' },
+    { t: (s, r) => 'A tank holds ' + s + ' litres of water. Every minute ' + r + ' litres are added.', v: 't', y: 'V', xn: 'minutes', yn: 'volume (litres)', sn: 'the water at the start', rn: 'the water added per minute' }
+  ];
+  G['3.5'] = [
+    function formulaFromText(l) {
+      const c = pick(CTX), s = ri(2, 12); let r = ri(2, 6); while (r === s) r = ri(2, 6);
+      const right = c.y + ' = ' + s + ' + ' + r + c.v;
+      const wrong = [c.y + ' = ' + r + ' + ' + s + c.v, c.y + ' = ' + (s + r) + c.v, c.y + ' = ' + s + c.v + ' + ' + r];
+      const order = shuffle([right].concat(wrong));
+      return { type: 'choice', opts: order, ans: order.indexOf(right), correct: order.indexOf(right),
+        html: '<p>' + c.t(s, r) + ' Which formula gives the ' + c.yn.split(' ')[0] + ' <b>' + c.y + '</b> after <b>' + c.v + '</b> ' + c.xn + '?</p>',
+        hint: 'The part that does not change (start) is just a number. The part that grows is multiplied by ' + c.v + '.',
+        steps: 'Start: ' + s + '. Per ' + c.xn.replace(/s$/, '') + ': ' + r + '. So ' + right + '.' };
+    },
+    function valueAt(l) {
+      const c = pick(CTX), s = ri(2, 12), r = ri(2, 7), x = l === 0 ? ri(2, 5) : ri(3, 15);
+      return { type: 'num', ans: s + r * x, correct: String(s + r * x),
+        html: '<p>' + c.t(s, r) + ' The formula is <b>' + c.y + ' = ' + s + ' + ' + r + c.v + '</b>. Calculate ' + c.y + ' when <b>' + c.v + ' = ' + x + '</b>.</p>',
+        hint: 'Put ' + c.v + ' = ' + x + ' in the formula. Multiply first.', steps: c.y + ' = ' + s + ' + ' + r + ' · ' + x + ' = ' + s + ' + ' + (r * x) + ' = ' + (s + r * x) };
+    },
+    function timeFor(l) {
+      const c = pick(CTX), s = ri(2, 12), r = ri(2, 7), x = ri(3, 14), tot = s + r * x;
+      return { type: 'num', ans: x, correct: String(x),
+        html: '<p>' + c.t(s, r) + ' The formula is <b>' + c.y + ' = ' + s + ' + ' + r + c.v + '</b>. For which ' + c.v + ' is <b>' + c.y + ' = ' + tot + '</b>?</p>',
+        hint: 'Solve ' + s + ' + ' + r + c.v + ' = ' + tot + '. First subtract ' + s + ' on both sides.', steps: r + c.v + ' = ' + tot + ' − ' + s + ' = ' + (tot - s) + '<br>' + c.v + ' = ' + (tot - s) + ' : ' + r + ' = ' + x };
+    },
+    function meaning(l) {
+      const c = pick(CTX), s = ri(2, 12), r = ri(2, 7), askStart = Math.random() < .5;
+      const opts = [c.sn, c.rn, 'the total after ' + c.xn];
+      const ans = askStart ? 0 : 1;
+      return { type: 'choice', opts, ans, correct: ans,
+        html: '<p>' + c.t(s, r) + ' The formula is <b>' + c.y + ' = ' + s + ' + ' + r + c.v + '</b>. What does the number <b>' + (askStart ? s : r) + '</b> mean?</p>',
+        hint: askStart ? 'Which number is there when ' + c.v + ' = 0?' : 'This number is multiplied by ' + c.v + ', so it is what you get for each step.',
+        steps: (askStart ? 'When ' + c.v + ' = 0, ' + c.y + ' = ' + s + '. So ' + s + ' is ' + c.sn + '.' : r + ' is multiplied by ' + c.v + '. So it is ' + c.rn + '.') };
+    },
+    function breakEven(l) {
+      const x0 = ri(2, 8), a1 = ri(1, 3), a2 = a1 + ri(1, 3), b2 = ri(0, 6), b1 = b2 + (a2 - a1) * x0;
+      if (l === 0) {
+        const x = ri(1, 3), ca = ev(a1, b1, x), cb = ev(a2, b2, x), cheaper = ca < cb ? 0 : 1;
+        if (ca === cb) return G['3.5'][4](l);
+        return { type: 'choice', opts: ['Plan A', 'Plan B'], ans: cheaper, correct: cheaper,
+          html: '<p>Plan A: <b>C = ' + b1 + ' + ' + a1 + 'k</b>. Plan B: <b>C = ' + b2 + ' + ' + a2 + 'k</b> (C in €, k in km). Which plan is cheaper for <b>k = ' + x + '</b>?</p>',
+          hint: 'Calculate C for both plans with k = ' + x + '.', steps: 'A: ' + b1 + ' + ' + a1 + ' · ' + x + ' = ' + ca + '<br>B: ' + b2 + ' + ' + a2 + ' · ' + x + ' = ' + cb };
+      }
+      return { type: 'num', ans: x0, correct: String(x0),
+        html: '<p>Plan A: <b>C = ' + b1 + ' + ' + a1 + 'k</b>. Plan B: <b>C = ' + b2 + ' + ' + a2 + 'k</b>. For which <b>k</b> do both plans cost the same?</p>',
+        hint: 'Make the two costs equal: ' + b1 + ' + ' + a1 + 'k = ' + b2 + ' + ' + a2 + 'k. Or make a table for k = 1, 2, 3, … and look for equal values.',
+        steps: 'Try k = ' + x0 + ': A = ' + (b1 + a1 * x0) + ' and B = ' + (b2 + a2 * x0) + '. They are equal, so k = ' + x0 + '.' };
+    },
+    function squareArea(l) {
+      const side = ri(2, 9), mode = l === 0 ? 0 : ri(0, 1);
+      if (mode === 0) return { type: 'num', ans: side * side, correct: String(side * side),
+        html: '<p>The area of a square with side <b>s</b> cm is <b>A = s²</b>. Calculate <b>A</b> when <b>s = ' + side + '</b>.</p>',
+        hint: 's² means s · s.', steps: 'A = ' + side + ' · ' + side + ' = ' + side * side };
+      const h0 = pick([20, 45, 80]), t = ri(1, 2), hh = h0 - 5 * t * t;
+      return { type: 'num', ans: hh, correct: String(hh),
+        html: '<p>A stone falls from a tower of ' + h0 + ' m. The height is <b>h = ' + h0 + ' − 5t²</b> (h in metres, t in seconds). How high is the stone after <b>t = ' + t + '</b> seconds?</p>',
+        hint: 'Do t² first, then multiply by 5, then subtract from ' + h0 + '.', steps: 'h = ' + h0 + ' − 5 · ' + t + '² = ' + h0 + ' − ' + 5 * t * t + ' = ' + hh };
+    }
+  ];
+
+  const SECTIONS = [
+    { id: '3.1', title: '3.1 Coordinates', sub: 'Points, quadrants, mirror images' },
+    { id: '3.2', title: '3.2 Formulas and tables', sub: 'Calculate y, fill in tables' },
+    { id: '3.3', title: '3.3 Graphs of formulas', sub: 'Read, draw and recognise graphs' },
+    { id: '3.4', title: '3.4 Linear or not?', sub: 'Patterns in tables' },
+    { id: '3.5', title: '3.5 Relations in context', sub: 'Formulas for real situations' }
+  ];
+
+  function make(sec, lvl, avoid) {
+    const list = G[sec]; let i, tries = 0;
+    do { i = ri(0, list.length - 1); tries++; } while (i === avoid && tries < 10);
+    const q = list[i](lvl); q.sec = sec; q.gen = i; q.lvl = lvl; return q;
+  }
+  function makeTest() {
+    const lv = shuffle([0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2]);
+    const secs = []; for (let i = 0; i < 24; i++) secs.push(SECTIONS[i % 5].id);
+    const qs = shuffle(secs).map((s, i) => { const q = make(s, lv[i]); q.hint = null; return q; });
+    return qs;
+  }
+
+  /* ---------- grading ---------- */
+  function parseNum(s) {
+    if (s === null || s === undefined) return NaN;
+    s = String(s).replace(/[−–—]/g, '-').replace(/\s+/g, '').replace(',', '.');
+    if (!/^[+-]?(\d+\.?\d*|\.\d+)$/.test(s)) return NaN;
+    return parseFloat(s);
+  }
+  function parsePoint(s) {
+    s = String(s || '').replace(/[−–—]/g, '-').replace(/\s+/g, '').replace(/^\(|\)$/g, '');
+    const m = s.split(/[;,]/); if (m.length === 2 && /^[+-]?\d+(\.\d+)?$/.test(m[0]) && /^[+-]?\d+(\.\d+)?$/.test(m[1])) return [parseFloat(m[0]), parseFloat(m[1])];
+    const d = s.match(/^([+-]?\d+(?:\.\d+)?);([+-]?\d+(?:\.\d+)?)$/); return d ? [parseFloat(d[1]), parseFloat(d[2])] : null;
+  }
+  function grade(q, u) {
+    if (q.type === 'num') { const n = parseNum(u); return !isNaN(n) && Math.abs(n - q.ans) < 1e-9; }
+    if (q.type === 'multi') return Array.isArray(u) && u.length === q.ans.length && u.every((v, i) => { const n = parseNum(v); return !isNaN(n) && Math.abs(n - q.ans[i]) < 1e-9; });
+    if (q.type === 'point') { const p = parsePoint(u); return !!p && p[0] === q.ans[0] && p[1] === q.ans[1]; }
+    if (q.type === 'choice') return Number(u) === q.ans;
+    if (q.type === 'click') {
+      const got = (u || []).map(p => p[0] + ',' + p[1]).sort().join('|'), want = q.targets.map(p => p[0] + ',' + p[1]).sort().join('|');
+      return got === want;
+    }
+    return false;
+  }
+  function answerText(q) {
+    if (q.type === 'num') return f(q.ans);
+    if (q.type === 'multi') return q.ans.map(f).join(' and ');
+    if (q.type === 'point') return pt(q.ans[0], q.ans[1]);
+    if (q.type === 'choice') return q.opts[q.ans];
+    if (q.type === 'click') return q.targets.map(p => pt(p[0], p[1])).join(' and ');
+    return '';
+  }
+
+  const API = { SECTIONS, G, make, makeTest, grade, answerText, parseNum, parsePoint, f };
+  if (typeof module !== 'undefined' && module.exports) module.exports = API; else root.Ch3 = API;
+})(typeof window !== 'undefined' ? window : globalThis);
+
+</script>
+<script>
+(function(){
+'use strict';
+const E=window.Ch3,$=s=>document.querySelector(s);
+const LV=['Mild','Medium','Spicy'],GOAL=10;
+let st={sec:'3.1',prog:{},lvl:{}};   // prog: correct count per section, lvl: level per section
+try{const r=JSON.parse(localStorage.getItem('ch3-relations-v1')||'null');if(r&&r.prog)st=Object.assign(st,r)}catch(e){}
+const save=()=>{try{localStorage.setItem('ch3-relations-v1',JSON.stringify({sec:st.sec,prog:st.prog,lvl:st.lvl}))}catch(e){}};
+let cur=null,tries=0,done=false,streak=0,wrongRun=0,lastGen=-1,clicked=[],choiceSel=null;
+let test=null; // {qs,i,score,log}
+
+function renderNav(){
+  const n=$('#nav');n.innerHTML='';
+  E.SECTIONS.forEach(s=>{
+    const b=document.createElement('button');b.className='sec';b.setAttribute('aria-current',String(!test&&st.sec===s.id));
+    const p=Math.min(GOAL,st.prog[s.id]||0);
+    b.innerHTML='<div class="t">'+s.title+'</div><div class="s">'+s.sub+'</div><div class="bar" aria-hidden="true"><i style="width:'+p*100/GOAL+'%"></i></div>';
+    b.onclick=()=>{test=null;st.sec=s.id;save();next(true)};n.appendChild(b);
+  });
+  const t=document.createElement('button');t.className='sec';t.setAttribute('aria-current',String(!!test));
+  t.innerHTML='<div class="t">Test preparation</div><div class="s">24 mixed questions, no hints</div>';
+  t.onclick=startTest;n.appendChild(t);
+  const r=document.createElement('button');r.className='reset';r.textContent='Reset my progress';
+  r.onclick=()=>{if(confirm('Delete all your progress on this page?')){st={sec:st.sec,prog:{},lvl:{}};save();test=null;renderNav();next(true)}};n.appendChild(r);
+}
+function lvl(){return st.lvl[st.sec]||0}
+function next(reset){
+  if(reset){streak=0;wrongRun=0;lastGen=-1}
+  cur=E.make(st.sec,lvl(),lastGen);lastGen=cur.gen;tries=0;done=false;clicked=[];choiceSel=null;renderQ(false);renderNav();
+}
+function qHTML(q,idx){
+  let h='<div class="q">'+q.html+'</div><div class="ans" id="ans">';
+  if(q.type==='num')h+='<label class="sr" for="in0">Your answer</label><input type="text" id="in0" inputmode="text" autocomplete="off" placeholder="your answer">';
+  else if(q.type==='point')h+='<label class="sr" for="in0">Your answer</label><input type="text" id="in0" autocomplete="off" placeholder="(x, y)">';
+  else if(q.type==='multi')q.fields.forEach((f,i)=>{h+='<label for="in'+i+'">'+f+'</label><input type="text" id="in'+i+'" autocomplete="off">'});
+  else if(q.type==='choice'){h+='<div class="choices">'+q.opts.map((o,i)=>'<button type="button" class="choice" data-i="'+i+'" aria-pressed="false">'+o+'</button>').join('')+'</div>'}
+  h+='</div>';return h;
+}
+function renderQ(){
+  const m=$('#main'),q=cur;
+  m.innerHTML='<div class="top"><span class="badge l'+q.lvl+'">'+LV[q.lvl]+'</span><span class="streak">In a row: '+[0,1,2].map(i=>'<span class="dot'+(i<streak?' on':'')+'"></span>').join('')+' &nbsp; Done: '+Math.min(GOAL,st.prog[st.sec]||0)+'/'+GOAL+'</span></div>'+
+   qHTML(q)+'<div class="btns"><button class="btn" id="chk">Check</button><button class="btn alt" id="hnt">Hint</button><button class="btn alt" id="nxt" style="display:none">Next question</button></div><div class="fb" id="fb"></div>';
+  wire();
+  const f=$('#in0');if(f)f.focus();
+}
+function wire(){
+  $('#chk').onclick=check;$('#hnt').onclick=hint;$('#nxt').onclick=()=>test?testNext():next(false);
+  document.querySelectorAll('.choice').forEach(b=>b.onclick=()=>{if(done)return;choiceSel=+b.dataset.i;document.querySelectorAll('.choice').forEach(x=>x.setAttribute('aria-pressed',String(x===b)))});
+  document.querySelectorAll('#ans input').forEach(i=>i.addEventListener('keydown',e=>{if(e.key==='Enter')check()}));
+  const sv=document.querySelector('svg.grid[data-click]');
+  if(sv)sv.addEventListener('click',ev=>{
+    if(done)return;const r=sv.getBoundingClientRect(),W=+sv.dataset.w,u=+sv.dataset.u,pad=+sv.dataset.pad;
+    const px=(ev.clientX-r.left)*W/r.width,py=(ev.clientY-r.top)*W/r.width;
+    const x=Math.round((px-pad)/u)+ +sv.dataset.xmin,y=+sv.dataset.ymax-Math.round((py-pad)/u);
+    const k=clicked.findIndex(p=>p[0]===x&&p[1]===y);if(k>=0)clicked.splice(k,1);else clicked.push([x,y]);drawMarks(sv);
+  });
+}
+function drawMarks(sv){
+  const u=+sv.dataset.u,pad=+sv.dataset.pad,xmin=+sv.dataset.xmin,ymax=+sv.dataset.ymax;
+  sv.querySelector('.marks').innerHTML=clicked.map(p=>{const cx=pad+(p[0]-xmin)*u,cy=pad+(ymax-p[1])*u;return '<circle cx="'+cx+'" cy="'+cy+'" r="6" fill="#d1471f" stroke="#fff" stroke-width="1.5"/>'}).join('');
+}
+function userAns(q){
+  if(q.type==='num'||q.type==='point')return $('#in0').value;
+  if(q.type==='multi')return q.fields.map((_,i)=>$('#in'+i).value);
+  if(q.type==='choice')return choiceSel;
+  return clicked;
+}
+function fb(cls,t){const b=$('#fb');b.className='fb show '+cls;b.innerHTML=t}
+function hint(){if(cur.hint)fb('hint','<b class="h">Hint</b>'+cur.hint)}
+function empty(q,u){if(q.type==='num'||q.type==='point')return !String(u).trim();if(q.type==='multi')return u.some(v=>!String(v).trim());if(q.type==='choice')return u===null;return u.length===0}
+function check(){
+  if(done)return;const q=cur,u=userAns(q);
+  if(empty(q,u)){fb('hint','Fill in your answer first.');return}
+  if(test){return testCheck(q,u)}
+  const ok=E.grade(q,u);tries++;
+  if(ok){
+    done=true;st.prog[st.sec]=(st.prog[st.sec]||0)+1;
+    if(tries===1){streak++;wrongRun=0}
+    let up='';
+    if(streak>=3){streak=0;if(lvl()<2){st.lvl[st.sec]=lvl()+1;up=' <b>Level up: '+LV[lvl()]+'!</b>'}}
+    save();fb('ok','<b class="h">Correct!'+(tries>1?' (second try)':'')+'</b>'+q.steps+up);finish();
+  }else if(tries===1){
+    streak=0;fb('no','<b class="h">Not yet. Try again.</b>'+(q.hint?q.hint:''));
+  }else{
+    done=true;wrongRun++;let dn='';
+    if(wrongRun>=2&&lvl()>0){st.lvl[st.sec]=lvl()-1;wrongRun=0;dn=' <i>Next questions will be a bit easier.</i>'}
+    save();fb('no','<b class="h">The answer is: '+E.answerText(q)+'</b>'+q.steps+dn);finish();
+  }
+}
+function finish(){$('#chk').disabled=true;$('#hnt').disabled=true;$('#nxt').style.display='';$('#nxt').focus();document.querySelectorAll('.choice').forEach(b=>b.disabled=true);document.querySelectorAll('#ans input').forEach(i=>i.disabled=true);renderNavSoft()}
+function renderNavSoft(){const bars=document.querySelectorAll('#nav .bar i');E.SECTIONS.forEach((s,i)=>{bars[i].style.width=Math.min(GOAL,st.prog[s.id]||0)*100/GOAL+'%'})}
+
+/* ---- test preparation ---- */
+function startTest(){test={qs:E.makeTest(),i:0,score:0,log:[]};renderNav();testShow()}
+function testShow(){
+  const q=cur=test.qs[test.i];done=false;clicked=[];choiceSel=null;
+  $('#main').innerHTML='<div class="top"><span class="badge l1">Test preparation</span><span class="streak">Question '+(test.i+1)+' of '+test.qs.length+'</span></div>'+qHTML(q)+
+   '<div class="btns"><button class="btn" id="chk">Check</button><button class="btn alt" id="nxt" style="display:none">'+(test.i===test.qs.length-1?'See my result':'Next question')+'</button></div><div class="fb" id="fb"></div>';
+  $('#chk').onclick=check;$('#nxt').onclick=testNext;
+  const wiring=$('#hnt');
+  const tmp=document.createElement('button');tmp.id='hnt';tmp.style.display='none';$('.btns').appendChild(tmp);
+  document.querySelectorAll('.choice').forEach(b=>b.onclick=()=>{if(done)return;choiceSel=+b.dataset.i;document.querySelectorAll('.choice').forEach(x=>x.setAttribute('aria-pressed',String(x===b)))});
+  document.querySelectorAll('#ans input').forEach(i=>i.addEventListener('keydown',e=>{if(e.key==='Enter')check()}));
+  const sv=document.querySelector('svg.grid[data-click]');
+  if(sv)sv.addEventListener('click',ev=>{if(done)return;const r=sv.getBoundingClientRect(),W=+sv.dataset.w,u=+sv.dataset.u,pad=+sv.dataset.pad;
+    const x=Math.round(((ev.clientX-r.left)*W/r.width-pad)/u)+ +sv.dataset.xmin,y=+sv.dataset.ymax-Math.round(((ev.clientY-r.top)*W/r.width-pad)/u);
+    const k=clicked.findIndex(p=>p[0]===x&&p[1]===y);if(k>=0)clicked.splice(k,1);else clicked.push([x,y]);drawMarks(sv)});
+  const f=$('#in0');if(f)f.focus();
+}
+function testCheck(q,u){
+  done=true;const ok=E.grade(q,u);if(ok)test.score++;
+  test.log.push({q,ok,u});
+  fb(ok?'ok':'no',ok?'<b class="h">Correct</b>':'<b class="h">Not correct. The answer is: '+E.answerText(q)+'</b>'+q.steps);
+  $('#chk').disabled=true;document.querySelectorAll('.choice').forEach(b=>b.disabled=true);document.querySelectorAll('#ans input').forEach(i=>i.disabled=true);
+  $('#nxt').style.display='';$('#nxt').focus();
+}
+function testNext(){
+  test.i++;if(test.i<test.qs.length)return testShow();
+  const n=test.qs.length,g=Math.round((test.score/n*9+1)*10)/10;
+  const wrong=test.log.filter(x=>!x.ok);
+  $('#main').innerHTML='<div class="res"><h2>Your result</h2><div class="grade">'+test.score+' / '+n+'</div><p>That is a '+String(g).replace('.',',')+' on a scale of 1 to 10 (a rough guide only).</p>'+
+   (wrong.length?'<h3>Look at these again</h3>'+wrong.map(x=>'<div class="rev"><div>'+x.q.html+'</div><div><b>Answer: '+E.answerText(x.q)+'</b></div><div class="st">'+x.q.steps+'</div></div>').join(''):'<p><b>Everything correct. Great work!</b></p>')+
+   '<div class="btns"><button class="btn" id="again">Try a new test</button></div></div>';
+  $('#again').onclick=startTest;
+}
+window.__dbg=()=>cur;renderNav();next(true);
+})();
+</script>
+</body>
+</html>
