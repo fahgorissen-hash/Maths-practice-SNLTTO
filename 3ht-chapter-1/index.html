@@ -524,6 +524,8 @@ const ALG = (function (NX) {
 })(NX);
 
 const { ri, pick, shuffle, nz, f, gcd, lcm, isPrime, primeFactors, sqrtSplit, M, fmtNum, ratText } = NX;
+const LR = (l, lo, hi) => { const s = hi - lo; if (s < 1 || l === undefined || l === 'mix') return ri(lo, hi); l = Math.min(l, 2); const a = l === 0 ? lo : l === 1 ? lo + Math.floor(s * .25) : lo + Math.floor(s * .5); const b = l === 0 ? lo + Math.max(1, Math.ceil(s * .5)) : l === 1 ? hi - Math.floor(s * .15) : hi + Math.ceil(s * .4); return ri(a, b); };
+const PL = (l, arr) => { const n = arr.length; if (l === undefined || l === 'mix') return pick(arr); l = Math.min(l, 2); const k = Math.max(2, Math.ceil(n * .6)); return pick(l === 0 ? arr.slice(0, k) : l === 1 ? arr.slice(Math.floor((n - k) / 2), Math.floor((n - k) / 2) + k + 1) : arr.slice(n - k)); };
 const ch = (html, right, wrongs, hint, steps, extra) => { let o = [right]; wrongs.forEach(w => { if (!o.includes(w)) o.push(w); }); const opts = shuffle(o); return Object.assign({ type: 'choice', opts, ans: opts.indexOf(right), html, hint, steps }, extra || {}); };
 const ex = (html, ans, form, hint, steps, extra) => Object.assign({ type: 'expr', html, ans, form, hint, steps }, extra || {});
 const nu = (html, ans, hint, steps, extra) => Object.assign({ type: 'num', html, ans, hint, steps }, extra || {});
@@ -589,7 +591,7 @@ XG['1.1'] = [
 /* ---------- 1.2 Roots ---------- */
 G['1.2'] = [
   function calcRoots(l) {
-    const r1 = pick([2, 3, 5, 6, 7]), r2 = pick([2, 3, 5, 6, 7].filter(x => x !== r1)); const a = ri(3, 7), b = ri(2, 5), c = ri(1, a - 2); if (a <= c) return G['1.2'][0](l);
+    const r1 = PL(l, [2, 3, 5, 6, 7, 10, 11]), r2 = pick([2, 3, 5, 6, 7, 10, 11].filter(x => x !== r1)); const a = LR(l, 3, 7), b = LR(l, 2, 5), c = LR(l, 1, a - 2); if (a <= c) return G['1.2'][0](l);
     const src = a + '√' + r1 + '+' + b + '√' + r2 + '-' + c + '√' + r1; const ans = radStr(a - c, r1) + '+' + radStr(b, r2);
     return ex(p('Simplify ' + M(src) + '.'), ans, 'root', 'Like radicals work like like terms: 3a + 2b − 2a = a + 2b. Combine the √' + r1 + '-terms.', M(src) + ' = ' + M(ans) + '.');
   },
@@ -598,8 +600,8 @@ G['1.2'] = [
     const [o, r] = pick(pool); const n = o * o * r; return ex(p('Simplify ' + M('√' + n) + '.'), radStr(o, r), 'root', 'Find the largest square number that divides ' + n + ' and take its root outside the radical.', M('√' + n) + ' = ' + M('√(' + o * o + '*' + r + ')') + ' = ' + M(radStr(o, r)) + '.');
   },
   function multRoots(l) {
-    const pr = pick([[2, 6], [3, 6], [2, 8], [3, 12], [5, 10], [6, 10], [2, 18], [7, 14], [6, 15]]); const prod = pr[0] * pr[1], [o, r] = sqrtSplit(prod);
-    const c1 = ri(1, 3), c2 = ri(1, 3); const src = (c1 > 1 ? c1 : '') + '√' + pr[0] + '*' + (c2 > 1 ? c2 : '') + '√' + pr[1]; const ans = radStr(c1 * c2 * o, r);
+    const pr = PL(l, [[2, 6], [3, 6], [2, 8], [3, 12], [5, 10], [6, 10], [2, 18], [7, 14], [6, 15]]); const prod = pr[0] * pr[1], [o, r] = sqrtSplit(prod);
+    const c1 = LR(l, 1, 3), c2 = LR(l, 1, 3); const src = (c1 > 1 ? c1 : '') + '√' + pr[0] + '*' + (c2 > 1 ? c2 : '') + '√' + pr[1]; const ans = radStr(c1 * c2 * o, r);
     return ex(p('Simplify ' + M(src) + '.'), ans, 'root', 'Multiply the numbers in front and multiply the numbers under the roots, then simplify.', M(src) + ' = ' + M(ans) + '.');
   },
   function rootOfFraction(l) {
@@ -614,7 +616,7 @@ G['1.2'] = [
     return ch(p('Which expression is <b>not defined</b> (not a real number)?'), M(right), shuffle(wr).slice(0, 3).map(x => M(x)), 'An even root (square root, 4th root, …) of a negative number does not exist. An odd root (cube root, 5th root, …) of a negative number does exist.', M(right) + ' is an even root of a negative number: not defined.');
   },
   function nthMix(l) {
-    const a = pick([[3, -8, -2], [3, 27, 3], [4, 16, 2], [4, 81, 3], [5, -32, -2], [3, 64, 4]]), b = pick([[3, 125, 5], [4, 16, 2], [5, 32, 2], [3, -27, -3]]); const sym = { 3: '∛', 4: '⁴√', 5: '⁵√' };
+    const a = PL(l, [[3, 27, 3], [4, 16, 2], [3, -8, -2], [4, 81, 3], [5, -32, -2], [3, 64, 4]]), b = PL(l, [[4, 16, 2], [5, 32, 2], [3, 125, 5], [3, -27, -3]]); const sym = { 3: '∛', 4: '⁴√', 5: '⁵√' };
     const op = pick(['+', '-']); const v = op === '+' ? a[2] + b[2] : a[2] - b[2];
     return nu(p('Calculate ' + M(sym[a[0]] + a[1] + op + sym[b[0]] + b[1]) + '.'), v, 'Calculate each root first. Then add or subtract.', a[2] + (op === '+' ? ' + ' : ' − ') + (b[2] < 0 ? '(' + b[2] + ')' : b[2]) + ' = ' + v + '.');
   }
@@ -633,19 +635,19 @@ XG['1.2'] = [
 /* ---------- 1.3 Powers of variables ---------- */
 G['1.3'] = [
   function mulDiv(l) {
-    const v = V(), a = ri(2, 8), b = ri(2, 6); const t = pick(['m', 'd']);
+    const v = V(), a = LR(l, 2, 8), b = LR(l, 2, 6); const t = pick(['m', 'd']);
     const src = t === 'm' ? pw(v, a) + '*' + pw(v, b) : pw(v, a + b) + '÷' + pw(v, b); return alg(p('Simplify: ' + M(src) + '. (Type for example <b>' + v + '^6</b>.)'), src.replace('÷', '/'), 'mono', 'Multiplying powers with the same base: add the exponents. Dividing: subtract the exponents.', '', { src });
   },
   function powerOfPower(l) {
-    const v = V(), a = ri(2, 5), b = ri(2, 4); const src = '(' + pw(v, a) + ')^' + b; return alg(p('Simplify: ' + M(src) + '.'), src, 'mono', 'A power of a power: multiply the exponents.');
+    const v = V(), a = LR(l, 2, 5), b = LR(l, 2, 4); const src = '(' + pw(v, a) + ')^' + b; return alg(p('Simplify: ' + M(src) + '.'), src, 'mono', 'A power of a power: multiply the exponents.');
   },
   function productPower(l) {
     const [v, w] = V2(); const c = l === 0 ? 1 : ri(2, 4), a = ri(2, 4), n = ri(2, 3); const inner = (c > 1 ? c : '') + pw(v, a) + (l === 2 ? pw(w, ri(1, 3)) : ''); const extra = l === 0 ? '' : '*' + pw(v, ri(2, 5));
     const src = '(' + inner + ')^' + n + extra; return alg(p('Simplify: ' + M(src) + '.'), src, 'mono', 'Raise every factor inside the brackets to the power: (2x³)² = 2² · x⁶. Then combine the powers of the same letter.');
   },
   function addLike(l) {
-    const v = V(), a = ri(2, 5), c1 = ri(3, 6), c2 = ri(1, 2); const t = pick([0, 1, 2]);
-    const src = t === 0 ? c1 + pw(v, a) + '*' + pw(v, ri(2, 4)) + '+' + c2 + pw(v, a + 1) : t === 1 ? c1 + v + '^' + a + '+' + c2 + v + '^' + a : c1 + pw(v, a + 2) + '-' + c2 + pw(v, a) + '*' + pw(v, 2);
+    const v = V(), a = LR(l, 2, 5), c1 = LR(l, 3, 6), c2 = LR(l, 1, 2); const t = pick([0, 1, 2]);
+    const src = t === 0 ? c1 + pw(v, a) + '*' + pw(v, LR(l, 2, 4)) + '+' + c2 + pw(v, a + 1) : t === 1 ? c1 + v + '^' + a + '+' + c2 + v + '^' + a : c1 + pw(v, a + 2) + '-' + c2 + pw(v, a) + '*' + pw(v, 2);
     return alg(p('Simplify: ' + M(src) + '.'), src, 'poly', 'Multiply the powers first (add exponents). Then add or subtract the terms that have the same letters and the same exponents.');
   },
   function divideTerms(l) {
@@ -655,10 +657,10 @@ G['1.3'] = [
 ];
 G['1.3b'] = [
   function signs(l) {
-    const v = V(), c = ri(2, 3), a = ri(2, 3), n = pick([2, 3, 4]); const src = '(-' + c + pw(v, a) + ')^' + n; return alg(p('Simplify: ' + M(src) + '.'), src, 'mono', 'A negative number to an even power is positive; to an odd power it is negative. Do not forget to raise the number c as well.');
+    const v = V(), c = LR(l, 2, 3), a = LR(l, 2, 3), n = PL(l, [2, 3, 4, 5]); const src = '(-' + c + pw(v, a) + ')^' + n; return alg(p('Simplify: ' + M(src) + '.'), src, 'mono', 'A negative number to an even power is positive; to an odd power it is negative. Do not forget to raise the number c as well.');
   },
   function fracCoef(l) {
-    const v = V(), a = ri(2, 3), n = pick([2, 3, 4]); const src = '(1/2*' + pw(v, a) + ')^' + n; return alg(p('Simplify: ' + M(src) + '. (Type for example <b>x^6/8</b>.)'), src, 'mono', 'Raise both the fraction ½ and the letter part to the power.');
+    const v = V(), a = LR(l, 2, 3), n = pick([2, 3, 4]); const src = '(1/2*' + pw(v, a) + ')^' + n; return alg(p('Simplify: ' + M(src) + '. (Type for example <b>x^6/8</b>.)'), src, 'mono', 'Raise both the fraction ½ and the letter part to the power.');
   },
   function negativeSquare(l) {
     const c = ri(2, 6); const right = ['-' + c * c, String(c * c)]; return ch(p('What is ' + M('-' + c + '^2') + ' compared with ' + M('(-' + c + ')^2') + '?'), M('-' + c + '^2') + ' = ' + (-c * c) + ' and ' + M('(-' + c + ')^2') + ' = ' + c * c, [M('-' + c + '^2') + ' = ' + c * c + ' and ' + M('(-' + c + ')^2') + ' = ' + c * c, M('-' + c + '^2') + ' = ' + (-c * c) + ' and ' + M('(-' + c + ')^2') + ' = ' + (-c * c), M('-' + c + '^2') + ' = ' + c * c + ' and ' + M('(-' + c + ')^2') + ' = ' + (-c * c)], 'In −c² the power belongs only to c. In (−c)² the brackets include the minus.', 'Without brackets the minus comes after squaring: −' + c + '² = −' + c * c + '. With brackets: (−' + c + ')² = ' + c * c + '.');
@@ -695,7 +697,7 @@ G['1.4'] = [
     return polyQ(p('Simplify: ' + M(src) + '.'), src, 'A minus in front of the brackets changes the sign of every term inside the brackets.');
   },
   function binomMul(l) {
-    const v = V(); const a = nz(-6, 6), b = nz(-6, 6), c = l === 0 ? 1 : ri(2, 4), d = l === 0 ? 1 : ri(1, 3); const src = '(' + coef(c, v) + (a < 0 ? '-' : '+') + Math.abs(a) + ')(' + coef(d, v) + (b < 0 ? '-' : '+') + Math.abs(b) + ')';
+    const v = V(); const a = nz(-6, 6), b = nz(-6, 6), c = l === 0 ? 1 : LR(l, 2, 4), d = l === 0 ? 1 : LR(l, 1, 3); const src = '(' + coef(c, v) + (a < 0 ? '-' : '+') + Math.abs(a) + ')(' + coef(d, v) + (b < 0 ? '-' : '+') + Math.abs(b) + ')';
     return polyQ(p('Expand and simplify: ' + M(src) + '.'), src, 'Multiply every term of the first bracket by every term of the second bracket, then add the like terms.');
   },
   function special(l) {
@@ -704,7 +706,7 @@ G['1.4'] = [
     return polyQ(p('Expand: ' + M(src) + '.'), src, 'Special products: (a + b)² = a² + 2ab + b², (a − b)² = a² − 2ab + b², (a − b)(a + b) = a² − b².');
   },
   function threeFactors(l) {
-    const v = V(); const c = ri(2, 3), a = nz(-4, 4), b = nz(-4, 4); const src = c + '(' + v + (a < 0 ? '-' : '+') + Math.abs(a) + ')(' + v + (b < 0 ? '-' : '+') + Math.abs(b) + ')'; return polyQ(p('Expand and simplify: ' + M(src) + '.'), src, 'First multiply the two brackets. Then multiply the result by ' + c + '.');
+    const v = V(); const c = LR(l, 2, 3), a = nz(-4, 4), b = nz(-4, 4); const src = c + '(' + v + (a < 0 ? '-' : '+') + Math.abs(a) + ')(' + v + (b < 0 ? '-' : '+') + Math.abs(b) + ')'; return polyQ(p('Expand and simplify: ' + M(src) + '.'), src, 'First multiply the two brackets. Then multiply the result by ' + c + '.');
   },
   function identifyForm(l) {
     const a = ri(2, 7); const kind = pick(['sq+', 'sq-', 'diff']); const src = kind === 'sq+' ? '(x+' + a + ')^2' : kind === 'sq-' ? '(x-' + a + ')^2' : '(x-' + a + ')(x+' + a + ')'; const right = ALG.canon(src);
@@ -735,11 +737,11 @@ XG['1.4'] = [
 const fracQ = (html, src, hint, extra) => alg(html, src, 'lowest', hint, '', extra);
 G['1.5'] = [
   function addLikeDen(l) {
-    const v = V(), a = ri(2, 9), b = ri(1, 9); const op = pick(['+', '-']); const den = l === 0 ? v : coef(ri(2, 5), v); const src = a + '/' + (den.length > 1 ? '(' + den + ')' : den) + op + b + '/' + (den.length > 1 ? '(' + den + ')' : den);
+    const v = V(), a = LR(l, 2, 9), b = LR(l, 1, 9); const op = pick(['+', '-']); const den = l === 0 ? v : coef(LR(l, 2, 5), v); const src = a + '/' + (den.length > 1 ? '(' + den + ')' : den) + op + b + '/' + (den.length > 1 ? '(' + den + ')' : den);
     return fracQ(p('Calculate and simplify: ' + M(src) + '. (Type for example <b>5/x</b>.)'), src, 'The denominators are equal: add or subtract the numerators and keep the denominator. Then simplify.');
   },
   function addUnlike(l) {
-    const [v, w] = V2(); const a = ri(1, 5), b = ri(1, 5), c = ri(2, 4); const op = pick(['+', '-']); const t = l === 0 ? 0 : pick([0, 1, 2]);
+    const [v, w] = V2(); const a = LR(l, 1, 5), b = LR(l, 1, 5), c = LR(l, 2, 4); const op = pick(['+', '-']); const t = l === 0 ? 0 : pick([0, 1, 2]);
     const src = t === 0 ? a + '/(' + c + v + ')' + op + b + '/' + v : t === 1 ? a + '/' + v + op + b + '/(' + v + w + ')' : a + '/(' + c + v + ')' + op + b + '/(' + (c + 1) + v + ')';
     return fracQ(p('Calculate and simplify: ' + M(src) + '. (Type your answer as one fraction, for example <b>7/(2x)</b>.)'), src, 'Write both fractions with the same denominator first: use a common denominator, then add or subtract the numerators.');
   },
@@ -749,7 +751,7 @@ G['1.5'] = [
     return fracQ(p('Simplify: ' + M(src) + '. (Cancel as far as possible.)'), src, 'Cancel the biggest common factor of the numbers, and the letters that are in the top and the bottom.');
   },
   function simplifyBinom(l) {
-    const v = V(); const g = ri(2, 5), a = ri(1, 5), b = ri(1, 6); const src = '(' + g * a + v + '+' + g * b + ')/' + g; return fracQ(p('Simplify: ' + M(src) + '.'), src, 'Take out the common factor, or divide every term of the numerator by the denominator.');
+    const v = V(); const g = LR(l, 2, 5), a = LR(l, 1, 5), b = LR(l, 1, 6); const src = '(' + g * a + v + '+' + g * b + ')/' + g; return fracQ(p('Simplify: ' + M(src) + '.'), src, 'Take out the common factor, or divide every term of the numerator by the denominator.');
   },
   function multFrac(l) {
     const [v, w] = V2(); const a = ri(2, 5), b = ri(2, 6), c = ri(2, 5), d = ri(2, 6); const src = l === 0 ? a + '/' + b + '*' + c + '/' + d : '(' + a + v + '/' + b + ')*(' + c + w + '/' + d + ')'; return fracQ(p('Calculate: ' + M(src) + '. (Give your answer as a simplified fraction.)'), src, 'Multiply the numerators and multiply the denominators. Simplify before or after.');
@@ -803,7 +805,7 @@ G['1.2'].push(
     return nu(p('Use your calculator: ' + M(s + k[1]) + ' = ? (Round to 3 decimals.)'), v, 'Use the nth-root key (ˣ√) or write the root as a power with exponent 1/n.', M(s + k[1]) + ' ≈ ' + String(v).replace('.', ',') + '.');
   },
   function pythRoot(l) {
-    const a = pick([2, 3, 5, 7, 10]), b = pick([4, 5, 6, 3, 2]); const h2 = a + b * b; const [o, r] = sqrtSplit(h2); const legs = 'one leg is ' + M('√' + a) + ' and the other leg is ' + b;
+    const a = PL(l, [2, 3, 5, 7, 10, 11, 13, 14]), b = PL(l, [2, 3, 4, 5, 6, 7, 8, 9]); const h2 = a + b * b; const [o, r] = sqrtSplit(h2); const legs = 'one leg is ' + M('√' + a) + ' and the other leg is ' + b;
     return ex(p('A right-angled triangle has legs ' + M('√' + a) + ' cm and ' + b + ' cm. How long is the hypotenuse? (Give your answer as a simplified root.)'), radStr(o, r), 'root', 'Pythagoras: c² = (√' + a + ')² + ' + b + '². Remember (√' + a + ')² = ' + a + '.', 'c² = ' + a + ' + ' + (b * b) + ' = ' + h2 + ', so c = ' + M('√' + h2) + ' = ' + M(radStr(o, r)) + '.');
   }
 );
@@ -820,16 +822,16 @@ G['1.3'].push(
   function substitute(l) {
     const v = V(); const x = pick(l === 0 ? [-1, 2, -2, 3] : [-2, -3, 4, -4]); const t = pick([
       c => [c[0] + '·' + v + '^3', c[0] * x * x * x, c[0] + v + '^3'], c => ['-' + v + '^2-' + v + '^3', -x * x - x * x * x, '−' + v + '² − ' + v + '³'], c => ['(-' + c[1] + v + ')^2', c[1] * c[1] * x * x, '(−' + c[1] + v + ')²'], c => ['1/' + (c[1] * 2) + '·' + v + '^4', x * x * x * x / (c[1] * 2), '¼·'.replace('¼', '1/' + (c[1] * 2)) + v + '⁴']
-    ])([ri(2, 4), ri(2, 6)]);
+    ])([LR(l, 2, 4), LR(l, 2, 6)]);
     const val = t[1]; if (!Number.isInteger(val * 4)) return G['1.3'].find(g => g.name === 'substitute')(l);
     return nu(p('Calculate the value of <b>' + M(t[0].replace('·', '*')) + '</b> for <b>' + v + ' = ' + x + '</b>.'), val, 'Substitute ' + x + ' for ' + v + ' (use brackets for a negative number). Powers first.', 'Substitute: ' + M(t[0].replace(new RegExp(v, 'g'), '(' + x + ')').replace('·', '*')) + ' = ' + val + '.');
   },
   function divideToFraction(l) {
-    const v = V(); const a = ri(1, 5), b = a * ri(1, 3); const e1 = ri(1, 4), e2 = e1 + ri(1, 3); const src = a + v + '^' + e1 + '/(' + b + v + '^' + e2 + ')';
+    const v = V(); const a = LR(l, 1, 5), b = a * LR(l, 1, 3); const e1 = LR(l, 1, 4), e2 = e1 + LR(l, 1, 3); const src = a + v + '^' + e1 + '/(' + b + v + '^' + e2 + ')';
     return ex(p('Simplify: ' + M(src) + '. (Type for example <b>1/a^2</b>.)'), ALG.canon(src), 'lowest', 'Divide the numbers and subtract the exponents. If the bottom has more of the letter, the rest stays in the denominator.', M(src) + ' = ' + M(ALG.canon(src)) + '.');
   },
   function likeTermsPoly(l) {
-    const [v, w] = V2(); const a = ri(2, 6), b = ri(2, 6), c = ri(1, 5); const src = a + v + '^3' + w + '-' + b + v + w + '^2+' + c + v + '^3' + w; return alg(p('Simplify: ' + M(src) + '.'), src, 'poly', 'Only add or subtract terms with exactly the same letters and exponents.', '');
+    const [v, w] = V2(); const a = LR(l, 2, 6), b = LR(l, 2, 6), c = LR(l, 1, 5); const src = a + v + '^3' + w + '-' + b + v + w + '^2+' + c + v + '^3' + w; return alg(p('Simplify: ' + M(src) + '.'), src, 'poly', 'Only add or subtract terms with exactly the same letters and exponents.', '');
   }
 );
 G['1.4'].push(
@@ -842,13 +844,13 @@ G['1.4'].push(
     return ch(p('Which square equals <b>' + M(sq) + '</b>?'), right, wrong, 'A perfect square trinomial: first² + 2·first·last + last². Check the middle term.', M(sq) + ' = ' + right + '.');
   },
   function powerSpecial(l) {
-    const v = V(), n = pick([2, 3]), a = ri(2, 6); const t = pick([[v + '^' + n + '+1', 'sq'], [v + '^' + n + '-' + a, 'sq'], [v + '^' + n + '+' + a, 'dsq']]);
+    const v = V(), n = pick([2, 3]), a = LR(l, 2, 6); const t = pick([[v + '^' + n + '+1', 'sq'], [v + '^' + n + '-' + a, 'sq'], [v + '^' + n + '+' + a, 'dsq']]);
     const src = t[1] === 'sq' ? '(' + t[0] + ')^2' : '(' + v + '^' + n + '-' + a + ')(' + v + '^' + n + '+' + a + ')'; return alg(p('Expand: ' + M(src) + '.'), src, 'poly', 'Treat ' + v + '^' + n + ' as one term: (A + B)² = A² + 2AB + B² and (A − B)(A + B) = A² − B².', '');
   }
 );
 G['1.5'].push(
   function numFracAdd(l) {
-    const mk = () => { const d = pick([2, 3, 4, 5, 6, 8]); return [ri(1, d - 1), d]; }; let [a, b] = mk(), [c, d] = mk(); const w1 = ri(1, 3), w2 = ri(1, 2); const sgn2 = pick(['+', '-']);
+    const mk = () => { const d = PL(l, [2, 3, 4, 5, 6, 8, 9, 10]); return [LR(l, 1, d - 1), d]; }; let [a, b] = mk(), [c, d] = mk(); const w1 = LR(l, 1, 3), w2 = LR(l, 1, 2); const sgn2 = pick(['+', '-']);
     const v1 = w1 + a / b, v2 = w2 + c / d; const val = sgn2 === '+' ? v1 + v2 : v1 - v2; const n = Math.round(val * b * d * 1), D = b * d; const g = gcd(Math.abs(n), D);
     const txt = M(w1 + ' ' + a + '/' + b + sgn2 + w2 + ' ' + c + '/' + d).replace(/ \+ /, ' + ');
     const ans = ratText(n, D);
@@ -856,18 +858,18 @@ G['1.5'].push(
     return ex(p('Calculate: ' + mixedHtml(w1, a, b) + ' ' + (sgn2 === '+' ? '+' : '−') + ' ' + mixedHtml(w2, c, d) + '. (Give your answer as an improper fraction like 17/6, or a whole number.)'), ans, 'lowest', 'Change the mixed numbers to improper fractions, use a common denominator, and simplify.', 'Result: ' + M(ans) + '.');
   },
   function numFracMulDiv(l) {
-    const mk = () => { const d = pick([2, 3, 4, 5, 6, 7, 8]); return [ri(1, 3), ri(1, d - 1), d]; }; const A = mk(), B = mk(); const mul = l !== 2 ? pick([true, false]) : pick([true, false]);
+    const mk = () => { const d = PL(l, [2, 3, 4, 5, 6, 7, 8, 9]); return [LR(l, 1, 3), LR(l, 1, d - 1), d]; }; const A = mk(), B = mk(); const mul = l !== 2 ? pick([true, false]) : pick([true, false]);
     const n1 = A[0] * A[2] + A[1], d1 = A[2], n2 = B[0] * B[2] + B[1], d2 = B[2]; const n = mul ? n1 * n2 : n1 * d2, D = mul ? d1 * d2 : d1 * n2;
     return ex(p('Calculate: ' + mixedHtml(A[0], A[1], A[2]) + ' ' + (mul ? '·' : '÷') + ' ' + mixedHtml(B[0], B[1], B[2]) + '. (Give your answer as a simplified fraction like 7/4.)'), ratText(n, D), 'lowest', 'Write the mixed numbers as improper fractions. For ÷: keep, flip, change. Then cancel.', 'Answer: ' + M(ratText(n, D)) + '.');
   },
   function numberAndFraction(l) {
-    const v = V(), a = ri(2, 9), b = ri(2, 7), w = pick([1, 2, 3]), e = pick([1, 2]); const src = pick([w + '-' + a + '/' + v + (e > 1 ? '^2' : ''), a + '/(' + b + v + ')-' + w]); return fracQ(p('Calculate and simplify: ' + M(src) + '. (Type for example <b>(x+3)/x</b>.)'), src, 'Write the whole number as a fraction with the same denominator, then add or subtract.');
+    const v = V(), a = LR(l, 2, 9), b = LR(l, 2, 7), w = pick([1, 2, 3]), e = pick([1, 2]); const src = pick([w + '-' + a + '/' + v + (e > 1 ? '^2' : ''), a + '/(' + b + v + ')-' + w]); return fracQ(p('Calculate and simplify: ' + M(src) + '. (Type for example <b>(x+3)/x</b>.)'), src, 'Write the whole number as a fraction with the same denominator, then add or subtract.');
   },
   function intDivFraction(l) {
-    const v = V(), w = pick(['a', 'b', 'c', 'm', 'n', 'p'].filter(x => x !== v)); const a = ri(2, 12), b = ri(2, 7), c = ri(2, 6); const src = pick([a + '÷(' + w + '/' + b + ')', (c + v) + '/' + b + '÷' + (c + 1) + v, '(' + c + v + '/' + b + ')*' + b + v]); return fracQ(p('Calculate: ' + M(src) + '. (Give your answer as a simplified fraction or expression.)'), src, 'Dividing by a fraction means multiplying by its reciprocal (keep, flip, change).');
+    const v = V(), w = pick(['a', 'b', 'c', 'm', 'n', 'p'].filter(x => x !== v)); const a = LR(l, 2, 12), b = LR(l, 2, 7), c = LR(l, 2, 6); const src = pick([a + '÷(' + w + '/' + b + ')', (c + v) + '/' + b + '÷' + (c + 1) + v, '(' + c + v + '/' + b + ')*' + b + v]); return fracQ(p('Calculate: ' + M(src) + '. (Give your answer as a simplified fraction or expression.)'), src, 'Dividing by a fraction means multiplying by its reciprocal (keep, flip, change).');
   },
   function powerOfFraction(l) {
-    const [v, w] = V2(); const a = ri(1, 4), b = ri(2, 4), e = pick([2, 3]); const src = '(' + a + v + '^' + ri(1, 3) + '/(' + b + w + '^' + ri(1, 2) + '))^' + e; return fracQ(p('Simplify: ' + M(src) + '. (Type for example <b>x^4/(9y^2)</b>.)'), src, 'Raise the numerator and the denominator to the power separately.');
+    const [v, w] = V2(); const a = LR(l, 1, 4), b = LR(l, 2, 4), e = pick([2, 3]); const src = '(' + a + v + '^' + LR(l, 1, 3) + '/(' + b + w + '^' + LR(l, 1, 2) + '))^' + e; return fracQ(p('Simplify: ' + M(src) + '. (Type for example <b>x^4/(9y^2)</b>.)'), src, 'Raise the numerator and the denominator to the power separately.');
   }
 );
 function mixedHtml(w, a, b) { return '<span class="mx">' + w + '<span class="fr"><span class="nu">' + a + '</span><span class="de">' + b + '</span></span></span>'; }

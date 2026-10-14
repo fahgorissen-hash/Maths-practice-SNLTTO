@@ -496,6 +496,8 @@ if (typeof module !== 'undefined' && module.exports) module.exports = U; else ro
 window.Ch3=NX.engine((/* 3VT Chapter 1: numbers (book: V3-TTO ch 1). */
 (function (NX, P) {
 const { ri, pick, shuffle, nz, f, gcd, lcm, isPrime, primeFactors, sqrtSplit, M, fmtNum, ratText } = NX;
+const LR = (l, lo, hi) => { const s = hi - lo; if (s < 1 || l === undefined || l === 'mix') return ri(lo, hi); l = Math.min(l, 2); const a = l === 0 ? lo : l === 1 ? lo + Math.floor(s * .25) : lo + Math.floor(s * .5); const b = l === 0 ? lo + Math.max(1, Math.ceil(s * .5)) : l === 1 ? hi - Math.floor(s * .15) : hi + Math.ceil(s * .4); return ri(a, b); };
+const PL = (l, arr) => { const n = arr.length; if (l === undefined || l === 'mix') return pick(arr); l = Math.min(l, 2); const k = Math.max(2, Math.ceil(n * .6)); return pick(l === 0 ? arr.slice(0, k) : l === 1 ? arr.slice(Math.floor((n - k) / 2), Math.floor((n - k) / 2) + k + 1) : arr.slice(n - k)); };
 const ch = (html, right, wrongs, hint, steps, extra) => { let o = [right]; wrongs.forEach(w => { if (!o.includes(w)) o.push(w); }); const opts = shuffle(o); return Object.assign({ type: 'choice', opts, ans: opts.indexOf(right), html, hint, steps }, extra || {}); };
 const ex = (html, ans, form, hint, steps, extra) => Object.assign({ type: 'expr', html, ans, form, hint, steps }, extra || {});
 const nu = (html, ans, hint, steps, extra) => Object.assign({ type: 'num', html, ans, hint, steps }, extra || {});
@@ -519,16 +521,16 @@ G['1.0'] = [
     return nu(p('Arithmetic sequence: <b>' + seq.join(', ') + ', …</b> What is term number <b>' + n + '</b>?'), a + (n - 1) * d, 'Start value + (n − 1) × difference.', 'd = ' + d + '. Term ' + n + ' = ' + a + ' + ' + (n - 1) + ' × ' + (d < 0 ? '(' + d + ')' : d) + ' = ' + (a + (n - 1) * d) + '.');
   },
   function difference(l) {
-    const a = ri(-5, 10), d = nz(-5, 8), i = ri(2, 4), j = ri(i + 3, i + 8); return nu(p('In an arithmetic sequence term ' + i + ' is <b>' + (a + (i - 1) * d) + '</b> and term ' + j + ' is <b>' + (a + (j - 1) * d) + '</b>. What is the difference between consecutive terms?'), d, 'Difference = (change in value) ÷ (number of steps between the terms).', '(' + (a + (j - 1) * d) + ' − ' + (a + (i - 1) * d < 0 ? '(' + (a + (i - 1) * d) + ')' : a + (i - 1) * d) + ') ÷ ' + (j - i) + ' = ' + d + '.');
+    const a = LR(l, -5, 10), d = nz(-5, 8), i = LR(l, 2, 4), j = LR(l, i + 3, i + 8); return nu(p('In an arithmetic sequence term ' + i + ' is <b>' + (a + (i - 1) * d) + '</b> and term ' + j + ' is <b>' + (a + (j - 1) * d) + '</b>. What is the difference between consecutive terms?'), d, 'Difference = (change in value) ÷ (number of steps between the terms).', '(' + (a + (j - 1) * d) + ' − ' + (a + (i - 1) * d < 0 ? '(' + (a + (i - 1) * d) + ')' : a + (i - 1) * d) + ') ÷ ' + (j - i) + ' = ' + d + '.');
   },
   function gauss(l) {
     const n = pick(l === 0 ? [10, 20, 50, 100] : [30, 40, 60, 80, 120, 200]); return nu(p('Calculate <b>1 + 2 + 3 + … + ' + n + '</b>.'), n * (n + 1) / 2, 'Pairs (1 + n), (2 + n − 1), … each give n + 1. There are n ÷ 2 pairs.', n + ' ÷ 2 × ' + (n + 1) + ' = ' + n * (n + 1) / 2 + '.');
   },
   function sumSeq(l) {
-    const a = ri(1, 9), d = ri(2, 6), n = pick([10, 12, 20, 15]); const last = a + (n - 1) * d; return nu(p('Calculate the sum of the first <b>' + n + '</b> terms of the arithmetic sequence that starts <b>' + a + ', ' + (a + d) + ', ' + (a + 2 * d) + ', …</b>'), n * (a + last) / 2, 'Sum = number of terms × (first + last) ÷ 2. First find the last term.', 'Last term = ' + a + ' + ' + (n - 1) + ' × ' + d + ' = ' + last + '. Sum = ' + n + ' × (' + a + ' + ' + last + ') ÷ 2 = ' + n * (a + last) / 2 + '.');
+    const a = LR(l, 1, 9), d = LR(l, 2, 6), n = pick([10, 12, 20, 15]); const last = a + (n - 1) * d; return nu(p('Calculate the sum of the first <b>' + n + '</b> terms of the arithmetic sequence that starts <b>' + a + ', ' + (a + d) + ', ' + (a + 2 * d) + ', …</b>'), n * (a + last) / 2, 'Sum = number of terms × (first + last) ÷ 2. First find the last term.', 'Last term = ' + a + ' + ' + (n - 1) + ' × ' + d + ' = ' + last + '. Sum = ' + n + ' × (' + a + ' + ' + last + ') ÷ 2 = ' + n * (a + last) / 2 + '.');
   },
   function howManyTerms(l) {
-    const a = ri(2, 9), d = ri(2, 7), n = ri(10, 30); const last = a + (n - 1) * d; return nu(p('How many terms does the arithmetic sequence <b>' + a + ', ' + (a + d) + ', ' + (a + 2 * d) + ', …, ' + last + '</b> have?'), n, 'Number of steps = (last − first) ÷ d. The number of terms is one more.', '(' + last + ' − ' + a + ') ÷ ' + d + ' = ' + (n - 1) + ' steps, so ' + n + ' terms.');
+    const a = LR(l, 2, 9), d = LR(l, 2, 7), n = LR(l, 10, 30); const last = a + (n - 1) * d; return nu(p('How many terms does the arithmetic sequence <b>' + a + ', ' + (a + d) + ', ' + (a + 2 * d) + ', …, ' + last + '</b> have?'), n, 'Number of steps = (last − first) ÷ d. The number of terms is one more.', '(' + last + ' − ' + a + ') ÷ ' + d + ' = ' + (n - 1) + ' steps, so ' + n + ' terms.');
   }
 ];
 XG['1.0'] = [
@@ -607,12 +609,12 @@ G['1.3'] = [
     return ex(p('Write <b>' + M(c + '/' + den) + '</b> without a root in the denominator, and simplify.'), ALL_R(c, d, b), 'root', 'Multiply the top and the bottom by √' + b + ' and simplify the fraction.', M(c + '/' + den) + ' = ' + M(ALL_R(c, d, b)) + '.');
   },
   function quotientRoots(l) {
-    const r = pick([2, 3, 5, 7, 11]), a = ri(2, 4), b = ri(1, 3); const ca = pick([2, 3, 5]) * a, cb = pick([2, 5]) * b; const num = ca * a, den = cb;
-    const n1 = pick([2, 3, 5, 6]) * a * 0 + 0; const k = pick([2, 3]); const t = k * k * r; const A = ri(2, 6) * 5, B = ri(1, 3) * 5;
+    const r = pick([2, 3, 5, 7, 11]), a = LR(l, 2, 4), b = LR(l, 1, 3); const ca = pick([2, 3, 5]) * a, cb = pick([2, 5]) * b; const num = ca * a, den = cb;
+    const n1 = pick([2, 3, 5, 6]) * a * 0 + 0; const k = pick([2, 3]); const t = k * k * r; const A = LR(l, 2, 6) * 5, B = LR(l, 1, 3) * 5;
     return ex(p('Simplify ' + M(A * 3 + '√' + t + '/(' + B + '√' + r + ')') + '.'), (A * 3 * k % B === 0) ? String(A * 3 * k / B) : (function () { const g = gcd(A * 3 * k, B); return (A * 3 * k / g) + '/' + (B / g); })(), 'root', 'Simplify √' + t + ' first: it equals ' + k + '√' + r + '. Then cancel the roots and the numbers.', M(A * 3 + '√' + t + '/(' + B + '√' + r + ')') + ' = ' + (A * 3 * k) + '/' + B + '.');
   },
   function calcRoots(l) {
-    const r1 = pick([2, 3, 5, 6, 7]), r2 = pick([2, 3, 5, 6, 7].filter(x => x !== r1)); const a = ri(3, 7), b = ri(2, 5), c = ri(1, a - 2); const src = a + '√' + r1 + '+' + b + '√' + r2 + '-' + c + '√' + r1; const ans = radStr(a - c, r1) + '+' + radStr(b, r2);
+    const r1 = pick([2, 3, 5, 6, 7]), r2 = pick([2, 3, 5, 6, 7].filter(x => x !== r1)); const a = LR(l, 3, 7), b = LR(l, 2, 5), c = LR(l, 1, a - 2); const src = a + '√' + r1 + '+' + b + '√' + r2 + '-' + c + '√' + r1; const ans = radStr(a - c, r1) + '+' + radStr(b, r2);
     return ex(p('Simplify ' + M(src) + '.'), ans, 'root', 'Add the like radicals, just like like terms.', M(src) + ' = ' + M(ans) + '.');
   },
   function nthRootCalc(l) {
@@ -623,7 +625,7 @@ G['1.3'] = [
     const right = pick(['⁴√-16', '√-9', '⁶√-64', '√-25']); const wr = ['∛-8', '⁵√-32', '∛-125', '⁴√16', '-⁴√16']; return ch(p('Which expression is <b>not a real number</b>?'), M(right), shuffle(wr).slice(0, 3).map(x => M(x)), 'Even roots of negative numbers do not exist. Odd roots do.', M(right) + ' is an even root of a negative number.');
   },
   function expressionRoots(l) {
-    const a = pick([[3, -125, -5], [3, -27, -3], [3, -8, -2], [3, 27, 3]]); const m = ri(2, 7), k = ri(2, 6); const op = pick(['-', '+']); const v = op === '-' ? m - k * a[2] : m + k * a[2];
+    const a = PL(l, [[3, 27, 3], [3, -8, -2], [3, -27, -3], [3, -125, -5], [3, 216, 6], [3, -343, -7]]); const m = LR(l, 2, 7), k = LR(l, 2, 6); const op = pick(['-', '+']); const v = op === '-' ? m - k * a[2] : m + k * a[2];
     return nu(p('Calculate ' + M(m + op + k + '·∛' + a[1]) + '.'), v, 'Calculate the root first. Then multiply, then add or subtract.', '∛' + a[1] + ' = ' + a[2] + '. ' + m + ' ' + op + ' ' + k + ' · ' + (a[2] < 0 ? '(' + a[2] + ')' : a[2]) + ' = ' + v + '.');
   },
   function compareRoots(l) {
@@ -651,22 +653,22 @@ G['1.5'] = [
     return nu(p('Calculate the <b>HCF</b> of <b>' + g * a + '</b> and <b>' + g * b + '</b>.'), g, 'Prime factorise both numbers and multiply the primes they share (with the smallest exponent).', 'HCF(' + g * a + ', ' + g * b + ') = ' + g + '.');
   },
   function lcmTwo(l) {
-    const g = ri(2, 9), a = ri(2, 8), b = ri(2, 8); if (gcd(a, b) > 1) return G['1.5'][1](l);
+    const g = LR(l, 2, 9), a = LR(l, 2, 8), b = LR(l, 2, 8); if (gcd(a, b) > 1) return G['1.5'][1](l);
     return nu(p('Calculate the <b>LCM</b> of <b>' + g * a + '</b> and <b>' + g * b + '</b>.'), g * a * b, 'LCM = all prime factors, with the biggest exponent. Or: product ÷ HCF.', 'LCM(' + g * a + ', ' + g * b + ') = ' + g * a * b + '.');
   },
   function euclid(l) {
-    const g = pick([3, 7, 11, 13, 17]), a = ri(4, 12), b = ri(2, a - 1); if (gcd(a, b) > 1) return G['1.5'][2](l); let x = g * a, y = g * b; const steps = [];
+    const g = pick([3, 7, 11, 13, 17]), a = LR(l, 4, 12), b = LR(l, 2, a - 1); if (gcd(a, b) > 1) return G['1.5'][2](l); let x = g * a, y = g * b; const steps = [];
     while (y) { steps.push(x + ' = ' + Math.floor(x / y) + ' · ' + y + ' + ' + (x % y)); [x, y] = [y, x % y]; }
     return nu(p('Use the <b>Euclidean algorithm</b> to find the HCF of <b>' + g * a + '</b> and <b>' + g * b + '</b>.'), g, 'Divide the bigger number by the smaller one. Then divide the smaller by the remainder, and repeat. The last non-zero remainder is the HCF.', steps.join('; ') + '. HCF = ' + g + '.');
   },
   function productRule(l) {
-    const a = pick([12, 18, 20, 24, 30, 36, 42, 45]), b = pick([8, 14, 15, 16, 21, 28, 35, 40, 50]); const g = gcd(a, b); return nu(p('HCF(' + a + ', ' + b + ') = ' + g + '. Use this to calculate LCM(' + a + ', ' + b + ').'), a * b / g, 'HCF × LCM = product of the two numbers.', a + ' × ' + b + ' ÷ ' + g + ' = ' + a * b / g + '.');
+    const a = PL(l, [12, 18, 20, 24, 30, 36, 42, 45, 72, 90, 126]), b = PL(l, [8, 14, 15, 16, 21, 28, 35, 40, 50, 84, 108, 150]); const g = gcd(a, b); return nu(p('HCF(' + a + ', ' + b + ') = ' + g + '. Use this to calculate LCM(' + a + ', ' + b + ').'), a * b / g, 'HCF × LCM = product of the two numbers.', a + ' × ' + b + ' ÷ ' + g + ' = ' + a * b / g + '.');
   },
   function runners(l) {
-    const a = pick([30, 36, 40, 45, 48, 54, 60]), b = pick([35, 42, 50, 56, 63, 72, 84].filter(x => x !== a)); const L2 = a * b / gcd(a, b); return nu(p('Two runners start together. Runner A needs <b>' + a + '</b> s for a lap, runner B <b>' + b + '</b> s. After how many seconds are they together at the start again for the first time?'), L2, 'This is the LCM of the two lap times.', 'LCM(' + a + ', ' + b + ') = ' + L2 + ' s.');
+    const a = PL(l, [30, 36, 40, 45, 48, 54, 60, 72, 90]), b = PL(l, [35, 42, 50, 56, 63, 72, 84, 96, 105, 132].filter(x => x !== a)); const L2 = a * b / gcd(a, b); return nu(p('Two runners start together. Runner A needs <b>' + a + '</b> s for a lap, runner B <b>' + b + '</b> s. After how many seconds are they together at the start again for the first time?'), L2, 'This is the LCM of the two lap times.', 'LCM(' + a + ', ' + b + ') = ' + L2 + ' s.');
   },
   function tiles(l) {
-    const a = pick([84, 120, 135, 144, 168, 180, 210]), b = pick([60, 90, 105, 126, 150, 168].filter(x => x !== a)); const g = gcd(a, b); return nu(p('A rectangle of <b>' + a + ' cm</b> by <b>' + b + ' cm</b> must be covered with identical square tiles, without cutting. What is the <b>biggest</b> possible side of a tile (in cm)?'), g, 'The side must divide both lengths: it is the HCF.', 'HCF(' + a + ', ' + b + ') = ' + g + ' cm.');
+    const a = PL(l, [60, 84, 120, 135, 144, 168, 180, 210, 252, 330]), b = PL(l, [48, 60, 90, 105, 126, 150, 168, 198, 231, 270].filter(x => x !== a)); const g = gcd(a, b); return nu(p('A rectangle of <b>' + a + ' cm</b> by <b>' + b + ' cm</b> must be covered with identical square tiles, without cutting. What is the <b>biggest</b> possible side of a tile (in cm)?'), g, 'The side must divide both lengths: it is the HCF.', 'HCF(' + a + ', ' + b + ') = ' + g + ' cm.');
   }
 ];
 XG['1.5'] = [
@@ -684,7 +686,7 @@ G['1.1'].push(
     return ch(p('Set <b>B</b> = {' + els.slice(0, 3).join(', ') + ', …, ' + top + '} (all multiples of ' + m + ' up to ' + top + '). Which statement is true?'), M(cand + (yes ? ' ∈ B' : ' ∉ B')), [M(cand + (yes ? ' ∉ B' : ' ∈ B'))], '∈ means "is an element of", ∉ means "is not an element of". Check whether ' + cand + ' is a multiple of ' + m + ' and in the range.', cand + (yes ? ' is' : ' is not') + ' in the set.');
   },
   function simplifyByPrimes(l) {
-    const P3 = [2, 3, 5, 7, 11]; const a = pick(P3), b = pick(P3.filter(x => x !== a)); const num = a * a * b * pick([3, 5]) * (l ? ri(2, 5) : 1), den = a * a * a * b * b * pick([2, 3, 5]); const g = gcd(num, den); if (g === 1) return G['1.1'].find(x => x.name === 'simplifyByPrimes')(l);
+    const P3 = [2, 3, 5, 7, 11]; const a = pick(P3), b = pick(P3.filter(x => x !== a)); const num = a * a * b * pick([3, 5]) * (l ? LR(l, 2, 5) : 1), den = a * a * a * b * b * pick([2, 3, 5]); const g = gcd(num, den); if (g === 1) return G['1.1'].find(x => x.name === 'simplifyByPrimes')(l);
     return ex(p('Write the prime factorisations of <b>' + num + '</b> and <b>' + den + '</b> and use them to simplify the fraction ' + M(num + '/' + den) + '. (Type for example <b>7/80</b>.)'), ratText(num, den), 'lowest', 'Write numerator and denominator as products of primes, then cancel the common prime factors.', num + ' = ' + M(pf(num)) + ' and ' + den + ' = ' + M(pf(den)) + '. Cancel: ' + M(ratText(num, den)) + '.');
   }
 );
@@ -706,7 +708,7 @@ G['1.2'].push(
     return ch(p('Which statement is true?'), s[0] + ' ' + sym + ' ' + s[1], [s[0] + ' ' + (s[2] ? '∉' : '∈') + ' ' + s[1]], 'ℕ ⊂ ℤ ⊂ ℚ ⊂ ℝ. Check which sets the number belongs to.', s[0] + (s[2] ? ' is' : ' is not') + ' an element of ' + s[1] + '.');
   },
   function mixedAsInteger(l) {
-    const w1 = ri(1, 5), w2 = ri(1, 5), d = pick([3, 4, 5, 8]); const a = ri(1, d - 1), c = ri(1, d - 1); const op = pick(['+', '-']); const v = (w1 + a / d) + (op === '+' ? 1 : -1) * (w2 + c / d); const isInt = Math.abs(v - Math.round(v)) < 1e-9;
+    const w1 = LR(l, 1, 5), w2 = LR(l, 1, 5), d = PL(l, [3, 4, 5, 8, 9, 12]); const a = ri(1, d - 1), c = ri(1, d - 1); const op = pick(['+', '-']); const v = (w1 + a / d) + (op === '+' ? 1 : -1) * (w2 + c / d); const isInt = Math.abs(v - Math.round(v)) < 1e-9;
     const mx = (w, a) => '<span class="mx">' + w + '<span class="fr"><span class="nu">' + a + '</span><span class="de">' + d + '</span></span></span>';
     return ch(p('Calculate ' + mx(w1, a) + ' ' + (op === '+' ? '+' : '−') + ' ' + mx(w2, c) + '. Is the result an element of ℤ?'), isInt ? 'Yes, it is an integer' : 'No, it is not an integer', [isInt ? 'No, it is not an integer' : 'Yes, it is an integer'], 'Change to improper fractions, use the common denominator ' + d + ', and see if the fraction simplifies to a whole number.', 'The result is ' + M(ratText(Math.round((w1 * d + a + (op === '+' ? 1 : -1) * (w2 * d + c))), d)) + ', ' + (isInt ? 'a whole number' : 'not a whole number') + '.');
   }
@@ -719,7 +721,7 @@ G['1.3'].push(
     return ex(p('Simplify ' + M(a + '√' + (inner * r) + '/(' + b + '√' + r + ')') + '.'), ansR, 'root', 'Divide the roots: √' + (inner * r) + ' ÷ √' + r + ' = √' + inner + '. Then cancel the numbers.', M(a + '√' + (inner * r) + '/(' + b + '√' + r + ')') + ' = ' + M(a + '√' + inner + '/' + b) + ' = ' + M(ansR) + '.');
   },
   function pythRoot(l) {
-    const a = pick([2, 3, 5, 7, 10, 13]), b = pick([2, 3, 4, 5, 6]); const h2 = a + b * b; const [o, r] = sqrtSplit(h2);
+    const a = PL(l, [2, 3, 5, 7, 10, 11, 13, 14]), b = PL(l, [2, 3, 4, 5, 6, 7, 8, 9]); const h2 = a + b * b; const [o, r] = sqrtSplit(h2);
     return ex(p('A right-angled triangle has legs ' + M('√' + a) + ' cm and ' + b + ' cm. How long is the hypotenuse? (Simplified root.)'), radStr(o, r), 'root', 'Pythagoras: c² = (√' + a + ')² + ' + b + '². Remember (√' + a + ')² = ' + a + '.', 'c² = ' + a + ' + ' + (b * b) + ' = ' + h2 + ', so c = ' + M('√' + h2) + ' = ' + M(radStr(o, r)) + '.');
   },
   function rootOfFractionSimp(l) {
@@ -739,7 +741,7 @@ G['1.3'].push(
   }
 );
 G['1.5'].push(function hcfLcmPrimes(l) {
-  const P3 = [2, 3, 5, 7, 11, 13]; const mk = () => { let n = 1; const used = {}; for (let i = 0; i < ri(3, 4); i++) { const q = pick(P3); used[q] = (used[q] || 0) + 1; n *= q; } return [n, used]; }; let a, b; do { a = mk()[0]; b = mk()[0]; } while (a === b || a > 3000 || b > 3000 || gcd(a, b) === 1);
+  const P3 = [2, 3, 5, 7, 11, 13]; const mk = () => { let n = 1; const used = {}; for (let i = 0, n0 = LR(l, 2, 4); i < n0; i++) { const q = pick(P3); used[q] = (used[q] || 0) + 1; n *= q; } return [n, used]; }; let a, b; do { a = mk()[0]; b = mk()[0]; } while (a === b || a > 3000 || b > 3000 || gcd(a, b) === 1);
   const lcmQ = pick([true, false]); const ans = lcmQ ? lcm(a, b) : gcd(a, b);
   return nu(p('Calculate the <b>' + (lcmQ ? 'LCM' : 'HCF') + '</b> of <b>' + a + '</b> and <b>' + b + '</b> with their prime factorisations.'), ans, (lcmQ ? 'LCM: every prime factor, with its highest exponent.' : 'HCF: only the common prime factors, with their lowest exponent.'), a + ' = ' + M(pf(a)) + ', ' + b + ' = ' + M(pf(b)) + '. ' + (lcmQ ? 'LCM' : 'HCF') + ' = ' + ans + '.');
 });

@@ -496,6 +496,8 @@ if (typeof module !== 'undefined' && module.exports) module.exports = U; else ro
 window.Ch3=NX.engine((/* 2VT / 2HT Chapter 1: multiples, powers, square roots, decimal system (book: 2TTOA ch 1). Params: P.cls */
 (function (NX, P) {
 const { ri, pick, shuffle, nz, f, gcd, lcm, isPrime, primeFactors, sqrtSplit, squarefree, M, fr, fmtNum, ratText } = NX;
+const LR = (l, lo, hi) => { const s = hi - lo; if (s < 1 || l === undefined || l === 'mix') return ri(lo, hi); l = Math.min(l, 2); const a = l === 0 ? lo : l === 1 ? lo + Math.floor(s * .25) : lo + Math.floor(s * .5); const b = l === 0 ? lo + Math.max(1, Math.ceil(s * .5)) : l === 1 ? hi - Math.floor(s * .15) : hi + Math.ceil(s * .4); return ri(a, b); };
+const PL = (l, arr) => { const n = arr.length; if (l === undefined || l === 'mix') return pick(arr); l = Math.min(l, 2); const k = Math.max(2, Math.ceil(n * .6)); return pick(l === 0 ? arr.slice(0, k) : l === 1 ? arr.slice(Math.floor((n - k) / 2), Math.floor((n - k) / 2) + k + 1) : arr.slice(n - k)); };
 const ch = (html, right, wrongs, hint, steps, extra) => { let o = [right]; wrongs.forEach(w => { if (!o.includes(w)) o.push(w); }); const opts = shuffle(o); return Object.assign({ type: 'choice', opts, ans: opts.indexOf(right), html, hint, steps }, extra || {}); };
 const ex = (html, ans, form, hint, steps, extra) => Object.assign({ type: 'expr', html, ans, form, hint, steps }, extra || {});
 const nu = (html, ans, hint, steps, extra) => Object.assign({ type: 'num', html, ans, hint, steps }, extra || {});
@@ -540,7 +542,7 @@ G['1.1'] = [
     const n = pick(pool); return ex(p('Write <b>' + n + '</b> as a product of prime factors. (Type for example <b>2^3*5</b> for 2³ · 5.)'), pf(n), 'primes', 'Divide by 2 as often as you can, then 3, then 5, and so on, until only primes are left.', n + ' = ' + primeFactors(n).join(' · ') + ' = ' + M(pf(n)) + '.', { keys: ['^', '*', '(', ')'] });
   },
   function likeFractions(l) {
-    const d = pick([4, 6, 8, 10, 12]), d2 = d * pick([2, 3]), a = ri(1, d - 1), b = ri(1, d2 - 1); const sgn = Math.random() < .5 ? 1 : -1;
+    const d = PL(l, [4, 6, 8, 10, 12, 14, 15]), d2 = d * (l === 0 ? 2 : pick([2, 3])), a = LR(l, 1, d - 1), b = LR(l, 1, d2 - 1); const sgn = Math.random() < .5 ? 1 : -1;
     const n1 = a * (d2 / d), n2 = b, res = n1 + sgn * n2; if (res === 0) return G['1.1'][7](l);
     return fracQ(p('Calculate ' + M(a + '/' + d + (sgn > 0 ? '+' : '-') + b + '/' + d2) + '. Give your answer as a fraction in its simplest form (like 3/4) or as a whole number.'), res, d2, 'Make the denominators equal first (use the LCM of ' + d + ' and ' + d2 + ' = ' + d2 + '), then add or subtract the numerators.', M(a + '/' + d) + ' = ' + M(n1 + '/' + d2) + '. Then ' + n1 + (sgn > 0 ? ' + ' : ' − ') + n2 + ' = ' + res + ', so ' + M(res + '/' + d2) + ' = ' + M(ratText(res, d2)) + '.');
   }
@@ -578,13 +580,13 @@ G['1.2'] = [
     if (ansT) q.ansText = ansT; return q;
   },
   function signPower(l) {
-    const b = ri(2, 5), e = pick([2, 4, 3]); const kind = pick([0, 1]); const v = kind === 0 ? -Math.pow(b, e) : Math.pow(-b, e);
+    const b = LR(l, 2, 5), e = pick([2, 4, 3]); const kind = pick([0, 1]); const v = kind === 0 ? -Math.pow(b, e) : Math.pow(-b, e);
     const src = kind === 0 ? '-' + b + '^' + e : '(-' + b + ')^' + e;
     const right = String(v), wr = [String(-v), String(-b * e), String(b * e)].filter(x => x !== right);
     return ch(p('What is ' + M(src) + '?'), right, wr, kind === 0 ? 'Without brackets the power only belongs to ' + b + ', and the minus comes after.' : 'With brackets the whole number −' + b + ' is multiplied by itself ' + e + ' times.', M(src) + ' = ' + v + '.');
   },
   function powTen(l) {
-    const n = ri(l === 0 ? 1 : 2, l === 2 ? 6 : 4); const neg = Math.random() < (l === 0 ? .3 : .6); const e = neg ? -n : n;
+    const n = LR(l, l === 0 ? 1 : 2, l === 2 ? 6 : 4); const neg = Math.random() < (l === 0 ? .3 : .6); const e = neg ? -n : n;
     const dec = neg ? '0,' + '0'.repeat(n - 1) + '1' : '1' + '0'.repeat(n);
     return ch(p('Which number is equal to ' + M('10^' + e) + '?'), neg ? dec : grp(dec), neg ? ['0,' + '0'.repeat(n) + '1', '0,' + '0'.repeat(Math.max(0, n - 2)) + '1', '-' + '1' + '0'.repeat(n)] : [grp('1' + '0'.repeat(n + 1)), grp('1' + '0'.repeat(n - 1 || 1)), '0,' + '0'.repeat(n - 1) + '1'], 'A negative exponent gives a number smaller than 1: 10^(−n) has n decimal places, with the 1 at the end.', M('10^' + e) + ' = ' + dec + '.');
   },
@@ -603,14 +605,14 @@ G['1.2'] = [
     return nu(p('Find <b>n</b>: ' + M(b + '^n*' + b + '^' + k + '=' + b + '^' + (n + k))), n, 'Multiplying: the exponents are added.', 'n = ' + n + '.');
   },
   function varPower(l) {
-    const v = pick(['x', 'a', 'p', 'k', 'm']); const a = ri(2, 8), c = ri(2, 6); const t = pick(['mul', 'div']);
+    const v = pick(['x', 'a', 'p', 'k', 'm']); const a = LR(l, 2, 8), c = LR(l, 2, 6); const t = pick(['mul', 'div']);
     let src, e; if (l < 2) { if (t === 'mul') { src = v + '^' + a + '*' + v + '^' + c; e = a + c; } else { const A = a + c; src = v + '^' + A + '÷' + v + '^' + c; e = a; } }
-    else { const x = ri(-4, 6), y = ri(-4, 6); e = t === 'mul' ? x + y : x - y; if (e === 0) e = 1, src = v + '^' + x + '*' + v + '^' + (1 - x); else src = v + '^' + x + (t === 'mul' ? '*' : '÷') + v + '^' + (y < 0 ? '(' + y + ')' : y); }
+    else { const x = LR(l, -4, 6), y = LR(l, -4, 6); e = t === 'mul' ? x + y : x - y; if (e === 0) e = 1, src = v + '^' + x + '*' + v + '^' + (1 - x); else src = v + '^' + x + (t === 'mul' ? '*' : '÷') + v + '^' + (y < 0 ? '(' + y + ')' : y); }
     const ans = e === 1 ? v : v + '^' + e;
     return ex(p('Simplify: ' + M(src) + '. (Type for example <b>' + v + '^6</b>.)'), ans, 'mono', 'Same base: multiply = add the exponents, divide = subtract the exponents.', M(src) + ' = ' + M(ans) + '.', { negExp: true, keys: ['^', '(', ')', '-'] });
   },
   function compareNeg(l) {
-    const a = pick([2, 3, 4, 5]), b = pick([2, 3, 4, 5].filter(x => x !== a)), e1 = ri(2, 3), e2 = ri(2, 3); const v1 = Math.pow(a, -e1), v2 = Math.pow(b, -e2); if (Math.abs(v1 - v2) < 1e-12) return G['1.2'][6](l);
+    const a = pick([2, 3, 4, 5]), b = pick([2, 3, 4, 5].filter(x => x !== a)), e1 = LR(l, 2, 3), e2 = LR(l, 2, 3); const v1 = Math.pow(a, -e1), v2 = Math.pow(b, -e2); if (Math.abs(v1 - v2) < 1e-12) return G['1.2'][6](l);
     const s1 = a + '^(-' + e1 + ')', s2 = b + '^(-' + e2 + ')'; const bigger = v1 > v2 ? s1 : s2;
     return ch(p('Which is <b>larger</b>: ' + M(s1) + ' or ' + M(s2) + '?'), M(bigger), [M(v1 > v2 ? s2 : s1), 'They are equal'], 'Rewrite both as fractions with 1 on top: x^(−n) = 1/x^n. The one with the smaller denominator is larger.', M(s1) + ' = ' + M('1/' + Math.pow(a, e1)) + ' and ' + M(s2) + ' = ' + M('1/' + Math.pow(b, e2)) + '. So ' + M(bigger) + ' is larger.');
   }
@@ -663,7 +665,7 @@ G['1.3'] = [
     const c = ri(2, 5), d = ri(2, 5); const src2 = '(' + c + '+√' + d * d + ')*(' + c + '-√' + d * d + ')'; return nu(p('Calculate ' + M(src2) + '.'), c * c - d * d, 'First work out each bracket: calculate the root, then add or subtract.', '(' + c + ' + ' + d + ')(' + c + ' − ' + d + ') = ' + (c + d) + ' · ' + (c - d) + ' = ' + (c * c - d * d) + '.');
   },
   function rootSq(l) {
-    const n = pick([2, 3, 5, 6, 7, 10, 11, 13]); const k = pick([0, 1, 2]);
+    const n = PL(l, [2, 3, 5, 6, 7, 10, 11, 13, 15, 17]); const k = pick([0, 1, 2]);
     if (l === 0 || k === 0) return nu(p('Calculate ' + M('(√' + n + ')^2') + '.'), n, 'Squaring and taking the square root undo each other.', '(√' + n + ')² = ' + n + '.');
     if (k === 1) return nu(p('Calculate ' + M('√' + n + '*√' + n) + '.'), n, '√' + n + ' · √' + n + ' is √' + n + ' squared.', '√' + n + ' · √' + n + ' = ' + n + '.');
     return nu(p('Calculate ' + M('√' + n + '*√' + n + '*(√' + n + ')^2') + '.'), n * n, 'Each pair √' + n + ' · √' + n + ' gives ' + n + '.', n + ' · ' + n + ' = ' + n * n + '.');
@@ -709,7 +711,7 @@ G['1.4'] = [
     return ex(p('Simplify ' + M(src) + '.'), ans, 'root', 'Add the numbers in front of √' + r1 + ' and of √' + r2 + ' separately. Different radicals cannot be combined.', '√' + r1 + ': ' + a + ' + ' + (c < 0 ? '(' + c + ')' : c) + ' = ' + cr1 + '; √' + r2 + ': ' + b + ' + ' + (d < 0 ? '(' + d + ')' : d) + ' = ' + cr2 + '. Answer: ' + M(ans) + '.');
   },
   function simplifySum(l) {
-    const r = pick([2, 3, 5, 6]), [x, y] = pick([[2, 3], [1, 4], [3, 2], [2, 5], [4, 1], [3, 5]]); const a = x * x * r, b = y * y * r; if (a === b) return G['1.4'][2](l);
+    const r = PL(l, [2, 3, 5, 6, 7, 10]), [x, y] = PL(l, [[2, 3], [1, 4], [3, 2], [2, 5], [4, 1], [3, 5], [4, 7], [6, 5]]); const a = x * x * r, b = y * y * r; if (a === b) return G['1.4'][2](l);
     const sgn = l === 1 ? 1 : pick([1, -1]); const res = x + sgn * y; if (res === 0) return G['1.4'][2](l);
     return ex(p('Simplify ' + M('√' + a + (sgn > 0 ? '+' : '-') + '√' + b) + '.'), radStr(res, r), 'root', 'Simplify each root first. Then you can add or subtract the like radicals.', '√' + a + ' = ' + radStr(x, r) + ' and √' + b + ' = ' + radStr(y, r) + '. So ' + x + '√' + r + (sgn > 0 ? ' + ' : ' − ') + y + '√' + r + ' = ' + M(radStr(res, r)) + '.');
   },
@@ -775,7 +777,7 @@ G['1.5'] = [
     return nu(p('Write ' + M(sciStr(String(m).replace('.', ','), e), { noVars: true }) + ' as an ordinary number (without powers).'), val, 'A positive exponent moves the comma to the right, a negative exponent moves it to the left.', M(sciStr(m, e), { noVars: true }) + ' = ' + dec + '.', { tol: Math.abs(val) * 1e-9, ansText: dec });
   },
   function sumPowers(l) {
-    const d = [ri(1, 9), ri(0, 9), ri(0, 9), ri(1, 9)]; const n = d[0] * 1000 + d[1] * 100 + d[2] * 10 + d[3];
+    const d = [LR(l, 1, 9), LR(l, 0, 9), LR(l, 0, 9), LR(l, 1, 9)]; const n = d[0] * 1000 + d[1] * 100 + d[2] * 10 + d[3];
     const mk = (a) => a.map((x, i) => x + '·10^' + (3 - i)).join('+');
     const right = mk(d); const w = [mk([d[0], d[2], d[1], d[3]]), mk([d[3], d[2], d[1], d[0]]), mk([d[0], d[1], d[2], d[3]]).replace('10^3', '10^4')];
     return ch(p('Which expression is equal to <b>' + grp(n) + '</b>?'), M(right), w.map(x => M(x)).filter((x, i, a) => x !== M(right)), 'Every digit has a place value: thousands (10³), hundreds (10²), tens (10¹) and ones (10⁰).', grp(n) + ' = ' + M(right) + '.');
@@ -786,8 +788,8 @@ G['1.5'] = [
     return ch(p('Which number is <b>larger</b>?'), va > vb ? A : B, [va > vb ? B : A, 'They are equal'], 'First compare the exponents of 10. A bigger exponent means a bigger number (if both are positive numbers in scientific notation).', 'The exponents are ' + a[1] + ' and ' + b[1] + '. So the larger number is ' + (va > vb ? sciStr(a[0], a[1]) : sciStr(b[0], b[1])).replace('*', ' · ').replace('^', '^') + '.');
   },
   function mulSci(l) {
-    const a = pick([2, 3, 4, 5, 6, 8]), b = pick([2, 3, 4, 5, 6, 8]); let e1 = ri(2, 6), e2 = ri(2, 6), op = '*';
-    if (l === 2) { op = pick(['*', '÷']); if (op === '÷') { e2 = ri(-4, 4); } }
+    const a = pick([2, 3, 4, 5, 6, 8]), b = pick([2, 3, 4, 5, 6, 8]); let e1 = LR(l, 2, 6), e2 = LR(l, 2, 6), op = '*';
+    if (l === 2) { op = pick(['*', '÷']); if (op === '÷') { e2 = LR(l, -4, 4); } }
     let val; let q;
     const srcA = a + '*10^' + e1, srcB = b + '*10^' + (e2 < 0 ? '(' + e2 + ')' : e2); const src = '(' + srcA + ')' + op + '(' + srcB + ')';
     if (op === '*') { const m = a * b, e = e1 + e2; if (m >= 10) { var ans = (m / 10) + '*10^' + (e + 1); } else ans = m + '*10^' + e; }

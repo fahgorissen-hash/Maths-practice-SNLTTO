@@ -496,6 +496,8 @@ if (typeof module !== 'undefined' && module.exports) module.exports = U; else ro
 window.Ch3=NX.engine((/* 3HT Chapter 2: geometric reasoning (book: H3-TTO ch 2). */
 (function (NX, P) {
 const { ri, pick, shuffle, nz, f, gcd, M, fmtNum } = NX;
+const LR = (l, lo, hi) => { const s = hi - lo; if (s < 1 || l === undefined || l === 'mix') return ri(lo, hi); l = Math.min(l, 2); const a = l === 0 ? lo : l === 1 ? lo + Math.floor(s * .25) : lo + Math.floor(s * .5); const b = l === 0 ? lo + Math.max(1, Math.ceil(s * .5)) : l === 1 ? hi - Math.floor(s * .15) : hi + Math.ceil(s * .4); return ri(a, b); };
+const PL = (l, arr) => { const n = arr.length; if (l === undefined || l === 'mix') return pick(arr); l = Math.min(l, 2); const k = Math.max(2, Math.ceil(n * .6)); return pick(l === 0 ? arr.slice(0, k) : l === 1 ? arr.slice(Math.floor((n - k) / 2), Math.floor((n - k) / 2) + k + 1) : arr.slice(n - k)); };
 const ch = (html, right, wrongs, hint, steps, extra) => { let o = [right]; wrongs.forEach(w => { if (!o.includes(w)) o.push(w); }); const opts = shuffle(o); return Object.assign({ type: 'choice', opts, ans: opts.indexOf(right), html, hint, steps }, extra || {}); };
 const nu = (html, ans, hint, steps, extra) => Object.assign({ type: 'num', html, ans, hint, steps }, extra || {});
 const pt = (html, ans, hint, steps) => ({ type: 'point', html, ans, hint, steps });
@@ -520,7 +522,7 @@ G['2.1'] = [
     return nu(p('Quadrilateral KLMN has ∠K = ' + a + '°, ∠L = ' + b + '° and ∠M = ' + c + '°. Quadrilateral SPQR ~ KLMN. How big is ∠R (corresponding to ∠N), in °?'), d, 'The angles of a quadrilateral add up to 360°. Similar figures have equal corresponding angles.', '∠N = 360 − ' + a + ' − ' + b + ' − ' + c + ' = ' + d + '°, so ∠R = ' + d + '°.');
   },
   function polySide(l) {
-    const k = pick([1.5, 2, 2.5, 3, 0.5, 4]); const s = [ri(2, 7) * 2, ri(2, 7) * 2, ri(2, 7) * 2, ri(2, 7) * 2]; const t = ri(0, 3);
+    const k = PL(l, [2, 3, 4, 1.5, 2.5, 0.5]); const s = [ri(2, 7) * 2, ri(2, 7) * 2, ri(2, 7) * 2, ri(2, 7) * 2]; const t = ri(0, 3);
     const names = ['AB', 'BC', 'CD', 'DA'], names2 = ['EF', 'FG', 'GH', 'HE'];
     return nu(p('ABCD ~ EFGH. AB = ' + s[0] + ', BC = ' + s[1] + ', CD = ' + s[2] + ', DA = ' + s[3] + '. In EFGH the side ' + names2[(t + 1) % 4] + ' = ' + f(s[(t + 1) % 4] * k) + '. Calculate ' + names2[t] + '.'), s[t] * k, 'Scale factor = new side ÷ corresponding old side. Corresponding sides are in the same position (AB ↔ EF, BC ↔ FG, …).', 'Scale factor = ' + f(s[(t + 1) % 4] * k) + ' ÷ ' + s[(t + 1) % 4] + ' = ' + k + '. ' + names2[t] + ' = ' + s[t] + ' × ' + k + ' = ' + f(s[t] * k) + '.');
   },
@@ -529,7 +531,7 @@ G['2.1'] = [
     return ch(p('Rectangle 1 is ' + w + ' by ' + h + '. Rectangle 2 is ' + f(w2) + ' by ' + f(h2) + '. Are the rectangles similar?'), yes ? 'Yes' : 'No', [yes ? 'No' : 'Yes'], 'All angles are 90°. Check whether both pairs of sides are enlarged by the same factor.', 'Width: ' + f(w2) + ' ÷ ' + w + ' = ' + k + '. Height: ' + f(h2) + ' ÷ ' + h + ' = ' + f(h2 / h) + '. ' + (yes ? 'Same factor: similar.' : 'Different factors: not similar.'), { keys: [] });
   },
   function aspectRatio(l) {
-    const r = pick([[4, 3], [16, 9], [3, 2], [5, 4]]); const m = ri(2, 6) * 100; const wNew = r[0] * ri(2, 9) * 10; return nu(p('A photo has ratio width : height = ' + r[0] + ' : ' + r[1] + '. It is printed with a width of ' + wNew + ' mm and keeps the same shape. How high is the print (in mm, 1 decimal)?'), Math.round(wNew * r[1] / r[0] * 10) / 10, 'The printed photo is similar to the original: height = width × ' + r[1] + '/' + r[0] + '.', wNew + ' × ' + r[1] + ' ÷ ' + r[0] + ' = ' + f(Math.round(wNew * r[1] / r[0] * 10) / 10) + ' mm.', { tol: .06 });
+    const r = PL(l, [[4, 3], [3, 2], [5, 4], [16, 9], [16, 10]]); const m = ri(2, 6) * 100; const wNew = r[0] * ri(2, 9) * 10; return nu(p('A photo has ratio width : height = ' + r[0] + ' : ' + r[1] + '. It is printed with a width of ' + wNew + ' mm and keeps the same shape. How high is the print (in mm, 1 decimal)?'), Math.round(wNew * r[1] / r[0] * 10) / 10, 'The printed photo is similar to the original: height = width × ' + r[1] + '/' + r[0] + '.', wNew + ' × ' + r[1] + ' ÷ ' + r[0] + ' = ' + f(Math.round(wNew * r[1] / r[0] * 10) / 10) + ' mm.', { tol: .06 });
   }
 ];
 XG['2.1'] = [
@@ -544,7 +546,7 @@ XG['2.1'] = [
 /* ---------- 2.2 Similarity ---------- */
 G['2.2'] = [
   function scaleFactor(l) {
-    const k = pick(l === 0 ? [2, 3, 4] : [1.5, 2.5, 0.5, 3, 1 / 3 * 3 + 1.5]); const a = ri(2, 8) * 2, b = ri(2, 8) * 2;
+    const k = pick(l === 0 ? [2, 3, 4] : [1.5, 2.5, 0.5, 3, 1 / 3 * 3 + 1.5]); const a = LR(l, 2, 8) * 2, b = LR(l, 2, 8) * 2;
     return nu(p('Rectangle B is a scaled version of rectangle A. A has sides <b>' + a + ' cm</b> and <b>' + b + ' cm</b>. The scale factor from A to B is <b>' + k + '</b>. How long is the <b>' + a + ' cm</b> side in B (in cm)?'), a * k, 'New length = scale factor × old length.', a + ' × ' + k + ' = ' + f(a * k) + ' cm.');
   },
   function missingAngle(l) {
@@ -611,7 +613,7 @@ G['2.3'] = [
     const d = ri(3, 12); const pb = Math.random() < .5; return nu(p(pb ? 'Point P lies on the perpendicular bisector of AB. PA = <b>' + d + ' cm</b>. How long is PB (in cm)?' : 'Point P lies on the bisector of angle ∠ABC. The distance from P to arm BA is <b>' + d + ' cm</b>. What is the distance from P to arm BC (in cm)?'), d, pb ? 'Every point on the perpendicular bisector has the same distance to A and B.' : 'Every point on the angle bisector has the same distance to both arms.', 'The answer is ' + d + ' cm.');
   },
   function closerTo(l) {
-    const A = ri(0, 4) * 2, B = A + ri(2, 5) * 2; const m = (A + B) / 2; const x = pick([m - 1, m + 1, m - 2, m + 2].map(Math.round)); const right = x < m ? 'A' : 'B';
+    const A = LR(l, 0, 4) * 2, B = A + LR(l, 2, 5) * 2; const m = (A + B) / 2; const x = pick([m - 1, m + 1, m - 2, m + 2].map(Math.round)); const right = x < m ? 'A' : 'B';
     if (x === m) return G['2.3'][3](l);
     return ch(p('On a number line A = ' + A + ' and B = ' + B + '. The perpendicular bisector of AB is at ' + m + '. Is the point ' + x + ' closer to A or to B?'), right, ['A', 'B', 'Equally far'].filter(y => y !== right), 'The perpendicular bisector is the border: on A\'s side you are closer to A.', x + ' is on the ' + (x < m ? 'left' : 'right') + ' of ' + m + ', so closer to ' + right + '.');
   },
@@ -637,17 +639,17 @@ G['2.4'] = [
     return ch(p('Where is the <b>orthocentre</b> of a(n) ' + t[0] + '?'), t[1], ['inside the triangle', 'at the vertex of the right angle', 'outside the triangle'].filter(x => x !== t[1]), 'The orthocentre is where the three altitudes meet. For an obtuse triangle you must extend the sides.', t[1] + '.');
   },
   function altitudeArea(l) {
-    const b = ri(3, 10) * 2, h = ri(2, 8); return nu(p('A triangle has a base of <b>' + b + ' cm</b> and the altitude to that base is <b>' + h + ' cm</b>. What is its area (in cm²)?'), b * h / 2, 'Area = ½ × base × altitude.', '½ × ' + b + ' × ' + h + ' = ' + b * h / 2 + ' cm².');
+    const b = LR(l, 3, 10) * 2, h = LR(l, 2, 8); return nu(p('A triangle has a base of <b>' + b + ' cm</b> and the altitude to that base is <b>' + h + ' cm</b>. What is its area (in cm²)?'), b * h / 2, 'Area = ½ × base × altitude.', '½ × ' + b + ' × ' + h + ' = ' + b * h / 2 + ' cm².');
   },
   function twoAltitudes(l) {
-    const b = ri(3, 8) * 2, h = ri(3, 8); const b2 = pick([4, 5, 6, 8, 10].filter(x => (b * h) % x === 0 && x !== b)); if (!b2) return G['2.4'][1](l);
+    const b = LR(l, 3, 8) * 2, h = LR(l, 3, 8); const b2 = pick([4, 5, 6, 8, 10].filter(x => (b * h) % x === 0 && x !== b)); if (!b2) return G['2.4'][1](l);
     return nu(p('A triangle has area ' + b * h / 2 + ' cm². The altitude to side a = ' + b + ' cm is ' + h + ' cm. How long is the altitude to the side of ' + b2 + ' cm (in cm)?'), b * h / b2, 'The area is the same, whichever side you use as the base: ½ × a × h_a = ½ × b × h_b.', 'h = ' + b + ' × ' + h + ' ÷ ' + b2 + ' = ' + f(b * h / b2) + ' cm.');
   },
   function midpoint(l) {
-    const x1 = ri(-6, 6), y1 = ri(-6, 6), x2 = x1 + 2 * ri(-4, 4), y2 = y1 + 2 * ri(-4, 4); return pt(p('Calculate the midpoint of A(' + x1 + ', ' + y1 + ') and B(' + x2 + ', ' + y2 + '). (Type for example <b>(3, -1)</b>.)'), [(x1 + x2) / 2, (y1 + y2) / 2], 'Midpoint: the average of the x-coordinates and the average of the y-coordinates.', '((' + x1 + ' + ' + x2 + ') ÷ 2, (' + y1 + ' + ' + y2 + ') ÷ 2) = (' + (x1 + x2) / 2 + ', ' + (y1 + y2) / 2 + ').');
+    const x1 = LR(l, -6, 6), y1 = LR(l, -6, 6), x2 = x1 + 2 * LR(l, -4, 4), y2 = y1 + 2 * LR(l, -4, 4); return pt(p('Calculate the midpoint of A(' + x1 + ', ' + y1 + ') and B(' + x2 + ', ' + y2 + '). (Type for example <b>(3, -1)</b>.)'), [(x1 + x2) / 2, (y1 + y2) / 2], 'Midpoint: the average of the x-coordinates and the average of the y-coordinates.', '((' + x1 + ' + ' + x2 + ') ÷ 2, (' + y1 + ' + ' + y2 + ') ÷ 2) = (' + (x1 + x2) / 2 + ', ' + (y1 + y2) / 2 + ').');
   },
   function centroid(l) {
-    const x = ri(-4, 3) * 3, y = ri(-4, 3) * 3; const A = [ri(-6, 6) * 3 / 3, ri(-6, 6)], B = [ri(-6, 6), ri(-6, 6)]; const C = [3 * (x / 3 * 1) - A[0] - B[0], 3 * (y / 3) - A[1] - B[1]];
+    const x = LR(l, -4, 3) * 3, y = LR(l, -4, 3) * 3; const A = [LR(l, -6, 6) * 3 / 3, LR(l, -6, 6)], B = [LR(l, -6, 6), LR(l, -6, 6)]; const C = [3 * (x / 3 * 1) - A[0] - B[0], 3 * (y / 3) - A[1] - B[1]];
     const g = [(A[0] + B[0] + C[0]) / 3, (A[1] + B[1] + C[1]) / 3];
     return pt(p('Triangle ABC has A(' + A.join(', ') + '), B(' + B.join(', ') + ') and C(' + C.join(', ') + '). Calculate the <b>centroid</b> (the intersection of the medians). Type for example <b>(1, 2)</b>.'), g, 'Centroid = the average of the three x-coordinates and the average of the three y-coordinates.', '(' + (A[0] + B[0] + C[0]) + '/3, ' + (A[1] + B[1] + C[1]) + '/3) = (' + g.join(', ') + ').');
   },
@@ -675,7 +677,7 @@ XG['2.4'] = [
 
 /* ---------- additions after the assignment-by-assignment check ---------- */
 G['2.2'].push(function pythSimilar(l) {
-  const T = pick([[3, 4, 5], [6, 8, 10], [5, 12, 13], [8, 15, 17]]); const k = pick([2, 3, 1.5, 2.5]); const t = ri(0, 2); const [a, b, c] = T; const A = [a, b, c], B = A.map(x => x * k);
+  const T = PL(l, [[3, 4, 5], [6, 8, 10], [5, 12, 13], [8, 15, 17]]); const k = PL(l, [2, 3, 1.5, 2.5]); const t = ri(0, 2); const [a, b, c] = T; const A = [a, b, c], B = A.map(x => x * k);
   const what = ['the shorter leg', 'the longer leg', 'the hypotenuse']; if (l === 0 && t === 2) return G['2.2'].find(g => g.name === 'pythSimilar')(l);
   const known = (t === 0 ? 1 : 0);
   const sa = [a, b, c].map(String); const sb = B.map(x => f(x));

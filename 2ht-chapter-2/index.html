@@ -496,6 +496,8 @@ if (typeof module !== 'undefined' && module.exports) module.exports = U; else ro
 window.Ch3=NX.engine((/* 2VT / 2HT Chapter 2: solid geometry (book: 2TTOA ch 2). Params: P.cls */
 (function (NX, P) {
 const { ri, pick, shuffle, nz, f, gcd, M, fr, fmtNum, ratText } = NX;
+const LR = (l, lo, hi) => { const s = hi - lo; if (s < 1 || l === undefined || l === 'mix') return ri(lo, hi); l = Math.min(l, 2); const a = l === 0 ? lo : l === 1 ? lo + Math.floor(s * .25) : lo + Math.floor(s * .5); const b = l === 0 ? lo + Math.max(1, Math.ceil(s * .5)) : l === 1 ? hi - Math.floor(s * .15) : hi + Math.ceil(s * .4); return ri(a, b); };
+const PL = (l, arr) => { const n = arr.length; if (l === undefined || l === 'mix') return pick(arr); l = Math.min(l, 2); const k = Math.max(2, Math.ceil(n * .6)); return pick(l === 0 ? arr.slice(0, k) : l === 1 ? arr.slice(Math.floor((n - k) / 2), Math.floor((n - k) / 2) + k + 1) : arr.slice(n - k)); };
 const VT = P.cls === '2VT';
 const ch = (html, right, wrongs, hint, steps, extra) => { let o = [right]; wrongs.forEach(w => { if (!o.includes(w)) o.push(w); }); const opts = shuffle(o); return Object.assign({ type: 'choice', opts, ans: opts.indexOf(right), html, hint, steps }, extra || {}); };
 const ex = (html, ans, form, hint, steps, extra) => Object.assign({ type: 'expr', html, ans, form, hint, steps }, extra || {});
@@ -762,11 +764,11 @@ G['2.5'] = [
     return nu(p('A box is <b>' + a + '</b> cm long, <b>' + b + '</b> cm wide and <b>' + c + '</b> cm high. What is its surface area in cm²?'), s, 'A box has three pairs of equal faces: top and bottom, front and back, left and right.', '2 · (' + a + '·' + b + ' + ' + a + '·' + c + ' + ' + b + '·' + c + ') = 2 · ' + (a * b + a * c + b * c) + ' = ' + s + ' cm².');
   },
   function surfPrism(l) {
-    const T = pick([[3, 4, 5], [6, 8, 10], [5, 12, 13], [9, 12, 15]]), L = ri(4, 12); const base = T[0] * T[1] / 2, per = T[0] + T[1] + T[2];
+    const T = pick([[3, 4, 5], [6, 8, 10], [5, 12, 13], [9, 12, 15]]), L = LR(l, 4, 12); const base = T[0] * T[1] / 2, per = T[0] + T[1] + T[2];
     return nu(p('A prism has a right-angled triangle as its base, with sides <b>' + T.join(', ') + '</b> cm. The prism is <b>' + L + '</b> cm long. What is its surface area in cm²?'), 2 * base + per * L, 'Surface area = 2 · (area of the base) + (perimeter of the base) · (length of the prism).', 'Two triangles: 2 · ' + base + ' = ' + 2 * base + '. Three rectangles: ' + per + ' · ' + L + ' = ' + per * L + '. Total = ' + (2 * base + per * L) + ' cm².');
   },
   function surfCylinder(l) {
-    const r = ri(2, 7), h = ri(2, 10);
+    const r = LR(l, 2, 7), h = LR(l, 2, 10);
     return ex_pi(p('A cylinder has radius <b>' + r + '</b> cm and height <b>' + h + '</b> cm. Give its exact surface area in cm². (The cylinder has a top and a bottom.)'), 2 * r * r + 2 * r * h, 1, 'Surface area = 2 circles (2 · π r²) + the curved face, a rectangle with width 2πr and height h.', 'Circles: 2 · π · ' + r + '² = ' + 2 * r * r + 'π. Curved face: 2π · ' + r + ' · ' + h + ' = ' + 2 * r * h + 'π. Total = ' + piTxt(2 * r * r + 2 * r * h, 1) + ' cm².');
   },
   function surfSphere(l) {
@@ -774,7 +776,7 @@ G['2.5'] = [
     const rr = ri(3, 12) + .5; return r1q(p('A sphere has radius <b>' + String(rr).replace('.', ',') + '</b> cm. What is its surface area in cm²?' + ROUND), 4 * Math.PI * rr * rr, 'Use 4 · π · r² with the π button.', '4π · ' + rr + '² ≈ ' + fmtNum(rnd1(4 * Math.PI * rr * rr)) + ' cm².');
   },
   function wrapping(l) {
-    const A = [ri(2, 8), ri(2, 8), ri(2, 8)], B = [ri(2, 8), ri(2, 8), ri(2, 8)]; const s = x => 2 * (x[0] * x[1] + x[0] * x[2] + x[1] * x[2]); if (s(A) === s(B)) return G['2.5'][6](l);
+    const A = [LR(l, 2, 8), LR(l, 2, 8), LR(l, 2, 8)], B = [LR(l, 2, 8), LR(l, 2, 8), LR(l, 2, 8)]; const s = x => 2 * (x[0] * x[1] + x[0] * x[2] + x[1] * x[2]); if (s(A) === s(B)) return G['2.5'][6](l);
     const t = s(A) > s(B) ? 'Box A' : 'Box B';
     return ch(p('Box A measures ' + A.join(' × ') + ' cm. Box B measures ' + B.join(' × ') + ' cm. Which box needs <b>more wrapping paper</b>?'), t, [s(A) > s(B) ? 'Box B' : 'Box A', 'They need the same'], 'Wrapping paper covers the surface: calculate the surface area of both boxes.', 'Box A: ' + s(A) + ' cm². Box B: ' + s(B) + ' cm². So ' + t + ' needs more.');
   },

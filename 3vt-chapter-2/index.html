@@ -496,6 +496,8 @@ if (typeof module !== 'undefined' && module.exports) module.exports = U; else ro
 window.Ch3=NX.engine((/* 3VT Chapter 2: trigonometry (book: V3-TTO ch 2). */
 (function (NX, P) {
 const { ri, pick, shuffle, nz, f, gcd, lcm, isPrime, primeFactors, sqrtSplit, M, fmtNum, ratText } = NX;
+const LR = (l, lo, hi) => { const s = hi - lo; if (s < 1 || l === undefined || l === 'mix') return ri(lo, hi); l = Math.min(l, 2); const a = l === 0 ? lo : l === 1 ? lo + Math.floor(s * .25) : lo + Math.floor(s * .5); const b = l === 0 ? lo + Math.max(1, Math.ceil(s * .5)) : l === 1 ? hi - Math.floor(s * .15) : hi + Math.ceil(s * .4); return ri(a, b); };
+const PL = (l, arr) => { const n = arr.length; if (l === undefined || l === 'mix') return pick(arr); l = Math.min(l, 2); const k = Math.max(2, Math.ceil(n * .6)); return pick(l === 0 ? arr.slice(0, k) : l === 1 ? arr.slice(Math.floor((n - k) / 2), Math.floor((n - k) / 2) + k + 1) : arr.slice(n - k)); };
 const ch = (html, right, wrongs, hint, steps, extra) => { let o = [right]; wrongs.forEach(w => { if (!o.includes(w)) o.push(w); }); const opts = shuffle(o); return Object.assign({ type: 'choice', opts, ans: opts.indexOf(right), html, hint, steps }, extra || {}); };
 const ex = (html, ans, form, hint, steps, extra) => Object.assign({ type: 'expr', html, ans, form, hint, steps }, extra || {});
 const nu = (html, ans, hint, steps, extra) => Object.assign({ type: 'num', html, ans, hint, steps }, extra || {});
@@ -545,7 +547,7 @@ G['2.1'] = [
     return nu(p('Quadrilateral KLMN has ∠K = ' + a + '°, ∠L = ' + b + '° and ∠M = ' + c + '°. Quadrilateral SPQR ~ KLMN. How big is ∠R (corresponding to ∠N), in °?'), d, 'The angles of a quadrilateral add up to 360°. Similar figures have equal corresponding angles.', '∠N = 360 − ' + a + ' − ' + b + ' − ' + c + ' = ' + d + '°, so ∠R = ' + d + '°.');
   },
   function polySide(l) {
-    const k = pick([1.5, 2, 2.5, 3, 0.5, 4]); const s = [ri(2, 7) * 2, ri(2, 7) * 2, ri(2, 7) * 2, ri(2, 7) * 2]; const t = ri(0, 3);
+    const k = PL(l, [2, 3, 4, 1.5, 2.5, 0.5]); const s = [ri(2, 7) * 2, ri(2, 7) * 2, ri(2, 7) * 2, ri(2, 7) * 2]; const t = ri(0, 3);
     const names = ['AB', 'BC', 'CD', 'DA'], names2 = ['EF', 'FG', 'GH', 'HE'];
     return nu(p('ABCD ~ EFGH. AB = ' + s[0] + ', BC = ' + s[1] + ', CD = ' + s[2] + ', DA = ' + s[3] + '. In EFGH the side ' + names2[(t + 1) % 4] + ' = ' + f(s[(t + 1) % 4] * k) + '. Calculate ' + names2[t] + '.'), s[t] * k, 'Scale factor = new side ÷ corresponding old side. Corresponding sides are in the same position (AB ↔ EF, BC ↔ FG, …).', 'Scale factor = ' + f(s[(t + 1) % 4] * k) + ' ÷ ' + s[(t + 1) % 4] + ' = ' + k + '. ' + names2[t] + ' = ' + s[t] + ' × ' + k + ' = ' + f(s[t] * k) + '.');
   },
@@ -554,7 +556,7 @@ G['2.1'] = [
     return ch(p('Rectangle 1 is ' + w + ' by ' + h + '. Rectangle 2 is ' + f(w2) + ' by ' + f(h2) + '. Are the rectangles similar?'), yes ? 'Yes' : 'No', [yes ? 'No' : 'Yes'], 'All angles are 90°. Check whether both pairs of sides are enlarged by the same factor.', 'Width: ' + f(w2) + ' ÷ ' + w + ' = ' + k + '. Height: ' + f(h2) + ' ÷ ' + h + ' = ' + f(h2 / h) + '. ' + (yes ? 'Same factor: similar.' : 'Different factors: not similar.'), { keys: [] });
   },
   function aspectRatio(l) {
-    const r = pick([[4, 3], [16, 9], [3, 2], [5, 4]]); const m = ri(2, 6) * 100; const wNew = r[0] * ri(2, 9) * 10; return nu(p('A photo has ratio width : height = ' + r[0] + ' : ' + r[1] + '. It is printed with a width of ' + wNew + ' mm and keeps the same shape. How high is the print (in mm, 1 decimal)?'), Math.round(wNew * r[1] / r[0] * 10) / 10, 'The printed photo is similar to the original: height = width × ' + r[1] + '/' + r[0] + '.', wNew + ' × ' + r[1] + ' ÷ ' + r[0] + ' = ' + f(Math.round(wNew * r[1] / r[0] * 10) / 10) + ' mm.', { tol: .06 });
+    const r = PL(l, [[4, 3], [3, 2], [5, 4], [16, 9], [16, 10]]); const m = ri(2, 6) * 100; const wNew = r[0] * ri(2, 9) * 10; return nu(p('A photo has ratio width : height = ' + r[0] + ' : ' + r[1] + '. It is printed with a width of ' + wNew + ' mm and keeps the same shape. How high is the print (in mm, 1 decimal)?'), Math.round(wNew * r[1] / r[0] * 10) / 10, 'The printed photo is similar to the original: height = width × ' + r[1] + '/' + r[0] + '.', wNew + ' × ' + r[1] + ' ÷ ' + r[0] + ' = ' + f(Math.round(wNew * r[1] / r[0] * 10) / 10) + ' mm.', { tol: .06 });
   }
 ];
 XG['2.1'] = [
@@ -569,7 +571,7 @@ XG['2.1'] = [
 /* ---------- 2.2 Similarity ---------- */
 G['2.2'] = [
   function scaleFactor(l) {
-    const k = pick(l === 0 ? [2, 3, 4] : [1.5, 2.5, 0.5, 3, 1 / 3 * 3 + 1.5]); const a = ri(2, 8) * 2, b = ri(2, 8) * 2;
+    const k = pick(l === 0 ? [2, 3, 4] : [1.5, 2.5, 0.5, 3, 1 / 3 * 3 + 1.5]); const a = LR(l, 2, 8) * 2, b = LR(l, 2, 8) * 2;
     return nu(p('Rectangle B is a scaled version of rectangle A. A has sides <b>' + a + ' cm</b> and <b>' + b + ' cm</b>. The scale factor from A to B is <b>' + k + '</b>. How long is the <b>' + a + ' cm</b> side in B (in cm)?'), a * k, 'New length = scale factor × old length.', a + ' × ' + k + ' = ' + f(a * k) + ' cm.');
   },
   function missingAngle(l) {
@@ -689,7 +691,7 @@ G['2.4'] = [
     const o = l === 2 ? ri(25, 120) / 10 : ri(3, 12), a = l === 2 ? ri(o * 10 + 10, 200) / 10 : ri(o + 1, 20); const ang = Math.round(Math.atan(o / a) / D * 10) / 10; return nu(p('In a right-angled triangle the legs are <b>' + o + ' cm</b> and <b>' + a + ' cm</b>. How big is the smallest angle (in °, 1 decimal)?'), ang, 'The smallest angle is opposite the shortest leg: tan = opposite ÷ adjacent.', 'tan⁻¹(' + o + '/' + a + ') ≈ ' + ang + '°.', { tol: .051 });
   },
   function thirdAngle(l) {
-    const ang = ri(20, 70); return nu(p('A right-angled triangle has an angle of ' + ang + '°. How big is the third angle (in °)?'), 90 - ang, 'The angles add up to 180°. One angle is 90°.', '180 − 90 − ' + ang + ' = ' + (90 - ang) + '°.');
+    const ang = l === 2 ? ri(150, 700) / 10 : ri(20, 70); return nu(p('A right-angled triangle has an angle of ' + ang + '°. How big is the third angle (in °)?'), 90 - ang, 'The angles add up to 180°. One angle is 90°.', '180 − 90 − ' + ang + ' = ' + (90 - ang) + '°.');
   },
   function orderRatios(l) {
     const set = shuffle([[5, 13, 'sin'], [7, 9, 'cos'], [11, 6, 'tan'], [4, 9, 'tan'], [9, 11, 'sin'], [3, 7, 'cos'], [2, 5, 'sin'], [4, 5, 'cos']]).slice(0, 3);
@@ -720,29 +722,29 @@ XG['2.4'] = [
 /* ---------- 2.5 Slopes, auxiliary lines, solids ---------- */
 G['2.5'] = [
   function slopePct(l) {
-    const run = pick([20, 25, 40, 50, 80, 100]), rise = ri(2, 20); return nu(p('A road rises <b>' + rise + ' m</b> over a horizontal distance of <b>' + run + ' m</b>. What is the slope percentage?'), r1(rise / run * 100), 'Slope % = rise ÷ run × 100.', rise + ' ÷ ' + run + ' × 100 = ' + r1(rise / run * 100) + '%.', { tol: .051 });
+    const run = pick([20, 25, 40, 50, 80, 100]), rise = LR(l, 2, 20); return nu(p('A road rises <b>' + rise + ' m</b> over a horizontal distance of <b>' + run + ' m</b>. What is the slope percentage?'), r1(rise / run * 100), 'Slope % = rise ÷ run × 100.', rise + ' ÷ ' + run + ' × 100 = ' + r1(rise / run * 100) + '%.', { tol: .051 });
   },
   function slopeToAngle(l) {
-    const pct = pick([5, 8, 10, 12, 15, 20, 25, 40, 50, 75, 100]); const ang = Math.round(Math.atan(pct / 100) / D * 10) / 10; return nu(p('A slope of <b>' + pct + '%</b>. What is the angle of inclination (in °, 1 decimal)?'), ang, 'tan(angle) = slope ÷ 100.', 'tan⁻¹(' + pct / 100 + ') ≈ ' + ang + '°.', { tol: .051 });
+    const pct = PL(l, [10, 20, 25, 50, 100, 40, 75, 15, 12, 8, 5]); const ang = Math.round(Math.atan(pct / 100) / D * 10) / 10; return nu(p('A slope of <b>' + pct + '%</b>. What is the angle of inclination (in °, 1 decimal)?'), ang, 'tan(angle) = slope ÷ 100.', 'tan⁻¹(' + pct / 100 + ') ≈ ' + ang + '°.', { tol: .051 });
   },
   function angleToSlope(l) {
-    const ang = pick([3, 6, 9, 12, 18, 22, 28, 35, 40, 55]); const pct = Math.round(Math.tan(ang * D) * 1000) / 10; return nu(p('The angle of inclination of a road is <b>' + ang + '°</b>. What is the slope percentage (1 decimal)?'), pct, 'Slope % = tan(angle) × 100.', 'tan ' + ang + '° × 100 ≈ ' + pct + '%.', { tol: .11 });
+    const ang = PL(l, [10, 20, 30, 40, 35, 28, 22, 18, 12, 9, 6, 3]); const pct = Math.round(Math.tan(ang * D) * 1000) / 10; return nu(p('The angle of inclination of a road is <b>' + ang + '°</b>. What is the slope percentage (1 decimal)?'), pct, 'Slope % = tan(angle) × 100.', 'tan ' + ang + '° × 100 ≈ ' + pct + '%.', { tol: .11 });
   },
   function steeper(l) {
     const cs = [['30%', Math.atan(.3) / D, '20°', 20], ['100%', 45, '50°', 50], ['4 m per 20 m', Math.atan(.2) / D, '10°', 10], ['15%', Math.atan(.15) / D, '9°', 9], ['60%', Math.atan(.6) / D, '28°', 28], ['25%', Math.atan(.25) / D, '15°', 15]]; const c = pick(cs); const right = c[1] > c[3] ? c[0] : c[2];
     return ch(p('Which slope is <b>steeper</b>: ' + c[0] + ' or ' + c[2] + '?'), right, [c[0], c[2]].filter(x => x !== right), 'Convert one of them: slope % → angle with tan⁻¹, or angle → slope % with tan.', c[0] + ' ≈ ' + r1(c[1]) + '°, compared with ' + c[3] + '°: ' + right + ' is steeper.');
   },
   function isoscelesBase(l) {
-    const leg = ri(6, 15), apex = ri(5, 17) * 4; const base = 2 * leg * Math.sin(apex / 2 * D); return nu(p('An isosceles triangle has legs of <b>' + leg + ' cm</b> and an apex angle of <b>' + apex + '°</b>. How long is the base (in cm, 1 decimal)?'), r1(base), 'The altitude splits the triangle into two right-angled triangles with an angle of ' + apex / 2 + '° at the top.', 'Half the base = ' + leg + ' × sin ' + apex / 2 + '°, so the base = 2 × ' + leg + ' × sin ' + apex / 2 + '° ≈ ' + r1(base) + ' cm.', { tol: .051 });
+    const leg = LR(l, 6, 15), apex = LR(l, 5, 17) * 4; const base = 2 * leg * Math.sin(apex / 2 * D); return nu(p('An isosceles triangle has legs of <b>' + leg + ' cm</b> and an apex angle of <b>' + apex + '°</b>. How long is the base (in cm, 1 decimal)?'), r1(base), 'The altitude splits the triangle into two right-angled triangles with an angle of ' + apex / 2 + '° at the top.', 'Half the base = ' + leg + ' × sin ' + apex / 2 + '°, so the base = 2 × ' + leg + ' × sin ' + apex / 2 + '° ≈ ' + r1(base) + ' cm.', { tol: .051 });
   },
   function isoscelesAngle(l) {
     const leg = ri(8, 16), base = ri(5, 2 * leg - 4); const ang = Math.round(Math.acos(base / 2 / leg) / D * 10) / 10; return nu(p('An isosceles triangle has legs of <b>' + leg + ' cm</b> and a base of <b>' + base + ' cm</b>. How big is a base angle (in °, 1 decimal)?'), ang, 'Draw the altitude to the base: cos(base angle) = (base ÷ 2) ÷ leg.', 'cos B = ' + base / 2 + ' / ' + leg + ' → B ≈ ' + ang + '°.', { tol: .051 });
   },
   function cuboidDiag(l) {
-    const a = ri(3, 12), b = ri(3, 12), c = ri(3, 12); const d = Math.hypot(a, b); const ang = Math.round(Math.atan(c / d) / D * 10) / 10; return nu(p('A cuboid has base <b>' + a + ' × ' + b + '</b> and height <b>' + c + '</b>. What angle does the space diagonal make with the base (in °, 1 decimal)?'), ang, 'First the diagonal of the base (Pythagoras). Then the right-angled triangle with the height.', 'Base diagonal = √(' + a + '² + ' + b + '²) ≈ ' + r2(d) + '. tan⁻¹(' + c + '/' + r2(d) + ') ≈ ' + ang + '°.', { tol: .051 });
+    const a = LR(l, 3, 12), b = LR(l, 3, 12), c = LR(l, 3, 12); const d = Math.hypot(a, b); const ang = Math.round(Math.atan(c / d) / D * 10) / 10; return nu(p('A cuboid has base <b>' + a + ' × ' + b + '</b> and height <b>' + c + '</b>. What angle does the space diagonal make with the base (in °, 1 decimal)?'), ang, 'First the diagonal of the base (Pythagoras). Then the right-angled triangle with the height.', 'Base diagonal = √(' + a + '² + ' + b + '²) ≈ ' + r2(d) + '. tan⁻¹(' + c + '/' + r2(d) + ') ≈ ' + ang + '°.', { tol: .051 });
   },
   function pyramidAngle(l) {
-    const a = pick([6, 8, 10, 12]), h = ri(4, 12); const d = a * Math.SQRT2 / 2; const ang = Math.round(Math.atan(h / d) / D * 10) / 10; return nu(p('A square pyramid has base <b>' + a + ' × ' + a + '</b> and height <b>' + h + '</b>. What angle does a lateral edge make with the base (in °, 1 decimal)?'), ang, 'The foot of the height is the centre of the base. The distance to a corner is half the diagonal.', 'Half diagonal = ' + a + '√2 ÷ 2 ≈ ' + r2(d) + '. tan⁻¹(' + h + '/' + r2(d) + ') ≈ ' + ang + '°.', { tol: .051 });
+    const a = pick([6, 8, 10, 12]), h = LR(l, 4, 12); const d = a * Math.SQRT2 / 2; const ang = Math.round(Math.atan(h / d) / D * 10) / 10; return nu(p('A square pyramid has base <b>' + a + ' × ' + a + '</b> and height <b>' + h + '</b>. What angle does a lateral edge make with the base (in °, 1 decimal)?'), ang, 'The foot of the height is the centre of the base. The distance to a corner is half the diagonal.', 'Half diagonal = ' + a + '√2 ÷ 2 ≈ ' + r2(d) + '. tan⁻¹(' + h + '/' + r2(d) + ') ≈ ' + ang + '°.', { tol: .051 });
   }
 ];
 G['2.5'] = G['2.5'].slice();
@@ -762,7 +764,7 @@ XG['2.5'] = [
 const radS = (c, r) => (c === 1 && r > 1 ? '' : String(c)) + (r > 1 ? '√' + r : '');
 G['2.2'].push(
   function pythSimilar(l) {
-    const T = pick([[3, 4, 5], [6, 8, 10], [5, 12, 13], [8, 15, 17]]); const k = pick([2, 3, 1.5, 2.5]); const [a, b] = T; const h = Math.hypot(a, b);
+    const T = PL(l, [[3, 4, 5], [6, 8, 10], [5, 12, 13], [8, 15, 17]]); const k = PL(l, [2, 3, 1.5, 2.5]); const [a, b] = T; const h = Math.hypot(a, b);
     return nu(p('Triangle KLM is right-angled at L with KL = ' + a + ' and LM = ' + b + '. Triangle PQR ~ KLM (P ↔ K, Q ↔ L, R ↔ M). In triangle PQR, PQ = ' + f(a * k) + '. Calculate <b>PR</b> (the hypotenuse of PQR).'), h * k, 'First find KM with Pythagoras. Then use the scale factor PQ ÷ KL.', 'KM = √(' + a + '² + ' + b + '²) = ' + f(h) + '. Scale factor = ' + f(a * k) + ' ÷ ' + a + ' = ' + f(k) + '. PR = ' + f(h) + ' × ' + f(k) + ' = ' + f(h * k) + '.');
   },
   function rightSimilar(l) {
