@@ -431,6 +431,7 @@ function engine(def) {
       try { q = makeOne(key, lvl); } catch (e) { if (t > 50) throw e; continue; }
       q.fp = fingerprint(q);
       if (fps.includes(q.fp)) continue;
+      if (q.type === 'choice' && q.opts && q.opts.length <= 2 && typeof q.lvl === 'number' && q.lvl > 0 && t < 55) continue;
       if (t < 30 && gens.includes(q.gen)) continue;
       break;
     }
@@ -850,6 +851,7 @@ function makeFromGoal(g,level){
     const name=g.gens[Math.floor(Math.random()*g.gens.length)],hit=findGen(name);if(!hit)continue;
     const [f,sec,isX]=hit;let q;try{q=f(Math.min(level,2))}catch(e){continue}
     q.gen=name;q.sec=sec;q.lvl=level;q.mix=false;q.fp=fingerprint(q);
+    if(q.type==='choice'&&q.opts&&q.opts.length<=2&&level>0&&t<30)continue;
     if(recent.some(r=>r.f===q.fp))continue;return q;
   }
   return E.make(st.sec,level,recent);
