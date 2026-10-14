@@ -681,7 +681,8 @@ G['2.4'] = [
   },
   function angleInverse(l) {
     const [o, a, h] = scaled(); const w = pick(['sin', 'cos', 'tan']); const num = w === 'sin' ? o : w === 'cos' ? a : o, den = w === 'sin' ? h : w === 'cos' ? h : a; const ang = Math.round((w === 'sin' ? Math.asin(num / den) : w === 'cos' ? Math.acos(num / den) : Math.atan(num / den)) / D * 10) / 10;
-    return nu(p('Calculate the angle <b>∠B</b> (round to 1 decimal degree).') + rt(o, a, h, '∠B'), ang, 'Choose sin, cos or tan from the two sides you know, then use the inverse key (sin⁻¹, cos⁻¹, tan⁻¹).', w + ' B = ' + num + '/' + den + ' → B = ' + w + '⁻¹(' + num + '/' + den + ') ≈ ' + ang + '°.', { tol: .051 });
+    const fig = w === 'sin' ? rt(o, '', h, '∠B') : w === 'cos' ? rt('', a, h, '∠B') : rt(o, a, '', '∠B');
+    return nu(p('Calculate the angle <b>∠B</b> (round to 1 decimal degree).') + fig, ang, 'Look at the two sides you know. Which side is opposite ∠B, which is adjacent, which is the hypotenuse? Choose sin, cos or tan, then use the inverse key (sin⁻¹, cos⁻¹, tan⁻¹).', w + ' B = ' + num + '/' + den + ' → B = ' + w + '⁻¹(' + num + '/' + den + ') ≈ ' + ang + '°.', { tol: .051 });
   },
   function angleFromTwo(l) {
     const o = ri(3, 12), a = ri(o + 1, 20); const ang = Math.round(Math.atan(o / a) / D * 10) / 10; return nu(p('In a right-angled triangle the legs are <b>' + o + ' cm</b> and <b>' + a + ' cm</b>. How big is the smallest angle (in °, 1 decimal)?'), ang, 'The smallest angle is opposite the shortest leg: tan = opposite ÷ adjacent.', 'tan⁻¹(' + o + '/' + a + ') ≈ ' + ang + '°.', { tol: .051 });
