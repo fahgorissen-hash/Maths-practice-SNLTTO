@@ -665,27 +665,28 @@ XG['2.3'] = [
 const side = (q) => q;
 G['2.4'] = [
   function sideKnownHyp(l) {
-    const ang = ri(15, 75), hyp = ri(6, 30); const w = pick(['sin', 'cos']); const val = w === 'sin' ? hyp * Math.sin(ang * D) : hyp * Math.cos(ang * D); const ang2 = ang;
+    const ang = l === 0 ? pick([20, 30, 40, 50, 60, 70]) : l === 1 ? ri(15, 75) : ri(150, 750) / 10, hyp = l === 0 ? ri(5, 15) : l === 1 ? ri(6, 30) : ri(60, 450) / 10; const w = pick(['sin', 'cos']); const val = w === 'sin' ? hyp * Math.sin(ang * D) : hyp * Math.cos(ang * D); const ang2 = ang;
     const fig = w === 'sin' ? rt('x', '', hyp, ang + '°').replace('∠B', '') : rt('', 'x', hyp, ang + '°');
     return nu(p('Calculate <b>x</b> (round to 1 decimal).') + fig, r1(val), 'The angle at B. ' + (w === 'sin' ? 'x is opposite the angle and you know the hypotenuse: use sin.' : 'x is adjacent to the angle and you know the hypotenuse: use cos.'), w + ' ' + ang + '° = x / ' + hyp + ', so x = ' + hyp + ' × ' + w + ' ' + ang + '° ≈ ' + r1(val) + '.', { tol: .051, keys: [] });
   },
   function sideTan(l) {
-    const ang = ri(15, 75), s = ri(5, 25); const up = Math.random() < .5; const val = up ? s * Math.tan(ang * D) : s / Math.tan(ang * D);
+    const ang = l === 0 ? pick([20, 30, 40, 50, 60, 70]) : l === 1 ? ri(15, 75) : ri(150, 750) / 10, s = l === 0 ? ri(4, 12) : l === 1 ? ri(5, 25) : ri(50, 350) / 10; const up = Math.random() < .5; const val = up ? s * Math.tan(ang * D) : s / Math.tan(ang * D);
     const fig = up ? rt('x', s, '', ang + '°') : rt(s, 'x', '', ang + '°');
     return nu(p('Calculate <b>x</b> (round to 1 decimal).') + fig, r1(val), up ? 'Opposite and adjacent are involved: use tan. x is the opposite side.' : 'Opposite and adjacent are involved: use tan. x is the adjacent side, so divide.', up ? 'x = ' + s + ' × tan ' + ang + '° ≈ ' + r1(val) + '.' : 'x = ' + s + ' ÷ tan ' + ang + '° ≈ ' + r1(val) + '.', { tol: .051 });
   },
   function hypFromSide(l) {
-    const ang = ri(20, 70), s = ri(5, 20); const w = pick(['sin', 'cos']); const val = w === 'sin' ? s / Math.sin(ang * D) : s / Math.cos(ang * D);
+    const ang = l === 0 ? pick([20, 30, 40, 50, 60, 70]) : l === 1 ? ri(20, 70) : ri(200, 700) / 10, s = l === 0 ? ri(4, 12) : l === 1 ? ri(5, 20) : ri(50, 300) / 10; const w = pick(['sin', 'cos']); const val = w === 'sin' ? s / Math.sin(ang * D) : s / Math.cos(ang * D);
     const fig = w === 'sin' ? rt(s, '', 'x', ang + '°') : rt('', s, 'x', ang + '°');
     return nu(p('Calculate the hypotenuse <b>x</b> (round to 1 decimal).') + fig, r1(val), 'x is in the denominator after rearranging: x = ' + (w === 'sin' ? 'opposite' : 'adjacent') + ' ÷ ' + w + '.', 'x = ' + s + ' ÷ ' + w + ' ' + ang + '° ≈ ' + r1(val) + '.', { tol: .051 });
   },
   function angleInverse(l) {
-    const [o, a, h] = scaled(); const w = pick(['sin', 'cos', 'tan']); const num = w === 'sin' ? o : w === 'cos' ? a : o, den = w === 'sin' ? h : w === 'cos' ? h : a; const ang = Math.round((w === 'sin' ? Math.asin(num / den) : w === 'cos' ? Math.acos(num / den) : Math.atan(num / den)) / D * 10) / 10;
+    let [o, a, h] = l === 0 ? pick([[3, 4, 5], [5, 12, 13], [8, 15, 17]]) : scaled();
+    if (l === 2) { a = ri(30, 150) / 10; o = ri(30, 150) / 10; h = Math.round(Math.hypot(a, o) * 10) / 10; } const w = pick(['sin', 'cos', 'tan']); const num = w === 'sin' ? o : w === 'cos' ? a : o, den = w === 'sin' ? h : w === 'cos' ? h : a; const ang = Math.round((w === 'sin' ? Math.asin(num / den) : w === 'cos' ? Math.acos(num / den) : Math.atan(num / den)) / D * 10) / 10;
     const fig = w === 'sin' ? rt(o, '', h, '∠B') : w === 'cos' ? rt('', a, h, '∠B') : rt(o, a, '', '∠B');
     return nu(p('Calculate the angle <b>∠B</b> (round to 1 decimal degree).') + fig, ang, 'Look at the two sides you know. Which side is opposite ∠B, which is adjacent, which is the hypotenuse? Choose sin, cos or tan, then use the inverse key (sin⁻¹, cos⁻¹, tan⁻¹).', w + ' B = ' + num + '/' + den + ' → B = ' + w + '⁻¹(' + num + '/' + den + ') ≈ ' + ang + '°.', { tol: .051 });
   },
   function angleFromTwo(l) {
-    const o = ri(3, 12), a = ri(o + 1, 20); const ang = Math.round(Math.atan(o / a) / D * 10) / 10; return nu(p('In a right-angled triangle the legs are <b>' + o + ' cm</b> and <b>' + a + ' cm</b>. How big is the smallest angle (in °, 1 decimal)?'), ang, 'The smallest angle is opposite the shortest leg: tan = opposite ÷ adjacent.', 'tan⁻¹(' + o + '/' + a + ') ≈ ' + ang + '°.', { tol: .051 });
+    const o = l === 2 ? ri(25, 120) / 10 : ri(3, 12), a = l === 2 ? ri(o * 10 + 10, 200) / 10 : ri(o + 1, 20); const ang = Math.round(Math.atan(o / a) / D * 10) / 10; return nu(p('In a right-angled triangle the legs are <b>' + o + ' cm</b> and <b>' + a + ' cm</b>. How big is the smallest angle (in °, 1 decimal)?'), ang, 'The smallest angle is opposite the shortest leg: tan = opposite ÷ adjacent.', 'tan⁻¹(' + o + '/' + a + ') ≈ ' + ang + '°.', { tol: .051 });
   },
   function thirdAngle(l) {
     const ang = ri(20, 70); return nu(p('A right-angled triangle has an angle of ' + ang + '°. How big is the third angle (in °)?'), 90 - ang, 'The angles add up to 180°. One angle is 90°.', '180 − 90 − ' + ang + ' = ' + (90 - ang) + '°.');
@@ -697,6 +698,14 @@ G['2.4'] = [
 ];
 G['2.4'].pop();
 XG['2.4'] = [
+  function isoscelesHeight(l) {
+    const base = ri(3, 10) * 2, ang = ri(50, 75), h = base / 2 * Math.tan(ang * D);
+    return nu(p('An isosceles triangle has a base of <b>' + base + ' cm</b> and two base angles of <b>' + ang + '°</b>. How high is the triangle (in cm, 1 decimal)?'), r1(h), 'Draw the height from the top to the middle of the base. This splits the triangle into two right-angled triangles.', 'Half of the base is ' + base / 2 + ' cm. tan ' + ang + '° = height ÷ ' + base / 2 + ', so height = ' + base / 2 + ' × tan ' + ang + '° ≈ ' + r1(h) + ' cm.', { tol: .051 });
+  },
+  function rectDiagAngle(l) {
+    const w = ri(6, 16), h = ri(3, w - 1), d = Math.hypot(w, h), ang = Math.round(Math.atan(h / w) / D * 10) / 10;
+    return nu(p('A rectangle is <b>' + w + ' cm</b> wide and <b>' + h + ' cm</b> high. What angle does the diagonal make with the long side (in °, 1 decimal)?'), ang, 'The diagonal and the two sides form a right-angled triangle. Which two sides do you know for the angle you need?', 'tan⁻¹(' + h + '/' + w + ') ≈ ' + ang + '°.', { tol: .051 });
+  },
   function ladder(l) {
     const ang = ri(60, 78), len = ri(4, 9); return nu(p('A ladder of <b>' + len + ' m</b> leans against a wall and makes an angle of <b>' + ang + '°</b> with the ground. How high up the wall does it reach (in m, 1 decimal)?'), r1(len * Math.sin(ang * D)), 'Draw a right-angled triangle. The ladder is the hypotenuse; the height is opposite the angle at the ground.', len + ' × sin ' + ang + '° ≈ ' + r1(len * Math.sin(ang * D)) + ' m.', { tol: .051 });
   },
