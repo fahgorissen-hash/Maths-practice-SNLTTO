@@ -1076,8 +1076,10 @@ function check(){
   if(done)return;const q=cur;let u=userAns(q);
   if(empty(q,u)){fb('hint','Fill in your answer first.');return}
   if((q.type==='num'||(q.type==='expr'&&E.check&&!/=/.test(String(q.ans))))&&typeof u==='string'&&u.indexOf('=')>0&&E.parse){
-    const parts=u.split('=').map(x=>x.trim()).filter(Boolean);
-    if(parts.length>=2){const fin=parts[parts.length-1],pre=parts.slice(0,-1);
+    const raw=u.split('=').map(x=>x.trim()).filter(Boolean);
+    /* numeric answers: ignore a bare label such as "∠R", "<R", "R" or "angle R", and a trailing ° (so 360-76-86-111=∠R=87° counts) */
+    const parts=q.type==='num'?raw.filter(x=>!/^(?:∠|<|angle\s*)?[A-Za-z]{1,4}°?$/i.test(x)).map(x=>x.replace(/°$/,'').trim()):raw;
+    if(raw.length>=2&&parts.length>=1){const fin=parts[parts.length-1],pre=parts.slice(0,-1);
       let okPre=false;try{okPre=pre.every(pt=>stepEq(q,pt))}catch(e){}
       if(okPre&&chk(q,fin).ok){if(!test)stepLines.push(...pre);u=fin;const i0=$('#in0');if(i0)i0.value=fin}}}
   if(test){return testCheck(q,u)}
