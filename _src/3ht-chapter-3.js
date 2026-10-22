@@ -265,7 +265,7 @@ if (VT) {
     },
     function fSolve(l) {
       let m, b, c, x; do { m = nz(-6, 6); b = nz(-12, 12); x = l === 2 ? nz(-16, 16) / 4 : nz(-9, 9); c = rd(m * x + b); } while (m === 1 || !Number.isInteger(c));
-      return nu(p('Given ' + F('f', X()) + ' = ' + lin(m, b) + '. Solve ' + F('f', X()) + ' = ' + neg(c) + '.'), x, 'Write the equation ' + lin(m, b) + ' = ' + neg(c) + ' and solve it.', p(lin(m, b) + ' = ' + neg(c)) + p(lin(m, 0) + ' = ' + neg(rd(c - b))) + p(X() + ' = ' + neg(rd(c - b)) + ' : ' + par(m) + ' = ' + neg(x)), { noStep: true });
+      return nu(p('Given ' + F('f', X()) + ' = ' + lin(m, b) + '. Solve ' + F('f', X()) + ' = ' + neg(c) + '.'), x, 'Write the equation ' + lin(m, b) + ' = ' + neg(c) + ' and solve it.', p(lin(m, b) + ' = ' + neg(c)) + p(lin(m, 0) + ' = ' + neg(rd(c - b))) + p(X() + ' = ' + neg(rd(c - b)) + ' : ' + par(m) + ' = ' + neg(x)), { noStep: true, eqStep: 'x' });
     }
   );
   G['3.2'].push(

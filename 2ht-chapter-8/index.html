@@ -453,7 +453,7 @@ function engine(def) {
     const secs = []; for (let i = 0; i < N; i++) secs.push(SECTIONS[i % n].id);
     const seen = []; return shuffle(secs).map((s, i) => { const q = make(s, lv[i], seen); seen.push({ g: null, f: q.fp }); q.hint = null; return q; });
   }
-  return { KEY: def.key, SECTIONS, LESSONS, G, XG, make, makeTest, grade, check, answerText, evalNum: s => evalAst(parse(String(s), { noVars: true }), {}), parseNum, parsePoint, f, M, parse, defaultMode: def.defaultMode || 'lesson' };
+  return { KEY: def.key, SECTIONS, LESSONS, G, XG, make, makeTest, grade, check, answerText, evalNum: s => evalAst(parse(String(s), { noVars: true }), {}), evalAt: (s, env) => evalAst(parse(String(s)), env), parseNum, parsePoint, f, M, parse, defaultMode: def.defaultMode || 'lesson' };
 }
 
 /* ---------- click grid (shared) ---------- */
@@ -942,10 +942,10 @@ if (P.cls === '1HVT') {
     function bracketEq(l) {
       const a = ri(2, 6), b = nz(-9, 9), x = ri(-8, 10), c = l === 0 ? 0 : nz(-9, 9), rhs = a * (x + b) + c;
       const L = a + '(' + lt(1, b) + ')' + (c === 0 ? '' : c < 0 ? '-' + -c : '+' + c);
-      const st = [L + '=' + rhs, CS([T(a, 'x'), String(a * b)].concat(c ? [String(c)] : [])) + '=' + rhs];
-      if (c !== 0) st.push(lt(a, a * b + c) + '=' + rhs);
-      st.push(a + 'x=' + a * x, 'x=' + x);
-      return nu(p('Solve: ' + mt(L + '=' + rhs) + '.'), x, 'First expand the brackets. Then use the balance method.', st.filter((r, k) => k === 0 || r !== st[k - 1]).map(r => p(mt(r))).join(''), { noStep: true, ansText: 'x = ' + N_(x) });
+      const st = [[L, rhs], [CS([T(a, 'x'), String(a * b)].concat(c ? [String(c)] : [])), rhs]];
+      if (c !== 0) st.push([lt(a, a * b + c), rhs]);
+      st.push([a + 'x', a * x], ['x', x]);
+      return nu(p('Solve: ' + mt(L) + ' = ' + N_(rhs) + '.'), x, 'First expand the brackets. Then use the balance method.', st.filter((r, k) => k === 0 || r[0] !== st[k - 1][0]).map(r => p(mt(r[0]) + ' = ' + N_(r[1]))).join(''), { noStep: true, eqStep: 'x', ansText: 'x = ' + N_(x) });
     },
     find('areaExpr')
   ];
@@ -963,7 +963,7 @@ if (P.cls === '1HVT') {
       if (l === 2 && Math.random() < .5) { G_ = '-' + G_; A = A.map(t => [-t[0], t[1]]); }
       const inner = src(A), right = G_ + '(' + inner + ')', expr = C(right);
       const d = [2, 3].find(z => g % z === 0 && g !== z), wrongs = [G_ + '(' + src([A[0], [-A[1][0], '']]) + ')', G_ + '(' + src([[A[0][0] * g, A[0][1]], A[1]]) + ')'];
-      if (d) wrongs.push(G_.replace(String(g), String(d)) + '(' + src(A.map(t => [t[0] * g / d, t[1]])) + ')'); else wrongs.push(G_ + '(' + src([[A[0][0], A[0][1] + v], A[1]]) + ')');
+      if (d) wrongs.push(G_.replace(String(g), String(d)) + '(' + src(A.map(t => [t[0] * g / d, t[1]])) + ')'); else wrongs.push(G_ + '(' + src([A[0], [A[1][0] * g, '']]) + ')');
       return ch(p('Factorise as far as possible: ' + mt(expr) + '.'), mt(right), wrongs.filter(w => w !== right).map(mt), 'Find the highest common factor of both terms (number AND letter). Put it in front of the brackets and divide every term by it.', 'The highest common factor is ' + mt(G_) + '. ' + mt(expr) + ' = ' + mt(right) + '.<br>Check by expanding: ' + mt(right) + ' = ' + mt(expr) + '.');
     },
     function productSum(l) {
@@ -1120,6 +1120,7 @@ const DIVSTEP=new Set('bisectAngle'.split(' '));   /* a typed a/b is a division 
 const eqN=q=>(String(q.steps||'').replace(/<svg[\s\S]*?<\/svg>/g,'').replace(/<[^>]+>/g,'').match(/=/g)||[]).length;
 const canType=q=>q.type==='num'||(q.type==='expr'&&!!E.check);
 function stepMode(q){
+  if(q&&q.eqStep&&E.evalAt)return test?'':'eq';
   if(!q||q.noStep)return '';
   const gn=String(genName(q)||'').replace(/^X/,'');
   const st_=String(q.steps||'');
@@ -1134,11 +1135,12 @@ function stepMode(q){
   }
   return NODISC.has(gn)?'':'note';
 }
+const EQNOTE='<p class="stepnote"><b>Show the balance method.</b> Type each step as an equation (for example <i>4x = 12</i>) and press Check. Finish with the answer, for example <i>x = 3</i>.</p>';
 const STEPNOTE='<p class="stepnote"><b>Steps count.</b> Showing your steps is part of a correct answer. '+'This page can only check the final answer of this question, so write your working on paper too (in a test you always must).</p>';
 function qHTML(q){
-  let h='<div class="q">'+q.html+'</div>'+(stepMode(q)==='note'?STEPNOTE:'')+'<div id="stp" class="stp"></div><div class="ans" id="ans">';
-  if(q.type==='num')h+='<label class="sr" for="in0">Your answer</label><input type="text" id="in0" inputmode="text" autocomplete="off" placeholder="your answer">';
-  else if(q.type==='expr')h+='<label class="sr" for="in0">Your answer</label><input type="text" id="in0" inputmode="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="type your answer"><div class="kp" id="kp">'+(q.keys||['√','³√','⁴√','^','/','·','(',')','π']).map(k=>'<button type="button" data-k="'+k+'">'+k+'</button>').join('')+'<button type="button" data-k="⌫" aria-label="delete">⌫</button></div><div class="pv" id="pv" aria-live="polite"></div>';
+  let h='<div class="q">'+q.html+'</div>'+(stepMode(q)==='note'?STEPNOTE:stepMode(q)==='eq'?EQNOTE:'')+'<div id="stp" class="stp"></div><div class="ans" id="ans">';
+  if(q.type==='num')h+='<label class="sr" for="in0">Your answer</label><input type="text" id="in0" inputmode="text" autocomplete="off" placeholder="'+(q.eqStep?'a step, or '+q.eqStep+' = …':'your answer')+'">';
+  else if(q.type==='expr')h+='<label class="sr" for="in0">Your answer</label><input type="text" id="in0" inputmode="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="'+(q.eqStep?'a step, or '+q.eqStep+' = …':'type your answer')+'"><div class="kp" id="kp">'+(q.keys||['√','³√','⁴√','^','/','·','(',')','π']).map(k=>'<button type="button" data-k="'+k+'">'+k+'</button>').join('')+'<button type="button" data-k="⌫" aria-label="delete">⌫</button></div><div class="pv" id="pv" aria-live="polite"></div>';
   else if(q.type==='point')h+='<label class="sr" for="in0">Your answer</label><input type="text" id="in0" autocomplete="off" placeholder="(x, y)">';
   else if(q.type==='multi')q.fields.forEach((f,i)=>{h+='<label for="in'+i+'">'+f+'</label><input type="text" id="in'+i+'" autocomplete="off">'});
   else if(q.type==='choice'){h+='<div class="choices">'+q.opts.map((o,i)=>'<button type="button" class="choice" data-i="'+i+'" aria-pressed="false">'+o+'</button>').join('')+'</div>'}
@@ -1241,15 +1243,41 @@ function logAnswer(q,u,ok){
   const h=$('#hist');if(h)h.innerHTML='<div class="at">Your answers on this question: '+attempts.map(x=>'<span class="'+(x.ok?'ok':'no')+'">'+(x.ok?'✓':'✗')+' '+esc(x.a)+'</span>').join(' ')+'</div>';
 }
 const chk=(q,u)=>E.check?E.check(q,u):{ok:E.grade(q,u)};
-function fmtStep(t){let h=null;if(/\//.test(t)||(cur&&cur.type==='expr'&&/[\^√]/.test(t))){try{h=E.M(t,{noVars:cur&&cur.type!=='expr'})}catch(e){}}else h=esc(t).replace(/\*|·/g,'×').replace(/-/g,'−');return h||esc(t)}
-function drawSteps(fin){const d=$('#stp');if(!d)return;d.innerHTML=stepLines.map(t=>'<div class="stl"><span class="ci open" aria-label="correct step">○</span><span class="sv">'+fmtStep(t)+' <span class="eq">=</span></span></div>').join('')+(fin?'<div class="stl fin"><span class="ci full" aria-label="correct final answer">✓</span><span class="sv">'+fmtStep(fin)+'<div class="fnote">Completely correct! This is the correct final answer.</div></span></div>':'')}
+function fmtStep(t){if(/=/.test(t))return t.split('=').map(x=>fmtStep(x.trim())).join(' <span class="eq">=</span> ');let h=null;if(/\//.test(t)||(cur&&cur.type==='expr'&&/[\^√]/.test(t))){try{h=E.M(t,{noVars:cur&&cur.type!=='expr'})}catch(e){}}else h=esc(t).replace(/\*|·/g,'×').replace(/-/g,'−');return h||esc(t)}
+function drawSteps(fin){const d=$('#stp');if(!d)return;d.innerHTML=stepLines.map(t=>'<div class="stl"><span class="ci open" aria-label="correct step">○</span><span class="sv">'+fmtStep(t)+(/=/.test(t)?'':' <span class="eq">=</span>')+'</span></div>').join('')+(fin?'<div class="stl fin"><span class="ci full" aria-label="correct final answer">✓</span><span class="sv">'+fmtStep(fin)+'<div class="fnote">Completely correct! This is the correct final answer.</div></span></div>':'')}
 function stepEq(q,pt){
   if(q.type==='num'){if(q.tol&&E.evalNum){try{return Math.abs(E.evalNum(pt)-q.ans)<=q.tol}catch(e){return false}}try{E.parse(pt,{noVars:true})}catch(e){return false}return E.check({type:'expr',ans:String(q.ans),form:'any',noVars:true},pt).ok}
   return E.check({type:'expr',ans:q.ans,form:'any'},pt).ok}
+/* balance method: is "L = R" a correct in-between equation (same solution as the question, still linear, not 0 = 0)? */
+function eqLine(q,s){
+  const v=q.eqStep,sd=String(s).split('=').map(t=>t.trim().replace(/:/g,'/').replace(/,/g,'.'));if(sd.length!==2||!sd[0]||!sd[1])return false;
+  let sol=q.type==='num'?q.ans:NaN;if(q.type!=='num'){try{sol=E.evalNum(String(q.ans))}catch(e){}}
+  const g=t=>{const env={};env[v]=t;let r=NaN;try{r=E.evalAt(sd[0],env)-E.evalAt(sd[1],env)}catch(e){}return Object.keys(env).length===1?r:NaN};
+  const a=g(sol),b=g(sol+1),c=g(sol+2.5);if(![a,b,c].every(isFinite))return false;
+  const sc=Math.max(1,Math.abs(b),Math.abs(c));
+  return Math.abs(a)<=1e-7*sc&&Math.abs(b)>1e-9&&Math.abs(c-2.5*b)<=1e-7*sc;
+}
+/* split "x = 7" into the final answer, or return null when the right side is still a calculation */
+function eqFinal(q,u){
+  const sd=String(u).split('=').map(t=>t.trim());if(sd.length!==2)return null;
+  const v=q.eqStep,i=sd[0].toLowerCase()===v?1:sd[1].toLowerCase()===v?0:-1;if(i<0)return null;const r=sd[i];
+  if(q.type==='num'&&!isNaN(E.parseNum(r)))return r;
+  if(q.type==='expr'&&!/[a-z]/i.test(r)&&(chk(q,r).ok||!/[+\-*·:]/.test(r.replace(/^[-−]/,''))&&!/\/.*\//.test(r)))return r;
+  return null;
+}
 function check(){
   if(done)return;const q=cur;let u=userAns(q);
   if(empty(q,u)){fb('hint','Fill in your answer first.');return}
-  if((q.type==='num'||(q.type==='expr'&&E.check&&!/=/.test(String(q.ans))))&&typeof u==='string'&&u.indexOf('=')>0&&E.parse){
+  if(q.eqStep&&E.evalAt&&typeof u==='string'){
+    const ip=()=>{const i0=$('#in0');if(i0){i0.value='';i0.focus()}const pv=$('#pv');if(pv)pv.innerHTML=''};
+    if(u.indexOf('=')>=0){const fin=eqFinal(q,u);
+      if(fin!==null){u=fin}
+      else if(test){}
+      else if(eqLine(q,u)){const t=String(u).trim();if(stepLines.indexOf(t)<0)stepLines.push(t);drawSteps();ip();fb('hint','<b class="h">✓ Good step.</b>Both sides are still in balance. Type your next step, and finish with '+q.eqStep+' = …');return}
+      else{fb('hint','<b class="h">That step is not right.</b>Check that you did the same thing on both sides, and that you calculated correctly. Then type the step again.');return}}
+    if(!test&&!stepLines.length&&chk(q,u).ok){fb('hint','<b class="h">Show your working first.</b>Showing your steps is part of a correct answer. Type the first step of the balance method as an equation (for example <i>4'+q.eqStep+' = 12</i>), then work towards '+q.eqStep+' = …');return}
+  }
+  if(!q.eqStep&&(q.type==='num'||(q.type==='expr'&&E.check&&!/=/.test(String(q.ans))))&&typeof u==='string'&&u.indexOf('=')>0&&E.parse){
     const raw=u.split('=').map(x=>x.trim()).filter(Boolean);
     /* numeric answers: ignore a bare label such as "∠R", "<R", "R" or "angle R", and a trailing ° (so 360-76-86-111=∠R=87° counts) */
     const parts=q.type==='num'?raw.filter(x=>!/^(?:∠|<|angle\s*)?[A-Za-z]{1,4}°?$/i.test(x)).map(x=>x.replace(/°$/,'').trim()):raw;
@@ -1280,7 +1308,7 @@ function check(){
       if(lvl()<3){st.lvl[st.sec]=lvl()+1;st.best[st.sec]=Math.max(st.best[st.sec]||0,lvl());up+=' <b>Level up: '+LV[lvl()]+'!</b>'+(lvl()===3?' These are challenge questions.':'')+award('up');if(lvl()>=2)up+=award('spicy')}
       else if(!st.done[st.sec]){st.done[st.sec]=true;up+=' <b>Extra spicy completed! ★ Master Mix is now unlocked for this section (see the menu).</b>'+award('mm')}}
     const g=goalOfQ(q);if(g&&goalScore(g).key==='mastered')up+=award('goal');
-    if(stepLines.length&&(q.type==='num'||q.type==='expr'))drawSteps(String(u).trim());save();fb('ok','<b class="h">Correct!'+(tries>1?' (second try)':'')+'</b>'+q.steps+up);finish();
+    if(stepLines.length&&(q.type==='num'||q.type==='expr'))drawSteps((q.eqStep?q.eqStep+' = ':'')+String(u).trim());save();fb('ok','<b class="h">Correct!'+(tries>1?' (second try)':'')+'</b>'+q.steps+up);finish();
     if(st.auto!==false){clearTimeout(autoT);autoT=setTimeout(()=>{if(done&&cur===q&&!test&&!view)next(false)},1000)}
   }else if(tries===1){
     row=0;if(counts)streak=0;

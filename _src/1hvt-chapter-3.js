@@ -156,7 +156,7 @@
       let a = l === 0 ? ri(2, 5) : nz(-5, 5), b = l === 0 ? ri(0, 6) : nz(-8, 8), x = l === 0 ? ri(1, 6) : ri(-6, 7);
       if (l === 2) { a = nz(-6, 6); }
       const y = ev(a, b, x);
-      return { type: 'num', ans: x, correct: String(x),
+      return { type: 'num', ans: x, correct: String(x), eqStep: 'x',
         html: '<p>Given: <b>y = ' + linTxt(a, b) + '</b>. For which <b>x</b> is <b>y = ' + f(y) + '</b>?</p>',
         hint: 'Write the equation ' + linTxt(a, b) + ' = ' + f(y) + ' and solve it step by step. First remove the ' + (b !== 0 ? f(b) : 'multiplication') + '.',
         steps: linTxt(a, b) + ' = ' + f(y) + (b !== 0 ? '<br>' + (a === 1 ? 'x' : f(a) + 'x') + ' = ' + f(y - b) : '') + '<br>x = ' + f(x) };
@@ -307,7 +307,7 @@
     },
     function timeFor(l) {
       const c = pick(CTX), s = ri(2, 12), r = ri(2, 7), x = ri(3, 14), tot = s + r * x;
-      return { type: 'num', ans: x, correct: String(x),
+      return { type: 'num', ans: x, correct: String(x), eqStep: c.v,
         html: '<p>' + c.t(s, r) + ' The formula is <b>' + c.y + ' = ' + s + ' + ' + r + c.v + '</b>. For which ' + c.v + ' is <b>' + c.y + ' = ' + tot + '</b>?</p>',
         hint: 'Solve ' + s + ' + ' + r + c.v + ' = ' + tot + '. First subtract ' + s + ' on both sides.', steps: r + c.v + ' = ' + tot + ' − ' + s + ' = ' + (tot - s) + '<br>' + c.v + ' = ' + (tot - s) + ' : ' + r + ' = ' + x };
     },
@@ -370,7 +370,7 @@
   XG['3.2'] = [
     function solveNeg() {
       const a = pick([-5, -4, -3, -2, 2, 3, 4]), b = ri(-8, 8), x = ri(-6, 6), y = a * x + b;
-      return { type: 'num', ans: x, correct: String(x),
+      return { type: 'num', ans: x, correct: String(x), eqStep: 'x',
         html: '<p>Given: <b>y = ' + linTxt(a, b) + '</b>. For which <b>x</b> is <b>y = ' + f(y) + '</b>?</p>',
         hint: 'Solve ' + linTxt(a, b) + ' = ' + f(y) + '. First get the term with x alone, then divide.',
         steps: (b !== 0 ? f(a) + 'x = ' + f(y) + (b > 0 ? ' − ' + b : ' + ' + Math.abs(b)) + ' = ' + f(y - b) + '<br>' : '') + 'x = ' + f(y - b) + ' : ' + par(a) + ' = ' + f(x) };

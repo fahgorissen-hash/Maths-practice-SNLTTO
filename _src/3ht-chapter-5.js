@@ -29,7 +29,7 @@ function fv(n, d, mixed) {
 function solQ(html, n, d, v, hint, steps, extra) {
   if (d < 0) { n = -n; d = -d; } const g = gcd(n, d); n /= g; d /= g; v = v || 'x';
   const q = d === 1 ? nu(html, n, hint, steps) : ex(html + p('<small>Give the exact value of ' + X(v) + ': a fraction like 7/3, a mixed number like 2 1/3, or a decimal if it ends.</small>'), ratText(n, d), null, hint, steps, { keys: ['/', '−', '(', ')'] });
-  q.noStep = true; q.ansText = X(v) + ' = ' + fv(n, d, true); return Object.assign(q, extra || {});
+  q.noStep = true; q.eqStep = v; q.ansText = X(v) + ' = ' + fv(n, d, true); return Object.assign(q, extra || {});
 }
 /* balance-method steps: rows [equation html, operation] */
 const bal = rows => '<table style="border-collapse:collapse;margin:6px 0">' + rows.map(r => '<tr><td style="text-align:right;padding:3px 16px 3px 0">' + r[0] + '</td><td style="color:#d1471f;padding:3px 0">' + (r[1] || '') + '</td></tr>').join('') + '</table>';
@@ -69,7 +69,7 @@ H.a1 = [
     const a = pick([.5, 1.5, 2.5, .25, .75, 1.25]), c = pick([2, 1.5, -1.75, .5, 3.5, -.5]); if (a === c) return H.a1[2](l);
     const x = ri(-8, 8) * (l === 2 ? .5 : 1), b = pick([-6, -4, -3, 2, 3, 4, 6]), d = Math.round((a * x + b - c * x) * 1e6) / 1e6;
     const st = [[lin(a, b) + ' = ' + lin(c, d), (b > 0 ? '− ' + b : '+ ' + -b)], [lin(a, 0) + ' = ' + lin(c, Math.round((d - b) * 1e6) / 1e6), c > 0 ? '− ' + lin(c, 0) : '+ ' + lin(-c, 0)], [lin(Math.round((a - c) * 1e6) / 1e6, 0) + ' = ' + neg(Math.round((d - b) * 1e6) / 1e6), ': ' + (a - c < 0 ? '(' + neg(a - c) + ')' : a - c)], [X() + ' = ' + neg(x)]];
-    return nu(p('Solve: ' + lin(a, b) + ' = ' + lin(c, d)), x, 'Decimals work the same as whole numbers. You can also first multiply both sides by 4 (or 2) to get rid of the decimals.', bal(st), { noStep: true, ansText: X() + ' = ' + neg(x) });
+    return nu(p('Solve: ' + lin(a, b) + ' = ' + lin(c, d)), x, 'Decimals work the same as whole numbers. You can also first multiply both sides by 4 (or 2) to get rid of the decimals.', bal(st), { noStep: true, eqStep: 'x', ansText: X() + ' = ' + neg(x) });
   },
   function withFractions(l) {
     // (p/q)x + r = s with nice numbers: multiply by q
@@ -102,7 +102,7 @@ H.a1 = [
   },
   function rectangleEq(l) {
     const w = ri(3, 20), dd = ri(2, 9), len = w + dd, P = 2 * (w + len);
-    return nu(p('A rectangle is <b>' + dd + ' cm</b> longer than it is wide. Its perimeter is <b>' + P + ' cm</b>. Use ' + X() + ' for the width. Set up an equation and calculate the <b>width</b> (in cm).'), w, 'The length is ' + X() + ' + ' + dd + '. Perimeter = 2 · width + 2 · length.', p('2' + X() + ' + 2(' + X() + ' + ' + dd + ') = ' + P) + bal([['2' + X() + ' + 2' + X() + ' + ' + 2 * dd + ' = ' + P, '− ' + 2 * dd], ['4' + X() + ' = ' + (P - 2 * dd), ': 4'], [X() + ' = ' + w]]) + p('The length is ' + len + ' cm and the width is ' + w + ' cm.'), { noStep: true });
+    return nu(p('A rectangle is <b>' + dd + ' cm</b> longer than it is wide. Its perimeter is <b>' + P + ' cm</b>. Use ' + X() + ' for the width. Set up an equation and calculate the <b>width</b> (in cm).'), w, 'The length is ' + X() + ' + ' + dd + '. Perimeter = 2 · width + 2 · length.', p('2' + X() + ' + 2(' + X() + ' + ' + dd + ') = ' + P) + bal([['2' + X() + ' + 2' + X() + ' + ' + 2 * dd + ' = ' + P, '− ' + 2 * dd], ['4' + X() + ' = ' + (P - 2 * dd), ': 4'], [X() + ' = ' + w]]) + p('The length is ' + len + ' cm and the width is ' + w + ' cm.'), { noStep: true, eqStep: 'x' });
   }
 ];
 HX.a1 = [
@@ -116,7 +116,7 @@ HX.a1 = [
     const f1 = pick([5, 8, 10, 12, 15]), r1 = pick([.2, .25, .3, .4]), f2 = f1 + pick([5, 10, 15, 20]), r2 = r1 - pick([.05, .1, .15].filter(z => z < r1));
     const t = Math.round((f2 - f1) / (r1 - r2) * 1000) / 1000;
     if (!Number.isInteger(t)) return HX.a1[1](l);
-    return nu(p('Phone plan A costs €' + f1 + ' per month plus €' + r1.toFixed(2) + ' per minute. Plan B costs €' + f2 + ' per month plus €' + r2.toFixed(2) + ' per minute. For how many minutes do both plans cost the <b>same</b>?'), t, 'Write a formula for each plan with ' + X('t') + ' minutes. Make them equal and solve.', p('A: ' + f1 + ' + ' + r1 + X('t') + ' &nbsp; B: ' + f2 + ' + ' + Math.round(r2 * 100) / 100 + X('t')) + bal([[f1 + ' + ' + r1 + X('t') + ' = ' + f2 + ' + ' + Math.round(r2 * 100) / 100 + X('t'), '− ' + Math.round(r2 * 100) / 100 + X('t')], [f1 + ' + ' + Math.round((r1 - r2) * 100) / 100 + X('t') + ' = ' + f2, '− ' + f1], [Math.round((r1 - r2) * 100) / 100 + X('t') + ' = ' + (f2 - f1), ': ' + Math.round((r1 - r2) * 100) / 100], [X('t') + ' = ' + t]]) + p('After ' + t + ' minutes both plans cost the same.'), { noStep: true });
+    return nu(p('Phone plan A costs €' + f1 + ' per month plus €' + r1.toFixed(2) + ' per minute. Plan B costs €' + f2 + ' per month plus €' + r2.toFixed(2) + ' per minute. For how many minutes do both plans cost the <b>same</b>?'), t, 'Write a formula for each plan with ' + X('t') + ' minutes. Make them equal and solve.', p('A: ' + f1 + ' + ' + r1 + X('t') + ' &nbsp; B: ' + f2 + ' + ' + Math.round(r2 * 100) / 100 + X('t')) + bal([[f1 + ' + ' + r1 + X('t') + ' = ' + f2 + ' + ' + Math.round(r2 * 100) / 100 + X('t'), '− ' + Math.round(r2 * 100) / 100 + X('t')], [f1 + ' + ' + Math.round((r1 - r2) * 100) / 100 + X('t') + ' = ' + f2, '− ' + f1], [Math.round((r1 - r2) * 100) / 100 + X('t') + ' = ' + (f2 - f1), ': ' + Math.round((r1 - r2) * 100) / 100], [X('t') + ' = ' + t]]) + p('After ' + t + ' minutes both plans cost the same.'), { noStep: true, eqStep: 't' });
   }
 ];
 

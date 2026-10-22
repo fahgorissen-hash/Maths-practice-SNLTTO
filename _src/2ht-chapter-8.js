@@ -437,7 +437,7 @@ if (P.cls === '1HVT') {
       const st = [[L, rhs], [CS([T(a, 'x'), String(a * b)].concat(c ? [String(c)] : [])), rhs]];
       if (c !== 0) st.push([lt(a, a * b + c), rhs]);
       st.push([a + 'x', a * x], ['x', x]);
-      return nu(p('Solve: ' + mt(L) + ' = ' + N_(rhs) + '.'), x, 'First expand the brackets. Then use the balance method.', st.filter((r, k) => k === 0 || r[0] !== st[k - 1][0]).map(r => p(mt(r[0]) + ' = ' + N_(r[1]))).join(''), { noStep: true, ansText: 'x = ' + N_(x) });
+      return nu(p('Solve: ' + mt(L) + ' = ' + N_(rhs) + '.'), x, 'First expand the brackets. Then use the balance method.', st.filter((r, k) => k === 0 || r[0] !== st[k - 1][0]).map(r => p(mt(r[0]) + ' = ' + N_(r[1]))).join(''), { noStep: true, eqStep: 'x', ansText: 'x = ' + N_(x) });
     },
     find('areaExpr')
   ];
