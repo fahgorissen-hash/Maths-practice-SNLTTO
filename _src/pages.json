@@ -50,5 +50,9 @@
  "2ht-chapter-4": {
   "cls": "2HT",
   "title": "Probability"
+ },
+ "2ht-chapter-5": {
+  "cls": "2HT",
+  "title": "Pythagoras' theorem"
  }
 }
