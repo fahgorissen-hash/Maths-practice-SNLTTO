@@ -258,4 +258,4 @@ const GOALS = [
   ['4.4', 'I can calculate the mean, median and mode', ['measureList', 'modeList', 'tableMean', 'tableMedian', 'weightedMean', 'groupedMean'], 'Order the data before you find the median.'],
   ['4.5', 'I can calculate the range and IQR and read boxplots', ['rangeIQR', 'fiveNumbers', 'readBoxplot', 'boxPercent', 'shiftScale'], 'IQR = Q3 − Q1']
 ];
-return { key: 'nx-3ht-ch4-v1', SECTIONS, LESSONS: [], G, XG, defaultMode: 'para', GOALS };
+return { key: 'nx-' + P.cls.toLowerCase() + '-ch4-v1', SECTIONS, LESSONS: [], G, XG, defaultMode: 'para', GOALS };

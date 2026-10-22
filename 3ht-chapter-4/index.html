@@ -115,7 +115,7 @@ function tokenize(src, o) {
   o = o || {};
   let s = String(src).replace(/[−–—]/g, '-').replace(/ /g, ' ');
   s = s.replace(/(^|[^\d.,])(-?)(\d+)[ ]+(\d+)[ ]*\/[ ]*(\d+)/g, (m, pre, sg, w, n, d) => pre + (sg ? '-' : '') + '(' + w + '+' + n + '/' + d + ')');   // mixed number 2 1/3
-  s = s.replace(/sqrt/gi, '√').replace(/(?<![a-zA-Z])pi(?![a-zA-Z])/gi, 'π');
+  s = s.replace(/sqrt/gi, '√').replace(/(?<![a-zA-Z])pi(?![a-zA-Z])/gi, 'π').replace(/°/g, '');
   s = s.replace(/([⁰¹²³⁴⁵⁶⁷⁸⁹]+)√/g, (m, d) => '\u0001' + d.split('').map(c => SUP.indexOf(c)).join('') + ';');
   s = s.replace(/(\d+)\s*V/g, (m, d) => '\u0001' + d + ';');   // 3V27 = cube root of 27
   s = s.replace(/∛/g, '\u00013;').replace(/∜/g, '\u00014;');
@@ -129,6 +129,7 @@ function tokenize(src, o) {
     let m;
     if ((m = /^\d+(?:[.,]\d+)?|^[.,]\d+/.exec(s.slice(i)))) { t.push({ k: 'num', v: parseFloat(m[0].replace(',', '.')), s: m[0].replace(',', '.') }); i += m[0].length; continue; }
     if (c === 'π') { t.push({ k: 'pi' }); i++; continue; }
+    if ((m = /^(?:(sin|cos|tan)\s*\^\s*\(?\s*-\s*1\s*\)?|(?:arc|a)(sin|cos|tan)|(sin|cos|tan))/i.exec(s.slice(i)))) { t.push({ k: 'fn', n: (m[1] || m[2] ? 'a' : '') + (m[1] || m[2] || m[3]).toLowerCase() }); i += m[0].length; continue; }   // trig in degrees; sin^-1 = inverse
     if (/[×·⋅*]/.test(c)) { t.push({ k: 'op', v: '*' }); i++; continue; }
     if (/[x]/i.test(c) && o.noVars) { t.push({ k: 'op', v: '*' }); i++; continue; }
     if (/[a-zA-Z]/.test(c)) { if (o.noVars) throw new Error('var'); t.push({ k: 'var', n: c }); i++; continue; }
@@ -143,7 +144,7 @@ function tokenize(src, o) {
 function parse(src, o) {
   const T = tokenize(src, o); let p = 0;
   const peek = () => T[p], isOp = v => T[p] && T[p].k === 'op' && T[p].v === v;
-  const startsFactor = () => { const k = T[p]; return k && (k.k === 'num' || k.k === 'var' || k.k === 'pi' || k.k === 'sqrt' || (k.k === 'op' && k.v === '(')); };
+  const startsFactor = () => { const k = T[p]; return k && (k.k === 'num' || k.k === 'var' || k.k === 'pi' || k.k === 'sqrt' || k.k === 'fn' || (k.k === 'op' && k.v === '(')); };
   function expr() {
     let a = term();
     while (isOp('+') || isOp('-')) { const op = T[p++].v; const b = term(); a = { t: op === '+' ? 'add' : 'sub', a, b }; }
@@ -187,6 +188,7 @@ function parse(src, o) {
       if (neg) r = { t: 'neg', a: r };
       return { t: 'sqrt', a: r, k: k.n };
     }
+    if (k.k === 'fn') { p++; return { t: 'fn', n: k.n, a: power() }; }
     if (isOp('(')) { p++; const e = expr(); if (!isOp(')')) throw new Error('paren'); p++; e.par = true; return e; }
     throw new Error('atom');
   }
@@ -200,6 +202,7 @@ function evalAst(n, env) {
     case 'mul': return evalAst(n.a, env) * evalAst(n.b, env); case 'div': return evalAst(n.a, env) / evalAst(n.b, env);
     case 'pow': return Math.pow(evalAst(n.a, env), evalAst(n.b, env));
     case 'sqrt': { const x = evalAst(n.a, env); if (n.k % 2 === 1) return (x < 0 ? -1 : 1) * Math.pow(Math.abs(x), 1 / n.k); return x < 0 ? NaN : Math.pow(x, 1 / n.k); }
+    case 'fn': { const x = evalAst(n.a, env), D = Math.PI / 180; return n.n === 'sin' ? Math.sin(x * D) : n.n === 'cos' ? Math.cos(x * D) : n.n === 'tan' ? Math.tan(x * D) : n.n === 'asin' ? Math.asin(x) / D : n.n === 'acos' ? Math.acos(x) / D : Math.atan(x) / D; }
   }
   return NaN;
 }
@@ -363,6 +366,7 @@ function R(src, o) {
       case 'div': return n.inl ? w(P(n.a) + ' ÷ ' + P(n.b)) : w('<span class="fr"><span class="nu">' + P(n.a, true) + '</span><span class="de">' + P(n.b, true) + '</span></span>');
       case 'pow': return w(P(n.a) + '<sup>' + P(n.b, true) + '</sup>');
       case 'sqrt': return w('<span class="rt' + (n.k > 2 ? ' rn' : '') + '">' + (n.k > 2 ? '<sup class="ix">' + n.k + '</sup>' : '') + '<span class="sq"></span><span class="ov">' + P(n.a, true) + '</span></span>');
+      case 'fn': return w((n.n[0] === 'a' ? n.n.slice(1) + '<sup>−1</sup>' : n.n) + '(' + P(n.a, true) + (n.n[0] === 'a' ? ')' : '°)'));
     }
     return '';
   }
@@ -762,7 +766,7 @@ const GOALS = [
   ['4.4', 'I can calculate the mean, median and mode', ['measureList', 'modeList', 'tableMean', 'tableMedian', 'weightedMean', 'groupedMean'], 'Order the data before you find the median.'],
   ['4.5', 'I can calculate the range and IQR and read boxplots', ['rangeIQR', 'fiveNumbers', 'readBoxplot', 'boxPercent', 'shiftScale'], 'IQR = Q3 − Q1']
 ];
-return { key: 'nx-3ht-ch4-v1', SECTIONS, LESSONS: [], G, XG, defaultMode: 'para', GOALS };
+return { key: 'nx-' + P.cls.toLowerCase() + '-ch4-v1', SECTIONS, LESSONS: [], G, XG, defaultMode: 'para', GOALS };
 
 })(NX, {"cls": "3HT"});
 window.Ch3 = NX.engine(__def); window.Ch3.GOALS = __def.GOALS;
