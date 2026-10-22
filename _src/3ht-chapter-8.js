@@ -21,6 +21,47 @@ const prodTxt = a => a.join(' · ');
 const prod = a => a.reduce((s, v) => s * v, 1);
 const desc = (n, k) => Array.from({ length: k }, (_, i) => n - i);
 
+/* ======================= 8.1 Rate of change ======================= */
+const LA = '⟨', RA = '⟩';
+G['8.1'] = [
+  function intervalNotation(l) {
+    let a, b; do { a = ri(-8, 5); b = ri(-5, 9); } while (b <= a);
+    const kind = pick(['cc', 'co', 'oc', 'oo', 'left', 'right']), A = neg(a), B = neg(b);
+    const ineq = { cc: A + ' ≤ ' + X() + ' ≤ ' + B, co: A + ' ≤ ' + X() + ' &lt; ' + B, oc: A + ' &lt; ' + X() + ' ≤ ' + B, oo: A + ' &lt; ' + X() + ' &lt; ' + B, left: X() + ' ≤ ' + B, right: X() + ' &gt; ' + A }[kind];
+    const nt = { cc: '[' + A + ', ' + B + ']', co: '[' + A + ', ' + B + RA, oc: LA + A + ', ' + B + ']', oo: LA + A + ', ' + B + RA, left: LA + '←, ' + B + ']', right: LA + A + ', →' + RA }[kind];
+    const all = kind === 'left' || kind === 'right' ? [LA + '←, ' + B + ']', LA + '←, ' + B + RA, LA + A + ', →' + RA, '[' + A + ', →' + RA] : ['[' + A + ', ' + B + ']', '[' + A + ', ' + B + RA, LA + A + ', ' + B + ']', LA + A + ', ' + B + RA];
+    return ch(p('Write ' + ineq + ' as an interval.'), nt, all.filter(o => o !== nt), 'A square bracket [ ] means the end number is included (≤ or ≥). A pointed bracket ' + LA + ' ' + RA + ' means it is not included (&lt; or &gt;).', ineq + ' is ' + nt + '.');
+  },
+  function avgGradient(l) {
+    const a = l === 0 ? 1 : pick([1, -1, 2, 0.5, -2]), b = ri(-6, 6), c = ri(-9, 9), f = x => a * x * x + b * x + c; let x1, x2; do { x1 = ri(-5, 3); x2 = x1 + ri(1, 6); } while (false);
+    const dy = rd(f(x2) - f(x1)), dx = x2 - x1, m = rd(dy / dx);
+    return nu(p('Calculate the average gradient of ' + F('f', X()) + ' = ' + quad(a, b, c) + ' on the interval [' + neg(x1) + ', ' + neg(x2) + '].'), m, 'Average gradient = Δ' + X('y') + ' / Δ' + X() + ' = (' + F('f', neg(x2)) + ' − ' + F('f', neg(x1)) + ') / (' + neg(x2) + ' − ' + par(x1) + ').', p(F('f', neg(x1)) + ' = ' + neg(rd(f(x1))) + ' and ' + F('f', neg(x2)) + ' = ' + neg(rd(f(x2)))) + p('Δ' + X('y') + ' / Δ' + X() + ' = (' + neg(rd(f(x2))) + ' − ' + par(rd(f(x1))) + ') / (' + neg(x2) + ' − ' + par(x1) + ') = ' + neg(dy) + ' / ' + dx + ' = ' + neg(m)), { needStep: true });
+  },
+  function avgFromTable(l) {
+    const xs = [0, 5, 10, 15, 20], T0 = ri(70, 90), ys = xs.map((t, i) => i === 0 ? T0 : 0); for (let i = 1; i < 5; i++) ys[i] = ys[i - 1] - ri(3, 12); const i = ri(0, 2), j = ri(i + 1, 4), m = rd((ys[j] - ys[i]) / (xs[j] - xs[i]), 2);
+    return nu(p('The table shows the temperature ' + X('T') + ' (°C) of a cup of tea after ' + X('t') + ' minutes. Calculate the average change in temperature per minute on [' + xs[i] + ', ' + xs[j] + ']. <small>(Round to 2 decimals.)</small>') + '<table class="tbl"><tr><th>' + X('t') + '</th>' + xs.map(x => '<td>' + x + '</td>').join('') + '</tr><tr><th>' + X('T') + '</th>' + ys.map(y => '<td>' + y + '</td>').join('') + '</tr></table>', m, 'Δ' + X('T') + ' / Δ' + X('t') + '.', 'Δ' + X('T') + ' / Δ' + X('t') + ' = (' + ys[j] + ' − ' + ys[i] + ') / (' + xs[j] + ' − ' + xs[i] + ') = ' + neg(ys[j] - ys[i]) + ' / ' + (xs[j] - xs[i]) + (rd((ys[j] - ys[i]) / (xs[j] - xs[i])) === m ? ' = ' : ' ≈ ') + neg(m) + ' °C per minute', { needStep: true, tol: .0051 });
+  },
+  function gradientShape(l) {
+    const up = Math.random() < .5, incr = Math.random() < .5, d0 = ri(1, 4), dd = pick([0.2, 0.5, 1]);
+    const diffs = [0, 1, 2, 3, 4].map(i => rd((d0 + (incr ? i : 4 - i) * dd) * (up ? 1 : -1)));
+    let y = ri(10, 30); const ys = [y]; diffs.forEach(d => { y = rd(y + d); ys.push(y); });
+    const right = (incr === up ? 'increasing' : 'decreasing') + ' ' + (up ? 'positive' : 'negative') + ' gradient';
+    // for negative values: differences -1,-1.5,-2 get steeper (more negative): that is a decreasing negative gradient
+    const real = up ? (incr ? 'increasing positive gradient' : 'decreasing positive gradient') : (incr ? 'decreasing negative gradient' : 'increasing negative gradient');
+    return ch(p('Look at the differences in this table. What kind of graph is it?') + '<table class="tbl"><tr><th>' + X() + '</th>' + ys.map((_, i) => '<td>' + i + '</td>').join('') + '</tr><tr><th>' + X('y') + '</th>' + ys.map(v => '<td>' + v + '</td>').join('') + '</tr></table>', real, ['increasing positive gradient', 'decreasing positive gradient', 'increasing negative gradient', 'decreasing negative gradient'].filter(o => o !== real), 'Calculate the differences. Positive: the graph rises. Do the differences get bigger or smaller?', 'Differences: ' + diffs.map(d => (d > 0 ? '+' : '') + neg(d)).join('; ') + '. ' + (up ? 'The graph rises (positive gradient) and the differences get ' + (incr ? 'bigger: increasing.' : 'smaller: decreasing.') : 'The graph falls (negative gradient) and the differences get ' + (incr ? 'more negative: the gradient decreases.' : 'closer to 0: the gradient increases.')));
+  },
+  function avgSpeed(l) {
+    const k = pick([1.25, 2.5, 5, 0.5]), t1 = ri(1, 4), t2 = t1 + pick([1, 2, 0.5]), d = t => k * t * t, v = rd((d(t2) - d(t1)) / (t2 - t1), 4);
+    return nu(p('A car drives ' + X('d') + ' = ' + k + X('t') + '² metres in ' + X('t') + ' seconds. Calculate the average speed (m/s) between ' + X('t') + ' = ' + t1 + ' and ' + X('t') + ' = ' + t2 + '.'), v, 'Average speed = Δ' + X('d') + ' / Δ' + X('t') + '.', p(X('d') + '(' + t1 + ') = ' + rd(d(t1)) + ' and ' + X('d') + '(' + t2 + ') = ' + rd(d(t2))) + p('(' + rd(d(t2)) + ' − ' + rd(d(t1)) + ') / (' + t2 + ' − ' + t1 + ') = ' + rd(d(t2) - d(t1)) + ' / ' + rd(t2 - t1) + ' = ' + v + ' m/s'), { needStep: true });
+  }
+];
+XG['8.1'] = [
+  function averageCost(l) {
+    const fix = pick([20000, 50000, 80000]), var_ = pick([1.25, 2, 0.75]), q = pick([1000, 10000, 40000, 100000]), C = fix + var_ * q, avg = rd(C / q, 2);
+    return nu(p('A company makes ' + X('q') + ' kg of product. The costs are ' + X('C') + ' = ' + sp(fix) + ' + ' + var_ + X('q') + ' euros. Calculate the average cost per kg for ' + X('q') + ' = ' + sp(q) + '.'), avg, 'Average cost = total cost / number of kg.', p(X('C') + ' = ' + sp(fix) + ' + ' + var_ + ' · ' + sp(q) + ' = ' + sp(C)) + p(sp(C) + ' / ' + sp(q) + ' = ' + avg + ' euros per kg'), { needStep: true, tol: .0051 });
+  }
+];
+
 /* ======================= 8.2 Counting ======================= */
 G['8.2'] = [
   function menu(l) {
@@ -106,16 +147,18 @@ XG['8.3'] = [
     return nu(p('For every number ' + X('p') + ' you have the function ' + X('f') + '<sub>' + X('p') + '</sub>(' + X() + ') = ' + X() + '² + ' + X('p') + X() + (c ? (c < 0 ? ' − ' : ' + ') + Math.abs(c) : '') + '. For which ' + X('p') + ' is ' + X('f') + '<sub>' + X('p') + '</sub>(' + x + ') = ' + neg(target) + '?'), pp, 'Substitute ' + X() + ' = ' + x + ' and solve the equation for ' + X('p') + '.', p(x + '² + ' + X('p') + ' · ' + x + (c ? (c < 0 ? ' − ' : ' + ') + Math.abs(c) : '') + ' = ' + neg(target)) + p((x * x + c) + ' + ' + x + X('p') + ' = ' + neg(target)) + p(x + X('p') + ' = ' + neg(target - x * x - c)) + p(X('p') + ' = ' + neg(pp)), { noStep: true });
   },
   function newFunction(l) {
-    const a = nz(-6, 6), b = ri(-20, 20), k = nz(-12, 12);
+    let a, b, k; do { a = nz(-6, 6); b = ri(-20, 20); k = nz(-12, 12); } while (b + k === 0);
     return { type: 'expr', html: p('Given ' + F('g', X()) + ' = ' + poly([[b, ''], [a, X()]]) + ' and ' + F('h', X()) + ' = ' + F('g', X()) + (k < 0 ? ' − ' + -k : ' + ' + k) + '. Give the formula of ' + X('h') + ' as simple as possible. <small>Type only the right side.</small>'), ans: a + '*x+(' + (b + k) + ')', form: 'poly', hint: 'Write the formula of ' + X('g') + ' in place of ' + F('g', X()) + ' and add up the numbers.', steps: F('h', X()) + ' = ' + poly([[b, ''], [a, X()]]) + (k < 0 ? ' − ' + -k : ' + ' + k) + ' = ' + poly([[b + k, ''], [a, X()]]), keys: ['(', ')'], ansText: F('h', X()) + ' = ' + poly([[b + k, ''], [a, X()]]) };
   }
 ];
 
 const SECTIONS = [
+  { id: '8.1', title: '8.1 Rate of change', sub: 'Intervals, average gradient, increasing and decreasing' },
   { id: '8.2', title: '8.2 Counting', sub: 'Product rule, codes, orders' },
   { id: '8.3', title: '8.3 Functions', sub: 'f(x) notation, function values, maximum and minimum' }
 ];
 const GOALS = [
+  ['8.1', 'I can calculate the average rate of change', ['intervalNotation', 'avgGradient', 'avgFromTable', 'gradientShape', 'avgSpeed'], 'average gradient = Δy / Δx'],
   ['8.2', 'I can count possibilities', ['menu', 'codeRepeat', 'codeNoRepeat', 'arrange', 'roles', 'plates', 'whichCount'], 'Multiply the numbers of choices.'],
   ['8.3', 'I can work with function notation', ['evalLinear', 'evalQuad', 'solveFx', 'difference', 'maxMin', 'maxMinFactored', 'onGraph'], 'f(3) means: replace x by 3.']
 ];

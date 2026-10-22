@@ -401,16 +401,56 @@ XG['5.4'] = [
   }
 ];
 
+/* ======================= 5.5 Higher powers ======================= */
+const sup = n => ({ 2: '²', 3: '³', 4: '⁴', 5: '⁵', 6: '⁶', 7: '⁷' })[n];
+G['5.5'] = [
+  function oddPower(l) {
+    let n, r; do { n = pick([3, 3, 5]); r = n === 3 ? nz(-9, 9) : nz(-4, 4); } while (Math.abs(r) < 2); const c = Math.pow(r, n);
+    return nu(p('Solve: ' + X() + sup(n) + ' = ' + neg(c)), r, 'For an odd power there is exactly one solution: ' + X() + ' = <sup>' + n + '</sup>√(' + neg(c) + ').', p('Check: ' + (r < 0 ? '(' + neg(r) + ')' : r) + sup(n) + ' = ' + neg(c) + '.') + p(X() + ' = <sup>' + n + '</sup>√(' + neg(c) + ') = ' + neg(r)), { noStep: true, ansText: X() + ' = ' + neg(r) });
+  },
+  function evenPower(l) {
+    const n = pick([2, 4, 4, 6]), r = n === 6 ? ri(1, 3) : n === 4 ? ri(1, 5) : ri(2, 12), c = Math.pow(r, n);
+    return multi(p('Solve: ' + X() + sup(n) + ' = ' + c), -r, r, 'For an even power and a positive number there are two solutions: ± <sup>' + n + '</sup>√' + c + '.', p(X() + ' = −<sup>' + n + '</sup>√' + c + ' or ' + X() + ' = <sup>' + n + '</sup>√' + c) + p(X() + ' = ' + neg(-r) + ' or ' + X() + ' = ' + r));
+  },
+  function howManyPower(l) {
+    const n = ri(2, 7), c = pick([nz(-50, 50), 0]), right = c === 0 ? 'one solution' : n % 2 ? 'one solution' : c > 0 ? 'two solutions' : 'no solutions';
+    return ch(p('How many solutions does ' + X() + sup(n) + ' = ' + neg(c) + ' have?'), right, ['one solution', 'two solutions', 'no solutions'].filter(o => o !== right), 'Is the power even or odd? Is the number positive, negative or 0?', c === 0 ? X() + sup(n) + ' = 0 only for ' + X() + ' = 0: one solution.' : n % 2 ? 'The power ' + n + ' is odd: always exactly one solution.' : 'The power ' + n + ' is even' + (c > 0 ? ' and ' + c + ' is positive: two solutions.' : ', so ' + X() + sup(n) + ' is never negative: no solutions.'));
+  },
+  function powerRounded(l) {
+    const n = pick([3, 4, 5]), k = pick([2, 3, 4, 5]); let c; do { c = k * ri(3, 60); } while (Number.isInteger(rd(Math.pow(c / k, 1 / n), 6)));
+    const v = c / k, r = rd(Math.pow(v, 1 / n), 2);
+    if (n % 2) return nu(p('Solve: ' + k + X() + sup(n) + ' = ' + c + '. Round to 2 decimals.'), r, 'Divide by ' + k + ' first. Then take the ' + n + 'th root.', p(X() + sup(n) + ' = ' + c + ' : ' + k + ' = ' + rd(v, 4)) + p(X() + ' = <sup>' + n + '</sup>√' + rd(v, 4) + ' ≈ ' + r), { tol: .0051, ansText: X() + ' ≈ ' + r });
+    return multi(p('Solve: ' + k + X() + sup(n) + ' = ' + c + '. Round to 2 decimals.'), -r, r, 'Divide by ' + k + ' first. The power is even: two solutions.', p(X() + sup(n) + ' = ' + c + ' : ' + k + ' = ' + rd(v, 4)) + p(X() + ' = −<sup>' + n + '</sup>√' + rd(v, 4) + ' or ' + X() + ' = <sup>' + n + '</sup>√' + rd(v, 4)) + p(X() + ' ≈ ' + neg(-r) + ' or ' + X() + ' ≈ ' + r), { tol: .0051, ansText: X() + ' ≈ ' + neg(-r) + ' or ' + X() + ' ≈ ' + r });
+  },
+  function shiftedPower(l) {
+    const h = nz(-8, 8), n = pick([3, 3, 4]), r = n === 3 ? nz(-4, 4) : ri(1, 3), c = Math.pow(r, n), base = '(' + lin(1, h) + ')' + sup(n);
+    if (n === 3) return nu(p('Solve: ' + base + ' = ' + neg(c)), r - h, 'First find what is inside the brackets: ' + lin(1, h) + ' = <sup>3</sup>√(' + neg(c) + ').', bal([[base + ' = ' + neg(c), '<sup>3</sup>√'], [lin(1, h) + ' = ' + neg(r), h > 0 ? '− ' + h : '+ ' + -h], [X() + ' = ' + neg(r - h)]]), { noStep: true, ansText: X() + ' = ' + neg(r - h) });
+    return multi(p('Solve: ' + base + ' = ' + c), -r - h, r - h, 'The power is even: ' + lin(1, h) + ' = ± <sup>4</sup>√' + c + '.', bal([[base + ' = ' + c, '±<sup>4</sup>√'], [lin(1, h) + ' = ' + neg(-r) + ' or ' + lin(1, h) + ' = ' + r, h > 0 ? '− ' + h : '+ ' + -h], [X() + ' = ' + neg(-r - h) + ' or ' + X() + ' = ' + neg(r - h)]]));
+  }
+];
+XG['5.5'] = [
+  function boxVolume(l) {
+    const x = ri(2, 6), k = pick([2, 3, 4]), V = k * k * x * x * x;
+    return nu(p('A box has length ' + k + X() + ', width ' + k + X() + ' and height ' + X() + ' (in cm). Its volume is ' + V + ' cm³. Calculate ' + X() + '.'), x, 'Volume = length · width · height = ' + k * k + X() + '³.', bal([[k * k + X() + '³ = ' + V, ': ' + k * k], [X() + '³ = ' + x * x * x, '<sup>3</sup>√'], [X() + ' = ' + x]]), { noStep: true });
+  },
+  function sphereRadius(l) {
+    const V = pick([500, 1000, 2000, 4000, 300]), r = rd(Math.pow(3 * V / (4 * Math.PI), 1 / 3), 1);
+    return nu(p('The volume of a ball is ' + X('V') + ' = ' + fr(4, 3) + 'π' + X('r') + '³. A ball has a volume of ' + V + ' cm³. Calculate the radius. Round to 1 decimal.'), r, 'Solve ' + fr(4, 3) + 'π' + X('r') + '³ = ' + V + ': divide by ' + fr(4, 3) + 'π first.', p(X('r') + '³ = ' + V + ' : (' + fr(4, 3) + 'π) ≈ ' + rd(3 * V / (4 * Math.PI), 2)) + p(X('r') + ' = <sup>3</sup>√' + rd(3 * V / (4 * Math.PI), 2) + ' ≈ ' + r + ' cm'), { tol: .051 });
+  }
+];
+
 const SECTIONS = [
   { id: '5.1', title: '5.1 Linear equations and inequalities', sub: 'Balance method, intersections, inequalities' },
   { id: '5.2', title: '5.2 Quadratic equations', sub: 'x² = c, (x + p)² = c, factorising' },
   { id: '5.3', title: '5.3 The quadratic formula', sub: 'a, b, c, the discriminant and the formula' },
-  { id: '5.4', title: '5.4 Quadratic inequalities', sub: 'Solve the equation, sketch, read off' }
+  { id: '5.4', title: '5.4 Quadratic inequalities', sub: 'Solve the equation, sketch, read off' },
+  { id: '5.5', title: '5.5 Higher powers', sub: 'x³ = c, x⁴ = c and roots' }
 ];
 const GOALS = [
   ['5.1', 'I can solve linear equations and inequalities', ['oneStep', 'bothSides', 'decimals', 'withFractions', 'lcmFractions', 'brackets', 'intersect', 'rectangleEq', 'ineqSimple', 'ineqBoth', 'ineqGraph', 'ineqContext', 'signTurn'], 'Dividing by a negative number turns the inequality sign around.'],
   ['5.2', 'I can solve quadratic equations by taking roots and by factorising', ['howMany', 'squareEq', 'bracketSq', 'roundedSq', 'exactSq', 'productZero', 'commonFactor', 'commonFactorEq', 'productSum', 'factorTrinomial', 'rearrange'], 'A · B = 0 gives A = 0 or B = 0.'],
   ['5.3', 'I can use the quadratic formula', ['readABC', 'discriminant', 'numSolutions', 'abcExact', 'abcRounded', 'abcRearrange'], 'x = (−b ± √D) / 2a with D = b² − 4ac'],
-  ['5.4', 'I can solve quadratic inequalities', ['readIneq', 'solveIneq', 'squareIneq', 'rearrangeIneq', 'alwaysNever'], 'Solve the equation, sketch the graph, read off.']
+  ['5.4', 'I can solve quadratic inequalities', ['readIneq', 'solveIneq', 'squareIneq', 'rearrangeIneq', 'alwaysNever'], 'Solve the equation, sketch the graph, read off.'],
+  ['5.5', 'I can solve equations with higher powers', ['oddPower', 'evenPower', 'howManyPower', 'powerRounded', 'shiftedPower'], 'Odd power: one solution. Even power: 0, 1 or 2.']
 ];
 return { key: 'nx-3ht-ch5-v1', SECTIONS, LESSONS: [], G, XG, defaultMode: 'para', GOALS };
