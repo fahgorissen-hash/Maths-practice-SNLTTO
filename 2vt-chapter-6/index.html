@@ -921,10 +921,6 @@ if (P.cls === '1HVT') {
       const s = solveLin(a, a * h + c, 0, rhs);
       return solQ(p('Solve: ' + first), s.n, s.d, 'x', 'First remove the brackets: multiply ' + a + ' by both terms inside. Then use the balance method.', bal([[first, 'remove brackets']].concat(s.rows)));
     },
-    function stairs(l) {
-      const r = ri(15, 19), lo = 57, hi = 63, ask = pick(['min', 'max']), g = ask === 'min' ? lo - 2 * r : hi - 2 * r;
-      return nu(p('Blondel’s formula: a staircase is easy to climb when 2 · rise + going is between 57 and 63 cm. The rise is ' + r + ' cm. What is the ' + (ask === 'min' ? 'smallest' : 'largest') + ' possible going (in cm)?'), g, 'Solve 2 · ' + r + ' + going = ' + (ask === 'min' ? lo : hi) + '.', bal([['2 · ' + r + ' + going = ' + (ask === 'min' ? lo : hi), ''], [2 * r + ' + going = ' + (ask === 'min' ? lo : hi), '− ' + 2 * r], ['going = ' + g]]), { noStep: true });
-    }
   ];
   const E3 = [
     function gradTwoPoints(l) {
@@ -985,7 +981,7 @@ if (P.cls === '1HVT') {
     { id: '6.5', title: '6.5 Equations and graphs', sub: 'Intersections, checking a solution, word problems' });
   GOALS.splice(0, GOALS.length,
     ['6.1', 'I can read the gradient and y-intercept of a linear formula', ['gradIntercept', 'tableValue', 'formulaFromTable', 'upDown'], 'y = mx + b: m is the gradient, b the y-intercept.'],
-    ['6.2', 'I can solve an equation with the balance method', ['oneStep', 'solveFromY', 'bracketOne', 'stairs'], 'Do the same on both sides.'],
+    ['6.2', 'I can solve an equation with the balance method', ['oneStep', 'solveFromY', 'bracketOne'], 'Do the same on both sides.'],
     ['6.3', 'I can find the gradient and the formula of a line', ['gradTwoPoints', 'lineTwoPoints', 'gradFromGraph', 'onLine'], 'gradient = rise / run'],
     ['6.4', 'I can simplify and solve equations with x on both sides or fractions', ['collect', 'bothSides', 'brackets', 'withFractions', 'lcmFractions', 'collectSolve'], 'Multiply by the LCM to get rid of fractions.'],
     ['6.5', 'I can solve problems with equations and graphs', ['intersect', 'rectangleEq', 'checkSol', 'patternEq'], 'Make the formulas equal.']);
