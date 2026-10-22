@@ -115,7 +115,7 @@ function tokenize(src, o) {
   o = o || {};
   let s = String(src).replace(/[−–—]/g, '-').replace(/ /g, ' ');
   s = s.replace(/(^|[^\d.,])(-?)(\d+)[ ]+(\d+)[ ]*\/[ ]*(\d+)/g, (m, pre, sg, w, n, d) => pre + (sg ? '-' : '') + '(' + w + '+' + n + '/' + d + ')');   // mixed number 2 1/3
-  s = s.replace(/sqrt/gi, '√').replace(/(?<![a-zA-Z])pi(?![a-zA-Z])/gi, 'π');
+  s = s.replace(/sqrt/gi, '√').replace(/(?<![a-zA-Z])pi(?![a-zA-Z])/gi, 'π').replace(/°/g, '');
   s = s.replace(/([⁰¹²³⁴⁵⁶⁷⁸⁹]+)√/g, (m, d) => '\u0001' + d.split('').map(c => SUP.indexOf(c)).join('') + ';');
   s = s.replace(/(\d+)\s*V/g, (m, d) => '\u0001' + d + ';');   // 3V27 = cube root of 27
   s = s.replace(/∛/g, '\u00013;').replace(/∜/g, '\u00014;');
@@ -129,6 +129,7 @@ function tokenize(src, o) {
     let m;
     if ((m = /^\d+(?:[.,]\d+)?|^[.,]\d+/.exec(s.slice(i)))) { t.push({ k: 'num', v: parseFloat(m[0].replace(',', '.')), s: m[0].replace(',', '.') }); i += m[0].length; continue; }
     if (c === 'π') { t.push({ k: 'pi' }); i++; continue; }
+    if ((m = /^(?:(sin|cos|tan)\s*\^\s*\(?\s*-\s*1\s*\)?|(?:arc|a)(sin|cos|tan)|(sin|cos|tan))/i.exec(s.slice(i)))) { t.push({ k: 'fn', n: (m[1] || m[2] ? 'a' : '') + (m[1] || m[2] || m[3]).toLowerCase() }); i += m[0].length; continue; }   // trig in degrees; sin^-1 = inverse
     if (/[×·⋅*]/.test(c)) { t.push({ k: 'op', v: '*' }); i++; continue; }
     if (/[x]/i.test(c) && o.noVars) { t.push({ k: 'op', v: '*' }); i++; continue; }
     if (/[a-zA-Z]/.test(c)) { if (o.noVars) throw new Error('var'); t.push({ k: 'var', n: c }); i++; continue; }
@@ -143,7 +144,7 @@ function tokenize(src, o) {
 function parse(src, o) {
   const T = tokenize(src, o); let p = 0;
   const peek = () => T[p], isOp = v => T[p] && T[p].k === 'op' && T[p].v === v;
-  const startsFactor = () => { const k = T[p]; return k && (k.k === 'num' || k.k === 'var' || k.k === 'pi' || k.k === 'sqrt' || (k.k === 'op' && k.v === '(')); };
+  const startsFactor = () => { const k = T[p]; return k && (k.k === 'num' || k.k === 'var' || k.k === 'pi' || k.k === 'sqrt' || k.k === 'fn' || (k.k === 'op' && k.v === '(')); };
   function expr() {
     let a = term();
     while (isOp('+') || isOp('-')) { const op = T[p++].v; const b = term(); a = { t: op === '+' ? 'add' : 'sub', a, b }; }
@@ -187,6 +188,7 @@ function parse(src, o) {
       if (neg) r = { t: 'neg', a: r };
       return { t: 'sqrt', a: r, k: k.n };
     }
+    if (k.k === 'fn') { p++; return { t: 'fn', n: k.n, a: power() }; }
     if (isOp('(')) { p++; const e = expr(); if (!isOp(')')) throw new Error('paren'); p++; e.par = true; return e; }
     throw new Error('atom');
   }
@@ -200,6 +202,7 @@ function evalAst(n, env) {
     case 'mul': return evalAst(n.a, env) * evalAst(n.b, env); case 'div': return evalAst(n.a, env) / evalAst(n.b, env);
     case 'pow': return Math.pow(evalAst(n.a, env), evalAst(n.b, env));
     case 'sqrt': { const x = evalAst(n.a, env); if (n.k % 2 === 1) return (x < 0 ? -1 : 1) * Math.pow(Math.abs(x), 1 / n.k); return x < 0 ? NaN : Math.pow(x, 1 / n.k); }
+    case 'fn': { const x = evalAst(n.a, env), D = Math.PI / 180; return n.n === 'sin' ? Math.sin(x * D) : n.n === 'cos' ? Math.cos(x * D) : n.n === 'tan' ? Math.tan(x * D) : n.n === 'asin' ? Math.asin(x) / D : n.n === 'acos' ? Math.acos(x) / D : Math.atan(x) / D; }
   }
   return NaN;
 }
@@ -363,6 +366,7 @@ function R(src, o) {
       case 'div': return n.inl ? w(P(n.a) + ' ÷ ' + P(n.b)) : w('<span class="fr"><span class="nu">' + P(n.a, true) + '</span><span class="de">' + P(n.b, true) + '</span></span>');
       case 'pow': return w(P(n.a) + '<sup>' + P(n.b, true) + '</sup>');
       case 'sqrt': return w('<span class="rt' + (n.k > 2 ? ' rn' : '') + '">' + (n.k > 2 ? '<sup class="ix">' + n.k + '</sup>' : '') + '<span class="sq"></span><span class="ov">' + P(n.a, true) + '</span></span>');
+      case 'fn': return w((n.n[0] === 'a' ? n.n.slice(1) + '<sup>−1</sup>' : n.n) + '(' + P(n.a, true) + (n.n[0] === 'a' ? ')' : '°)'));
     }
     return '';
   }
@@ -876,6 +880,138 @@ const GOALS = [
   ['8.4', 'I can add, multiply and simplify roots with letters', ['likeRoots', 'mulRoots', 'rootSquare', 'rootOfPower', 'expandRoot'], '√a · √b = √(ab) and √a · √a = a.'],
   ['8.5', 'I can complete the square and use it', ['csForm', 'csVertex', 'csSolve'], 'x² + bx = (x + b/2)² − (b/2)²']
 ] : []);
+/* ======================= 1HVT chapter 8: algebra (substituting, like terms, expanding, factorising, special products) ======================= */
+if (P.cls === '1HVT') {
+  const cap = (f, m) => { const g = function (l) { return f(Math.min(l, m)); }; Object.defineProperty(g, 'name', { value: f.name }); return g; };
+  const find = n => G['8.3'].find(f => f.name === n);
+  const N_ = n => (n < 0 ? '−' : '') + Math.abs(n), Pa = n => n < 0 ? '(' + N_(n) + ')' : String(n);
+  const PA = n => n < 0 ? '(' + n + ')' : String(n);
+  const lt = (a, b) => CS([T(a, 'x'), String(b)].filter(t => t !== '0'));            // a x + b as source
+  const mt = s => M(s);
+  const psRows = P_ => { const r = []; for (let a = 1; a * a <= Math.abs(P_); a++) if (P_ % a === 0) { const b = P_ / a; r.push([a, b], [-a, -b]); } return r; };
+  const psTable = (P_, S_) => '<table class="tbl"><tr><th>product ' + N_(P_) + '</th><th>sum ' + N_(S_) + '</th></tr>' + psRows(P_).map(q => '<tr><td>' + N_(q[0]) + ' × ' + N_(q[1]) + '</td><td>' + N_(q[0]) + (q[1] < 0 ? ' − ' + -q[1] : ' + ' + q[1]) + ' = ' + N_(q[0] + q[1]) + (q[0] + q[1] === S_ ? ' ✓' : '') + '</td></tr>').join('') + '</table>';
+  const fac = (v, r) => '(' + v + (r < 0 ? '-' + -r : '+' + r) + ')';
+  const H1 = [
+    function substitute(l) {
+      const x = l === 0 ? ri(1, 5) : pick([-1, -2, -3, 2, 3, -4]), kind = l === 0 ? ri(0, 2) : ri(0, 4); let s, st, ans;
+      const a = ri(2, 9), b = nz(-9, 9);
+      if (kind === 0) { s = lt(a, b); const v1 = a * x; ans = v1 + b; st = [a + ' · ' + Pa(x) + (b < 0 ? ' − ' + -b : ' + ' + b), N_(v1) + (b < 0 ? ' − ' + -b : ' + ' + b), N_(ans)]; }
+      else if (kind === 1) { const c = ri(3, 12); s = c + '-' + a + 'x'; ans = c - a * x; st = [c + ' − ' + a + ' · ' + Pa(x), c + ' − ' + Pa(a * x), N_(ans)]; }
+      else if (kind === 2) { s = 'x^2' + (b < 0 ? '-' : '+') + Math.abs(b) + 'x'; ans = x * x + b * x; st = [Pa(x) + '² ' + (b < 0 ? '− ' + -b : '+ ' + b) + ' · ' + Pa(x), x * x + ' + ' + Pa(b * x), N_(ans)]; }
+      else if (kind === 3) { const c = nz(-5, 5), k = ri(2, 3); s = '(' + k + 'x' + (c < 0 ? '-' + -c : '+' + c) + ')^2'; const in_ = k * x + c; ans = in_ * in_; st = ['(' + k + ' · ' + Pa(x) + (c < 0 ? ' − ' + -c : ' + ' + c) + ')²', Pa(in_) + '²', N_(ans)]; }
+      else { const c = ri(2, 12); s = a + 'x^2-' + c; ans = a * x * x - c; st = [a + ' · ' + Pa(x) + '² − ' + c, a + ' · ' + x * x + ' − ' + c, N_(ans)]; }
+      return nu(p('Calculate the value of ' + mt(s) + ' for ' + mt('x = ' + x) + '.'), ans, 'Replace <i>x</i> by ' + Pa(x) + '. Powers first, then multiply, then add and subtract.' + (x < 0 ? ' Put a negative number in brackets: (−2)² = 4.' : ''), st.join(' = '));
+    },
+    function likeTerms(l) {
+      const [v, w] = V2(); let kinds = l === 0 ? [v, w] : l === 1 ? [v + '^2', v, ''] : [v + w, v, '', v + '^2'];
+      let L = []; kinds.forEach(k => { L.push([l === 0 ? ri(1, 9) : nz(-9, 9), k]); L.push([nz(-9, 9), k]); });
+      if (l === 0) L.forEach((t, i) => { if (i === 1 || i === 3) t[0] = nz(-6, 9); });
+      L = shuffle(L); const s = src(L), ans = C(s);
+      if (ans === '0' || !/[a-z]/.test(ans)) return H1[1](l);
+      const order = []; L.forEach(t => { if (!order.includes(t[1])) order.push(t[1]); });
+      const grouped = order.reduce((acc, k) => acc.concat(L.filter(t => t[1] === k)), []);
+      return alg(p('Simplify: ' + mt(s) + '.'), [s, src(grouped)], 'poly', 'You can only add or subtract like terms: the same letters with the same powers. ' + (l > 0 ? M(v + '^2') + ' and ' + M(v) + ' are not like terms.' : M('3' + v + '+2' + v + '=5' + v) + ', but ' + M('3' + v + '+2' + w) + ' stays the same.'));
+    },
+    function multiplyTerms(l) {
+      const [v, w] = V2(), same = l > 0 && Math.random() < .4, W = same ? v : w;
+      const c1 = l === 0 ? ri(2, 9) : pick([2, 3, 4, 5, -2, -3, -1]), c2 = l === 0 ? ri(2, 9) : pick([2, 3, 4, 6, -4, -5, -2]);
+      const s1 = T(c1, v) + '*' + T(c2, W), k = same ? v + '^2' : v + w;
+      if (l < 2) return alg(p('Simplify: ' + mt(s1) + '.'), [s1, PA(c1) + '*' + PA(c2) + '*' + v + '*' + W], 'mono', 'Multiply the numbers. Then write the letters behind it, in alphabetical order.' + (same ? ' ' + v + ' · ' + v + ' = ' + v + '².' : ''));
+      const c3 = ri(2, 6), c4 = ri(2, 6), s = s1 + '+' + T(c3, v) + '*' + T(c4, W);
+      if (c1 * c2 + c3 * c4 === 0) return H1[2](l);
+      return alg(p('Simplify: ' + mt(s) + '.'), [s, CS([T(c1 * c2, k), T(c3 * c4, k)])], 'poly', 'First do the multiplications. Then the two terms are like terms, so you can add them.');
+    },
+    function rectExpr(l) {
+      const a = ri(2, 9), b = ri(2, 9), v = pick(['x', 'a', 'p']), area = Math.random() < .5;
+      const fig = '<svg viewBox="0 0 220 120" style="width:220px"><rect x="30" y="20" width="160" height="80" fill="rgba(27,95,168,.08)" stroke="#1b5fa8" stroke-width="2"/><text x="110" y="15" text-anchor="middle" font-size="13">' + a + v + '</text><text x="20" y="64" text-anchor="end" font-size="13">' + b + v + '</text></svg>';
+      if (area) return alg(p('A rectangle is ' + mt(a + v) + ' long and ' + mt(b + v) + ' wide. Write a formula for its <b>area</b> as short as possible.') + fig, [a + v + '*' + b + v, a + '*' + b + '*' + v + '*' + v], 'mono', 'area = length · width. Multiply the numbers and multiply the letters.');
+      return alg(p('A rectangle is ' + mt(a + v) + ' long and ' + mt(b + v) + ' wide. Write a formula for its <b>perimeter</b> as short as possible.') + fig, [a + v + '+' + b + v + '+' + a + v + '+' + b + v], 'mono', 'The perimeter is the sum of all four sides. Add the like terms.');
+    }
+  ];
+  const H2 = [
+    cap(find('singleBracket'), 1),
+    function bracketsSimplify(l) {
+      const v = 'x', a = l === 0 ? ri(2, 6) : pick([2, 3, 4, 5, -2, -3, -4]), B = [[ri(1, 5), v], [nz(-9, 9), '']];
+      const k = l === 0 ? ri(1, 9) : nz(-9, 9), d = l === 2 ? T(nz(-5, 5), v) : String(nz(-9, 9));
+      const s = (Math.random() < .5 ? k + (a < 0 ? '-' : '+') + Math.abs(a) + '(' + src(B) + ')' : T(k, v) + (a < 0 ? '-' : '+') + Math.abs(a) + '(' + src(B) + ')') + (d[0] === '-' ? d : '+' + d);
+      const first = s.split(/[+-]\d*\(/)[0], mid = CS([first].concat(prodVals([[a, '']], B)).concat([d]));
+      if (!/[a-z]/.test(C(s))) return H2[1](l);
+      return alg(p('Expand the brackets and simplify: ' + mt(s) + '.'), [s, mid], 'poly', 'First expand the brackets: multiply every term inside by ' + N_(a) + '.' + (a < 0 ? ' The minus belongs to the number: multiply by ' + N_(a) + '.' : '') + ' Then add the like terms.');
+    },
+    cap(find('doubleBracket'), 1),
+    function bracketEq(l) {
+      const a = ri(2, 6), b = nz(-9, 9), x = ri(-8, 10), c = l === 0 ? 0 : nz(-9, 9), rhs = a * (x + b) + c;
+      const L = a + '(' + lt(1, b) + ')' + (c === 0 ? '' : c < 0 ? '-' + -c : '+' + c);
+      const st = [L + '=' + rhs, CS([T(a, 'x'), String(a * b)].concat(c ? [String(c)] : [])) + '=' + rhs];
+      if (c !== 0) st.push(lt(a, a * b + c) + '=' + rhs);
+      st.push(a + 'x=' + a * x, 'x=' + x);
+      return nu(p('Solve: ' + mt(L + '=' + rhs) + '.'), x, 'First expand the brackets. Then use the balance method.', st.filter((r, k) => k === 0 || r !== st[k - 1]).map(r => p(mt(r))).join(''), { noStep: true, ansText: 'x = ' + N_(x) });
+    },
+    find('areaExpr')
+  ];
+  const H3 = [
+    function hcf(l) {
+      const g = pick([2, 3, 4, 5, 6, 8, 9]), withV = l > 0, m1 = ri(1, 7), m2 = ri(2, 9); if (gcd(m1, m2) !== 1) return H3[0](l);
+      const t1 = withV ? T(g * m1, 'x^2') : T(g * m1, 'x'), t2 = withV ? T(g * m2, 'x') : String(g * m2), right = withV ? T(g, 'x') : String(g);
+      const wr = withV ? [String(g), T(g, 'x^2'), 'x', T(g * m1 * m2, 'x')] : [String(g * m1), 'x', T(g, 'x'), String(g * m1 * m2)];
+      return ch(p('What is the highest common factor of ' + mt(t1) + ' and ' + mt(t2) + '?'), mt(right), wr.filter(w => w !== right).map(mt), 'Find the biggest number that divides both numbers. Then look at the letters: which letter is in both terms?', mt(t1) + ' = ' + mt(right) + ' · ' + mt(withV ? T(m1, 'x') : T(m1, 'x')) + ' and ' + mt(t2) + ' = ' + mt(right) + ' · ' + m2 + '. The highest common factor is ' + mt(right) + '.');
+    },
+    function commonFactor(l) {
+      const v = pick(['x', 'a', 'p', 'q']), g = pick([2, 3, 4, 5, 6, 7]); let m1 = ri(1, 9), m2 = l === 0 ? ri(1, 9) : nz(-9, 9); if (gcd(m1, Math.abs(m2)) !== 1 || m1 === 1 && l === 0) return H3[1](l);
+      let G_ = String(g), A = [[m1, v], [m2, '']];
+      if (l >= 1 && Math.random() < .5) { G_ = T(g, v); A = [[m1, v], [m2, '']]; }
+      if (l === 2 && Math.random() < .5) { G_ = '-' + G_; A = A.map(t => [-t[0], t[1]]); }
+      const inner = src(A), right = G_ + '(' + inner + ')', expr = C(right);
+      const d = [2, 3].find(z => g % z === 0 && g !== z), wrongs = [G_ + '(' + src([A[0], [-A[1][0], '']]) + ')', G_ + '(' + src([[A[0][0] * g, A[0][1]], A[1]]) + ')'];
+      if (d) wrongs.push(G_.replace(String(g), String(d)) + '(' + src(A.map(t => [t[0] * g / d, t[1]])) + ')'); else wrongs.push(G_ + '(' + src([[A[0][0], A[0][1] + v], A[1]]) + ')');
+      return ch(p('Factorise as far as possible: ' + mt(expr) + '.'), mt(right), wrongs.filter(w => w !== right).map(mt), 'Find the highest common factor of both terms (number AND letter). Put it in front of the brackets and divide every term by it.', 'The highest common factor is ' + mt(G_) + '. ' + mt(expr) + ' = ' + mt(right) + '.<br>Check by expanding: ' + mt(right) + ' = ' + mt(expr) + '.');
+    },
+    function productSum(l) {
+      const v = l === 2 ? pick(['a', 'p', 'z', 'x']) : 'x'; let r1, r2;
+      do { r1 = l === 0 ? ri(1, 9) : nz(-9, 9); r2 = l === 0 ? ri(1, 9) : nz(-9, 9); } while ((l === 1 && r1 * r2 > 0) || r1 + r2 === 0);
+      const S_ = r1 + r2, P_ = r1 * r2, expr = C(fac(v, r1) + fac(v, r2)); if (S_ === 0) return H3[2](l);
+      const right = r1 === r2 ? fac(v, r1) + '^2' : fac(v, r1) + fac(v, r2);
+      const wr = [fac(v, -r1) + fac(v, -r2), fac(v, r1) + fac(v, -r2), fac(v, -r1) + fac(v, r2), fac(v, S_) + fac(v, 1)].filter(w => C(w) !== expr);
+      return ch(p('Factorise: ' + mt(expr) + '.'), mt(right), wr.map(mt), 'Find two numbers with product ' + N_(P_) + ' and sum ' + N_(S_) + '. Then write (' + v + ' + …)(' + v + ' + …).', psTable(P_, S_) + p(mt(expr) + ' = ' + mt(right)));
+    }
+  ];
+  const H4 = [
+    cap(find('special'), 1),
+    find('identifyForm'),
+    function factorSpecial(l) {
+      const v = pick(['x', 'a', 'p', 'y']), b = ri(1, 12), k = l === 2 ? ri(2, 5) : 1, A = k === 1 ? v : k + v, kind = pick(['diff', 'sq+', 'sq-']);
+      const right = kind === 'diff' ? '(' + A + '+' + b + ')(' + A + '-' + b + ')' : '(' + A + (kind === 'sq+' ? '+' : '-') + b + ')^2', expr = C(right);
+      const wr = kind === 'diff' ? ['(' + A + '-' + b + ')^2', '(' + A + '+' + b + ')^2', '(' + A + '-' + b * b + ')(' + A + '+1)'] : kind === 'sq+' ? ['(' + A + '+' + b * b + ')^2', '(' + A + '+' + b + ')(' + A + '-' + b + ')', '(' + A + '+' + 2 * b + ')^2'] : ['(' + A + '+' + b + ')^2', '(' + A + '+' + b + ')(' + A + '-' + b + ')', '(' + A + '-' + b * b + ')^2'];
+      const why = kind === 'diff' ? mt(expr) + ' = ' + mt(br(A) + '^2-' + b + '^2') + ', so a = ' + mt(A) + ' and b = ' + b + '. Use a² − b² = (a + b)(a − b).' : mt(expr) + ' = ' + mt(br(A) + '^2' + (kind === 'sq+' ? '+' : '-') + '2*' + A + '*' + b + '+' + b + '^2') + ', so a = ' + mt(A) + ' and b = ' + b + '. Use a² ' + (kind === 'sq+' ? '+' : '−') + ' 2ab + b² = (a ' + (kind === 'sq+' ? '+' : '−') + ' b)².';
+      return ch(p('Factorise with a special product: ' + mt(expr) + '.'), mt(right), wr.filter(w => C(w) !== expr).map(mt), 'Two squares with a minus between them: a² − b² = (a + b)(a − b). Three terms with two squares: (a + b)² or (a − b)².', why + '<br>' + mt(expr) + ' = ' + mt(right));
+    }
+  ];
+  const XH3 = [
+    function primeFactor(l) {
+      const pr = [2, 2, 3, 3, 5, 7, 11, 13], f_ = []; const n0 = ri(3, 5); for (let i = 0; i < n0; i++) f_.push(pick(pr)); f_.sort((a, b) => a - b);
+      const n = f_.reduce((a, b) => a * b, 1), cnt = {}; f_.forEach(q => cnt[q] = (cnt[q] || 0) + 1);
+      const right = Object.keys(cnt).map(q => q + (cnt[q] > 1 ? '<sup>' + cnt[q] + '</sup>' : '')).join(' · ');
+      const k = Object.keys(cnt), bad1 = k.map(q => q + (cnt[q] > 1 ? '<sup>' + (cnt[q] + 1) + '</sup>' : '')).join(' · '), bad2 = [f_[0] * f_[1]].concat(f_.slice(2)).join(' · '), bad3 = k.map(q => q).join(' · ');
+      return ch(p('Write ' + n + ' as a product of prime factors.'), right, [bad1, bad2, bad3].filter(w => w !== right), 'Keep dividing by the smallest prime number that fits: 2, 3, 5, 7, 11, …', n + ' = ' + f_.join(' · ') + ' = ' + right);
+    }
+  ];
+  const XH2 = [find('expandSimplify')];
+  G['8.1'] = H1; G['8.2'] = H2; G['8.3'] = H3; G['8.4'] = H4; delete G['8.5'];
+  XG['8.1'] = []; XG['8.2'] = XH2; XG['8.3'] = XH3; XG['8.4'] = []; delete XG['8.5'];
+  SECTIONS.splice(0, SECTIONS.length,
+    { id: '8.1', title: '8.1 Substituting and simplifying', sub: 'Calculating values, like terms, multiplying terms' },
+    { id: '8.2', title: '8.2 Expanding brackets', sub: 'One bracket, two brackets, equations with brackets' },
+    { id: '8.3', title: '8.3 Factorising', sub: 'Highest common factor, product-sum method' },
+    { id: '8.4', title: '8.4 Special products', sub: '(a + b)², (a − b)², (a + b)(a − b)' });
+  GOALS.splice(0, GOALS.length,
+    ['8.1', 'I can calculate the value of an expression', ['substitute'], 'Put a negative number in brackets.'],
+    ['8.1', 'I can add like terms and multiply terms', ['likeTerms', 'multiplyTerms', 'rectExpr'], 'Like terms: the same letters with the same powers.'],
+    ['8.2', 'I can expand brackets and simplify', ['singleBracket', 'bracketsSimplify', 'doubleBracket', 'areaExpr'], 'Every term times every term.'],
+    ['8.2', 'I can solve an equation with brackets', ['bracketEq'], 'First expand, then use the balance method.'],
+    ['8.3', 'I can factorise with a common factor', ['hcf', 'commonFactor'], 'Put the highest common factor in front of the brackets.'],
+    ['8.3', 'I can factorise with the product-sum method', ['productSum'], 'Two numbers: product c and sum b.'],
+    ['8.4', 'I can expand and factorise with special products', ['special', 'identifyForm', 'factorSpecial'], '(a + b)² = a² + 2ab + b²; (a − b)² = a² − 2ab + b²; (a + b)(a − b) = a² − b².']);
+}
 return { key: 'nx-' + P.cls.toLowerCase() + '-ch8-v1', SECTIONS, LESSONS: [], G, XG, defaultMode: 'para', GOALS };
 
 })(NX, {"cls": "2HT"});
