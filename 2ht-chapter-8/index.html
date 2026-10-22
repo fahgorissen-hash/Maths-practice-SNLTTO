@@ -1,0 +1,1187 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>2HT Chapter 8 Algebra - practice</title>
+<style>
+:root{--bg:#f4f7fa;--card:#fff;--ink:#17222d;--mut:#5b6b7a;--line:#d5dee7;--brand:#1b5fa8;--brand2:#e8f1fb;--ok:#16803c;--okbg:#e6f6ec;--bad:#b3261e;--badbg:#fdecea;--warn:#8a5a00;--warnbg:#fff4d6}
+*{box-sizing:border-box}
+body{margin:0;font-family:Calibri,"Segoe UI",system-ui,sans-serif;background:var(--bg);color:var(--ink);font-size:18px;line-height:1.45}
+header{background:var(--brand);color:#fff;padding:14px 20px}
+header h1{margin:0;font-size:24px}header p{margin:2px 0 0;opacity:.9;font-size:15px}
+.wrap{display:grid;grid-template-columns:290px 1fr;gap:18px;max-width:1150px;margin:18px auto;padding:0 14px}
+nav{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px;align-self:start}
+nav button.sec{display:block;width:100%;text-align:left;background:none;border:2px solid transparent;border-radius:10px;padding:9px 11px;margin:3px 0;font:inherit;cursor:pointer;color:inherit}
+nav button.sec:hover{background:var(--brand2)}
+nav button.sec[aria-current=true]{background:var(--brand2);border-color:var(--brand)}
+nav .t{font-weight:700}nav .s{font-size:14px;color:var(--mut)}
+.bar{height:7px;background:#e3eaf1;border-radius:5px;margin-top:5px;overflow:hidden}.bar i{display:block;height:100%;background:var(--ok);width:0}
+.reset{margin:8px 4px 2px;font-size:14px;color:var(--mut);background:none;border:0;text-decoration:underline;cursor:pointer;font-family:inherit}
+main{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px 22px;min-height:420px}
+.top{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:8px}
+.badge{padding:3px 12px;border-radius:99px;font-weight:700;font-size:15px}
+.l0{background:#dff3e5;color:#0f6a31}.l1{background:#fff0c9;color:#7a5200}.l2{background:#fde0d9;color:#a3341b}.l3{background:#f3d9f5;color:#6b1f78}.lm{background:#e3def7;color:#40318a}
+header{display:flex;align-items:center;gap:14px;flex-wrap:wrap}header .hd{flex:1;min-width:240px}.pbtn{font:inherit;font-weight:700;background:#fff;color:var(--brand);border:0;border-radius:10px;padding:8px 16px;cursor:pointer;font-size:16px}
+nav button.mm{margin-left:14px;width:calc(100% - 14px);background:#f1edfb;border-color:#cbbdf0;font-weight:700;color:#40318a;font-size:16px}
+.pg h2{margin-top:0}.pg table{border-collapse:collapse;width:100%;font-size:16px;margin:8px 0 14px}.pg th,.pg td{border-bottom:1px solid var(--line);padding:8px 6px;text-align:left;vertical-align:middle}.pg th{color:var(--mut);font-size:14px}.chip{display:inline-block;padding:2px 9px;border-radius:99px;font-size:13px;font-weight:700;margin:1px 2px 1px 0;border:2px solid #cfd8e0;color:#8795a3;background:#fff}.chip.ach{background:var(--okbg);border-color:#8fd1a8;color:var(--ok)}.chip.act{border-color:var(--brand);color:var(--brand);background:var(--brand2)}
+nav .seg{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin:2px 0 8px}nav .seg button{font:inherit;font-size:15px;font-weight:700;padding:7px 4px;border-radius:9px;border:2px solid var(--brand);background:#fff;color:var(--brand);cursor:pointer}nav .seg button.on{background:var(--brand);color:#fff}
+@media print{header .pbtn,.topnav,nav,.btns{display:none!important}.wrap{display:block}main{border:0}}
+.streak{margin-left:auto;color:var(--mut);font-size:15px}
+.dot{display:inline-block;width:11px;height:11px;border-radius:50%;background:#d6dee6;margin-left:4px}.dot.on{background:var(--ok)}
+.q p{margin:.4em 0 .6em;font-size:20px}
+.tbl{border-collapse:collapse;margin:8px 0 12px;font-size:19px}.tbl th,.tbl td{border:1px solid #9fb0bf;padding:5px 13px;text-align:center;min-width:44px}.tbl th{background:var(--brand2)}
+svg.grid{width:100%;max-width:470px;height:auto;border:1px solid var(--line);border-radius:8px;display:block;margin:6px 0 10px;touch-action:manipulation}
+svg.grid[data-click]{cursor:crosshair}
+.ans{margin:8px 0}
+.ans label{display:block;font-size:16px;color:var(--mut);margin-top:6px}
+.ans input[type=text]{font:inherit;font-size:20px;padding:7px 11px;border:2px solid #9fb0bf;border-radius:9px;width:210px}
+.ans input:focus{outline:3px solid #9cc4ee;border-color:var(--brand)}
+.choices{display:grid;gap:8px;max-width:520px}
+.choice{display:block;text-align:left;font:inherit;font-size:19px;padding:10px 14px;border:2px solid #9fb0bf;border-radius:10px;background:#fff;cursor:pointer}
+.choice:hover{border-color:var(--brand)}.choice[aria-pressed=true]{background:var(--brand2);border-color:var(--brand)}
+.btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+.btn{font:inherit;font-weight:700;padding:9px 20px;border-radius:10px;border:2px solid var(--brand);background:var(--brand);color:#fff;cursor:pointer;font-size:18px}
+.btn.alt{background:#fff;color:var(--brand)}.btn:disabled{opacity:.45;cursor:default}
+.fb{margin-top:14px;padding:11px 14px;border-radius:10px;display:none}
+.fb.show{display:block}.fb.ok{background:var(--okbg);border:1px solid #8fd1a8}.fb.no{background:var(--badbg);border:1px solid #eba8a3}.fb.hint{background:var(--warnbg);border:1px solid #e6c874}
+.fb b.h{display:block;margin-bottom:2px}
+.res h2{margin-top:0}.grade{font-size:44px;font-weight:700;color:var(--brand)}
+.rev{border-top:1px solid var(--line);padding:10px 0;font-size:17px}.rev .st{color:var(--mut)}
+@media(max-width:760px){.wrap{grid-template-columns:1fr}nav{display:grid;grid-template-columns:1fr 1fr;gap:4px}nav .reset{grid-column:1/-1}}
+.sr{position:absolute;left:-9999px}
+
+.mx{font-size:1.06em;white-space:nowrap}
+.mx i{font-family:"Cambria Math","Times New Roman",serif;font-style:italic}
+.fr{display:inline-flex;flex-direction:column;vertical-align:middle;text-align:center;margin:0 3px;line-height:1.2}
+.fr .nu{border-bottom:1.6px solid currentColor;padding:0 4px 1px}.fr .de{padding:1px 4px 0}
+.rt{display:inline-block;position:relative;white-space:nowrap;line-height:1.1;padding-left:.72em;margin-right:.08em}.rt.rn{margin-left:.4em}
+.rt .ov{display:inline-block;padding:.14em 3px 0 0;border-top:1.6px solid currentColor}
+.rt .sq{position:absolute;left:0;top:0;bottom:-.12em;width:.72em;background:currentColor;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 20' preserveAspectRatio='none'%3E%3Cpath d='M0.6 11.2 L2.4 10 L4.8 18.6 L9.6 0.8' fill='none' stroke='black' stroke-width='1.7' stroke-linejoin='miter' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E") center/100% 100% no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 20' preserveAspectRatio='none'%3E%3Cpath d='M0.6 11.2 L2.4 10 L4.8 18.6 L9.6 0.8' fill='none' stroke='black' stroke-width='1.7' stroke-linejoin='miter' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E") center/100% 100% no-repeat}
+.rt .ix{position:absolute;left:-.42em;top:.12em;font-size:.62em;line-height:1}
+.q sup{font-size:.7em;line-height:0}
+.mx i{padding-right:.09em}.mx sup{font-style:normal;margin-left:.05em;font-size:.7em;line-height:0}
+.kp{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 2px}.kp button{font:inherit;font-size:19px;min-width:42px;padding:5px 10px;border:2px solid #9fb0bf;border-radius:9px;background:#f7fafc;cursor:pointer}.kp button:hover{border-color:var(--brand);background:var(--brand2)}
+.pv{min-height:34px;margin:6px 0 0;font-size:20px;color:#223}.pv .pl{font-size:14px;color:var(--mut);margin-right:6px}
+.ans input[type=text].wide{width:min(520px,100%)}
+.ans input#in0{width:min(420px,100%)}
+.fb .mx{font-size:1.05em}
+.lead{color:var(--mut);font-size:15px;margin:2px 0 0}
+svg.fig{max-width:430px;width:100%;height:auto;display:block;margin:6px 0 10px}
+.topnav{flex-basis:100%;display:flex;gap:8px;align-items:center;flex-wrap:wrap}.topnav .nb,.topnav summary{font:inherit;font-size:14px;font-weight:700;background:rgba(255,255,255,.18);color:#fff;border:1px solid rgba(255,255,255,.5);border-radius:10px;padding:5px 12px;cursor:pointer;text-decoration:none;list-style:none}.topnav .nb:hover,.topnav summary:hover{background:rgba(255,255,255,.3)}.topnav summary::-webkit-details-marker{display:none}.topnav details{position:relative}.topnav .menu{position:absolute;z-index:50;top:110%;left:0;background:#fff;border-radius:10px;box-shadow:0 4px 16px rgba(0,0,0,.25);padding:6px;min-width:260px;display:flex;flex-direction:column}.topnav .menu a{color:var(--brand);text-decoration:none;padding:7px 10px;border-radius:8px;font-size:15px}.topnav .menu a:hover{background:#eef2f7}.topnav .menu a.cur{font-weight:800;background:#e3ecf7}
+.topnav .nb.cur{background:#fff;color:var(--brand);border-color:#fff}
+.goals{background:#f3f8fd;border:1px solid var(--line);border-radius:12px;padding:8px 14px;margin:8px 0 12px}.goals .gh{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;align-items:center}.goals .gb{display:flex;gap:12px;flex-wrap:wrap}.lk{font:inherit;font-size:15px;background:none;border:0;color:var(--brand);text-decoration:underline;cursor:pointer;padding:2px 0}.goals ul{list-style:none;margin:6px 0 2px;padding:0}.goals li{display:flex;gap:9px;align-items:flex-start;padding:4px 6px;border-radius:8px;font-size:16px}.goals li.cur{background:#fff;border:1px solid var(--brand);font-weight:700}.goals .sd{flex:0 0 11px;height:11px;border-radius:50%;margin-top:7px}
+.hc{background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px 14px;margin:8px 0}.hc h4{margin:0 0 6px;font-size:18px}.hc .hr{margin:8px 0;font-size:16px}.hc .hr p{margin:2px 0}.hc .ex{background:#f7fafc;border-radius:8px;padding:2px 12px}.hc .ex .exa{margin:2px 0 8px}.hc .warn{background:var(--warnbg);border-radius:8px;padding:4px 10px}
+.pmbar{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:2px 0 8px}.pml{font-size:14px;color:var(--mut);margin-left:4px}.pm{font:inherit;font-size:14px;font-weight:700;padding:3px 11px;border-radius:99px;border:2px solid #9fb0bf;background:#fff;color:var(--ink);cursor:pointer}.pm.on{background:var(--brand);border-color:var(--brand);color:#fff}.pm.l0.on{background:#0f6a31;border-color:#0f6a31}.pm.l1.on{background:#9a6a00;border-color:#9a6a00}.pm.l2.on{background:#a3341b;border-color:#a3341b}.pm.l3.on{background:#6b1f78;border-color:#6b1f78}
+.pmnote{background:#eef4fb;border:1px solid #b9d0ea;border-radius:10px;padding:6px 12px;margin:0 0 10px;font-size:16px}.btn.sm{font-size:14px;padding:3px 12px;margin-left:8px}
+.hl{margin-top:16px;font-size:15px}.hl summary{cursor:pointer;color:var(--mut)}.hl ul{margin:6px 0;padding-left:0;list-style:none}.hl li{padding:2px 0;border-bottom:1px solid #eef2f6}.hl .ok{color:var(--ok);font-weight:700}.hl .no{color:var(--bad);font-weight:700}.hl .lq{color:var(--mut)}
+.at{margin-top:8px;font-size:15px;color:var(--mut)}.at .ok{color:var(--ok);font-weight:700;margin-right:8px}.at .no{color:var(--bad);font-weight:700;margin-right:8px}
+.cards{display:flex;gap:12px;flex-wrap:wrap;margin:6px 0}.card2{flex:1;min-width:150px;border:1px solid var(--line);border-radius:12px;padding:10px 14px;background:#f7fafc}.card2 b{display:block;font-size:28px;color:var(--brand)}.card2 span{font-size:14px;color:var(--mut)}
+.stc{display:inline-block;border:1px solid;border-radius:99px;padding:1px 10px;font-size:14px;font-weight:700;white-space:nowrap}.stkey{display:flex;gap:6px;flex-wrap:wrap}.gt .gsec td{background:#eef4fb}.gt td.num{white-space:nowrap}.mut{color:var(--mut);font-size:15px}
+.bdg{display:inline-block;margin:3px 6px 3px 0;padding:3px 12px;border-radius:99px;border:1px solid var(--line);color:#8a98a6;background:#f4f7fa;font-size:15px}.bdg.got{background:#fff4d6;color:#7a5200;border-color:#e6c874;font-weight:700}
+.filebtn{display:inline-block;cursor:pointer}.btn.danger{color:var(--bad);border-color:var(--bad)}.rname{font:inherit;font-size:18px;padding:3px 8px;border:1px solid #9fb0bf;border-radius:8px}
+.ws .wq{display:flex;gap:12px;padding:10px 0;border-bottom:1px solid var(--line);break-inside:avoid}.ws .wn{font-weight:700;color:var(--brand);min-width:26px}.ws .wl{margin-top:10px;color:var(--mut)}.ws .wo{margin:4px 0}.ws .wa{padding:6px 0;border-bottom:1px solid #eef2f6;font-size:16px}.pbreak{page-break-before:always;break-before:page}
+@media print{body.printing header,body.printing nav,body.printing .noprint,body.printing .goals{display:none!important}body.printing .wrap{display:block;margin:0;padding:0}body.printing main{border:0;padding:0}body{background:#fff}}
+.autoc{display:block;margin:.6rem 0 0;font-size:.9rem;color:var(--mut,#556)}.autoc input{margin-right:.4rem}
+.stp .stl{font-size:1.15rem;margin:.35rem 0;color:var(--ink,inherit)}.stp .eq{margin-left:.15rem;font-weight:700}
+.stp .stl{display:flex;gap:.6rem;align-items:flex-start}.ci{flex:none;width:1.5rem;height:1.5rem;border-radius:50%;border:2px solid #22a050;color:#22a050;display:inline-flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:700;line-height:1;margin-top:.1rem}.ci.open{color:transparent}.ci.full{background:#22a050;color:#fff}.fnote{font-size:.85rem;color:#16803c;margin-top:.1rem}.stepnote{margin:.5rem 0;padding:.45rem .7rem;border-left:4px solid #b7791f;background:#fff7e6;border-radius:6px;font-size:.92rem;color:#5a3d00}@media (prefers-color-scheme:dark){.stepnote{background:#3a2d12;color:#f3d9a4}}
+</style>
+</head>
+<body>
+<header><div class="topnav" role="navigation" aria-label="Site navigation"><a class="nb" href="../">Home</a><a class="nb" href="../2ht-chapter-1/">Chapter 1</a><a class="nb" href="../2ht-chapter-2/">Chapter 2</a><a class="nb" href="../2ht-chapter-3/">Chapter 3</a><a class="nb" href="../2ht-chapter-4/">Chapter 4</a><a class="nb" href="../2ht-chapter-5/">Chapter 5</a><a class="nb" href="../2ht-chapter-6/">Chapter 6</a><a class="nb" href="../2ht-chapter-7/">Chapter 7</a><a class="nb cur" href="../2ht-chapter-8/" aria-current="page">Chapter 8</a></div><div class="hd"><h1>2HT · Chapter 8 · Algebra</h1><p>Practise as long as you like. The questions adapt to you: Mild, Medium, Spicy and Extra spicy.</p></div><button class="pbtn" id="pbtn" type="button">My progress</button></header>
+<div class="wrap">
+  <nav id="nav" aria-label="Topics"></nav>
+  <main id="main" aria-live="polite"></main>
+</div>
+<script>
+/* NX core: shared helpers, expression parser/grader, renderer, engine builder. No DOM. */
+(function (root) {
+'use strict';
+const ri = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
+const pick = arr => arr[Math.floor(Math.random() * arr.length)];
+const shuffle = arr => { const a = arr.slice(); for (let i = a.length - 1; i > 0; i--) { const j = ri(0, i); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const nz = (a, b) => { let v = 0; while (v === 0) v = ri(a, b); return v; };
+const f = n => (n < 0 ? '−' : '') + (Math.round(Math.abs(n) * 1e6) / 1e6);
+const gcd = (a, b) => { a = Math.abs(a); b = Math.abs(b); while (b) { [a, b] = [b, a % b]; } return a; };
+const lcm = (a, b) => a / gcd(a, b) * b;
+const isPrime = n => { if (n < 2) return false; for (let i = 2; i * i <= n; i++) if (n % i === 0) return false; return true; };
+const primeFactors = n => { const r = []; for (let p = 2; p * p <= n; p++) while (n % p === 0) { r.push(p); n /= p; } if (n > 1) r.push(n); return r; };
+const squarefree = n => { for (let p = 2; p * p <= n; p++) if (n % (p * p) === 0) return false; return true; };
+const sqrtSplit = n => { let o = 1, r = n; for (let p = 2; p * p <= r; p++) while (r % (p * p) === 0) { o *= p; r /= p * p; } return [o, r]; };  // n = o^2 * r
+const SUP = '⁰¹²³⁴⁵⁶⁷⁸⁹';
+
+/* ================= tokenizer / parser ================= */
+function tokenize(src, o) {
+  o = o || {};
+  let s = String(src).replace(/[−–—]/g, '-').replace(/ /g, ' ');
+  s = s.replace(/(^|[^\d.,])(-?)(\d+)[ ]+(\d+)[ ]*\/[ ]*(\d+)/g, (m, pre, sg, w, n, d) => pre + (sg ? '-' : '') + '(' + w + '+' + n + '/' + d + ')');   // mixed number 2 1/3
+  s = s.replace(/sqrt/gi, '√').replace(/(?<![a-zA-Z])pi(?![a-zA-Z])/gi, 'π');
+  s = s.replace(/([⁰¹²³⁴⁵⁶⁷⁸⁹]+)√/g, (m, d) => '\u0001' + d.split('').map(c => SUP.indexOf(c)).join('') + ';');
+  s = s.replace(/(\d+)\s*V/g, (m, d) => '\u0001' + d + ';');   // 3V27 = cube root of 27
+  s = s.replace(/∛/g, '\u00013;').replace(/∜/g, '\u00014;');
+  s = s.replace(/[⁰¹²³⁴⁻⁵⁶⁷⁸⁹]+/g, m => '^(' + m.split('').map(c => c === '⁻' ? '-' : SUP.indexOf(c)).join('') + ')');
+  const t = []; let i = 0;
+  while (i < s.length) {
+    const c = s[i];
+    if (/\s/.test(c)) { i++; continue; }
+    if (c === '\u0001') { const j = s.indexOf(';', i); t.push({ k: 'sqrt', n: +s.slice(i + 1, j) }); i = j + 1; continue; }
+    if (c === '√') { t.push({ k: 'sqrt', n: 2 }); i++; continue; }
+    let m;
+    if ((m = /^\d+(?:[.,]\d+)?|^[.,]\d+/.exec(s.slice(i)))) { t.push({ k: 'num', v: parseFloat(m[0].replace(',', '.')), s: m[0].replace(',', '.') }); i += m[0].length; continue; }
+    if (c === 'π') { t.push({ k: 'pi' }); i++; continue; }
+    if (/[×·⋅*]/.test(c)) { t.push({ k: 'op', v: '*' }); i++; continue; }
+    if (/[x]/i.test(c) && o.noVars) { t.push({ k: 'op', v: '*' }); i++; continue; }
+    if (/[a-zA-Z]/.test(c)) { if (o.noVars) throw new Error('var'); t.push({ k: 'var', n: c }); i++; continue; }
+    if (c === '÷' || c === ':') { t.push({ k: 'op', v: '÷' }); i++; continue; }
+    if ('+-/^()'.indexOf(c) >= 0) { t.push({ k: 'op', v: c }); i++; continue; }
+    if (c === '[') { t.push({ k: 'op', v: '(' }); i++; continue; }
+    if (c === ']') { t.push({ k: 'op', v: ')' }); i++; continue; }
+    throw new Error('char ' + c);
+  }
+  return t;
+}
+function parse(src, o) {
+  const T = tokenize(src, o); let p = 0;
+  const peek = () => T[p], isOp = v => T[p] && T[p].k === 'op' && T[p].v === v;
+  const startsFactor = () => { const k = T[p]; return k && (k.k === 'num' || k.k === 'var' || k.k === 'pi' || k.k === 'sqrt' || (k.k === 'op' && k.v === '(')); };
+  function expr() {
+    let a = term();
+    while (isOp('+') || isOp('-')) { const op = T[p++].v; const b = term(); a = { t: op === '+' ? 'add' : 'sub', a, b }; }
+    return a;
+  }
+  function term() {
+    let a = unary();
+    for (;;) {
+      if (isOp('*')) { p++; a = { t: 'mul', a, b: unary() }; }
+      else if (isOp('/')) { p++; a = { t: 'div', a, b: unary() }; }
+      else if (isOp('÷')) { p++; a = { t: 'div', a, b: unary(), inl: true }; }
+      else if (startsFactor()) { a = { t: 'mul', a, b: unary(), imp: true }; }
+      else break;
+    }
+    return a;
+  }
+  function unary() {
+    if (isOp('-')) { p++; return { t: 'neg', a: unary() }; }
+    if (isOp('+')) { p++; return unary(); }
+    return power();
+  }
+  function power() {
+    const a = atom();
+    if (isOp('^')) { p++; let sgn = 1; if (isOp('-')) { p++; sgn = -1; } else if (isOp('+')) p++; let b = power(); if (sgn < 0) b = { t: 'neg', a: b }; return { t: 'pow', a, b }; }
+    return a;
+  }
+  function atom() {
+    const k = T[p]; if (!k) throw new Error('end');
+    if (k.k === 'num') { p++; return { t: 'n', v: k.v, s: k.s }; }
+    if (k.k === 'var') { p++; return { t: 'v', n: k.n }; }
+    if (k.k === 'pi') { p++; return { t: 'pi' }; }
+    if (k.k === 'sqrt') {
+      p++; let neg = false;
+      if (isOp('-')) { p++; neg = true; }
+      let r; const q = T[p];
+      if (isOp('(')) r = atom();
+      else if (q && q.k === 'num') { p++; r = { t: 'n', v: q.v, s: q.s }; }
+      else if (q && q.k === 'var') { p++; r = { t: 'v', n: q.n }; }
+      else if (q && q.k === 'pi') { p++; r = { t: 'pi' }; }
+      else throw new Error('sqrt');
+      if (neg) r = { t: 'neg', a: r };
+      return { t: 'sqrt', a: r, k: k.n };
+    }
+    if (isOp('(')) { p++; const e = expr(); if (!isOp(')')) throw new Error('paren'); p++; e.par = true; return e; }
+    throw new Error('atom');
+  }
+  const e = expr(); if (p < T.length) throw new Error('trailing'); return e;
+}
+function evalAst(n, env) {
+  switch (n.t) {
+    case 'n': return n.v; case 'v': { if (!(n.n in env)) env[n.n] = 0.6 + Math.random() * 2.2; return env[n.n]; }
+    case 'pi': return Math.PI; case 'neg': return -evalAst(n.a, env);
+    case 'add': return evalAst(n.a, env) + evalAst(n.b, env); case 'sub': return evalAst(n.a, env) - evalAst(n.b, env);
+    case 'mul': return evalAst(n.a, env) * evalAst(n.b, env); case 'div': return evalAst(n.a, env) / evalAst(n.b, env);
+    case 'pow': return Math.pow(evalAst(n.a, env), evalAst(n.b, env));
+    case 'sqrt': { const x = evalAst(n.a, env); if (n.k % 2 === 1) return (x < 0 ? -1 : 1) * Math.pow(Math.abs(x), 1 / n.k); return x < 0 ? NaN : Math.pow(x, 1 / n.k); }
+  }
+  return NaN;
+}
+function numEq(a, b) {                       // asts equivalent? (random numeric test)
+  for (let i = 0; i < 6; i++) {
+    const env = {}; const x = evalAst(a, env), y = evalAst(b, env);  // vars filled lazily, shared env
+    const y2 = evalAst(b, env);
+    if (!isFinite(x) || !isFinite(y2)) { if (i < 5) continue; return false; }
+    if (Math.abs(x - y2) > 1e-7 * Math.max(1, Math.abs(x), Math.abs(y2))) return false;
+  }
+  return true;
+}
+const isInt = v => Math.abs(v - Math.round(v)) < 1e-9;
+const lit = n => n.t === 'n' ? n.v : (n.t === 'neg' && n.a.t === 'n' ? -n.a.v : null);
+
+/* ----- polynomials: Map(key -> coef) ; key = 'a1b2' sorted ----- */
+const PK = m => Object.keys(m).sort().map(v => v + m[v]).join('');
+const Poly = {
+  c: v => (v === 0 ? {} : { '': v }),
+  v: n => ({ [n + '1']: 1 }),
+  add(a, b, s) { const r = Object.assign({}, a); for (const k in b) { r[k] = (r[k] || 0) + (s || 1) * b[k]; if (Math.abs(r[k]) < 1e-12) delete r[k]; } return r; },
+  mulm(k1, k2) { const m = {}; const re = /([^\d])(\d+)/g; let x; [k1, k2].forEach(k => { re.lastIndex = 0; while ((x = re.exec(k))) m[x[1]] = (m[x[1]] || 0) + +x[2]; }); return PK(m); },
+  mul(a, b) { const r = {}; for (const k1 in a) for (const k2 in b) { const k = Poly.mulm(k1, k2); r[k] = (r[k] || 0) + a[k1] * b[k2]; if (Math.abs(r[k]) < 1e-12) delete r[k]; } return r; },
+  pow(a, n) { let r = Poly.c(1); for (let i = 0; i < n; i++) r = Poly.mul(r, a); return r; },
+  isConst: a => Object.keys(a).every(k => k === ''),
+  cval: a => a[''] || 0
+};
+function toRF(n) {                           // rational function {N,D} or null
+  switch (n.t) {
+    case 'n': return { N: Poly.c(n.v), D: Poly.c(1) };
+    case 'v': return { N: Poly.v(n.n), D: Poly.c(1) };
+    case 'pi': return { N: Poly.v('π'), D: Poly.c(1) };
+    case 'neg': { const a = toRF(n.a); return a && { N: Poly.mul(a.N, Poly.c(-1)), D: a.D }; }
+    case 'add': case 'sub': { const a = toRF(n.a), b = toRF(n.b); if (!a || !b) return null; return { N: Poly.add(Poly.mul(a.N, b.D), Poly.mul(b.N, a.D), n.t === 'add' ? 1 : -1), D: Poly.mul(a.D, b.D) }; }
+    case 'mul': { const a = toRF(n.a), b = toRF(n.b); return a && b && { N: Poly.mul(a.N, b.N), D: Poly.mul(a.D, b.D) }; }
+    case 'div': { const a = toRF(n.a), b = toRF(n.b); if (!a || !b || !Object.keys(b.N).length) return null; return { N: Poly.mul(a.N, b.D), D: Poly.mul(a.D, b.N) }; }
+    case 'pow': { const e = lit(n.b); if (e === null || !isInt(e) || Math.abs(e) > 12) return null; const a = toRF(n.a); if (!a) return null; if (e >= 0) return { N: Poly.pow(a.N, e), D: Poly.pow(a.D, e) }; if (!Object.keys(a.N).length) return null; return { N: Poly.pow(a.D, -e), D: Poly.pow(a.N, -e) }; }
+  }
+  return null;
+}
+/* ----- structural analysis ----- */
+function flat(n, s, out) {
+  if (n.t === 'add') { flat(n.a, s, out); flat(n.b, s, out); }
+  else if (n.t === 'sub') { flat(n.a, s, out); flat(n.b, -s, out); }
+  else if (n.t === 'neg') flat(n.a, -s, out);
+  else out.push({ s, n });
+  return out;
+}
+function monoTerm(n, allowNegExp) {           // {c, vars} or null
+  switch (n.t) {
+    case 'n': return { c: n.v, vars: {} };
+    case 'pi': return { c: 1, vars: { 'π': 1 } };
+    case 'v': return { c: 1, vars: { [n.n]: 1 } };
+    case 'neg': { const a = monoTerm(n.a, allowNegExp); return a && { c: -a.c, vars: a.vars }; }
+    case 'mul': { const a = monoTerm(n.a, allowNegExp), b = monoTerm(n.b, allowNegExp); if (!a || !b) return null; const vars = Object.assign({}, a.vars); for (const k in b.vars) { if (k in vars) return null; vars[k] = b.vars[k]; } return { c: a.c * b.c, vars }; }
+    case 'div': { const a = monoTerm(n.a, allowNegExp), b = monoTerm(n.b, allowNegExp); if (!a || !b || Object.keys(b.vars).length || b.c === 0) return null; return { c: a.c / b.c, vars: a.vars }; }
+    case 'pow': { const e = lit(n.b); if (e === null || !isInt(e)) return null; if (e < 0 && !allowNegExp) return null; if (n.a.t === 'v') return { c: 1, vars: { [n.a.n]: e } }; if (n.a.t === 'pi') return { c: 1, vars: { 'π': e } }; return null; }
+  }
+  return null;
+}
+const hasBrackets = (n) => { if (n.par && n.t !== 'n' && !(n.t === 'neg' && n.a.t === 'n') && !(n.t === 'div' && n.a.t === 'n' && n.b.t === 'n')) return true; for (const k of ['a', 'b']) if (n[k] && hasBrackets(n[k])) return true; return false; };
+function sigOf(vars) { return Object.keys(vars).sort().map(k => k + vars[k]).join(''); }
+
+function formCheck(form, ast, q) {            // returns null if ok else message
+  if (!form || form === 'any') return null;
+  if (form === 'mono') {
+    const t = flat(ast, 1, []); if (t.length !== 1) return 'Write your answer as a single term.';
+    if (!monoTerm(t[0].n, q && q.negExp)) return 'Not fully simplified yet: write it as one number times each letter to a single power.'; return null;
+  }
+  if (form === 'poly') {
+    const t = flat(ast, 1, []); const seen = {};
+    for (const x of t) { const m = monoTerm(x.n); if (!m) return 'Not finished yet: expand the brackets and write every term as a number times letters.'; const s = sigOf(m.vars); if (seen[s]) return 'Not finished yet: add the like terms.'; seen[s] = 1; if (m.c === 0) return 'Remove the terms that are 0.'; }
+    return null;
+  }
+  if (form === 'lowest') {
+    const rf = toRF(ast); if (!rf) return 'I cannot read that as a fraction.';
+    const D = rf.D, N = rf.N; if (Object.keys(D).length !== 1) return 'Write one fraction with a single term in the denominator.';
+    const dk = Object.keys(D)[0]; let dc = D[dk]; if (!isInt(dc)) return null;
+    const cs = Object.keys(N).map(k => N[k]); if (!cs.length) return null;
+    if (cs.some(c => !isInt(c))) { return null; }
+    let g = Math.abs(dc); cs.forEach(c => { g = gcd(g, c); }); if (g > 1) return 'Not fully simplified: the numbers still have a common factor.';
+    const vs = (dk.match(/[^\d]/g) || []);
+    for (const v of vs) { if (Object.keys(N).every(k => k.indexOf(v) >= 0)) return 'Not fully simplified: you can still cancel the letter ' + v + '.'; }
+    // the user must not leave nested fractions / brackets-free requirement: ok
+    return null;
+  }
+  if (form === 'root') {
+    const terms = flat(ast, 1, []); const rads = {};
+    function rootTerm(n) {            // {c, r} or null
+      switch (n.t) {
+        case 'n': return { c: n.v, r: 1 };
+        case 'neg': { const a = rootTerm(n.a); return a && { c: -a.c, r: a.r }; }
+        case 'sqrt': { if (n.k !== 2) return null; const v = lit(n.a); if (v === null || !isInt(v) || v <= 1) return null; if (!squarefree(v)) return { bad: 'sq' }; return { c: 1, r: v }; }
+        case 'mul': { const a = rootTerm(n.a), b = rootTerm(n.b); if (!a || !b || a.bad || b.bad) return a && a.bad ? a : b && b.bad ? b : null; if (a.r > 1 && b.r > 1) return { bad: 'two' }; return { c: a.c * b.c, r: a.r * b.r }; }
+        case 'div': { const a = rootTerm(n.a), b = rootTerm(n.b); if (!a || !b) return null; if (a.bad) return a; if (b.bad) return b; if (b.r > 1) return { bad: 'den' }; if (isInt(a.c) && isInt(b.c) && gcd(a.c, b.c) > 1) return { bad: 'cancel' }; return { c: a.c / b.c, r: a.r }; }
+      }
+      return null;
+    }
+    for (const x of terms) {
+      const r = rootTerm(x.n); if (!r) return 'Not in the simplest form: write each term as a number times √ of a whole number.';
+      if (r.bad === 'sq') return 'Not fully simplified: there is still a square factor under the root.';
+      if (r.bad === 'two') return 'Not fully simplified: combine the roots into one.';
+      if (r.bad === 'den') return 'There is still a root in the denominator.';
+      if (r.bad === 'cancel') return 'Not fully simplified: the fraction can still be cancelled.';
+      if (rads[r.r]) return 'Not finished: add the like radicals.'; rads[r.r] = 1;
+    }
+    return null;
+  }
+  if (form === 'primes') {
+    let bad = null;
+    (function walk(n, inPow) {
+      if (n.t === 'n') { if (!isInt(n.v) || !isPrime(n.v)) bad = 'Every factor must be a prime number.'; }
+      else if (n.t === 'mul') { walk(n.a); walk(n.b); }
+      else if (n.t === 'pow') { walk(n.a); if (n.b.t !== 'n') bad = 'Use whole-number exponents.'; }
+      else bad = 'Write only prime numbers multiplied together, like 2^3 · 5.';
+    })(ast); return bad;
+  }
+  if (form === 'sci') {
+    let n = ast; if (n.t !== 'mul') return 'Write it as a number between 1 and 10 times a power of 10.';
+    const a = lit(n.a), p = n.b; if (a === null || Math.abs(a) < 1 || Math.abs(a) >= 10) return 'The first number must be at least 1 and less than 10.';
+    if (p.t !== 'pow' || lit(p.a) !== 10 || lit(p.b) === null || !isInt(lit(p.b))) return 'Write it as a · 10^n.'; return null;
+  }
+  if (form === 'frac') {       // one fraction a/b in lowest terms (or a whole number)
+    if (ast.t === 'n' || (ast.t === 'neg' && ast.a.t === 'n')) return isInt(lit(ast)) ? null : 'Write your answer as a fraction, like 5/33.';
+    if (ast.t === 'div') { const a = lit(ast.a), b = lit(ast.b); if (a === null || b === null || !isInt(a) || !isInt(b)) return 'Write your answer as one fraction of two whole numbers, like 5/33.'; if (gcd(a, b) > 1) return 'Not fully simplified: the top and bottom still have a common factor.'; if (Math.abs(b) === 1) return 'Write a whole number without the 1 below it.'; return null; }
+    return 'Write your answer as one fraction, like 5/33.';
+  }
+  if (form === 'powfrac') { if (ast.t !== 'pow') return 'Write it as a single power, like (2/5)^3.'; const e = lit(ast.b); if (e === null || !isInt(e) || ast.a.t !== 'div') return 'Write it as a power of a fraction, like (2/5)^3.'; return null; }
+  if (form === 'power') {
+    if (ast.t !== 'pow') return 'Write it as a single power.'; const b = lit(ast.a), e = lit(ast.b);
+    if (b === null || e === null || !isInt(e)) return 'Write it as a single power.'; if (q && q.base !== undefined && b !== q.base) return 'Use the base ' + q.base + '.'; return null;
+  }
+  return null;
+}
+function gradeExpr(q, u) {
+  let ua, ea; const o = q.noVars ? { noVars: true } : {};
+  try { ua = parse(u, o); } catch (e) { return { ok: false, why: 'parse' }; }
+  ea = parse(q.ans, o);
+  if (!numEq(ea, ua)) return { ok: false, why: 'value' };
+  if (q.form === 'mixed') { const t = String(u).replace(/[−–—]/g, '-').trim(); const mm = /^-?\d+[ ]+(\d+)[ ]*\/[ ]*(\d+)$/.exec(t); const isI = /^-?\d+$/.test(t); const pf_ = /^-?(\d+)[ ]*\/[ ]*(\d+)$/.exec(t); if (!isI && pf_ && !mm) { const n1 = +pf_[1], d1 = +pf_[2]; if (n1 >= d1) return { ok: false, why: 'form', msg: 'Write it as a mixed number: a whole number, a space and a fraction, like 2 1/3.' }; if (gcd(n1, d1) > 1) return { ok: false, why: 'form', msg: 'Not fully simplified: the fraction can still be simplified.' }; return { ok: true }; } if (!isI) { if (!mm) return { ok: false, why: 'form', msg: 'Write it as a mixed number: a whole number, a space and a fraction, like 2 1/3.' }; const nn = +mm[1], dd = +mm[2]; if (nn >= dd) return { ok: false, why: 'form', msg: 'The fraction part must be smaller than 1.' }; if (gcd(nn, dd) > 1) return { ok: false, why: 'form', msg: 'Not fully simplified: the fraction part can still be simplified.' }; } return { ok: true }; }
+  if (q.form === 'improper') { if (/\d[ ]+\d+[ ]*\/[ ]*\d/.test(String(u).trim())) return { ok: false, why: 'form', msg: 'Write it as one fraction (no whole number in front), like 7/4.' }; const m2 = formCheck('lowest', ua, q); if (m2) return { ok: false, why: 'form', msg: m2 }; return { ok: true }; }
+  const m = formCheck(q.form, ua, q); if (m) return { ok: false, why: 'form', msg: m };
+  if (q.needPi && !/π|pi/i.test(String(u))) return { ok: false, why: 'form', msg: 'Give the exact answer, with π.' };
+  return { ok: true };
+}
+
+/* ================= rendering ================= */
+function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;'); }
+function R(src, o) {
+  let ast; try { ast = parse(src, o); } catch (e) { return null; }
+  function P(n, strip) {
+    const w = (n.par && !strip) ? x => '(' + x + ')' : x => x;
+    switch (n.t) {
+      case 'n': return w(esc(n.s !== undefined ? String(n.s).replace('.', ',') : n.v));
+      case 'v': return '<i>' + n.n + '</i>';
+      case 'pi': return 'π';
+      case 'neg': return w('−' + P(n.a));
+      case 'add': return w(P(n.a) + ' + ' + P(n.b));
+      case 'sub': return w(P(n.a) + ' − ' + P(n.b));
+      case 'mul': return w(n.imp ? P(n.a) + P(n.b) : P(n.a) + ' · ' + P(n.b));
+      case 'div': return n.inl ? w(P(n.a) + ' ÷ ' + P(n.b)) : w('<span class="fr"><span class="nu">' + P(n.a, true) + '</span><span class="de">' + P(n.b, true) + '</span></span>');
+      case 'pow': return w(P(n.a) + '<sup>' + P(n.b, true) + '</sup>');
+      case 'sqrt': return w('<span class="rt' + (n.k > 2 ? ' rn' : '') + '">' + (n.k > 2 ? '<sup class="ix">' + n.k + '</sup>' : '') + '<span class="sq"></span><span class="ov">' + P(n.a, true) + '</span></span>');
+    }
+    return '';
+  }
+  return '<span class="mx">' + P(ast) + '</span>';
+}
+const M = (s, o) => R(s, o) || esc(s);                       // render math
+const fr = (a, b) => '<span class="mx"><span class="fr"><span class="nu">' + a + '</span><span class="de">' + b + '</span></span></span>';
+const mixed = (w, n, d) => '<span class="mx">' + w + fr(n, d) + '</span>';
+const tbl = (rows) => '<table class="tbl">' + rows.map(r => '<tr>' + r.map((c, i) => (i === 0 ? '<th>' : '<td>') + c + (i === 0 ? '</th>' : '</td>')).join('') + '</tr>').join('') + '</table>';
+
+/* ---- number formatting for answers ---- */
+function fmtNum(n) { if (isInt(n)) return f(Math.round(n)); return f(Math.round(n * 1e4) / 1e4).replace('.', ','); }
+function ratText(n, d) { const g = gcd(n, d); n /= g; d /= g; if (d < 0) { n = -n; d = -d; } return d === 1 ? String(n) : n + '/' + d; }
+
+/* ================= grading ================= */
+function parseNum(s) {
+  if (s === null || s === undefined) return NaN;
+  s = String(s).replace(/[−–—]/g, '-').replace(/\s*(?:°|degrees?)\s*$/i, '').replace(/\s+/g, '').replace(',', '.');
+  const fr_ = s.match(/^([+-]?\d+\.?\d*)\/([+-]?\d+\.?\d*)$/);
+  if (fr_ && parseFloat(fr_[2]) !== 0) return parseFloat(fr_[1]) / parseFloat(fr_[2]);
+  if (!/^[+-]?(\d+\.?\d*|\.\d+)$/.test(s)) return NaN;
+  return parseFloat(s);
+}
+function parsePoint(s) {
+  s = String(s || '').replace(/[−–—]/g, '-').replace(/\s+/g, '').replace(/^\(|\)$/g, '');
+  const m = s.split(/[;,]/); if (m.length === 2 && /^[+-]?\d+(\.\d+)?$/.test(m[0]) && /^[+-]?\d+(\.\d+)?$/.test(m[1])) return [parseFloat(m[0]), parseFloat(m[1])];
+  return null;
+}
+function check(q, u) {                      // -> {ok, why?, msg?}
+  if (q.type === 'num') { const n = parseNum(u); if (isNaN(n)) return { ok: false, why: 'parse' }; return { ok: Math.abs(n - q.ans) <= (q.tol || 1e-9) }; }
+  if (q.type === 'multi') { const ok = Array.isArray(u) && u.length === q.ans.length && u.every((v, i) => { const n = parseNum(v); return !isNaN(n) && Math.abs(n - q.ans[i]) <= (q.tol || 1e-9); }); return { ok }; }
+  if (q.type === 'point') { const p = parsePoint(u); return { ok: !!p && Math.abs(p[0] - q.ans[0]) < 1e-9 && Math.abs(p[1] - q.ans[1]) < 1e-9 }; }
+  if (q.type === 'choice') return { ok: Number(u) === q.ans };
+  if (q.type === 'expr') return gradeExpr(q, u);
+  if (q.type === 'click') { const got = Array.isArray(u) ? u : []; if (q.valid) { let ok = false; try { ok = !!q.valid(got); } catch (e) { } return { ok }; } const k = p => p[0] + ',' + p[1]; return { ok: got.map(k).sort().join('|') === (q.ans || []).map(k).sort().join('|') }; }
+  return { ok: false };
+}
+const grade = (q, u) => check(q, u).ok;
+function answerText(q) {
+  if (q.ansText) return q.ansText;
+  if (q.type === 'num') return fmtNum(q.ans);
+  if (q.type === 'multi') return q.ans.map(fmtNum).join(' and ');
+  if (q.type === 'point') return '(' + f(q.ans[0]) + ', ' + f(q.ans[1]) + ')';
+  if (q.type === 'choice') return q.opts[q.ans];
+  if (q.type === 'expr') return M(q.ans, q.noVars ? { noVars: true } : {});
+  if (q.type === 'click') return (q.ans || []).map(p => '(' + f(p[0]) + ', ' + f(p[1]) + ')').join(' and ');
+  return '';
+}
+
+/* ================= engine builder ================= */
+function engine(def) {
+  const { SECTIONS, LESSONS, G, XG } = def;
+  const fnOf = (list, sec, name) => (list[sec] || []).find(x => x.name === name);
+  function makeOne(key, lvl) {
+    const mixq = lvl === 'mix'; if (mixq) lvl = pick([0, 1, 1, 2, 2, 3, 3]);
+    const lesson = LESSONS.find(x => x.id === key);
+    let gens, xgs;
+    if (lesson) { gens = lesson.gens.map(e => [e[1], fnOf(G, e[0], e[1])]).filter(e => e[1]); xgs = (lesson.xg || []).map(e => [e[1], fnOf(XG, e[0], e[1])]).filter(e => e[1]); }
+    else { gens = (G[key] || []).map(x => [x.name, x]); xgs = (XG[key] || []).map(x => [x.name, x]); }
+    let q, e;
+    if (lvl === 3 && xgs.length && Math.random() < 0.7) { e = pick(xgs); q = e[1](2); }
+    else { e = pick(gens); q = e[1](Math.min(lvl, 2)); }
+    q.gen = e[0]; q.sec = key; q.lvl = lvl; q.mix = mixq; return q;
+  }
+  const fingerprint = q => String(q.html || '').replace(/<svg[\s\S]*?<\/svg>/g, '') + '|' + JSON.stringify(q.ans);
+  function make(key, lvl, recent) {
+    recent = Array.isArray(recent) ? recent : [];
+    const fps = recent.map(r => r.f), gens = recent.slice(-3).map(r => r.g);
+    let q;
+    for (let t = 0; t < 60; t++) {
+      try { q = makeOne(key, lvl); } catch (e) { if (t > 50) throw e; continue; }
+      q.fp = fingerprint(q);
+      if (fps.includes(q.fp)) continue;
+      if (q.type === 'choice' && q.opts && q.opts.length <= 2 && typeof q.lvl === 'number' && q.lvl > 0 && t < 55) continue;
+      if (t < 30 && gens.includes(q.gen)) continue;
+      break;
+    }
+    return q;
+  }
+  function makeTest() {
+    const n = SECTIONS.length, N = 24;
+    const lv = shuffle([0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2]);
+    const secs = []; for (let i = 0; i < N; i++) secs.push(SECTIONS[i % n].id);
+    const seen = []; return shuffle(secs).map((s, i) => { const q = make(s, lv[i], seen); seen.push({ g: null, f: q.fp }); q.hint = null; return q; });
+  }
+  return { KEY: def.key, SECTIONS, LESSONS, G, XG, make, makeTest, grade, check, answerText, evalNum: s => evalAst(parse(String(s), { noVars: true }), {}), parseNum, parsePoint, f, M, parse, defaultMode: def.defaultMode || 'lesson' };
+}
+
+/* ---------- click grid (shared) ---------- */
+let _gid = 0;
+function clipLine(p, d, xmin, xmax, ymin, ymax) {   // line through p with direction d, clipped to the rectangle
+  let t0 = -1e9, t1 = 1e9;
+  for (const [pp, dd, lo, hi] of [[p[0], d[0], xmin, xmax], [p[1], d[1], ymin, ymax]]) {
+    if (Math.abs(dd) < 1e-12) { if (pp < lo || pp > hi) return null; continue; }
+    let a = (lo - pp) / dd, b = (hi - pp) / dd; if (a > b) [a, b] = [b, a]; t0 = Math.max(t0, a); t1 = Math.min(t1, b);
+  }
+  if (t0 > t1) return null; return { a: [p[0] + d[0] * t0, p[1] + d[1] * t0], b: [p[0] + d[0] * t1, p[1] + d[1] * t1] };
+}
+function gridSVG(o) {
+  const u = o.u || 26, pad = 24, xmin = o.xmin, xmax = o.xmax, ymin = o.ymin, ymax = o.ymax, cells = !!o.cells;
+  const w = (xmax - xmin + (cells ? 1 : 0)) * u + 2 * pad, h = (ymax - ymin + (cells ? 1 : 0)) * u + 2 * pad;
+  const off = cells ? u / 2 : 0;
+  const X = x => pad + off + (x - xmin) * u, Y = y => pad + off + (ymax - y) * u;
+  const id = 'g' + (++_gid);
+  let s = '<svg class="grid" viewBox="0 0 ' + w + ' ' + h + '" role="img" aria-label="grid"' + (o.click ? ' data-click="1"' : '') + ' data-xmin="' + xmin + '" data-ymax="' + ymax + '" data-u="' + u + '" data-pad="' + (pad + off) + '" data-w="' + w + '"' + (cells ? ' data-cell="1"' : '') + '>';
+  s += '<defs><clipPath id="' + id + '"><rect x="' + (X(xmin) - off) + '" y="' + (Y(ymax) - off) + '" width="' + (w - 2 * pad) + '" height="' + (h - 2 * pad) + '"/></clipPath></defs>';
+  s += '<rect x="0" y="0" width="' + w + '" height="' + h + '" fill="#fff"/>';
+  if (cells) {
+    for (let x = xmin; x <= xmax + 1; x++) s += '<line x1="' + (X(x) - u / 2) + '" y1="' + pad + '" x2="' + (X(x) - u / 2) + '" y2="' + (h - pad) + '" stroke="#b9c6d3" stroke-width="1"/>';
+    for (let y = ymin; y <= ymax + 1; y++) s += '<line x1="' + pad + '" y1="' + (Y(y) + u / 2) + '" x2="' + (w - pad) + '" y2="' + (Y(y) + u / 2) + '" stroke="#b9c6d3" stroke-width="1"/>';
+    (o.fill || []).forEach(p => { s += '<rect x="' + (X(p[0]) - u / 2 + 1) + '" y="' + (Y(p[1]) - u / 2 + 1) + '" width="' + (u - 2) + '" height="' + (u - 2) + '" fill="#9cc3ea" stroke="#345" stroke-width="1.2"/>'; });
+  } else {
+    for (let x = xmin; x <= xmax; x++) s += '<line x1="' + X(x) + '" y1="' + Y(ymin) + '" x2="' + X(x) + '" y2="' + Y(ymax) + '" stroke="#dbe3ea" stroke-width="1"/>';
+    for (let y = ymin; y <= ymax; y++) s += '<line x1="' + X(xmin) + '" y1="' + Y(y) + '" x2="' + X(xmax) + '" y2="' + Y(y) + '" stroke="#dbe3ea" stroke-width="1"/>';
+    if (!o.noAxes) {
+      s += '<line x1="' + X(xmin) + '" y1="' + Y(0) + '" x2="' + X(xmax) + '" y2="' + Y(0) + '" stroke="#334" stroke-width="1.6"/>';
+      s += '<line x1="' + X(0) + '" y1="' + Y(ymin) + '" x2="' + X(0) + '" y2="' + Y(ymax) + '" stroke="#334" stroke-width="1.6"/>';
+      const stx = xmax - xmin > 12 ? 2 : 1, sty = ymax - ymin > 12 ? 2 : 1;
+      for (let x = xmin; x <= xmax; x++) if (x !== 0 && x % stx === 0) s += '<text x="' + X(x) + '" y="' + (Y(0) + 14) + '" font-size="10" text-anchor="middle" fill="#556">' + f(x) + '</text>';
+      for (let y = ymin; y <= ymax; y++) if (y !== 0 && y % sty === 0) s += '<text x="' + (X(0) - 5) + '" y="' + (Y(y) + 3.5) + '" font-size="10" text-anchor="end" fill="#556">' + f(y) + '</text>';
+    }
+  }
+  (o.polys || []).forEach(g => { s += '<polygon points="' + g.pts.map(p => X(p[0]) + ',' + Y(p[1])).join(' ') + '" fill="' + (g.fill || 'rgba(27,95,168,.12)') + '" stroke="' + (g.stroke || '#1b5fa8') + '" stroke-width="2.2" clip-path="url(#' + id + ')"/>'; });
+  (o.segs || []).forEach(g => { s += '<line x1="' + X(g.a[0]) + '" y1="' + Y(g.a[1]) + '" x2="' + X(g.b[0]) + '" y2="' + Y(g.b[1]) + '" stroke="' + (g.color || '#1b5fa8') + '" stroke-width="' + (g.w || 2.4) + '"' + (g.dash ? ' stroke-dasharray="6 4"' : '') + ' stroke-linecap="round" clip-path="url(#' + id + ')"/>'; });
+  (o.pts || []).forEach(p => {
+    s += '<circle cx="' + X(p.x) + '" cy="' + Y(p.y) + '" r="4.6" fill="' + (p.color || '#1b5fa8') + '" stroke="#fff" stroke-width="1.2"/>';
+    if (p.label) s += '<text x="' + (X(p.x) + 7) + '" y="' + (Y(p.y) - 7) + '" font-size="13" font-weight="700" fill="#123">' + p.label + '</text>';
+  });
+  return s + '<g class="marks"></g></svg>';
+}
+const U = { gridSVG, clipLine, ri, pick, shuffle, nz, f, gcd, lcm, isPrime, primeFactors, squarefree, sqrtSplit, parse, evalAst, numEq, R, M, fr, mixed, tbl, fmtNum, ratText, formCheck, gradeExpr, toRF, flat, monoTerm, Poly, engine, esc, parseNum };
+if (typeof module !== 'undefined' && module.exports) module.exports = U; else root.NX = U;
+})(typeof window !== 'undefined' ? window : globalThis);
+
+</script>
+<script>
+/* 2HT Chapter 8: algebra.  */
+const __def = (function (NX, P) {
+/* shared algebra helpers (copied from 3HT chapter 1): canonical strings from rational functions */
+const ALG = (function (NX) {
+  const { Poly, gcd } = NX;
+  const keyVars = k => { const m = {}; const re = /([^\d])(\d+)/g; let x; while ((x = re.exec(k))) m[x[1]] = +x[2]; return m; };
+  const mkKey = m => Object.keys(m).filter(v => m[v] > 0).sort().map(v => v + m[v]).join('');
+  const vstr = m => Object.keys(m).filter(v => m[v] > 0).sort().map(v => v + (m[v] > 1 ? '^' + m[v] : '')).join('');
+  function polyStr(N) {
+    const ks = Object.keys(N); if (!ks.length) return '0';
+    const tdeg = k => Object.values(keyVars(k)).reduce((a, b) => a + b, 0);
+    ks.sort((a, b) => tdeg(b) - tdeg(a) || (a < b ? -1 : 1));
+    return ks.map((k, i) => { const c = N[k], ab = Math.abs(c), vs = vstr(keyVars(k)); let body = vs ? (ab === 1 ? '' : String(+ab.toFixed(8))) + vs : String(+ab.toFixed(8)); return (c < 0 ? '-' : i ? '+' : '') + body; }).join('');
+  }
+  function rfStr(rf) {
+    let N = Object.assign({}, rf.N), D = Object.assign({}, rf.D); const dk = Object.keys(D); if (dk.length !== 1) throw new Error('den not monomial');
+    if (!Object.keys(N).length) return '0';
+    let dc = D[dk[0]]; let dv = keyVars(dk[0]);
+    if (dc < 0) { dc = -dc; Object.keys(N).forEach(k => N[k] = -N[k]); }
+    let g = Math.round(Math.abs(dc)); if (Number.isInteger(dc) && Object.values(N).every(Number.isInteger)) { Object.values(N).forEach(c => { g = gcd(g, c); }); } else g = 1;
+    if (g > 1) { dc /= g; Object.keys(N).forEach(k => N[k] /= g); }
+    for (const v of Object.keys(dv)) { let m = Infinity; Object.keys(N).forEach(k => { m = Math.min(m, keyVars(k)[v] || 0); }); const t = Math.min(m, dv[v]); if (t > 0) { dv[v] -= t; const N2 = {}; Object.keys(N).forEach(k => { const kv = keyVars(k); kv[v] -= t; N2[mkKey(kv)] = (N2[mkKey(kv)] || 0) + N[k]; }); N = N2; } }
+    const ns = polyStr(N); const dvs = vstr(dv); const dstr = (dc === 1 ? '' : String(dc)) + dvs; const nTerms = Object.keys(N).length;
+    if (dstr === '') return ns; const nn = nTerms > 1 ? '(' + ns + ')' : ns; const dd = (dc !== 1 && dvs) || /[\^]/.test(dstr) || dstr.length > 1 ? '(' + dstr + ')' : dstr; return nn + '/' + dd;
+  }
+  const canon = src => { const rf = NX.toRF(NX.parse(src)); if (!rf) throw new Error('canon ' + src); return rfStr(rf); };
+  const terms = (arr) => arr.map((t, i) => (t[0] < 0 ? '-' : i ? '+' : '') + (Math.abs(t[0]) === 1 && t[1] ? '' : Math.abs(t[0])) + t[1]).join('');   // [[c,'x^2'],...] -> '3x^2-4'
+  return { canon, rfStr, polyStr, terms, keyVars };
+})(NX);
+
+
+const { ri, pick, shuffle, nz, gcd, M } = NX;
+const LR = (l, lo, hi) => { const s = hi - lo; if (s < 1 || l === undefined || l === 'mix') return ri(lo, hi); l = Math.min(l, 2); const a = l === 0 ? lo : l === 1 ? lo + Math.floor(s * .25) : lo + Math.floor(s * .5); const b = l === 0 ? lo + Math.max(1, Math.ceil(s * .5)) : l === 1 ? hi - Math.floor(s * .15) : hi + Math.ceil(s * .4); return ri(a, b); };
+const ch = (html, right, wrongs, hint, steps, extra) => { let o = [right]; wrongs.forEach(w => { if (!o.includes(w)) o.push(w); }); const opts = shuffle(o); return Object.assign({ type: 'choice', opts, ans: opts.indexOf(right), html, hint, steps, keys: [] }, extra || {}); };
+const ex = (html, ans, form, hint, steps, extra) => Object.assign({ type: 'expr', html, ans, form, hint, steps }, extra || {});
+const nu = (html, ans, hint, steps, extra) => Object.assign({ type: 'num', html, ans, hint, steps }, extra || {});
+const p = x => '<p>' + x + '</p>';
+const G = {}, XG = {};
+
+/* ---------- helpers ---------- */
+const V = () => pick(['a', 'b', 'k', 'm', 'p', 'q', 'r', 't', 'x', 'y', 'z']);
+const V2 = () => { const a = V(); let b; do { b = V(); } while (b === a); return [a, b].sort(); };
+const pw = (v, e) => e === 0 ? '' : e === 1 ? v : v + '^' + e;
+const T = (c, m) => (c < 0 ? '-' : '') + (Math.abs(c) === 1 && m ? '' : String(Math.abs(c))) + m;   // one term as source text
+const C = src => ALG.canon(src);
+const CS = list => list.map((x, i) => i && x[0] !== '-' ? '+' + x : x).join('');                     // join terms with signs
+const br = s => /^([a-z]|\d+)$/.test(s) ? s : '(' + s + ')';                                               // brackets around a base unless it is one letter
+const chain = arr => arr.filter((s, i) => i === 0 || s !== arr[i - 1]).map(s => M(s)).join(' = ');
+/* expression question: list = [question, step, step, ...]; the answer is the simplified form of the question */
+const alg = (html, list, form, hint, extra) => { const ans = C(list[0]); list.forEach(x => must(C(x.replace(/\^\(([\d+*-]+)\)/g, (m, e) => '^' + Function('return ' + e)())), ans)); return ex(html, ans, form, hint, chain(list.concat([ans])), Object.assign({ negExp: false }, extra || {})); };
+/* every term of A times every term of B, written out (A and B are lists of [coefficient, letters]) */
+function prodLine(A, B, first) {
+  let s = '';
+  A.forEach(a => B.forEach(b => { const neg = a[0] < 0, con = s === '' && first !== false ? (neg ? '-' : '') : (neg ? '-' : '+'); s += con + T(Math.abs(a[0]), a[1]) + '*' + T(b[0], b[1]); }));
+  return s;
+}
+const prodVals = (A, B) => { const o = []; A.forEach(a => B.forEach(b => o.push(C(T(a[0], a[1]) + '*(' + T(b[0], b[1]) + ')')))); return o; };
+const src = L => CS(L.map(t => T(t[0], t[1])));
+const linBr = (a, v, b) => src([[a, v], [b, '']].filter(t => t[0] !== 0));   // a·v + b
+const must = (a, b) => { if (a !== b) throw new Error('consistency check failed: ' + a + ' vs ' + b); };
+const HSUB = ' Put the number in brackets: (−2)⁴ is not the same as −2⁴.';
+
+/* ======================= 8.1 Powers and like terms ======================= */
+G['8.1'] = [
+  function writePower(l) {
+    if (l === 0 || Math.random() < .5) {
+      const v = V(), n = ri(3, 7), s = Array(n).fill(v).join('*');
+      return alg(p('Write as a power: ' + M(s) + '.'), [s], 'mono', 'Count how many times the letter is multiplied by itself. That number is the exponent.');
+    }
+    const [v, w] = V2(), n = ri(2, 5), s = Array(n).fill(v + w).join('*');
+    return alg(p('Write as short as possible, using powers: ' + M(s) + '.'), [s, '(' + v + w + ')^' + n], 'mono', 'You multiply ' + v + w + ' by itself ' + n + ' times. Then raise every letter to that power.');
+  },
+  function bracketPower(l) {
+    const c = ri(2, 5), v = V(), n = ri(3, 5), s = Array(n).fill(c + v).join('*');
+    const right = M('(' + c + v + ')^' + n);
+    return ch(p('Which power is the same as ' + M(s) + '?'), right, [M(c + v + '^' + n), M(n * c + v), M(c * n + v + '^' + n)], 'The whole term ' + c + v + ' is multiplied by itself, so the brackets go around ' + c + v + '.', M(s) + ' = ' + right + ' = ' + M(c + '^' + n + '*' + v + '^' + n) + ' = ' + M(C(s)));
+  },
+  function substitute(l) {
+    const x0 = pick(l === 0 ? [-1, -2, 2, 3] : [-2, -3, -1, 2, -2]); let terms;
+    if (l === 0) terms = [[pick([1, -1, 2, 3, -2]), ri(2, 3)]];
+    else if (l === 1) terms = Math.random() < .5 ? [[pick([1, -1, 2, 3, -2, 5]), Math.abs(x0) === 3 ? ri(2, 3) : ri(2, 5)]] : [[pick([1, -1, 2]), 3], [pick([-1, 1, 3, -2]), 2]];
+    else { terms = [[pick([1, -1, 2, 3]), ri(2, 3)], [nz(-5, 5), 1], [nz(-9, 9), 0]]; if (Math.random() < .5) terms[0][0] = -terms[0][0]; }
+    const s = src(terms.map(t => [t[0], pw('x', t[1])]));
+    const line1 = terms.map((t, i) => { const neg = t[0] < 0, con = i === 0 ? (neg ? '-' : '') : (neg ? '-' : '+'), a = Math.abs(t[0]); if (t[1] === 0) return con + a; return con + (a === 1 ? '' : a + '*') + (x0 < 0 ? '(' + x0 + ')' : x0) + (t[1] > 1 ? '^' + t[1] : ''); }).join('');
+    const vals = terms.map(t => t[0] * Math.pow(x0, t[1])), ans = vals.reduce((a, b) => a + b, 0);
+    const line2 = vals.map((v, i) => i === 0 ? String(v) : (v < 0 ? '-' : '+') + Math.abs(v)).join('');
+    return nu(p('Calculate the value of ' + M(s) + ' for ' + M('x = ' + x0) + '.'), ans, 'Replace x by (' + x0 + '). Powers first, then multiply, then add and subtract.' + (x0 < 0 ? HSUB : ''), chain([s, line1, line2, String(ans)]));
+  },
+  function productPower(l) {
+    const [v, w] = V2(); let c, a, b = 0, n;
+    if (l === 0) { c = ri(2, 4); a = 1; n = ri(2, 3); }
+    else if (l === 1) { c = pick([-3, -2, 2, 3, 4, 5]); a = ri(1, 3); n = ri(2, 3); if (Math.random() < .4) b = 1; }
+    else { c = pick([-2, -1, 2, 3, -3]); a = ri(1, 4); b = ri(1, 3); n = Math.abs(c) === 3 ? 3 : ri(2, 4); }
+    const inner = T(c, pw(v, a) + pw(w, b)), s = '(' + inner + ')^' + n;
+    const parts = [(c === -1 ? '(-1)^' + n : Math.abs(c) === 1 ? '' : (c < 0 ? '(' + c + ')' : c) + '^' + n), (a === 1 ? v : '(' + pw(v, a) + ')') + '^' + n, b ? (b === 1 ? w : '(' + pw(w, b) + ')') + '^' + n : ''].filter(Boolean);
+    return alg(p('Write without brackets: ' + M(s) + '.'), [s, parts.join('*')], 'mono', 'Raise every factor inside the brackets to the power ' + n + ': the number and each letter.' + (c < 0 ? ' A negative number to an even power is positive.' : ''));
+  },
+  function likeTerms(l) {
+    const v = V(); let kinds;
+    if (l === 0) kinds = [pw(v, ri(2, 5)), ''];
+    else if (l === 1) { const a = ri(2, 4); kinds = [pw(v, a), pw(v, a + 1), '']; }
+    else { const [x, y] = V2(), a = ri(2, 4), b = ri(1, 3); kinds = [pw(x, a) + pw(y, b), pw(x, b) + pw(y, a + 1), pw(x, a)]; }
+    let L = []; kinds.forEach((k, i) => { L.push([nz(-9, 9), k]); if (i < 2 || l === 2) L.push([nz(-9, 9), k]); }); if (l >= 1) L.push([nz(-6, 6), kinds[0]]);
+    L = shuffle(L); const s = src(L), ans = C(s);
+    if (ans === '0' || ans.replace(/[^+-]/g, '').length < 1 && l > 0) return G['8.1'][4](l);
+    const order = []; L.forEach(t => { if (!order.includes(t[1])) order.push(t[1]); });
+    const grouped = order.reduce((acc, k) => acc.concat(L.filter(t => t[1] === k)), []);
+    return alg(p('Simplify: ' + M(s) + '.'), [s, src(grouped)], 'poly', 'You can only add or subtract like terms: the same letters with the same exponents.');
+  },
+  function multiplyTerms(l) {
+    const [v, w] = V2(), same = l === 0 && Math.random() < .4, W = same ? v : w, a = l === 0 ? 1 : ri(1, 3), b = l === 0 ? 1 : ri(1, 3);
+    const c1 = pick([2, 3, 4, 5, 6, -2, -3]), c2 = l === 0 ? ri(2, 9) : pick([2, 3, 4, 5, 7, -4, -5, -2]);
+    const s1 = T(c1, pw(v, a)) + '*' + T(c2, pw(W, b)), prodSteps = c1 + '*' + (c2 < 0 ? c2 : c2) + '*' + (same ? pw(v, a) + '*' + pw(v, b) : pw(v, a) + '*' + pw(w, b));
+    if (l === 0) return alg(p('Simplify: ' + M(s1) + '.'), [s1, prodSteps], 'mono', 'Multiply the numbers. Then write the letters behind it, in alphabetical order.' + (same ? ' ' + v + ' · ' + v + ' = ' + v + '².' : ''));
+    const c3 = nz(-12, 12), k = pw(v, a) + pw(w, b);
+    if (c1 * c2 + c3 === 0) return G['8.1'][5](l);
+    const s = s1 + (c3 < 0 ? '-' : '+') + T(Math.abs(c3), k);
+    return alg(p('Simplify: ' + M(s) + '.'), [s, prodSteps + (c3 < 0 ? '-' : '+') + T(Math.abs(c3), k), CS([T(c1 * c2, k), T(c3, k)])], 'poly', 'First do the multiplication. Then the two terms are like terms, so you can add them.');
+  },
+  function likeChoice(l) {
+    const [v, w] = V2(), a = ri(2, 4), b = ri(1, a - 1), c1 = ri(2, 9), c2 = nz(-9, 9);
+    const right = M(T(c1, pw(v, a) + pw(w, b))) + ' and ' + M(T(c2, pw(v, a) + pw(w, b)));
+    const wrongs = [M(T(c1, pw(v, a) + pw(w, b))) + ' and ' + M(T(c1, pw(v, b) + pw(w, a))), M(T(c2, pw(v, a))) + ' and ' + M(T(c2, pw(v, a + 1))), M(T(c1, pw(v, a))) + ' and ' + M(T(c1, pw(w, a)))];
+    return ch(p('Which two terms are <b>like terms</b>?'), right, wrongs, 'Like terms have exactly the same letters with the same exponents. The numbers in front may be different.', right + ': both have ' + M(pw(v, a) + pw(w, b)) + '.');
+  }
+];
+XG['8.1'] = [
+  function boxVolume(l) {
+    const v = V(), c1 = ri(2, 5), c2 = pick([1, 2, 3]), s = c1 + v + '*' + T(c2, v) + '*' + v;
+    return alg(p('A box is ' + M(c1 + v) + ' long, ' + M(T(c2, v)) + ' wide and ' + M(v) + ' high. Write the volume as short as possible.'), [s, c1 * c2 + '*' + v + '*' + v + '*' + v], 'mono', 'volume = length · width · height. Multiply the numbers, then the letters.');
+  },
+  function missingTerm(l) {
+    const v = V(), n = ri(2, 6), a = nz(-6, 6), b = nz(-9, 9); if (a === b) return XG['8.1'][1](l);
+    const left = T(a, pw(v, n)), part = T(b, pw(v, n));
+    return alg(p('Fill in the missing term: ' + M(left) + ' = … ' + (b < 0 ? '− ' : '+ ') + M(T(Math.abs(b), pw(v, n))) + '.'), [left + '-(' + part + ')'], 'mono', 'The missing term plus the given term must give ' + M(left) + '. So calculate ' + M(left + '-(' + part + ')') + '.');
+  }
+];
+
+/* ======================= 8.2 Rules of powers ======================= */
+G['8.2'] = [
+  function productRule(l) {
+    const v = V(); let F;
+    if (l === 0) F = [[1, ri(2, 6)], [1, ri(2, 6)]];
+    else if (l === 1) F = [[pick([2, 3, 4, 5, 8, 10]), ri(2, 6)], [pick([2, 3, 5, 6, -2, -3, -6]), ri(2, 6)]];
+    else F = [[pick([2, 3, 4, -5]), ri(2, 5)], [1, 1], [pick([-3, 2, 6, -2]), ri(2, 6)]];
+    const s = F.map(f => T(f[0], pw(v, f[1]))).join('*'), cs = F.map(f => f[0]).filter(c => c !== 1), exps = F.map(f => f[1]).join('+');
+    const line = (cs.length ? cs.join('*') + '*' : '') + v + '^(' + exps + ')';
+    return alg(p('Simplify: ' + M(s) + '.'), [s, line], 'mono', 'Multiplying powers with the same base: <b>add</b> the exponents. Multiply the numbers in front.' + (l === 2 ? ' Remember ' + v + ' = ' + v + '¹.' : ''));
+  },
+  function quotientRule(l) {
+    const v = V();
+    if (l === 0) { const a = ri(5, 12), b = ri(2, a - 2), s = pw(v, a) + '/' + pw(v, b); return alg(p('Simplify: ' + M(s) + '.'), [s, v + '^(' + a + '-' + b + ')'], 'mono', 'Dividing powers with the same base: <b>subtract</b> the exponents.'); }
+    if (l === 1 || Math.random() < .4) { const k = pick([2, 3, 4, 5, 7, -2, -3]), d = pick([2, 3, 5, -3, 4]), a = ri(5, 10), b = ri(1, a - 1), s = T(k * d, pw(v, a)) + '/(' + T(d, pw(v, b)) + ')';
+      return alg(p('Simplify: ' + M(s) + '.'), [s, '(' + T(k * d, v + '^(' + a + '-' + b + ')') + ')/' + (d < 0 ? '(' + d + ')' : d)], 'mono', 'Divide the numbers. For the letter, subtract the exponents.'); }
+    const a = ri(1, 4), b = a + ri(1, 4), d = pick([2, 3, 4, 5]), c1 = pick([1, 2, 3]) * (Math.random() < .3 ? -1 : 1), c2 = c1 * d, s = T(c1, pw(v, a)) + '/(' + T(c2, pw(v, b)) + ')';
+    return alg(p('Simplify: ' + M(s) + '. <small>(The letter ends up in the denominator. Type it like 1/(3p^2).)</small>'), [s, c1 + '/(' + c2 + v + '^(' + b + '-' + a + '))'], 'lowest', 'There are more factors ' + v + ' below the line than above. Subtract: ' + b + ' − ' + a + ' factors ' + v + ' stay in the denominator. Simplify the numbers too.');
+  },
+  function powerOfPower(l) {
+    const v = V();
+    if (l === 0) { const a = ri(2, 4), b = ri(2, 3), s = '(' + pw(v, a) + ')^' + b; return alg(p('Simplify: ' + M(s) + '.'), [s, v + '^(' + a + '*' + b + ')'], 'mono', 'A power of a power: <b>multiply</b> the exponents.'); }
+    const [x, w] = V2(), c = l === 1 ? pick([2, 3, 4, -2, 5]) : pick([-1, -2, 2, 3, -3]), a = ri(2, 4), b = l === 2 ? ri(1, 3) : 0, n = Math.abs(c) >= 4 ? 2 : ri(2, 3);
+    const s = '(' + T(c, pw(x, a) + pw(w, b)) + ')^' + n;
+    const line = [(Math.abs(c) === 1 ? (c < 0 ? '(-1)^' + n : '') : (c < 0 ? '(' + c + ')' : c) + '^' + n), x + '^(' + a + '*' + n + ')', b ? w + '^(' + b + '*' + n + ')' : ''].filter(Boolean).join('*');
+    return alg(p('Simplify: ' + M(s) + '.'), [s, line], 'mono', 'Raise the number to the power ' + n + '. For every letter: multiply its exponent by ' + n + '.');
+  },
+  function mixedRules(l) {
+    const v = V(), kind = l === 0 ? 0 : ri(0, 1);
+    if (kind === 0) { const a = ri(1, 5), b = ri(2, 5), c1 = pick([2, 3, 4, 5, -2]), c2 = pick([2, 3, 6, -1, 5]), c3 = nz(-12, 12); if (c1 * c2 + c3 === 0) return G['8.2'][3](l);
+      const k = pw(v, a + b), s = T(c1, pw(v, a)) + '*' + T(c2, pw(v, b)) + (c3 < 0 ? '-' : '+') + T(Math.abs(c3), k);
+      return alg(p('Simplify: ' + M(s) + '.'), [s, CS([C(T(c1, pw(v, a)) + '*(' + T(c2, pw(v, b)) + ')'), T(c3, k)])], 'poly', 'First multiply (add the exponents). Then add the like terms.'); }
+    const a = ri(2, 4), n = ri(2, 3), c = pick([2, 3, -2]), d = nz(-20, 20), k = pw(v, a * n); if (Math.pow(c, n) + d === 0) return G['8.2'][3](l);
+    const s = '(' + T(c, pw(v, a)) + ')^' + n + (d < 0 ? '-' : '+') + T(Math.abs(d), k);
+    return alg(p('Simplify: ' + M(s) + '.'), [s, CS([C('(' + T(c, pw(v, a)) + ')^' + n), T(d, k)])], 'poly', 'First work out the power of the brackets (multiply the exponents). Then add the like terms.');
+  },
+  function ruleChoice(l) {
+    const R = [['multiply powers with the same base', 'add'], ['divide powers with the same base', 'subtract'], ['raise a power to a power', 'multiply']], r = pick(R);
+    const ex1 = r[1] === 'add' ? 'a³ · a⁴ = a⁷' : r[1] === 'subtract' ? 'a⁷ : a³ = a⁴' : '(a³)⁴ = a¹²';
+    return ch(p('When you ' + r[0] + ', you … the exponents.'), r[1], ['add', 'subtract', 'multiply', 'divide'].filter(x => x !== r[1]), 'Try it with an example: write the powers out as a · a · a …', 'You ' + r[1] + ' the exponents, for example ' + ex1 + '.');
+  }
+];
+XG['8.2'] = [
+  function baseChange(l) {
+    const [b, e] = pick([[2, 2], [2, 3], [3, 2], [2, 4], [5, 2], [3, 3]]), n = ri(2, 5), big = Math.pow(b, e);
+    return nu(p(big + ' = ' + M(b + '^' + e) + '. Write ' + M(big + '^' + n) + ' as a power of ' + b + ': ' + M(big + '^' + n) + ' = ' + b + '<sup>?</sup>. What is the exponent?'), e * n, 'Replace ' + big + ' by ' + M(b + '^' + e) + ' and use: power of a power, multiply the exponents.', M(big + '^' + n) + ' = ' + M('(' + b + '^' + e + ')^' + n) + ' = ' + M(b + '^(' + e + '*' + n + ')') + ' = ' + M(b + '^' + e * n) + ', so the exponent is ' + e * n + '.', { noStep: true });
+  },
+  function heightFromVolume(l) {
+    const [v, w] = V2(), c1 = ri(2, 5), c2 = ri(2, 4), k = ri(1, 3), a = ri(2, 4), b = ri(2, 3), vol = T(c1 * c2 * k, pw(v, a) + pw(w, b));
+    return alg(p('A box is ' + M(c1 + v) + ' long and ' + M(c2 + w) + ' wide. Its volume is ' + M(vol) + '. Write the height as short as possible.'), [vol + '/(' + c1 + v + '*' + c2 + w + ')', vol + '/(' + (c1 * c2) + v + w + ')'], 'mono', 'length · width · height = volume, so height = volume ÷ (length · width).');
+  },
+  function cubeOfPower(l) {
+    const v = V(), a = ri(2, 4), c = l === 2 ? ri(2, 3) : 1, edge = T(c, pw(v, a));
+    return alg(p('A cube has edges of length ' + M(edge) + '. Write the volume of the cube without brackets.'), ['(' + edge + ')^3'], 'mono', 'volume of a cube = edge³. Use the power of a power: multiply the exponents.');
+  }
+];
+
+/* ======================= 8.3 Expanding brackets ======================= */
+G['8.3'] = [
+  function singleBracket(l) {
+    const v = V(); let A, B;
+    if (l === 0) { A = [[ri(2, 9), '']]; B = [[ri(1, 5), v], [nz(-9, 9), '']]; }
+    else if (l === 1) { const k = ri(0, 2); if (k === 0) { A = [[pick([-2, -3, -4, -5, -6, -7]), '']]; B = [[nz(-6, 6), v], [nz(-9, 9), '']]; } else if (k === 1) { A = [[-1, '']]; B = shuffle([[nz(-5, 5), pw(v, ri(1, 2))], [nz(-9, 9), '']]); } else { A = [[pick([2, 3, 5, -2, -4]), v]]; B = [[ri(1, 4), v], [nz(-9, 9), '']]; } }
+    else { const a = ri(1, 4); A = [[pick([2, 3, 5, -2, -8, 10]), pw(v, a)]]; B = [[nz(-6, 6), pw(v, ri(1, 4))], [nz(-9, 9), '']]; }
+    const outer = T(A[0][0], A[0][1]), s = (outer === '-1' ? '-' : outer) + '(' + src(B) + ')';
+    return alg(p('Expand the brackets: ' + M(s) + '.'), [s, prodLine(A, B), CS(prodVals(A, B))], 'poly', 'Multiply every term inside the brackets by what is in front of the brackets.' + (A[0][0] < 0 ? ' Watch the signs: a minus times a minus is a plus.' : ''));
+  },
+  function twoBrackets(l) {
+    const v = V(), a1 = ri(2, 6), A2 = (l === 0 ? ri(2, 5) : pick([-2, -3, -4, -5, 3, 4]));
+    const B1 = [[ri(1, 5), v], [nz(-9, 9), '']], B2 = shuffle([[nz(-7, 7), v], [nz(-9, 9), '']]);
+    const s = a1 + '(' + src(B1) + ')' + (A2 < 0 ? '-' : '+') + Math.abs(A2) + '(' + src(B2) + ')', ans = C(s);
+    if (!/[a-z]/.test(ans)) return G['8.3'][1](l);
+    return alg(p('Expand and simplify: ' + M(s) + '.'), [s, prodLine([[a1, '']], B1) + prodLine([[A2, '']], B2, false), CS(prodVals([[a1, '']], B1).concat(prodVals([[A2, '']], B2)))], 'poly', 'Expand both brackets. ' + (A2 < 0 ? 'The minus belongs to the ' + Math.abs(A2) + ': multiply by ' + A2 + '. ' : '') + 'Then add the like terms.');
+  },
+  function doubleBracket(l) {
+    const v = V(); let A, B;
+    if (l === 0) { A = [[1, v], [nz(-9, 9), '']]; B = [[1, v], [nz(-9, 9), '']]; }
+    else if (l === 1) { A = [[ri(1, 4), v], [nz(-7, 7), '']]; B = [[ri(2, 5), v], [nz(-7, 7), '']]; }
+    else if (Math.random() < .5) { const a = ri(2, 4), b = ri(1, 3); A = [[ri(1, 3), pw(v, a)], [nz(-6, 6), '']]; B = [[1, pw(v, b)], [nz(-5, 5), '']]; }
+    else { const [x, y] = V2(); A = [[ri(1, 4), x], [nz(-5, 5), y]]; B = [[ri(1, 3), x], [nz(-5, 5), y]]; }
+    const s = '(' + src(A) + ')(' + src(B) + ')';
+    return alg(p('Expand and simplify: ' + M(s) + '.'), [s, prodLine(A, B), CS(prodVals(A, B))], 'poly', 'Multiply every term of the first bracket by every term of the second bracket (4 products). Then add the like terms.');
+  },
+  function special(l) {
+    const v = V(), t = pick(['sq+', 'sq-', 'diff']); let A, B;
+    if (l === 0) { A = v; B = String(ri(1, 9)); }
+    else if (l === 1) { A = ri(2, 5) + v; B = String(ri(1, 7)); }
+    else if (Math.random() < .5) { const [x, y] = V2(); A = ri(2, 5) + x; B = T(ri(1, 4), y); }
+    else { A = pw(v, ri(2, 3)); B = String(ri(2, 6)); }
+    const s = t === 'sq+' ? '(' + A + '+' + B + ')^2' : t === 'sq-' ? '(' + A + '-' + B + ')^2' : '(' + A + '+' + B + ')(' + A + '-' + B + ')';
+    const sq = x => br(x) + '^2', line = t === 'diff' ? sq(A) + '-' + sq(B) : sq(A) + (t === 'sq+' ? '+' : '-') + '2*' + A + '*' + B + '+' + sq(B);
+    const vals = t === 'diff' ? CS([C(sq(A)), '-' + C(sq(B))]) : CS([C(sq(A)), (t === 'sq+' ? '' : '-') + C('2*' + A + '*' + B), C(sq(B))]);
+    return alg(p('Expand: ' + M(s) + '.'), [s, line, vals], 'poly', 'Special products: (a + b)² = a² + 2ab + b², (a − b)² = a² − 2ab + b² and (a + b)(a − b) = a² − b². Here a = ' + M(A) + ' and b = ' + M(B) + '.');
+  },
+  function identifyForm(l) {
+    const a = ri(2, 9), v = V(), kind = pick(['sq+', 'sq-', 'diff']), s = kind === 'sq+' ? '(' + v + '+' + a + ')^2' : kind === 'sq-' ? '(' + v + '-' + a + ')^2' : '(' + v + '-' + a + ')(' + v + '+' + a + ')', right = C(s);
+    const wr = kind === 'diff' ? [v + '^2+' + a * a, v + '^2-' + 2 * a + v + '-' + a * a, v + '^2-' + 2 * a + v + '+' + a * a] : kind === 'sq+' ? [v + '^2+' + a * a, v + '^2+' + a + v + '+' + a * a, v + '^2+' + 2 * a + v + '+' + 2 * a] : [v + '^2-' + a * a, v + '^2+' + a * a, v + '^2-' + a + v + '+' + a * a];
+    return ch(p('Which expression is equal to ' + M(s) + '?'), M(right), wr.map(x => M(x)), 'Common mistake: (x + a)² is NOT x² + a². Write it as (x + a)(x + a) and multiply.', M(s) + ' = ' + M(right) + '.');
+  },
+  function expandSimplify(l) {
+    const v = V(), kind = l === 0 ? 0 : ri(0, 2);
+    if (kind === 0) { const k = ri(10, 40), b = nz(-6, 6), part = C('(' + v + (b < 0 ? '' : '+') + b + ')^2'), s = k + '-(' + v + (b < 0 ? '' : '+') + b + ')^2';
+      return alg(p('Expand and simplify: ' + M(s) + '.'), [s, k + '-(' + part + ')', k + C('-(' + part + ')')], 'poly', 'First expand the square and keep it in brackets. Then remove the brackets: the minus changes every sign inside.'); }
+    if (kind === 1) { const a = nz(-6, 6), b = nz(-6, 6), c = ri(1, 9), part = C('(' + linBr(1, v, a) + ')(' + linBr(1, v, b) + ')'), s = '(' + linBr(1, v, a) + ')(' + linBr(1, v, b) + ')-(' + c + '-' + v + ')';
+      return alg(p('Expand and simplify: ' + M(s) + '.'), [s, '(' + part + ')-(' + c + '-' + v + ')', part + C('-(' + c + '-' + v + ')').replace(/^(?=[^-])/, '+')], 'poly', 'Expand the two brackets first. A minus in front of a bracket changes every sign inside it.'); }
+    const c = pick([2, 3, 6, -2]), a = ri(1, 5), d = pick([3, 5, 6]), part = C('(' + v + '-' + a + ')^2'), s = d + v + '-' + (c < 0 ? '(' + c + ')' : c) + '(' + v + '-' + a + ')^2';
+    return alg(p('Expand and simplify: ' + M(s) + '.'), [s, d + v + '-' + (c < 0 ? '(' + c + ')' : c) + '(' + part + ')', d + v + C('-' + (c < 0 ? '(' + c + ')' : c) + '*(' + part + ')').replace(/^(?=[^-])/, '+')], 'poly', 'First the square, then multiply by the number in front, then add the like terms.');
+  },
+  function areaExpr(l) {
+    const v = V(), c = ri(2, 5), a = ri(1, 3), b = nz(-6, 9), A = [[c, v]], B = [[a, v], [b, '']];
+    const s = c + v + '*(' + src(B) + ')';
+    return alg(p('A rectangle is ' + M(src(B)) + ' long and ' + M(c + v) + ' wide. Write its area without brackets.'), [s, prodLine(A, B), CS(prodVals(A, B))], 'poly', 'area = length · width. Multiply ' + M(c + v) + ' by every term in the brackets.');
+  }
+];
+XG['8.3'] = [
+  function threeFactors(l) {
+    const v = V(), c = pick([2, 3, 5, 6, -2]), a = nz(-6, 6), b = nz(-6, 6), inner = C('(' + linBr(1, v, a) + ')(' + linBr(1, v, b) + ')'), s = c + '(' + linBr(1, v, a) + ')(' + linBr(1, v, b) + ')';
+    return alg(p('Expand and simplify: ' + M(s) + '.'), [s, c + '(' + inner + ')'], 'poly', 'First multiply the two brackets. Keep the result in brackets, then multiply every term by ' + c + '.');
+  },
+  function numberSquare(l) {
+    const c = pick([2, 3, 5, -3, -5]), v = V(), a = ri(2, 3), b = ri(2, 9), A = pw(v, a), part = C('(' + b + '-' + A + ')^2'), s = (c < 0 ? '-' : '') + Math.abs(c) + '(' + b + '-' + A + ')^2';
+    return alg(p('Expand and simplify: ' + M(s) + '.'), [s, (c < 0 ? '-' : '') + Math.abs(c) + '(' + b + '^2-2*' + b + '*' + A + '+(' + A + ')^2)', (c < 0 ? '-' : '') + Math.abs(c) + '(' + part + ')'], 'poly', 'Use (a − b)² = a² − 2ab + b² with a = ' + b + ' and b = ' + M(A) + '. Then multiply every term by ' + c + '.');
+  }
+];
+
+const SECTIONS = [
+  { id: '8.1', title: '8.1 Powers and like terms', sub: 'Powers, substituting, adding like terms, multiplying terms' },
+  { id: '8.2', title: '8.2 Rules of powers', sub: 'Multiply, divide, power of a power' },
+  { id: '8.3', title: '8.3 Expanding brackets', sub: 'One bracket, two brackets, special products' }
+];
+const GOALS = [
+  ['8.1', 'I can write products as powers and calculate them for a negative number', ['writePower', 'bracketPower', 'substitute', 'productPower'], 'Put a negative number in brackets: (−2)² = 4, but −2² = −4.'],
+  ['8.1', 'I can multiply terms and add like terms', ['likeTerms', 'multiplyTerms', 'likeChoice'], 'Like terms: the same letters with the same exponents.'],
+  ['8.2', 'I can use the rules of powers', ['productRule', 'quotientRule', 'powerOfPower', 'mixedRules', 'ruleChoice'], 'Multiply: add the exponents. Divide: subtract. Power of a power: multiply.'],
+  ['8.3', 'I can expand one or two brackets and simplify', ['singleBracket', 'twoBrackets', 'doubleBracket', 'expandSimplify', 'areaExpr'], 'Every term times every term, then add the like terms.'],
+  ['8.3', 'I can use the special products', ['special', 'identifyForm'], '(a + b)² = a² + 2ab + b²; (a − b)² = a² − 2ab + b²; (a + b)(a − b) = a² − b².']
+];
+return { key: 'nx-2ht-ch8-v1', SECTIONS, LESSONS: [], G, XG, defaultMode: 'para', GOALS };
+
+})(NX, {"cls": "2HT"});
+window.Ch3 = NX.engine(__def); window.Ch3.GOALS = __def.GOALS;
+</script>
+<script>
+(function(){
+'use strict';
+const E=window.Ch3,$=s=>document.querySelector(s);
+const LV=['Mild','Medium','Spicy','Extra spicy'],GOAL=10;let mix=false;
+const hasLessons=Array.isArray(E.LESSONS)&&E.LESSONS.length>0;
+const KEY=E.KEY||'nx-page';
+const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const plain=h=>String(h).replace(/<svg[\s\S]*?<\/svg>/g,' [figure] ').replace(/<span class="nu">/g,'(').replace(/<\/span><span class="de">/g,')/(').replace(/<sup[^>]*>/g,'^').replace(/<[^>]+>/g,'').replace(/&nbsp;/g,' ').replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/\s+/g,' ').trim();
+const items=()=>hasLessons&&st.mode==='lesson'?E.LESSONS:E.SECTIONS;
+const todayISO=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
+const latestLesson=()=>{const t=todayISO();let L=E.LESSONS[0];E.LESSONS.forEach(x=>{if(x.date&&x.date<=t&&!x.rev&&x.id!=='L10')L=x});return L.id};
+function defaultFor(mode){return mode==='lesson'&&hasLessons?latestLesson():E.SECTIONS[0].id}
+function setMode(m){if(st.mode===m)return;st.secs[st.mode]=st.sec;st.mode=m;st.sec=st.secs[m]||defaultFor(m);test=null;mix=false;free=null;focus=null;save();next(true)}
+let st={mode:E.defaultMode||'lesson',secs:{},done:{},stat:{},best:{},tests:[],sec:'',prog:{},lvl:{},res:{},log:[],badges:{},bestRow:0,goalsAll:false};
+try{const r=JSON.parse(localStorage.getItem(KEY)||'null');if(r&&r.prog)st=Object.assign(st,r)}catch(e){}
+if(!hasLessons)st.mode='para';
+if(!st.modeSet&&st.prog&&Object.keys(st.prog).length&&hasLessons)st.mode='para';
+['secs','done','stat','best','res','badges'].forEach(k=>{st[k]=st[k]||{}});st.tests=st.tests||[];st.log=st.log||[];st.prog=st.prog||{};st.lvl=st.lvl||{};
+if(!st.sec||!items().some(x=>x.id===st.sec))st.sec=defaultFor(st.mode);
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify({mode:st.mode,modeSet:1,secs:st.secs,sec:st.sec,prog:st.prog,lvl:st.lvl,done:st.done,stat:st.stat,best:st.best,tests:st.tests,res:st.res,log:st.log,badges:st.badges,bestRow:st.bestRow,goalsAll:st.goalsAll,auto:st.auto}))}catch(e){}};
+let protoAngle=null;let cur=null,tries=0,done=false,streak=0,wrongRun=0,recent=[],clicked=[],choiceSel=null,hintUsed=false,attempts=[],stepLines=[],row=0;
+let test=null;      // {qs,i,score,log}
+let free=null;      // free practice level (0..3) or null = adaptive
+let focus=null;     // {ids:[goal ids], i}
+
+/* ---------- learning goals ---------- */
+const GL=[],gOfGen={};
+(function buildGoals(){
+  const lists=[];[E.G||{},E.XG||{}].forEach((T,xi)=>Object.keys(T).forEach(sec=>T[sec].forEach(f=>lists.push([sec,f.name,xi===1]))));
+  const present=new Set(lists.map(x=>x[1]));
+  (E.GOALS||[]).forEach((g,i)=>{const gens=g[2].filter(n=>present.has(n));if(!gens.length)return;const o={id:'g'+GL.length,sec:g[0],title:g[1],gens,warn:g[3]||''};GL.push(o);gens.forEach(n=>{if(!(n in gOfGen))gOfGen[n]=o})});
+  const secTitle={};E.SECTIONS.forEach(s=>secTitle[s.id]=s.title.replace(/^[\d.]+\s*/,''));
+  const ch={};
+  lists.forEach(([sec,name])=>{if(name in gOfGen)return;let o=ch[sec];if(!o){o=ch[sec]={id:'g'+GL.length,sec,title:'I can solve harder and mixed questions about '+(secTitle[sec]||sec).toLowerCase(),gens:[],warn:'',challenge:true};GL.push(o)}o.gens.push(name);gOfGen[name]=o});
+})();
+const goalById=id=>GL.find(g=>g.id===id);
+const genName=q=>{if(!q)return null;if(typeof q.gen!=='number')return q.gen;const g=q.gen>=100?(E.XG[q.sec]||[])[q.gen-100]:(E.G[q.sec]||[])[q.gen];return g?g.name:null};
+const goalOfQ=q=>q&&gOfGen[genName(q)]||null;
+function itemGens(it){const s=new Set();if(it.gens){it.gens.concat(it.xg||[]).forEach(e=>s.add(e[1]))}else{(E.G[it.id]||[]).concat(E.XG[it.id]||[]).forEach(f=>s.add(f.name))}return s}
+function goalsForItem(id){const it=items().find(x=>x.id===id)||E.SECTIONS.find(x=>x.id===id);if(!it)return GL;const gs=itemGens(it);return GL.filter(g=>g.gens.some(n=>gs.has(n)))}
+/* mastery: last six results, weights like the chapter 1 page */
+const STAT={mastered:['Mastered','#16803c','#e6f6ec'],almost:['Almost mastered','#2f7d32','#eef7e4'],way:['On the way','#8a5a00','#fff4d6'],attention:['Needs attention','#b25a00','#ffe9d1'],extra:['Extra practice','#b3261e','#fdecea'],none:['Not enough practice yet','#5b6b7a','#eef2f6']};
+function goalScore(g){const r=st.res[g.id]||[];const w=r.slice(-6);const n=w.length;return{n:r.length,pct:n?Math.round(100*w.reduce((a,b)=>a+b,0)/n):null,key:r.length<3?'none':(function(p){return p>=80?'mastered':p>=70?'almost':p>=55?'way':p>=40?'attention':'extra'})(Math.round(100*w.reduce((a,b)=>a+b,0)/n))}}
+function record(q,w){const g=goalOfQ(q);if(!g)return;const r=st.res[g.id]=st.res[g.id]||[];r.push(w);if(r.length>30)r.splice(0,r.length-30)}
+
+/* ---------- badges ---------- */
+const BADGES=[['first','First try!','Answer a question correctly on your first try.'],['row5','5 in a row','Answer 5 questions in a row correctly on the first try.'],['row10','10 in a row','Answer 10 questions in a row correctly on the first try.'],['up','Level up','Reach the next level.'],['spicy','Spicy!','Reach the Spicy level in any section.'],['mm','Master Mix','Unlock a Master Mix.'],['goal','Objective mastered','Get the status Mastered on a learning objective.'],['test','Test ready','Score at least 20 out of 24 in a test preparation.']];
+function award(id){if(st.badges[id])return '';st.badges[id]=todayISO();const b=BADGES.find(x=>x[0]===id);return ' <b>🏅 New badge: '+b[1]+'!</b>'}
+
+/* ---------- navigation ---------- */
+function renderNav(){
+  const n=$('#nav');n.innerHTML='';
+  if(hasLessons){const tg=document.createElement('div');tg.className='seg';tg.innerHTML='<button type="button" class="'+(st.mode==='lesson'?'on':'')+'" data-m="lesson">By lesson</button><button type="button" class="'+(st.mode==='para'?'on':'')+'" data-m="para">By paragraph</button>';
+    tg.querySelectorAll('button').forEach(b=>b.onclick=()=>setMode(b.dataset.m));n.appendChild(tg)}
+  const t0=todayISO(),lat=hasLessons&&st.mode==='lesson'?latestLesson():'';
+  const inMain=!test&&!view;
+  items().forEach(s=>{
+    const b=document.createElement('button');b.className='sec';b.setAttribute('aria-current',String(inMain&&!mix&&st.sec===s.id));
+    const p=Math.min(GOAL,st.prog[s.id]||0);
+    b.innerHTML='<div class="t">'+s.title+'</div><div class="s">'+s.sub+(st.mode==='lesson'&&s.date?(s.date>t0?' · coming up':s.id===lat?' · latest lesson':''):'')+'</div><div class="bar" aria-hidden="true"><i style="width:'+p*100/GOAL+'%"></i></div>';
+    b.onclick=()=>{test=null;view=null;mix=false;free=null;focus=null;st.sec=s.id;save();next(true)};n.appendChild(b);
+    if(st.done[s.id]){const m=document.createElement('button');m.className='sec mm';m.setAttribute('aria-current',String(inMain&&mix&&st.sec===s.id));m.textContent='★ Master Mix';m.onclick=()=>{test=null;view=null;mix=true;free=null;focus=null;st.sec=s.id;save();next(true)};n.appendChild(m)}
+  });
+  const t=document.createElement('button');t.className='sec';t.setAttribute('aria-current',String(!!test));
+  t.innerHTML='<div class="t">Test preparation</div><div class="s">24 mixed questions, no hints</div>';
+  t.onclick=startTest;n.appendChild(t);
+}
+let view=null;
+function lvl(){return st.lvl[st.sec]||0}
+function curLevel(){return mix?'mix':free!==null?free:lvl()}
+function fingerprint(q){return String(q.html||'').replace(/<svg[\s\S]*?<\/svg>/g,'')+'|'+JSON.stringify(q.ans)}
+function findGen(name){for(const T of [E.G||{},E.XG||{}])for(const sec of Object.keys(T)){const f=T[sec].find(x=>x.name===name);if(f)return [f,sec,T===E.XG]}return null}
+function makeFromGoal(g,level){
+  for(let t=0;t<40;t++){
+    const name=g.gens[Math.floor(Math.random()*g.gens.length)],hit=findGen(name);if(!hit)continue;
+    const [f,sec,isX]=hit;let q;try{q=f(Math.min(level,2))}catch(e){continue}
+    q.gen=name;q.sec=sec;q.lvl=level;q.mix=false;q.fp=fingerprint(q);
+    if(q.type==='choice'&&q.opts&&q.opts.length<=2&&level>0&&t<30)continue;
+    if(recent.some(r=>r.f===q.fp))continue;return q;
+  }
+  return E.make(st.sec,level,recent);
+}
+let autoT=null;
+function next(reset){
+  clearTimeout(autoT);view=null;
+  if(reset){streak=0;wrongRun=0;recent=[]}
+  if(focus){const g=goalById(focus.ids[focus.i%focus.ids.length]);focus.i++;const sec=g.sec;cur=makeFromGoal(g,st.lvl[sec]||0)}
+  else cur=E.make(st.sec,curLevel(),recent);
+  if(window.__force)for(let i=0;i<500&&String(cur.gen).replace(/^X/,'')!==window.__force;i++)cur=E.make(st.sec,curLevel(),recent);
+  recent.push({g:cur.gen,f:cur.fp});recent=recent.slice(-12);tries=0;done=false;clicked=[];choiceSel=null;protoAngle=null;hintUsed=false;attempts=[];stepLines=[];renderQ();renderNav();
+}
+
+/* ---------- steps: which questions need working ---------- */
+const NOSTEP=new Set('missingExp multDiv rootEq volPrism volPyramid volCone volHemisphere cylinderNet surfCuboid primeFact nthRootCalc findNumber centroidRatio zToMidpoint decimalToFraction subInt missingNumber divInt missingFactor toMixed toImproper likeAdd equivFrac fractionOf fracDivInt riverShare missingFraction areaVolume maxIntersect maxIntersect5 axisDist substitute readLineY valueAt squareArea findK context graphK symmetryLine findKInv inverseContext axisFromPoints yIntercept exactTrig lcmTwo hcfTwo'.split(' '));
+const ADDMULTI=new Set('divideTerms nthRootFraction rootOfFraction calcRoots nthMix minusBracket binomMul threeFactors powerSpecial simplifyBinom numFracAdd numFracMulDiv numberAndFraction intDivFraction longProduct quotientPower chainBrackets differenceOfSquares2 sumDiff threeFracs binomialDen rootsFractionSum nthRootPow substitute addUnlike quotientRoots difference gauss howManyTerms productRule evenSum sumBetween sumRationalise aspectRatio twoFactors areaFactor mulSci timesBigger commonFactorCount coneInCylinder frustum identity tanFromSinCos missingAngle thirdAngle bisectAngle bisectedFull reflex isosceles angleFromTwo isoscelesAngle slopeToAngle rectDiagAngle cubeAngle cuboidDiag pyramidAngle angleOfElevation'.split(' '));
+const EXPRSTEP=new Set('divideTerms nthRootFraction rootOfFraction calcRoots minusBracket binomMul threeFactors powerSpecial simplifyBinom numFracAdd numFracMulDiv numberAndFraction intDivFraction longProduct quotientPower chainBrackets differenceOfSquares2 sumDiff threeFracs binomialDen rootsFractionSum sumRationalise quotientRoots mulSci timesBigger commonFactorCount simplifyRoot likeRadicals simplifySum mixedRoot rationaliseSimplify threeRoots bigRoot addSci distance surfCylinder surfCone divideRoots pythRoot addSimplify simplifyByPrimes rootOfFractionSimp exactRatios mixedLike addUnlike landUse mixedUnlike pyramid mulFrac fracOrder fracDivOrder threeMixed remainingTrip fracChain tenPower'.split(' '));
+const DISC=new Set('identity tanFromSinCos sideKnownHyp angleInverse isoscelesBase twoArms howManyOn'.split(' '));
+const NODISC=new Set('primeOrNot readPoint gradientIntercept abc vertex table frontView sideView cubeNet pickSkew'.split(' '));
+const DIVSTEP=new Set('bisectAngle'.split(' '));   /* a typed a/b is a division step here, not a fraction answer */
+const eqN=q=>(String(q.steps||'').replace(/<svg[\s\S]*?<\/svg>/g,'').replace(/<[^>]+>/g,'').match(/=/g)||[]).length;
+const canType=q=>q.type==='num'||(q.type==='expr'&&!!E.check);
+function stepMode(q){
+  if(!q||q.noStep)return '';
+  const gn=String(genName(q)||'').replace(/^X/,'');
+  const st_=String(q.steps||'');
+  if(!(q.needStep||eqN(q)>=2||ADDMULTI.has(gn)))return '';
+  if(canType(q)){
+    if(test)return 'note';
+    if(q.needStep)return E.parse?'enforce':'note';
+    if(q.type==='expr'&&!EXPRSTEP.has(gn))return '';
+    if(NOSTEP.has(gn))return '';
+    if(DISC.has(gn)||/\b(sin|cos|tan)\b|sin⁻|cos⁻|tan⁻/.test(st_.replace(/<[^>]+>/g,'')))return 'note';
+    return E.parse?'enforce':'note';   /* pages on the older engine cannot parse typed working, so they only show the note */
+  }
+  return NODISC.has(gn)?'':'note';
+}
+const STEPNOTE='<p class="stepnote"><b>Steps count.</b> Showing your steps is part of a correct answer. '+'This page can only check the final answer of this question, so write your working on paper too (in a test you always must).</p>';
+function qHTML(q){
+  let h='<div class="q">'+q.html+'</div>'+(stepMode(q)==='note'?STEPNOTE:'')+'<div id="stp" class="stp"></div><div class="ans" id="ans">';
+  if(q.type==='num')h+='<label class="sr" for="in0">Your answer</label><input type="text" id="in0" inputmode="text" autocomplete="off" placeholder="your answer">';
+  else if(q.type==='expr')h+='<label class="sr" for="in0">Your answer</label><input type="text" id="in0" inputmode="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="type your answer"><div class="kp" id="kp">'+(q.keys||['√','³√','⁴√','^','/','·','(',')','π']).map(k=>'<button type="button" data-k="'+k+'">'+k+'</button>').join('')+'<button type="button" data-k="⌫" aria-label="delete">⌫</button></div><div class="pv" id="pv" aria-live="polite"></div>';
+  else if(q.type==='point')h+='<label class="sr" for="in0">Your answer</label><input type="text" id="in0" autocomplete="off" placeholder="(x, y)">';
+  else if(q.type==='multi')q.fields.forEach((f,i)=>{h+='<label for="in'+i+'">'+f+'</label><input type="text" id="in'+i+'" autocomplete="off">'});
+  else if(q.type==='choice'){h+='<div class="choices">'+q.opts.map((o,i)=>'<button type="button" class="choice" data-i="'+i+'" aria-pressed="false">'+o+'</button>').join('')+'</div>'}
+  h+='</div>';return h;
+}
+/* ---------- learning-goals panel ---------- */
+function goalsPanel(q){
+  if(!GL.length)return '';
+  const cg=goalOfQ(q),all=st.goalsAll,list=goalsForItem(st.sec);
+  const shown=all?list:(cg?[cg]:[]);
+  const li=g=>{const sc=goalScore(g),S=STAT[sc.key];return '<li'+(cg&&g.id===cg.id?' class="cur" aria-current="step"':'')+'><span class="sd" style="background:'+S[1]+'" title="'+S[0]+'"></span><span class="gt">'+esc(g.title)+'</span></li>'};
+  return '<div class="goals"><div class="gh"><b>Key learning goals</b><span class="gb"><button type="button" class="lk" id="gtoggle" aria-expanded="'+all+'">'+(all?'Show current goal only':'Show all learning goals')+'</button>'+(cg&&!test?'<button type="button" class="lk" id="gexplain">Explain this goal</button>':'')+'</span></div><ul>'+shown.map(li).join('')+'</ul><div id="gcard"></div></div>';
+}
+function modeBar(){
+  if(mix||test)return '';
+  const a=free===null&&!focus;
+  let h='<div class="pmbar"><span class="pml">Practice:</span><button type="button" class="pm'+(a?' on':'')+'" data-f="a">Adaptive</button><span class="pml">Free practice:</span>'+LV.map((l,i)=>'<button type="button" class="pm l'+i+(free===i?' on':'')+'" data-f="'+i+'">'+l+'</button>').join('')+'</div>';
+  if(free!==null)h+='<div class="pmnote"><b>Free practice: '+LV[free]+'.</b> These questions do not count towards reaching the next level. <button type="button" class="btn alt sm" id="back2a">← Back to adaptive</button></div>';
+  if(focus){const g=goalById(focus.ids[(focus.i-1+focus.ids.length)%focus.ids.length]);h+='<div class="pmnote"><b>Focused practice</b> on your weakest objectives'+(g?': '+esc(g.title):'')+'. These questions do not count towards the next level. <button type="button" class="btn alt sm" id="back2a">← Back to adaptive</button></div>'}
+  return h;
+}
+function renderQ(){
+  const m=$('#main'),q=cur;
+  const lvLabel=free!==null?'Free practice · '+LV[q.lvl]:LV[q.lvl];
+  m.innerHTML='<div class="top">'+(q.mix?'<span class="badge lm">Master Mix</span> ':'')+'<span class="badge l'+q.lvl+'">'+lvLabel+'</span><span class="streak">'+(free!==null||focus?'Free practice':'In a row: '+[0,1,2].map(i=>'<span class="dot'+(i<streak?' on':'')+'"></span>').join('')+' &nbsp; Done: '+Math.min(GOAL,st.prog[st.sec]||0)+'/'+GOAL)+'</span></div>'+modeBar()+goalsPanel(q)+
+   qHTML(q)+'<div class="btns"><button class="btn" id="chk">Check</button><button class="btn alt" id="hnt">Hint</button><button class="btn alt" id="sol" style="display:none">Show solution</button><button class="btn alt" id="nxt" style="display:none">Next question</button></div><label class="autoc"><input type="checkbox" id="autoc"'+(st.auto===false?'':' checked')+'> Go to the next question automatically after a correct answer</label><div class="fb" id="fb"></div><div id="hist"></div>'+logPanel();
+  wire();wireChrome();
+  const f=$('#in0');if(f)f.focus();
+}
+function logPanel(){
+  if(!st.log.length)return '';
+  return '<details class="hl"><summary>My recent answers ('+Math.min(st.log.length,15)+')</summary><ul>'+st.log.slice(-15).reverse().map(l=>'<li><span class="'+(l.ok?'ok':'no')+'">'+(l.ok?'✓':'✗')+'</span> <span class="lq">'+esc(l.t)+'</span> → <b>'+esc(l.a)+'</b></li>').join('')+'</ul></details>';
+}
+function wireChrome(){
+  document.querySelectorAll('.pmbar .pm').forEach(b=>b.onclick=()=>{const f=b.dataset.f;free=f==='a'?null:+f;focus=null;mix=false;next(true)});
+  const b2=$('#back2a');if(b2)b2.onclick=()=>{free=null;focus=null;next(true)};
+  const gt=$('#gtoggle');if(gt)gt.onclick=()=>{st.goalsAll=!st.goalsAll;save();const g=document.querySelector('.goals');const tmp=document.createElement('div');tmp.innerHTML=goalsPanel(cur);g.replaceWith(tmp.firstChild);wireChrome()};
+  const ge=$('#gexplain');if(ge)ge.onclick=()=>{const c=$('#gcard');if(c.innerHTML){c.innerHTML='';ge.textContent='Explain this goal';return}ge.textContent='Hide explanation';c.innerHTML=helpCard(goalOfQ(cur))};
+}
+const ENTER={num:'Type a number. A comma or a point both work for decimals.',expr:'Type your answer in the box. Use the buttons under the box for √, higher roots (³√ is the cube root; you can also type 3V27), powers (^) and fractions (/). Use brackets in the bottom of a fraction: 5/(2x). The line “Your answer reads” shows what I understood.',choice:'Click the answer you think is right, then press Check.',point:'Type the coordinates like (2, 3).',multi:'Fill in every box.',click:'Click on the picture, then press Check.',proto:'Click on the protractor scale, then press Check.'};
+const WARN={root:'Simplify completely: no square factor may stay under the root.',mono:'Write the answer as simply as possible: one number, then each letter with one exponent.',poly:'Collect like terms and write everything out without brackets.',lowest:'Cancel the fraction as far as possible.',primes:'Write only prime numbers, in increasing order, with exponents.',sci:'In scientific notation the first number is at least 1 and less than 10.'};
+function helpCard(g){
+  if(!g)return '';
+  let q=null;for(const n of g.gens){const hit=findGen(n);if(!hit)continue;try{q=hit[0](0);q.gen=n;break}catch(e){}}
+  if(!q)return '<div class="hc"><p>No explanation available yet.</p></div>';
+  const how=q.hint?String(q.hint):'Read the question carefully and work step by step.';
+  const form=q.form&&WARN[q.form]?WARN[q.form]:'';
+  const warn=g.warn||form;
+  return '<div class="hc"><h4>'+esc(g.title)+'</h4><div class="hr"><b>What to do</b><p>'+how+'</p></div><div class="hr"><b>Example</b><div class="ex">'+q.html+'<p class="exa"><b>Answer: '+E.answerText(q)+'</b></p></div></div><div class="hr"><b>Steps</b><div>'+(q.steps||'')+'</div></div><div class="hr"><b>What to enter</b><p>'+(ENTER[q.type]||'Enter your answer.')+'</p></div>'+(warn?'<div class="hr warn"><b>Watch out</b><p>'+warn+'</p></div>':'')+'</div>';
+}
+/* ---------- question wiring ---------- */
+function wire(){
+  wireProto();$('#chk').onclick=check;$('#hnt').onclick=hint;$('#sol').onclick=showSolution;$('#nxt').onclick=()=>{if(Date.now()-finT<400)return;test?testNext():next(false)};{const ac=$('#autoc');if(ac)ac.onchange=()=>{st.auto=ac.checked;if(!ac.checked)clearTimeout(autoT);save()}}
+  document.querySelectorAll('.choice').forEach(b=>b.onclick=()=>{if(done)return;choiceSel=+b.dataset.i;document.querySelectorAll('.choice').forEach(x=>x.setAttribute('aria-pressed',String(x===b)))});
+  document.querySelectorAll('#ans input').forEach(i=>i.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();check()}}));
+  wireExpr();wireGrid();
+}
+function wireGrid(){
+  const sv=document.querySelector('svg.grid[data-click]');
+  if(sv)sv.addEventListener('click',ev=>{
+    if(done)return;const r=sv.getBoundingClientRect(),W=+sv.dataset.w,u=+sv.dataset.u,pad=+sv.dataset.pad;
+    const px=(ev.clientX-r.left)*W/r.width,py=(ev.clientY-r.top)*W/r.width;
+    const x=Math.round((px-pad)/u)+ +sv.dataset.xmin,y=+sv.dataset.ymax-Math.round((py-pad)/u);
+    const k=clicked.findIndex(p=>p[0]===x&&p[1]===y);if(k>=0)clicked.splice(k,1);else clicked.push([x,y]);drawMarks(sv);
+  });
+}
+function wireExpr(){
+  const kp=document.getElementById('kp');if(!kp)return;const inp=$('#in0'),pv=$('#pv');
+  const upd=()=>{const v=inp.value.trim();if(!v){pv.innerHTML='';return}let h=null;try{h=E.M(v,cur.noVars?{noVars:true}:{})}catch(e){}pv.innerHTML=h&&E.parse&&(()=>{try{E.parse(v,cur.noVars?{noVars:true}:{});return true}catch(e){return false}})()?'<span class="pl">Your answer reads:</span> '+h:'<span class="pl">I cannot read that yet. Check your brackets and symbols.</span>'};
+  inp.addEventListener('input',upd);
+  kp.querySelectorAll('button').forEach(b=>b.onclick=()=>{if(done)return;const k=b.dataset.k,s=inp.selectionStart,e=inp.selectionEnd,v=inp.value;
+    if(k==='⌫'){if(s!==e){inp.value=v.slice(0,s)+v.slice(e);inp.setSelectionRange(s,s)}else if(s>0){inp.value=v.slice(0,s-1)+v.slice(s);inp.setSelectionRange(s-1,s-1)}}
+    else{inp.value=v.slice(0,s)+k+v.slice(e);const n=s+k.length;inp.setSelectionRange(n,n)}
+    inp.focus();upd()});
+}
+function drawMarks(sv){
+  const u=+sv.dataset.u,pad=+sv.dataset.pad,xmin=+sv.dataset.xmin,ymax=+sv.dataset.ymax;
+  sv.querySelector('.marks').innerHTML=clicked.map(p=>{const cx=pad+(p[0]-xmin)*u,cy=pad+(ymax-p[1])*u;return sv.dataset.cell?'<rect x="'+(cx-u/2+1)+'" y="'+(cy-u/2+1)+'" width="'+(u-2)+'" height="'+(u-2)+'" fill="#f4a58a" stroke="#d1471f" stroke-width="2"/>':'<circle cx="'+cx+'" cy="'+cy+'" r="6" fill="#d1471f" stroke="#fff" stroke-width="1.5"/>'}).join('');
+}
+function userAns(q){
+  if(q.type==='proto')return protoAngle;
+  if(q.type==='num'||q.type==='point'||q.type==='expr')return $('#in0').value;
+  if(q.type==='multi')return q.fields.map((_,i)=>$('#in'+i).value);
+  if(q.type==='choice')return choiceSel;
+  return clicked;
+}
+function ansText(q,u){
+  if(q.type==='choice')return u===null?'':plain(q.opts[u]);
+  if(q.type==='multi')return u.join(' and ');
+  if(q.type==='click')return u.map(p=>'('+p[0]+', '+p[1]+')').join(' ');
+  if(q.type==='proto')return u+'°';
+  return String(u);
+}
+function fb(cls,t){const b=$('#fb');b.className='fb show '+cls;b.innerHTML=t}
+function hint(){if(cur.hint){hintUsed=true;fb('hint','<b class="h">Hint</b>'+cur.hint)}}
+function empty(q,u){if(q.type==='proto')return u===null;if(q.type==='num'||q.type==='point'||q.type==='expr')return !String(u).trim();if(q.type==='multi')return u.some(v=>!String(v).trim());if(q.type==='choice')return u===null;return u.length===0}
+function logAnswer(q,u,ok){
+  const a=ansText(q,u);attempts.push({a,ok});
+  st.log.push({t:plain(q.html).slice(0,90),a:a.slice(0,60),ok,d:todayISO()});if(st.log.length>40)st.log.splice(0,st.log.length-40);
+  const h=$('#hist');if(h)h.innerHTML='<div class="at">Your answers on this question: '+attempts.map(x=>'<span class="'+(x.ok?'ok':'no')+'">'+(x.ok?'✓':'✗')+' '+esc(x.a)+'</span>').join(' ')+'</div>';
+}
+const chk=(q,u)=>E.check?E.check(q,u):{ok:E.grade(q,u)};
+function fmtStep(t){let h=null;if(/\//.test(t)||(cur&&cur.type==='expr'&&/[\^√]/.test(t))){try{h=E.M(t,{noVars:cur&&cur.type!=='expr'})}catch(e){}}else h=esc(t).replace(/\*|·/g,'×').replace(/-/g,'−');return h||esc(t)}
+function drawSteps(fin){const d=$('#stp');if(!d)return;d.innerHTML=stepLines.map(t=>'<div class="stl"><span class="ci open" aria-label="correct step">○</span><span class="sv">'+fmtStep(t)+' <span class="eq">=</span></span></div>').join('')+(fin?'<div class="stl fin"><span class="ci full" aria-label="correct final answer">✓</span><span class="sv">'+fmtStep(fin)+'<div class="fnote">Completely correct! This is the correct final answer.</div></span></div>':'')}
+function stepEq(q,pt){
+  if(q.type==='num'){if(q.tol&&E.evalNum){try{return Math.abs(E.evalNum(pt)-q.ans)<=q.tol}catch(e){return false}}try{E.parse(pt,{noVars:true})}catch(e){return false}return E.check({type:'expr',ans:String(q.ans),form:'any',noVars:true},pt).ok}
+  return E.check({type:'expr',ans:q.ans,form:'any'},pt).ok}
+function check(){
+  if(done)return;const q=cur;let u=userAns(q);
+  if(empty(q,u)){fb('hint','Fill in your answer first.');return}
+  if((q.type==='num'||(q.type==='expr'&&E.check&&!/=/.test(String(q.ans))))&&typeof u==='string'&&u.indexOf('=')>0&&E.parse){
+    const raw=u.split('=').map(x=>x.trim()).filter(Boolean);
+    /* numeric answers: ignore a bare label such as "∠R", "<R", "R" or "angle R", and a trailing ° (so 360-76-86-111=∠R=87° counts) */
+    const parts=q.type==='num'?raw.filter(x=>!/^(?:∠|<|angle\s*)?[A-Za-z]{1,4}°?$/i.test(x)).map(x=>x.replace(/°$/,'').trim()):raw;
+    if(raw.length>=2&&parts.length>=1){const fin=parts[parts.length-1],pre=parts.slice(0,-1);
+      let okPre=false;try{okPre=pre.every(pt=>stepEq(q,pt))}catch(e){}
+      if(okPre&&chk(q,fin).ok){if(!test)stepLines.push(...pre);u=fin;const i0=$('#in0');if(i0)i0.value=fin}}}
+  if(test){return testCheck(q,u)}
+  const sm=stepMode(q);
+  const slashCalc=q.type==='num'&&DIVSTEP.has(String(genName(q)||'').replace(/^X/,''))&&/^\s*\d+(?:[.,]\d+)?\s*\/\s*\d+(?:[.,]\d+)?\s*$/.test(String(u));
+  if(sm==='enforce'&&q.type==='num'&&!stepLines.length&&!isNaN(E.parseNum(u))&&!slashCalc){fb('hint','<b class="h">Show your working first.</b>Showing your steps is part of a correct answer. Type the first calculation you do (for example <i>(4+5)*9</i> or <i>9*9</i>), then work towards the final answer.');return}
+  let calcWrong=false;
+  if(q.type==='num'&&(isNaN(E.parseNum(u))||slashCalc)&&E.parse){let calc=false;try{E.parse(String(u),{noVars:true});calc=true}catch(e){}
+    if(calc){let rr;if(q.tol&&E.evalNum){let vv=NaN;try{vv=E.evalNum(u)}catch(e){}rr={ok:Math.abs(vv-q.ans)<=q.tol}}else rr=E.check({type:'expr',ans:String(q.ans),form:'any',noVars:true},u);
+      if(rr.ok){fb('hint','<b class="h">✓ That calculation is right.</b>Now work it out and type the <b>final number</b> as your answer.');stepLines.push(String(u).trim());drawSteps();const i0=$('#in0');i0.value='';i0.focus();const pv=$('#pv');if(pv)pv.innerHTML='';return}calcWrong=true}}
+  if(q.type==='expr'&&E.check){const r0=E.check(q,u);
+    if(r0.ok){if(sm==='enforce'&&!stepLines.length){fb('hint','<b class="h">Show your working first.</b>Showing your steps is part of a correct answer. Type an in-between step first (for example before you simplify or add things up), then type your final answer.');return}}
+    else if(r0.why==='form'&&stepLines.length<4){stepLines.push(String(u).trim());drawSteps();fb('hint','<b class="h">✓ Good step.</b>That has the right value, but it is not finished yet. Now work it out and type the final answer'+(r0.msg?' ('+esc(r0.msg)+')':'')+'.');const i0=$('#in0');i0.value='';i0.focus();const pv=$('#pv');if(pv)pv.innerHTML='';return}}
+  const R_=chk(q,u),ok=R_.ok;tries++;
+  logAnswer(q,u,ok);
+  const S=st.stat[st.sec]=st.stat[st.sec]||{n:0,ok:0};
+  const counts=free===null&&!focus;
+  if(ok){
+    done=true;if(counts)st.prog[st.sec]=(st.prog[st.sec]||0)+1;S.n++;if(tries===1)S.ok++;
+    const w=hintUsed?0.5:tries===1?1:0.75;record(q,w);
+    let up='';
+    if(tries===1&&!hintUsed){row++;streak+=counts?1:0;wrongRun=0;if(row>st.bestRow)st.bestRow=row;up+=award('first');if(row>=5)up+=award('row5');if(row>=10)up+=award('row10')}else if(tries>1){row=0;if(counts)streak=0}
+    if(counts&&!mix&&streak>=3){streak=0;
+      if(lvl()<3){st.lvl[st.sec]=lvl()+1;st.best[st.sec]=Math.max(st.best[st.sec]||0,lvl());up+=' <b>Level up: '+LV[lvl()]+'!</b>'+(lvl()===3?' These are challenge questions.':'')+award('up');if(lvl()>=2)up+=award('spicy')}
+      else if(!st.done[st.sec]){st.done[st.sec]=true;up+=' <b>Extra spicy completed! ★ Master Mix is now unlocked for this section (see the menu).</b>'+award('mm')}}
+    const g=goalOfQ(q);if(g&&goalScore(g).key==='mastered')up+=award('goal');
+    if(stepLines.length&&(q.type==='num'||q.type==='expr'))drawSteps(String(u).trim());save();fb('ok','<b class="h">Correct!'+(tries>1?' (second try)':'')+'</b>'+q.steps+up);finish();
+    if(st.auto!==false){clearTimeout(autoT);autoT=setTimeout(()=>{if(done&&cur===q&&!test&&!view)next(false)},1000)}
+  }else if(tries===1){
+    row=0;if(counts)streak=0;
+    $('#sol').style.display='';
+    fb('no','<b class="h">Not yet. Try again.</b>'+(R_.why==='form'?(R_.msg||'That has the right value, but it is not in the form asked for.')+' ':calcWrong?'That calculation does not give the right answer. ':R_.why==='parse'?'I could not read that answer. ':'')+(q.hint?q.hint:''));
+  }else{
+    done=true;row=0;wrongRun+=counts?1:0;S.n++;record(q,0);let dn='';
+    if(counts&&!mix&&wrongRun>=2&&lvl()>0){st.lvl[st.sec]=lvl()-1;wrongRun=0;dn=' <i>Next questions will be a bit easier.</i>'}
+    save();fb('no','<b class="h">The answer is: '+E.answerText(q)+'</b>'+q.steps+dn);finish();
+  }
+}
+function showSolution(){
+  if(done||test)return;const q=cur;done=true;row=0;if(free===null&&!focus)streak=0;
+  const S=st.stat[st.sec]=st.stat[st.sec]||{n:0,ok:0};S.n++;record(q,0);
+  attempts.push({a:'(solution shown)',ok:false});
+  save();fb('no','<b class="h">Solution — the answer is: '+E.answerText(q)+'</b>'+q.steps+'<p><i>This question does not count as correct. Try the next one.</i></p>');finish();
+}
+function wireProto(){
+  const sv=document.querySelector('svg.proto[data-proto]');if(!sv)return;
+  sv.addEventListener('click',ev=>{if(done)return;
+    const r=sv.getBoundingClientRect(),W=+sv.dataset.w,H=+sv.dataset.h,cx=+sv.dataset.cx,cy=+sv.dataset.cy,R=+sv.dataset.r;
+    const px=(ev.clientX-r.left)*W/r.width,py=(ev.clientY-r.top)*H/r.height;
+    let a=Math.atan2(cy-py,px-cx)*180/Math.PI;if(py>cy)a=px>=cx?0:180;a=Math.max(0,Math.min(180,Math.round(a)));protoAngle=a;
+    const t=a*Math.PI/180,x2=cx+(R+22)*Math.cos(t),y2=cy-(R+22)*Math.sin(t),xd=cx+R*Math.cos(t),yd=cy-R*Math.sin(t);
+    sv.querySelector('.pm').innerHTML='<line x1="'+cx+'" y1="'+cy+'" x2="'+x2+'" y2="'+y2+'" stroke="#223" stroke-width="3" stroke-linecap="round"/><circle cx="'+xd+'" cy="'+yd+'" r="6" fill="#d1471f" stroke="#fff" stroke-width="1.5"/>';
+  });
+}
+function revealQ(q){
+  if(q.type==='proto'){const sv=document.querySelector('svg.proto');if(!sv||sv.querySelector('.rev'))return;const cx=+190,cy=188,R=160,t=q.target*Math.PI/180;
+    sv.insertAdjacentHTML('beforeend','<g class="rev"><line x1="'+cx+'" y1="'+cy+'" x2="'+(cx+(R+22)*Math.cos(t))+'" y2="'+(cy-(R+22)*Math.sin(t))+'" stroke="#16803c" stroke-width="3" stroke-dasharray="7 4"/><circle cx="'+(cx+R*Math.cos(t))+'" cy="'+(cy-R*Math.sin(t))+'" r="5.5" fill="#16803c" stroke="#fff" stroke-width="1.5"/></g>');return}
+  if(q.type!=='click')return;const sv=document.querySelector('svg.grid[data-click]');if(!sv||sv.querySelector('.rev'))return;
+  const u=+sv.dataset.u,pad=+sv.dataset.pad,xmin=+sv.dataset.xmin,ymax=+sv.dataset.ymax,X=x=>pad+(x-xmin)*u,Y=y=>pad+(ymax-y)*u;
+  const R=q.reveal||{segs:[],pts:q.targets};let h='';
+  (R.segs||[]).forEach(g=>{h+='<line x1="'+X(g.a[0])+'" y1="'+Y(g.a[1])+'" x2="'+X(g.b[0])+'" y2="'+Y(g.b[1])+'" stroke="#16803c" stroke-width="2.2" stroke-dasharray="6 4" opacity=".75"/>'});
+  (R.pts||[]).forEach(p=>{h+=sv.dataset.cell?'<rect x="'+(X(p[0])-u/2+1)+'" y="'+(Y(p[1])-u/2+1)+'" width="'+(u-2)+'" height="'+(u-2)+'" fill="#9be0b3" stroke="#16803c" stroke-width="2" opacity=".85"/>':'<circle cx="'+X(p[0])+'" cy="'+Y(p[1])+'" r="5" fill="#16803c" stroke="#fff" stroke-width="1.5"/>'});
+  sv.querySelector('.marks').insertAdjacentHTML('beforebegin','<g class="rev">'+h+'</g>');
+}
+let finT=0;function finish(){finT=Date.now();revealQ(cur);$('#chk').disabled=true;$('#hnt').disabled=true;$('#sol').style.display='none';$('#nxt').style.display='';$('#nxt').focus();document.querySelectorAll('.choice').forEach(b=>b.disabled=true);document.querySelectorAll('#ans input').forEach(i=>i.disabled=true);document.querySelectorAll('#kp button').forEach(i=>i.disabled=true);renderNavSoft();const lp=document.querySelector('details.hl');if(lp){const o=lp.open;lp.outerHTML=logPanel();const n=document.querySelector('details.hl');if(n)n.open=o}}
+function renderNavSoft(){if(items().some(s=>st.done[s.id]&&!document.querySelector('#nav .mm')))renderNav();const bars=document.querySelectorAll('#nav .bar i');items().forEach((s,i)=>{if(bars[i])bars[i].style.width=Math.min(GOAL,st.prog[s.id]||0)*100/GOAL+'%'});const sd=document.querySelectorAll('.goals .sd');}
+
+/* ---------- test preparation ---------- */
+function startTest(){view=null;free=null;focus=null;test={qs:E.makeTest(),i:0,score:0,log:[]};renderNav();testShow()}
+function testShow(){
+  const q=cur=test.qs[test.i];done=false;clicked=[];choiceSel=null;protoAngle=null;hintUsed=false;
+  $('#main').innerHTML='<div class="top"><span class="badge l1">Test preparation</span><span class="streak">Question '+(test.i+1)+' of '+test.qs.length+'</span></div>'+qHTML(q)+
+   '<div class="btns"><button class="btn" id="chk">Check</button><button class="btn alt" id="nxt" style="display:none">'+(test.i===test.qs.length-1?'See my result':'Next question')+'</button></div><div class="fb" id="fb"></div>';
+  wireProto();$('#chk').onclick=check;$('#nxt').onclick=testNext;
+  const tmp=document.createElement('button');tmp.id='hnt';tmp.style.display='none';$('.btns').appendChild(tmp);
+  document.querySelectorAll('.choice').forEach(b=>b.onclick=()=>{if(done)return;choiceSel=+b.dataset.i;document.querySelectorAll('.choice').forEach(x=>x.setAttribute('aria-pressed',String(x===b)))});
+  document.querySelectorAll('#ans input').forEach(i=>i.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();check()}}));
+  wireExpr();wireGrid();
+  const f=$('#in0');if(f)f.focus();
+}
+function testCheck(q,u){
+  done=true;const ok=E.grade(q,u);if(ok)test.score++;revealQ(q);record(q,ok?1:0);
+  test.log.push({q,ok,u});
+  fb(ok?'ok':'no',ok?'<b class="h">Correct</b>':'<b class="h">Not correct. The answer is: '+E.answerText(q)+'</b>'+q.steps);
+  $('#chk').disabled=true;document.querySelectorAll('.choice').forEach(b=>b.disabled=true);document.querySelectorAll('#ans input').forEach(i=>i.disabled=true);document.querySelectorAll('#kp button').forEach(i=>i.disabled=true);
+  $('#nxt').style.display='';$('#nxt').focus();
+}
+function testNext(){
+  test.i++;if(test.i<test.qs.length)return testShow();
+  const n=test.qs.length,g=Math.round((test.score/n*9+1)*10)/10;
+  const wrong=test.log.filter(x=>!x.ok);st.tests.push({d:new Date().toISOString().slice(0,10),s:test.score,n:n});st.tests=st.tests.slice(-20);
+  const bd=test.score>=20?award('test'):'';save();
+  $('#main').innerHTML='<div class="res"><h2>Your result</h2><div class="grade">'+test.score+' / '+n+'</div><p>That is a '+String(g).replace('.',',')+' on a scale of 1 to 10 (a rough guide only).'+bd+'</p>'+
+   (wrong.length?'<h3>Look at these again</h3>'+wrong.map(x=>{const gg=goalOfQ(x.q);return '<div class="rev"><div>'+x.q.html+'</div><div><b>Answer: '+E.answerText(x.q)+'</b></div><div class="st">'+x.q.steps+'</div>'+(gg?'<div class="st"><i>Learning goal: '+esc(gg.title)+'</i></div>':'')+'</div>'}).join(''):'<p><b>Everything correct. Great work!</b></p>')+
+   '<div class="btns"><button class="btn" id="again">Try a new test</button></div></div>';
+  $('#again').onclick=startTest;
+}
+
+/* ---------- progress overview ---------- */
+function overall(){let n=0,s=0;GL.forEach(g=>{const w=(st.res[g.id]||[]).slice(-6);w.forEach(x=>{n++;s+=x})});return{n,pct:n?Math.round(100*s/n):null}}
+function statusChip(key){const S=STAT[key];return '<span class="stc" style="background:'+S[2]+';color:'+S[1]+';border-color:'+S[1]+'">'+S[0]+'</span>'}
+function showProgress(){
+  test=null;view='progress';renderNav();
+  const rows=items().map(s=>{
+    const cur_=st.lvl[s.id]||0,best=Math.max(st.best[s.id]||0,cur_),d=!!st.done[s.id],S=st.stat[s.id]||{n:0,ok:0};
+    const chips=LV.map((l,i)=>'<span class="chip '+(d||i<best?'ach':i===cur_&&(S.n>0||cur_>0)?'act':'')+'">'+l+'</span>').join('');
+    const gs=goalsForItem(s.id),sc=gs.map(goalScore).filter(x=>x.pct!==null);
+    return '<tr><td><b>'+s.title+'</b></td><td>'+chips+'</td><td>'+(S.n||0)+'</td><td>'+(d?'★ unlocked':'not yet')+'</td></tr>';
+  }).join('');
+  const O=overall(),mastered=GL.filter(g=>goalScore(g).key==='mastered').length;
+  const bySec={};GL.forEach(g=>{(bySec[g.sec]=bySec[g.sec]||[]).push(g)});
+  const goalRows=Object.keys(bySec).map(sec=>{const s=E.SECTIONS.find(x=>x.id===sec);return '<tr class="gsec"><td colspan="3"><b>'+(s?s.title:sec)+'</b></td></tr>'+bySec[sec].map(g=>{const sc=goalScore(g);return '<tr><td>'+esc(g.title)+'</td><td>'+statusChip(sc.key)+'</td><td class="num">'+(sc.pct===null?'–':sc.pct+'%')+' <span class="mut">('+sc.n+')</span></td></tr>'}).join('')}).join('');
+  const weak=weakGoals();
+  const T=st.tests.length?'<h3>Test preparation results</h3><table><tr><th>Date</th><th>Score</th></tr>'+st.tests.slice().reverse().map(t=>'<tr><td>'+t.d+'</td><td>'+t.s+' / '+t.n+'</td></tr>').join('')+'</table>':'<p>You have not done a test preparation yet.</p>';
+  const bad=BADGES.map(b=>'<span class="bdg'+(st.badges[b[0]]?' got':'')+'" title="'+esc(b[2])+'">'+(st.badges[b[0]]?'🏅 ':'🔒 ')+b[1]+'</span>').join('');
+  $('#main').innerHTML='<div class="pg"><h2>My progress'+(hasLessons?' ('+(st.mode==='lesson'?'by lesson':'by paragraph')+')':'')+'</h2>'+
+    '<div class="cards"><div class="card2"><b>'+O.n+'</b><span>answers counted (last 6 per objective)</span></div><div class="card2"><b>'+(O.pct===null?'–':O.pct+'%')+'</b><span>recent score</span></div><div class="card2"><b>'+mastered+' / '+GL.length+'</b><span>objectives mastered</span></div></div>'+
+    '<p class="mut">Recent score: for every learning objective only your <b>last six answers</b> count. Correct on the first try = 100%, first try with a hint = 50%, correct on the second try = 75%, not correct or solution shown = 0%.</p>'+
+    '<h3>Levels</h3><p>Green = level reached. Blue = the level you are working on. Reach Extra spicy and answer 3 in a row correctly to unlock the Master Mix.</p><table><tr><th>'+(st.mode==='lesson'&&hasLessons?'Lesson':'Section')+'</th><th>Levels</th><th>Questions</th><th>Master Mix</th></tr>'+rows+'</table>'+
+    '<h3>Results by learning objective</h3><p class="stkey">'+['mastered','almost','way','attention','extra','none'].map(statusChip).join(' ')+'</p><p class="mut">The status uses your last six answers on that objective (you need at least three answers).</p><table class="gt"><tr><th>Learning objective</th><th>Status</th><th>Score</th></tr>'+goalRows+'</table>'+
+    '<h3>Continue practising</h3>'+(weak.length?'<p>Your weakest objectives right now: '+weak.slice(0,3).map(g=>'<b>'+esc(g.title)+'</b>').join('; ')+'.</p>':'<p>Answer some more questions first, then I can point out what to practise.</p>')+
+    '<div class="btns"><button class="btn" id="fprac">Practise my weakest objectives online</button><button class="btn alt" id="wsheet">Printable practice worksheet</button></div>'+
+    '<h3>Badges</h3><p>'+bad+'</p>'+T+
+    '<h3>My data</h3><p class="mut">Your progress is stored on this device only (in this browser). Make a backup if you want to continue on another device.</p><div class="btns"><button class="btn alt" id="rep">Progress report (PDF)</button><button class="btn alt" id="bk">Download backup</button><label class="btn alt filebtn" for="rs">Restore backup<input type="file" id="rs" accept=".json,application/json" hidden></label><button class="btn alt danger" id="rst">Start again</button></div><div id="datamsg" class="mut"></div>'+
+    '<div class="btns"><button class="btn" id="back">Back to practice</button></div></div>';
+  $('#back').onclick=()=>next(true);$('#fprac').onclick=startFocus;$('#wsheet').onclick=showWorksheet;$('#rep').onclick=showReport;$('#bk').onclick=backup;$('#rst').onclick=startAgain;$('#rs').onchange=restore;
+}
+function weakGoals(){return GL.filter(g=>{const s=goalScore(g);return s.pct!==null&&s.n>=3&&s.key!=='mastered'}).sort((a,b)=>goalScore(a).pct-goalScore(b).pct)}
+function weakOrAny(k){let w=weakGoals();if(w.length<k){const att=GL.filter(g=>!w.includes(g)).sort((a,b)=>{const A=goalScore(a),B=goalScore(b);return (A.pct===null?101:A.pct)-(B.pct===null?101:B.pct)});w=w.concat(att)}return w.slice(0,k)}
+function startFocus(){const w=weakOrAny(4);if(!w.length)return;free=null;mix=false;focus={ids:w.map(g=>g.id),i:0};next(true)}
+function showWorksheet(){
+  view='ws';renderNav();const gs=weakOrAny(4);const qs=[];
+  gs.forEach(g=>{let k=0,guard=0;while(k<3&&guard++<30){const q=makeFromGoal(g,st.lvl[g.sec]||0);if(['num','expr','choice','point'].includes(q.type)&&!qs.some(x=>x.fp===q.fp)){qs.push(q);k++}}});
+  const t0=todayISO();
+  const qh=qs.map((q,i)=>'<div class="wq"><div class="wn">'+(i+1)+'</div><div class="wb">'+q.html+(q.type==='choice'?'<ol type="a" class="wo">'+q.opts.map(o=>'<li>'+o+'</li>').join('')+'</ol>':'<div class="wl">Answer: ________________________</div>')+'</div></div>').join('');
+  const ah=qs.map((q,i)=>'<div class="wa"><b>'+(i+1)+'.</b> '+(q.type==='choice'?String.fromCharCode(97+q.ans)+') ':'')+'<b>'+E.answerText(q)+'</b><div class="st">'+q.steps+'</div></div>').join('');
+  $('#main').innerHTML='<div class="pg ws"><div class="btns noprint"><button class="btn" id="wp">Print / save as PDF</button><button class="btn alt" id="wb">Back to my progress</button></div><h2>Practice worksheet · '+esc(document.querySelector('header h1').textContent)+'</h2><p class="mut">Name: ______________________ &nbsp; Date: '+t0+'</p><p class="mut">Objectives: '+gs.map(g=>esc(g.title)).join(' · ')+'</p>'+qh+'<div class="pbreak"></div><h2>Answers</h2>'+ah+'</div>';
+  $('#wp').onclick=()=>{document.body.classList.add('printing');window.print();setTimeout(()=>document.body.classList.remove('printing'),500)};$('#wb').onclick=showProgress;
+}
+function showReport(){
+  view='report';renderNav();const O=overall();
+  const bySec={};GL.forEach(g=>{(bySec[g.sec]=bySec[g.sec]||[]).push(g)});
+  const gr=Object.keys(bySec).map(sec=>{const s=E.SECTIONS.find(x=>x.id===sec);return '<tr class="gsec"><td colspan="3"><b>'+(s?s.title:sec)+'</b></td></tr>'+bySec[sec].map(g=>{const sc=goalScore(g);return '<tr><td>'+esc(g.title)+'</td><td>'+STAT[sc.key][0]+'</td><td>'+(sc.pct===null?'–':sc.pct+'%')+' ('+sc.n+')</td></tr>'}).join('')}).join('');
+  $('#main').innerHTML='<div class="pg ws"><div class="btns noprint"><button class="btn" id="wp">Print / save as PDF</button><button class="btn alt" id="wb">Back to my progress</button></div><h2>Progress report · '+esc(document.querySelector('header h1').textContent)+'</h2><p>Name: <input type="text" id="rn" class="rname" placeholder="your name"> &nbsp; Date: '+todayISO()+'</p><p><b>Recent score:</b> '+(O.pct===null?'–':O.pct+'%')+' over '+O.n+' counted answers. <b>Objectives mastered:</b> '+GL.filter(g=>goalScore(g).key==='mastered').length+' of '+GL.length+'.</p><table class="gt"><tr><th>Learning objective</th><th>Status</th><th>Score (answers)</th></tr>'+gr+'</table>'+(st.tests.length?'<h3>Test preparation</h3><p>'+st.tests.slice(-5).map(t=>t.d+': '+t.s+'/'+t.n).join(' · ')+'</p>':'')+'<p class="mut">Score = average of the last six answers per objective (first try 100%, with hint 50%, second try 75%, wrong 0%).</p></div>';
+  $('#wp').onclick=()=>{const n=$('#rn');if(n){n.setAttribute('value',n.value)}document.body.classList.add('printing');window.print();setTimeout(()=>document.body.classList.remove('printing'),500)};$('#wb').onclick=showProgress;
+}
+function backup(){
+  const data={page:KEY,saved:new Date().toISOString(),state:JSON.parse(localStorage.getItem(KEY)||'{}')};
+  const blob=new Blob([JSON.stringify(data)],{type:'application/json'}),a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);a.download=KEY+'-backup-'+todayISO()+'.json';document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},500);
+  const m=$('#datamsg');if(m)m.textContent='Backup downloaded.';
+}
+function restore(ev){
+  const f=ev.target.files&&ev.target.files[0];if(!f)return;const r=new FileReader();
+  r.onload=()=>{try{const d=JSON.parse(r.result);if(!d||d.page!==KEY||!d.state||!d.state.prog)throw new Error('wrong file');
+    if(!confirm('Replace the progress on this device with the backup?'))return;localStorage.setItem(KEY,JSON.stringify(d.state));location.reload()}catch(e){const m=$('#datamsg');if(m)m.textContent='That file is not a backup of this page.'}};
+  r.readAsText(f);
+}
+function startAgain(){
+  if(!confirm('Delete all your progress on this page and start again?'))return;
+  st={mode:st.mode,secs:{},done:{},stat:{},best:{},tests:[],sec:st.sec,prog:{},lvl:{},res:{},log:[],badges:{},bestRow:0,goalsAll:st.goalsAll,auto:st.auto};mix=false;free=null;focus=null;save();test=null;renderNav();next(true);
+}
+document.getElementById('pbtn').onclick=showProgress;
+window.__dbg=()=>cur;window.__next=()=>next(false);renderNav();next(true);
+})();
+
+</script>
+</body>
+</html>
