@@ -392,6 +392,7 @@ function parsePoint(s) {
   return null;
 }
 function check(q, u) {                      // -> {ok, why?, msg?}
+  if (typeof q.grade === 'function') { let r = false; try { r = q.grade(u); } catch (e) { } return r && typeof r === 'object' ? r : { ok: !!r }; }   // own grading (protractor questions, roots with letters): true/false or {ok, why, msg}
   if (q.type === 'num') { const n = parseNum(u); if (isNaN(n)) return { ok: false, why: 'parse' }; return { ok: Math.abs(n - q.ans) <= (q.tol || 1e-9) }; }
   if (q.type === 'multi') { const ok = Array.isArray(u) && u.length === q.ans.length && u.every((v, i) => { const n = parseNum(v); return !isNaN(n) && Math.abs(n - q.ans[i]) <= (q.tol || 1e-9); }); return { ok }; }
   if (q.type === 'point') { const p = parsePoint(u); return { ok: !!p && Math.abs(p[0] - q.ans[0]) < 1e-9 && Math.abs(p[1] - q.ans[1]) < 1e-9 }; }
@@ -499,7 +500,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = U; else ro
 
 </script>
 <script>
-/* 2HT Chapter 4: probability. (scope: KERN Wiskunde 2 havo ch 4 Kansrekening; chapter number to be confirmed against the 2TTOB book) */
+/* 2HT Chapter 4: probability.  */
 const __def = (function (NX, P) {
 const { ri, pick, shuffle, nz, f, gcd, M, fr, fmtNum, ratText, tbl } = NX;
 const LR = (l, lo, hi) => { const s = hi - lo; if (s < 1 || l === undefined || l === 'mix') return ri(lo, hi); l = Math.min(l, 2); const a = l === 0 ? lo : l === 1 ? lo + Math.floor(s * .25) : lo + Math.floor(s * .5); const b = l === 0 ? lo + Math.max(1, Math.ceil(s * .5)) : l === 1 ? hi - Math.floor(s * .15) : hi + Math.ceil(s * .4); return ri(a, b); };
@@ -933,7 +934,7 @@ const GOALS = [
   ['4.5', 'I can calculate probabilities when you do not put things back', ['twoDrawsSame', 'twoDrawsDifferent', 'cardsTwo', 'readTreeDep', 'secondDraw'], 'Every next draw has one item fewer.'],
   ['4.5', 'I can use the opposite to find "at least one" without replacement', ['atLeastOneWithout', 'lotTickets']]
 ];
-return { key: 'nx-2ht-ch4-v1', SECTIONS, LESSONS: [], G, XG, defaultMode: 'para', GOALS };
+return { key: 'nx-' + P.cls.toLowerCase() + '-ch4-v1', SECTIONS, LESSONS: [], G, XG, defaultMode: 'para', GOALS };
 
 })(NX, {"cls": "2HT"});
 window.Ch3 = NX.engine(__def); window.Ch3.GOALS = __def.GOALS;

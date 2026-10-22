@@ -311,4 +311,4 @@ const GOALS = [
   ['7.4', 'I can find corresponding sides and angles of similar figures', ['corrSide', 'ratioCheck', 'missingAngle', 'polySide'], 'Corresponding vertices are in the same order.'],
   ['7.5', 'I can show that triangles are similar and calculate sides', ['nested', 'hourglass', 'shadow', 'whySimilar', 'nestedPart'], 'Look for F-angles, Z-angles, vertically opposite angles or a shared angle.']
 ];
-return { key: 'nx-2ht-ch7-v1', SECTIONS, LESSONS: [], G, XG, defaultMode: 'para', GOALS };
+return { key: 'nx-' + P.cls.toLowerCase() + '-ch7-v1', SECTIONS, LESSONS: [], G, XG, defaultMode: 'para', GOALS };

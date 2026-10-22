@@ -8,6 +8,9 @@ A page = shared head/styles + core engine + chapter content (_src/<slug>.js) + s
 The shared parts are taken from TEMPLATE (a page that already uses the newer engine).
 The content file is the BODY of a function (NX, P): it defines generators G / XG and ends with
     return { key, SECTIONS, LESSONS: [], G, XG, defaultMode: 'para', GOALS };
+P.cls is the class ('2HT', '2VT', ...). A content file may consist of the single line
+    //#include 2ht-chapter-6.js
+to reuse another class's content; that file can then add extras with  if (P.cls === '2VT') ...
 """
 import json, os, re, sys, glob
 
@@ -42,6 +45,8 @@ def build(slug):
     head, s1, s3, tail = split_template(open(TEMPLATE, encoding='utf-8').read())
     n = int(re.search(r'chapter-(\d+)$', slug).group(1))
     content = open(os.path.join(ROOT, '_src', slug + '.js'), encoding='utf-8').read()
+    # a line //#include <file>.js pulls in another content file (used by 2VT pages that share the 2HT content; P.cls tells them apart)
+    content = re.sub(r'^//#include (\S+)\s*$', lambda m: open(os.path.join(ROOT, '_src', m.group(1)), encoding='utf-8').read(), content, flags=re.M)
     head = re.sub(r'<title>.*?</title>', '<title>%s Chapter %d %s - practice</title>' % (meta['cls'], n, meta['title']), head, count=1)
     head = re.sub(r'<h1>.*?</h1>', '<h1>%s · Chapter %d · %s</h1>' % (meta['cls'], n, meta['title']), head, count=1)
     head = set_nav(head, meta['cls'], n)

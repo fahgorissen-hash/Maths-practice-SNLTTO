@@ -417,4 +417,4 @@ const GOALS = [
   ['5.4', 'I can calculate heights in a pyramid', ['pyramidHeight', 'apothem']],
   ['5.5', 'I can check if a triangle is right-angled, acute or obtuse', ['isRight', 'classify', 'whichRight', 'isTriple'], 'Compare a² + b² with c², where c is the longest side.']
 ];
-return { key: 'nx-2ht-ch5-v1', SECTIONS, LESSONS: [], G, XG, defaultMode: 'para', GOALS };
+return { key: 'nx-' + P.cls.toLowerCase() + '-ch5-v1', SECTIONS, LESSONS: [], G, XG, defaultMode: 'para', GOALS };

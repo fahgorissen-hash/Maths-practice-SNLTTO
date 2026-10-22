@@ -430,4 +430,4 @@ const GOALS = [
   ['4.5', 'I can calculate probabilities when you do not put things back', ['twoDrawsSame', 'twoDrawsDifferent', 'cardsTwo', 'readTreeDep', 'secondDraw'], 'Every next draw has one item fewer.'],
   ['4.5', 'I can use the opposite to find "at least one" without replacement', ['atLeastOneWithout', 'lotTickets']]
 ];
-return { key: 'nx-2ht-ch4-v1', SECTIONS, LESSONS: [], G, XG, defaultMode: 'para', GOALS };
+return { key: 'nx-' + P.cls.toLowerCase() + '-ch4-v1', SECTIONS, LESSONS: [], G, XG, defaultMode: 'para', GOALS };

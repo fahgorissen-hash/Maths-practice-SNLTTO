@@ -66,5 +66,29 @@
  "2ht-chapter-8": {
   "cls": "2HT",
   "title": "Algebra"
+ },
+ "2vt-chapter-3": {
+  "cls": "2VT",
+  "title": "Relationships"
+ },
+ "2vt-chapter-4": {
+  "cls": "2VT",
+  "title": "Probability"
+ },
+ "2vt-chapter-5": {
+  "cls": "2VT",
+  "title": "Pythagoras' theorem"
+ },
+ "2vt-chapter-6": {
+  "cls": "2VT",
+  "title": "Equations and inequalities"
+ },
+ "2vt-chapter-7": {
+  "cls": "2VT",
+  "title": "Geometric reasoning"
+ },
+ "2vt-chapter-8": {
+  "cls": "2VT",
+  "title": "Algebra"
  }
 }

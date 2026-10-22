@@ -392,7 +392,7 @@ function parsePoint(s) {
   return null;
 }
 function check(q, u) {                      // -> {ok, why?, msg?}
-  if (typeof q.grade === 'function') { let ok = false; try { ok = !!q.grade(u); } catch (e) { } return { ok }; }   // own grading (e.g. protractor questions)
+  if (typeof q.grade === 'function') { let r = false; try { r = q.grade(u); } catch (e) { } return r && typeof r === 'object' ? r : { ok: !!r }; }   // own grading (protractor questions, roots with letters): true/false or {ok, why, msg}
   if (q.type === 'num') { const n = parseNum(u); if (isNaN(n)) return { ok: false, why: 'parse' }; return { ok: Math.abs(n - q.ans) <= (q.tol || 1e-9) }; }
   if (q.type === 'multi') { const ok = Array.isArray(u) && u.length === q.ans.length && u.every((v, i) => { const n = parseNum(v); return !isNaN(n) && Math.abs(n - q.ans[i]) <= (q.tol || 1e-9); }); return { ok }; }
   if (q.type === 'point') { const p = parsePoint(u); return { ok: !!p && Math.abs(p[0] - q.ans[0]) < 1e-9 && Math.abs(p[1] - q.ans[1]) < 1e-9 }; }
@@ -970,7 +970,7 @@ const __def = (function (NX, P) {
   const __wrap = L => { for (const k in L) L[k] = L[k].map(fn => { const g = l => __conv(fn(l), fn.name); Object.defineProperty(g, 'name', { value: fn.name }); return g; }); };
   __wrap(G); __wrap(XG);
   const GOALS = [["3.1", "I can find the gradient and y-intercept of a line", ["gradientIntercept", "direction", "gradientTwoPoints", "formulaFromGraph", "tableLinear", "formulaFromPoints", "bFromGradientPoint"], "y = mx + b: m is the gradient, b the y-intercept."], ["3.1", "I can work with parallel lines and intercepts", ["parallel", "xIntercept", "missingCoord"]], ["3.2", "I can recognise and use direct proportion", ["isDirect", "findK", "valueFromPair", "whichDirect", "context", "graphK", "factor", "recipe", "halfK"]], ["3.3", "I can work with quadratic formulas and parabolas", ["abc", "opening", "vertexPoint", "symmetryLine", "yAxisCross", "valueAt", "xIntercepts", "maxHeight", "otherRoot", "axisFromPoints"]], ["3.4", "I can use the vertex form of a parabola", ["vertexForm", "findA", "yIntercept"]], ["3.4", "I can recognise and use inverse proportion", ["isInverse", "findKInv", "inverseValue", "inverseContext", "factorInv", "whichType", "inverseSolveX"]]];
-  return { key: 'ch3-2ht-relationships-v1', SECTIONS, LESSONS: [], G, XG, defaultMode: 'para', GOALS };
+  return { key: P.cls === '2HT' ? 'ch3-2ht-relationships-v1' : 'nx-' + P.cls.toLowerCase() + '-ch3-v1', SECTIONS, LESSONS: [], G, XG, defaultMode: 'para', GOALS };
 
 })(NX, {"cls": "2HT"});
 window.Ch3 = NX.engine(__def); window.Ch3.GOALS = __def.GOALS;

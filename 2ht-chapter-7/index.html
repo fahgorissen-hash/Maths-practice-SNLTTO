@@ -392,6 +392,7 @@ function parsePoint(s) {
   return null;
 }
 function check(q, u) {                      // -> {ok, why?, msg?}
+  if (typeof q.grade === 'function') { let r = false; try { r = q.grade(u); } catch (e) { } return r && typeof r === 'object' ? r : { ok: !!r }; }   // own grading (protractor questions, roots with letters): true/false or {ok, why, msg}
   if (q.type === 'num') { const n = parseNum(u); if (isNaN(n)) return { ok: false, why: 'parse' }; return { ok: Math.abs(n - q.ans) <= (q.tol || 1e-9) }; }
   if (q.type === 'multi') { const ok = Array.isArray(u) && u.length === q.ans.length && u.every((v, i) => { const n = parseNum(v); return !isNaN(n) && Math.abs(n - q.ans[i]) <= (q.tol || 1e-9); }); return { ok }; }
   if (q.type === 'point') { const p = parsePoint(u); return { ok: !!p && Math.abs(p[0] - q.ans[0]) < 1e-9 && Math.abs(p[1] - q.ans[1]) < 1e-9 }; }
@@ -814,7 +815,7 @@ const GOALS = [
   ['7.4', 'I can find corresponding sides and angles of similar figures', ['corrSide', 'ratioCheck', 'missingAngle', 'polySide'], 'Corresponding vertices are in the same order.'],
   ['7.5', 'I can show that triangles are similar and calculate sides', ['nested', 'hourglass', 'shadow', 'whySimilar', 'nestedPart'], 'Look for F-angles, Z-angles, vertically opposite angles or a shared angle.']
 ];
-return { key: 'nx-2ht-ch7-v1', SECTIONS, LESSONS: [], G, XG, defaultMode: 'para', GOALS };
+return { key: 'nx-' + P.cls.toLowerCase() + '-ch7-v1', SECTIONS, LESSONS: [], G, XG, defaultMode: 'para', GOALS };
 
 })(NX, {"cls": "2HT"});
 window.Ch3 = NX.engine(__def); window.Ch3.GOALS = __def.GOALS;

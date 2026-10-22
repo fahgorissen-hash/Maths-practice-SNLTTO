@@ -392,6 +392,7 @@ function parsePoint(s) {
   return null;
 }
 function check(q, u) {                      // -> {ok, why?, msg?}
+  if (typeof q.grade === 'function') { let r = false; try { r = q.grade(u); } catch (e) { } return r && typeof r === 'object' ? r : { ok: !!r }; }   // own grading (protractor questions, roots with letters): true/false or {ok, why, msg}
   if (q.type === 'num') { const n = parseNum(u); if (isNaN(n)) return { ok: false, why: 'parse' }; return { ok: Math.abs(n - q.ans) <= (q.tol || 1e-9) }; }
   if (q.type === 'multi') { const ok = Array.isArray(u) && u.length === q.ans.length && u.every((v, i) => { const n = parseNum(v); return !isNaN(n) && Math.abs(n - q.ans[i]) <= (q.tol || 1e-9); }); return { ok }; }
   if (q.type === 'point') { const p = parsePoint(u); return { ok: !!p && Math.abs(p[0] - q.ans[0]) < 1e-9 && Math.abs(p[1] - q.ans[1]) < 1e-9 }; }
@@ -762,19 +763,120 @@ XG['8.3'] = [
   }
 ];
 
+/* ======================= 2VT extras: negative exponents, roots with letters (8.4), completing the square (8.5) ======================= */
+const VT = P.cls !== '2HT';
+/* own grading: the value must be right and the answer must not be longer than the simplest form (no letter or root used more often) */
+const shape = u => { const t = String(u).replace(/sqrt/g, '√').replace(/\s+/g, ''); const L = {}; (t.match(/[a-z]/g) || []).forEach(c => { L[c] = (L[c] || 0) + 1; }); return { L, roots: (t.match(/√/g) || []).length, terms: (t.replace(/^[+-]/, '').replace(/\([^()]*\)/g, 'B').match(/[+-]/g) || []).length + 1 }; };
+const simplerThan = (u, ans) => { const a = shape(ans), b = shape(u); if (b.roots > a.roots || b.terms > a.terms) return false; for (const k in b.L) if (b.L[k] > (a.L[k] || 0)) return false; return true; };
+const ownGrade = (q, alsoFraction) => u => {
+  const base = Object.assign({}, q, { grade: undefined, form: null });
+  const r = NX.gradeExpr(base, u); if (!r.ok) return r;
+  if (!simplerThan(u, alsoFraction ? alsoFraction : q.ans) && !simplerThan(u, q.ans)) return { ok: false, why: 'form', msg: 'Not fully simplified yet: write it as short as possible.' };
+  return { ok: true };
+};
+if (VT) {
+  G['8.2'].push(
+    function negExponent(l) {
+      const v = V(), kind = l === 0 ? 0 : ri(0, 2); let s, line, hint;
+      if (kind === 0) { const a = ri(3, 9), b = ri(a + 1, 12); s = pw(v, a) + '*' + v + '^-' + b; line = v + '^(' + a + '+-' + b + ')'; hint = 'Add the exponents, also when one is negative.'; }
+      else if (kind === 1) { const a = ri(2, 6), b = ri(a + 1, 9); s = pw(v, a) + '/' + pw(v, b); line = v + '^(' + a + '-' + b + ')'; hint = 'Subtract the exponents. The result may be negative.'; }
+      else { const a = ri(2, 4), n = ri(2, 3); s = '(' + v + '^-' + a + ')^' + n; line = v + '^(-' + a + '*' + n + ')'; hint = 'Power of a power: multiply the exponents.'; }
+      const e = kind === 0 ? +s.match(/\^(\d+)\*/)[1] - +s.match(/\^-(\d+)/)[1] : kind === 1 ? +s.split('/')[0].split('^')[1] - +s.split('^').pop() : -(+s.match(/\^-(\d+)/)[1]) * +s.split(')^')[1];
+      const ans = v + '^' + e, q = ex(p('Simplify: ' + M(s) + '. <small>(A negative exponent is fine, like ' + v + '^-3, or write it as a fraction.)</small>'), ans, null, hint, chain([s, line, ans]) + ' = ' + M('1/' + pw(v, -e)), { negExp: true });
+      q.grade = ownGrade(q, '1/' + pw(v, -e)); return q;
+    },
+    function negToFraction(l) {
+      const v = V(), n = ri(2, 5), c = l === 0 ? 1 : pick([2, 3, 5]), s = (c > 1 ? c : '') + v + '^-' + n, ans = c + '/' + pw(v, n);
+      return ex(p('Write without a negative exponent: ' + M(s) + '.'), ans, 'lowest', M(v + '^-' + n) + ' = ' + M('1/' + pw(v, n)) + '.', M(s) + ' = ' + (c > 1 ? c + ' · ' : '') + M('1/' + pw(v, n)) + ' = ' + M(ans));
+    }
+  );
+  G['8.4'] = [
+    function likeRoots(l) {
+      const v = V(), a = nz(-6, 8), b = nz(-7, 7); if (a + b === 0) return G['8.4'][0](l);
+      const k = l === 2 ? ri(1, 9) : 0, s = T(a, 'sqrt(' + v + ')') + (b < 0 ? '-' : '+') + T(Math.abs(b), 'sqrt(' + v + ')') + (k ? '+' + k : ''), ans = T(a + b, 'sqrt(' + v + ')') + (k ? '+' + k : '');
+      const q = ex(p('Simplify: ' + M(s) + '.'), ans, null, 'You can add like roots: 3√' + v + ' + 5√' + v + ' = 8√' + v + ', just like 3' + v + ' + 5' + v + ' = 8' + v + '.', M(s) + ' = ' + M(ans), { keys: ['√', '(', ')'] });
+      q.grade = ownGrade(q); return q;
+    },
+    function mulRoots(l) {
+      const [v, w] = V2(), c1 = l === 0 ? 1 : ri(2, 6), c2 = l === 0 ? 1 : nz(-6, 6), k1 = l === 2 ? pick([2, 3]) : 1, k2 = l === 2 ? pick([5, 7]) : 1;
+      const r1 = (k1 > 1 ? k1 : '') + v, r2 = (k2 > 1 ? k2 : '') + w, s = T(c1, 'sqrt(' + r1 + ')') + '*' + (c2 < 0 ? '-' : '') + T(Math.abs(c2), 'sqrt(' + r2 + ')');
+      const ans = T(c1 * c2, 'sqrt(' + (k1 * k2 > 1 ? k1 * k2 : '') + v + w + ')');
+      const q = ex(p('Simplify: ' + M(s) + '.'), ans, null, '√A · √B = √(A·B). Multiply the numbers in front separately.', M(s) + ' = ' + (c1 * c2 !== 1 ? c1 + ' · ' + c2 + ' · ' : '') + M('sqrt(' + r1 + '*' + r2 + ')') + ' = ' + M(ans), { keys: ['√', '(', ')'] });
+      q.grade = ownGrade(q); return q;
+    },
+    function rootSquare(l) {
+      const v = V(), c = ri(2, 9), kind = l === 0 ? 0 : ri(0, 1);
+      if (kind === 0) { const s = '(' + c + 'sqrt(' + v + '))^2'; return ex(p('Simplify: ' + M(s) + '.'), c * c + v, 'mono', '(√' + v + ')² = ' + v + '. Square the number in front too.', M(s) + ' = ' + M(c + '^2*(sqrt(' + v + '))^2') + ' = ' + M(c * c + '*' + v) + ' = ' + M(c * c + v)); }
+      const s = 'sqrt(' + v + ')*' + c + 'sqrt(' + v + ')';
+      const q = ex(p('Simplify: ' + M(s) + '.'), c + v, 'mono', '√' + v + ' · √' + v + ' = ' + v + '.', M(s) + ' = ' + c + ' · ' + M('sqrt(' + v + ')*sqrt(' + v + ')') + ' = ' + M(c + v));
+      return q;
+    },
+    function rootOfPower(l) {
+      const v = V(), even = l === 0 || Math.random() < .4, n = even ? 2 * ri(1, 4) : 2 * ri(1, 4) + 1, k = Math.floor(n / 2);
+      const s = 'sqrt(' + v + '^' + n + ')', ans = even ? pw(v, k) : pw(v, k) + '*sqrt(' + v + ')';
+      const st = even ? M(s) + ' = ' + M('sqrt((' + pw(v, k) + ')^2)') + ' = ' + M(pw(v, k)) : M(s) + ' = ' + M('sqrt(' + v + '^' + (n - 1) + '*' + v + ')') + ' = ' + M('sqrt((' + pw(v, k) + ')^2)*sqrt(' + v + ')') + ' = ' + M(ans);
+      const q = ex(p('Simplify: ' + M(s) + '. (' + M(v) + ' is positive.)'), ans, null, 'Split off an even power: ' + M('sqrt(' + v + '^' + (2 * k) + ')') + ' = ' + M(pw(v, k)) + '.', st, { keys: ['√', '^', '(', ')'] });
+      q.grade = ownGrade(q); return q;
+    },
+    function expandRoot(l) {
+      const v = V(), a = ri(2, 5), b = nz(-6, 6), s = 'sqrt(' + v + ')*(' + a + '-sqrt(' + v + '))', ans = a + 'sqrt(' + v + ')-' + v;
+      const q = ex(p('Expand: ' + M(s) + '.'), ans, null, 'Multiply √' + v + ' by both terms. √' + v + ' · √' + v + ' = ' + v + '.', M(s) + ' = ' + M('sqrt(' + v + ')*' + a + '-sqrt(' + v + ')*sqrt(' + v + ')') + ' = ' + M(ans), { keys: ['√', '(', ')'] });
+      q.grade = ownGrade(q); return q;
+    }
+  ];
+  const pm = n => (n < 0 ? '-' : '+') + Math.abs(n);                       // signed number for source text
+  const xpS = h => '(x' + pm(h) + ')^2';
+  const qS = (a, b, c) => src([[a, 'x^2'], [b, 'x'], [c, '']].filter(t => t[0] !== 0));
+  const eqs = arr => arr.map(x => M(x)).join(' = ');
+  const ME = t => t.split('=').map(x => M(x)).join(' = ');
+  G['8.5'] = [
+    function csForm(l) {
+      const h = l === 2 ? nz(-9, 9) / 2 : nz(-8, 8), b = 2 * h, c = ri(-15, 15), q_ = c - h * h;
+      return { type: 'multi', fields: ['p =', 'q ='], ans: [h, q_], html: p('Write ' + M(qS(1, b, c)) + ' in the form ' + M('(x+p)^2+q') + '.'), hint: 'Halve the number in front of x: that is p. Then subtract p² to make up for the extra term.', steps: p(eqs([qS(1, b, c), xpS(h) + '-' + (h < 0 ? '(' + h + ')' : h) + '^2' + (c ? pm(c) : ''), xpS(h) + (q_ ? pm(q_) : '')])) + p('So p = ' + neg(h) + ' and q = ' + neg(q_) + '.'), noStep: true, ansText: 'p = ' + neg(h) + ', q = ' + neg(q_) };
+    },
+    function csVertex(l) {
+      const h = l === 2 ? nz(-9, 9) / 2 : nz(-8, 8), b = 2 * h, c = ri(-15, 15), q_ = c - h * h;
+      return { type: 'point', ans: [-h, q_], html: p('Use completing the square to find the vertex of the parabola ' + ME('y=' + qS(1, b, c)) + '.') + p('<small>Type your answer like (3, −9).</small>'), hint: 'Write the formula as y = (x + p)² + q. The vertex is (−p, q).', steps: p(M('y') + ' = ' + eqs([qS(1, b, c), xpS(h) + '-' + (h < 0 ? '(' + h + ')' : h) + '^2' + (c ? pm(c) : ''), xpS(h) + (q_ ? pm(q_) : '')])) + p('The vertex is (' + neg(-h) + ', ' + neg(q_) + ').'), noStep: true };
+    },
+    function csSolve(l) {
+      const h = nz(-6, 6), b = 2 * h, exact = l === 0; let k, c; do { k = exact ? pick([1, 4, 9, 16, 25, 36]) : ri(2, 40); c = h * h - k; } while (!exact && Number.isInteger(Math.sqrt(k)));
+      const r = Math.sqrt(k), x1 = -h - r, x2 = -h + r, rs = exact ? [x1, x2] : [x1, x2].map(r2), L = 'x' + pm(h);
+      return multi(p('Solve by completing the square: ' + ME(qS(1, b, c) + '=0') + '.' + (exact ? '' : ' Round your answers <b>to 2 decimal places</b>.')), rs[0], rs[1], 'Write the left side as (x + p)² + q. Then (x + p)² = −q and take ± the square root.', p(ME(xpS(h) + '-' + h * h + (c ? pm(c) : '') + '=0')) + p(ME(xpS(h) + '=' + k)) + p(ME(L + '=-sqrt(' + k + ')') + ' or ' + ME(L + '=sqrt(' + k + ')')) + p('x ' + (exact ? '= ' : '≈ ') + neg(rs[0]) + ' or x ' + (exact ? '= ' : '≈ ') + neg(rs[1])), Object.assign({ ansText: 'x ' + (exact ? '= ' : '≈ ') + neg(Math.min(...rs)) + ' or x ' + (exact ? '= ' : '≈ ') + neg(Math.max(...rs)) }, exact ? {} : { tol: .0051 }));
+    }
+  ];
+  XG['8.5'] = [
+    function csWithA(l) {
+      const a = pick([2, 3, -2, 5]), h = nz(-5, 5), c = ri(-12, 12), q_ = c - a * h * h, b = 2 * a * h;
+      return { type: 'multi', fields: ['a =', 'p =', 'q ='], ans: [a, h, q_], html: p('Write ' + M(qS(a, b, c)) + ' in the form ' + M('a(x+p)^2+q') + '.'), hint: 'First take ' + a + ' outside brackets for the x-terms. Then complete the square inside the brackets.', steps: p(eqs([qS(a, b, 0), a + '(' + qS(1, 2 * h, 0) + ')', a + '(' + xpS(h) + '-' + h * h + ')', a + xpS(h) + pm(-a * h * h)])) + p('Then ' + (c < 0 ? 'subtract ' + -c : 'add ' + c) + ': ' + M(a + xpS(h) + (q_ ? pm(q_) : ''))), noStep: true, ansText: 'a = ' + neg(a) + ', p = ' + neg(h) + ', q = ' + neg(q_) };
+    }
+  ];
+  XG['8.2'].push(function negFactor(l) {
+    const v = V(), c = pick([2, 3, 4, 5]), n = ri(2, 3), s = '(' + c + v + '^-' + n + ')^-2', ans = pw(v, 2 * n) + '/' + c * c;
+    return ex(p('Simplify: ' + M(s) + '. Write the answer without negative exponents.'), ans, 'lowest', 'A power −2 means 1 over the square: ' + M('(' + c + v + '^-' + n + ')^-2') + ' = ' + M('1/(' + c + v + '^-' + n + ')^2') + '.', M(s) + ' = ' + M(c + '^-2*' + v + '^(' + -n + '*-2)') + ' = ' + M('1/' + c * c + '*' + v + '^' + 2 * n) + ' = ' + M(ans));
+  });
+}
+const neg = n => n < 0 ? '−' + Math.abs(n) : String(n);
+const multi = (html, a, b, hint, steps, extra) => Object.assign({ type: 'multi', fields: ['smallest solution: x =', 'largest solution: x ='], ans: [Math.min(a, b), Math.max(a, b)], html: html + p('<small>Type the smallest solution first.</small>'), hint, steps, noStep: true }, extra || {});
+const r2 = x => Math.round(x * 100) / 100;
+
 const SECTIONS = [
   { id: '8.1', title: '8.1 Powers and like terms', sub: 'Powers, substituting, adding like terms, multiplying terms' },
   { id: '8.2', title: '8.2 Rules of powers', sub: 'Multiply, divide, power of a power' },
   { id: '8.3', title: '8.3 Expanding brackets', sub: 'One bracket, two brackets, special products' }
-];
+].concat(VT ? [{ id: '8.4', title: '8.4 Roots with letters', sub: 'Adding, multiplying and simplifying roots' }, { id: '8.5', title: '8.5 Completing the square', sub: '(x + p)² + q, vertex, solving' }] : []);
+if (VT) SECTIONS[1].sub = 'Multiply, divide, power of a power, negative exponents';
 const GOALS = [
   ['8.1', 'I can write products as powers and calculate them for a negative number', ['writePower', 'bracketPower', 'substitute', 'productPower'], 'Put a negative number in brackets: (−2)² = 4, but −2² = −4.'],
   ['8.1', 'I can multiply terms and add like terms', ['likeTerms', 'multiplyTerms', 'likeChoice'], 'Like terms: the same letters with the same exponents.'],
   ['8.2', 'I can use the rules of powers', ['productRule', 'quotientRule', 'powerOfPower', 'mixedRules', 'ruleChoice'], 'Multiply: add the exponents. Divide: subtract. Power of a power: multiply.'],
   ['8.3', 'I can expand one or two brackets and simplify', ['singleBracket', 'twoBrackets', 'doubleBracket', 'expandSimplify', 'areaExpr'], 'Every term times every term, then add the like terms.'],
   ['8.3', 'I can use the special products', ['special', 'identifyForm'], '(a + b)² = a² + 2ab + b²; (a − b)² = a² − 2ab + b²; (a + b)(a − b) = a² − b².']
-];
-return { key: 'nx-2ht-ch8-v1', SECTIONS, LESSONS: [], G, XG, defaultMode: 'para', GOALS };
+].concat(VT ? [
+  ['8.2', 'I can work with negative exponents', ['negExponent', 'negToFraction'], 'x⁻³ = 1/x³'],
+  ['8.4', 'I can add, multiply and simplify roots with letters', ['likeRoots', 'mulRoots', 'rootSquare', 'rootOfPower', 'expandRoot'], '√a · √b = √(ab) and √a · √a = a.'],
+  ['8.5', 'I can complete the square and use it', ['csForm', 'csVertex', 'csSolve'], 'x² + bx = (x + b/2)² − (b/2)²']
+] : []);
+return { key: 'nx-' + P.cls.toLowerCase() + '-ch8-v1', SECTIONS, LESSONS: [], G, XG, defaultMode: 'para', GOALS };
 
 })(NX, {"cls": "2HT"});
 window.Ch3 = NX.engine(__def); window.Ch3.GOALS = __def.GOALS;
