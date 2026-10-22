@@ -122,7 +122,7 @@ G['8.3'] = [
     return nu(p('Given ' + F('f', X()) + ' = ' + lin(m, b) + '. For which ' + X() + ' is ' + F('f', X()) + ' = ' + neg(c) + '?'), x, 'Solve the equation ' + lin(m, b) + ' = ' + neg(c) + '.', p(lin(m, b) + ' = ' + neg(c)) + p(lin(m, 0) + ' = ' + neg(rd(c - b))) + p(X() + ' = ' + neg(rd(c - b)) + ' : ' + par(m) + ' = ' + neg(x)), { noStep: true });
   },
   function difference(l) {
-    const a = nz(-5, 5), b = ri(-9, 9), x1 = ri(-4, 6), x2 = ri(-4, 6); if (x1 === x2) return G['8.3'][3](l);
+    const a = nz(-5, 5), b = ri(-9, 9), x1 = ri(-4, 6), x2 = ri(-4, 6); if (x1 === x2) return difference(l);
     const f = x => a * x + b, d = f(x1) - f(x2);
     return nu(p('Given ' + F('g', X()) + ' = ' + poly([[b, ''], [a, X()]]) + '. Calculate ' + F('g', neg(x1)) + ' − ' + F('g', neg(x2)) + '.'), d, 'Calculate both function values first.', p(F('g', neg(x1)) + ' = ' + neg(f(x1)) + ' and ' + F('g', neg(x2)) + ' = ' + neg(f(x2))) + p(neg(f(x1)) + ' − ' + par(f(x2)) + ' = ' + neg(d)));
   },
@@ -162,4 +162,150 @@ const GOALS = [
   ['8.2', 'I can count possibilities', ['menu', 'codeRepeat', 'codeNoRepeat', 'arrange', 'roles', 'plates', 'whichCount'], 'Multiply the numbers of choices.'],
   ['8.3', 'I can work with function notation', ['evalLinear', 'evalQuad', 'solveFx', 'difference', 'maxMin', 'maxMinFactored', 'onGraph'], 'f(3) means: replace x by 3.']
 ];
-return { key: 'nx-3ht-ch8-v1', SECTIONS, LESSONS: [], G, XG, defaultMode: 'para', GOALS };
+/* ======================= 3VT chapter 8: select topics from mathematics A, B, C and D ======================= */
+if (P.cls === '3VT') {
+  const { gcd, fr, ratText } = NX;
+  const ex = (html, ans, form, hint, steps, extra) => Object.assign({ type: 'expr', html, ans, form, hint, steps }, extra || {});
+  const frq = (html, n, d, hint, steps) => ex(html + p('<small>Give the answer as a fraction, for example 5/36.</small>'), ratText(n, d), 'frac', hint, steps, { keys: ['/'] });
+  const fl = (n, d) => { const g = gcd(n, d); n /= g; d /= g; return d === 1 ? String(n) : fr(n, d); };
+  const C3 = [1, 3, 3, 1];
+  const V2 = [
+    function diceSum(l) {
+      const k = ri(2, 12), pairs = []; for (let a = 1; a <= 6; a++) for (let b = 1; b <= 6; b++) if (a + b === k) pairs.push('(' + a + ', ' + b + ')');
+      return frq(p('You throw two dice and add the pips. What is the probability that the sum is ' + k + '?'), pairs.length, 36, 'There are 6 · 6 = 36 outcomes. Count the outcomes with sum ' + k + ' (use a table of sums).', 'Sum ' + k + ': ' + pairs.join(', ') + ', that is ' + pairs.length + ' outcomes.<br>P(sum = ' + k + ') = ' + fr(pairs.length, 36) + (gcd(pairs.length, 36) > 1 ? ' = ' + fl(pairs.length, 36) : ''));
+    },
+    function diceAtMost(l) {
+      const most = Math.random() < .5, k = most ? ri(3, 8) : ri(6, 11); let c = 0; for (let a = 1; a <= 6; a++) for (let b = 1; b <= 6; b++) if (most ? a + b <= k : a + b >= k) c++;
+      const parts = []; for (let s = most ? 2 : k; most ? s <= k : s <= 12; s++) parts.push(6 - Math.abs(s - 7));
+      return frq(p('You throw two dice and add the pips. What is the probability that the sum is <b>' + (most ? 'at most ' : 'at least ') + k + '</b>?'), c, 36, 'Add the numbers of outcomes for every sum that fits. There are 36 outcomes.', 'Outcomes per sum: ' + parts.join(' + ') + ' = ' + c + '<br>P = ' + fr(c, 36) + (gcd(c, 36) > 1 ? ' = ' + fl(c, 36) : ''));
+    },
+    function drawTwo(l) {
+      const o = ri(2, 6), w = ri(2, 6), N = o + w, k = ri(0, 2), repl = l === 2 && Math.random() < .5;
+      const D = repl ? N * N : N * (N - 1), n = k === 2 ? o * (repl ? o : o - 1) : k === 0 ? w * (repl ? w : w - 1) : 2 * o * w;
+      const st = k === 1 ? fr(o, N) + ' · ' + fr(w, repl ? N : N - 1) + ' + ' + fr(w, N) + ' · ' + fr(o, repl ? N : N - 1) : k === 2 ? fr(o, N) + ' · ' + fr(repl ? o : o - 1, repl ? N : N - 1) : fr(w, N) + ' · ' + fr(repl ? w : w - 1, repl ? N : N - 1);
+      return frq(p('A bag has ' + o + ' orange and ' + w + ' white marbles. You take two marbles ' + (repl ? '<b>with</b> replacement' : 'without replacement') + '. ' + X('X') + ' is the number of orange marbles. Calculate P(' + X('X') + ' = ' + k + ').'), n, D, 'Use a tree diagram. ' + (k === 1 ? 'One orange marble can happen in two orders: OW and WO.' : '') + (repl ? '' : ' After the first draw there is one marble less.'), 'P(' + X('X') + ' = ' + k + ') = ' + st + ' = ' + fr(n, D) + (gcd(n, D) > 1 ? ' = ' + fl(n, D) : ''));
+    },
+    function gamesWon(l) {
+      const pw = pick([[1, 2], [1, 3], [2, 3], [1, 4]]), k = ri(0, 3), a = pw[0], b = pw[1], q = b - a;
+      const n = C3[k] * Math.pow(a, k) * Math.pow(q, 3 - k), D = Math.pow(b, 3);
+      return frq(p('The probability that Sam wins a game is ' + fr(a, b) + '. Sam plays 3 games. Calculate the probability that Sam wins exactly ' + k + ' game' + (k === 1 ? '' : 's') + '.'), n, D, 'Each order of wins and losses has the same probability. There ' + (C3[k] === 1 ? 'is 1 order' : 'are ' + C3[k] + ' orders') + ' with ' + k + ' win' + (k === 1 ? '' : 's') + '.', C3[k] + ' · (' + fr(a, b) + ')<sup>' + k + '</sup> · (' + fr(q, b) + ')<sup>' + (3 - k) + '</sup> = ' + fr(n, D) + (gcd(n, D) > 1 ? ' = ' + fl(n, D) : ''));
+    },
+    function missingProb(l) {
+      const d = pick([12, 20, 24, 36]); let ps; do { ps = [ri(1, d / 2), ri(1, d / 2), ri(1, d / 2)]; } while (ps.reduce((s, v) => s + v, 0) >= d);
+      const last = d - ps.reduce((s, v) => s + v, 0);
+      return frq(p('This is a probability distribution. What is P(' + X('X') + ' = 3)?') + '<table class="tbl"><tr><th>' + X('x') + '</th><td>0</td><td>1</td><td>2</td><td>3</td></tr><tr><th>P(' + X('X') + ' = ' + X('x') + ')</th>' + ps.map(v => '<td>' + fl(v, d) + '</td>').join('') + '<td>?</td></tr></table>', last, d, 'All probabilities in a distribution add up to 1.', '1 − ' + ps.map(v => fl(v, d)).join(' − ') + ' = ' + fr(d, d) + ' − ' + fr(ps.reduce((s, v) => s + v, 0), d) + ' = ' + fr(last, d) + (gcd(last, d) > 1 ? ' = ' + fl(last, d) : ''));
+    },
+    function targetProb(l) {
+      const r1 = ri(2, 5), r2 = r1 + ri(2, 5), r3 = r2 + ri(2, 5), k = ri(0, 2), A = [r1 * r1, r2 * r2 - r1 * r1, r3 * r3 - r2 * r2][k], T = r3 * r3, nm = ['the inner circle', 'the middle ring', 'the outer ring'][k];
+      return frq(p('A target has circles with radius ' + r1 + ', ' + r2 + ' and ' + r3 + ' cm. A dart hits the target at a random point. What is the probability that it hits ' + nm + '?'), A, T, 'Probability = area of the part / area of the whole target. The π cancels out.', 'area of ' + nm + ' = ' + (k === 0 ? 'π · ' + r1 + '² = ' + A + 'π' : 'π · ' + [r2, r3][k - 1] + '² − π · ' + [r1, r2][k - 1] + '² = ' + A + 'π') + '<br>area of the target = π · ' + r3 + '² = ' + T + 'π<br>P = ' + fr(A + 'π', T + 'π') + ' = ' + fl(A, T));
+    }
+  ];
+  const familyP = XG['8.3'][0];
+  const V3 = [
+    function evalFp(l) {
+      const pp = nz(-5, 5), c = ri(-6, 6), x = nz(-4, 4), a = l === 2 ? pick([2, -1]) : 1, v = a * x * x + pp * x + c;
+      return nu(p('For every ' + X('p') + ' you have ' + X('f') + '<sub>' + X('p') + '</sub>(' + X() + ') = ' + poly([[a, X() + '²'], [1, X('p') + X()], [c, '']]) + '. Calculate ' + X('f') + '<sub>' + neg(pp) + '</sub>(' + neg(x) + ').'), v, 'First put ' + X('p') + ' = ' + neg(pp) + ' in the formula, then ' + X() + ' = ' + neg(x) + '.', X('f') + '<sub>' + neg(pp) + '</sub>(' + X() + ') = ' + quad(a, pp, c) + '<br>' + X('f') + '<sub>' + neg(pp) + '</sub>(' + neg(x) + ') = ' + subQ(a, pp, c, x) + ' = ' + neg(v));
+    },
+    familyP,
+    function vertexP(l) {
+      const v = nz(-6, 6), c = ri(-5, 5), pp = -2 * v;
+      return nu(p('Given ' + X('f') + '<sub>' + X('p') + '</sub>(' + X() + ') = ' + X() + '² + ' + X('p') + X() + (c ? (c < 0 ? ' − ' : ' + ') + Math.abs(c) : '') + '. For which ' + X('p') + ' is the ' + X() + '-coordinate of the vertex equal to ' + neg(v) + '?'), pp, X() + '<sub>vertex</sub> = −' + X('b') + ' / 2' + X('a') + ' = −' + X('p') + ' / 2.', '−' + X('p') + ' / 2 = ' + neg(v) + '<br>' + X('p') + ' = ' + neg(pp));
+    },
+    function touchP(l) {
+      const b = 2 * nz(-6, 6), a = l === 2 ? pick([1, 2, -1]) : 1, pp = rd(b * b / (4 * a));
+      return nu(p('For which ' + X('p') + ' does the graph of ' + X('f') + '<sub>' + X('p') + '</sub>(' + X() + ') = ' + poly([[a, X() + '²'], [b, X()]]) + ' + ' + X('p') + ' touch the ' + X() + '-axis?'), pp, 'The graph touches the ' + X() + '-axis when the equation ' + X('f') + '<sub>' + X('p') + '</sub>(' + X() + ') = 0 has exactly one solution: D = 0.', 'D = ' + par(b) + '² − 4 · ' + par(a) + ' · ' + X('p') + ' = ' + b * b + ' − ' + neg(4 * a) + X('p') + '<br>' + b * b + ' − ' + neg(4 * a) + X('p') + ' = 0<br>' + X('p') + ' = ' + b * b + ' / ' + neg(4 * a) + ' = ' + neg(pp));
+    },
+    function intersectCount(l) {
+      const a = pick([1, 2, -1, -2, 3]), b = ri(-6, 6), c = ri(-6, 6), m = ri(-4, 4), q = ri(-6, 6), A = a, B = b - m, Cc = c - q, D = B * B - 4 * A * Cc;
+      const right = D > 0 ? '2' : D === 0 ? '1' : '0';
+      return ch(p('How many points of intersection do the graphs of ' + X('f') + '(' + X() + ') = ' + quad(a, b, c) + ' and ' + X('g') + '(' + X() + ') = ' + lin(m, q) + ' have?'), right, ['0', '1', '2'].filter(o => o !== right), 'Set f(x) = g(x), rearrange to ax² + bx + c = 0 and calculate the discriminant.', quad(a, b, c) + ' = ' + lin(m, q) + '<br>' + quad(A, B, Cc) + ' = 0<br>D = ' + par(B) + '² − 4 · ' + par(A) + ' · ' + par(Cc) + ' = ' + neg(D) + '<br>' + (D > 0 ? 'D > 0: two points.' : D === 0 ? 'D = 0: one point (they touch).' : 'D < 0: no points.'));
+    }
+  ];
+  const ptQ = (html, x, y, hint, steps) => ({ type: 'point', ans: [x, y], html: html + p('<small>Type a point like (3, −2).</small>'), hint, steps, noStep: true });
+  const PT = (x, y) => '(' + neg(x) + ', ' + neg(y) + ')';
+  const V4 = [
+    function distance(l) {
+      const x1 = ri(-6, 6), y1 = ri(-6, 6), x2 = ri(-6, 6), y2 = ri(-6, 6); if (x1 === x2 && y1 === y2) return distance(l);
+      const s = (x2 - x1) ** 2 + (y2 - y1) ** 2, d = rd(Math.sqrt(s), 2);
+      return nu(p('Calculate the distance between A' + PT(x1, y1) + ' and B' + PT(x2, y2) + '. <small>(Round to 2 decimals.)</small>'), d, '|AB| = √((x<sub>B</sub> − x<sub>A</sub>)² + (y<sub>B</sub> − y<sub>A</sub>)²)', '|AB| = √((' + neg(x2) + ' − ' + par(x1) + ')² + (' + neg(y2) + ' − ' + par(y1) + ')²) = √(' + par(x2 - x1) + '² + ' + par(y2 - y1) + '²) = √' + s + (Number.isInteger(Math.sqrt(s)) ? ' = ' : ' ≈ ') + d, { tol: .0051, needStep: true });
+    },
+    function midpoint(l) {
+      const x1 = ri(-8, 8), y1 = ri(-8, 8), x2 = x1 + 2 * ri(-5, 5), y2 = y1 + 2 * ri(-5, 5) + (l === 2 ? 1 : 0), mx = (x1 + x2) / 2, my = (y1 + y2) / 2;
+      return ptQ(p('Calculate the midpoint M of A' + PT(x1, y1) + ' and B' + PT(x2, y2) + '.'), mx, my, 'M = ((x<sub>A</sub> + x<sub>B</sub>) / 2, (y<sub>A</sub> + y<sub>B</sub>) / 2)', 'x<sub>M</sub> = (' + neg(x1) + ' + ' + par(x2) + ') / 2 = ' + neg(mx) + '<br>y<sub>M</sub> = (' + neg(y1) + ' + ' + par(y2) + ') / 2 = ' + neg(my) + '<br>M = ' + PT(mx, my));
+    },
+    function lineThrough(l) {
+      const m = nz(-4, 4), x1 = ri(-5, 5), y1 = ri(-8, 8), b = y1 - m * x1;
+      return ex(p('Line ' + X('k') + ' has gradient ' + neg(m) + ' and passes through ' + PT(x1, y1) + '. Give the formula of ' + X('k') + ' as ' + X('y') + ' = … <small>Type only the right side.</small>'), m + '*x' + (b ? '+(' + b + ')' : ''), 'poly', 'Use ' + X('y') + ' − ' + X('y') + '<sub>1</sub> = ' + X('m') + '(' + X() + ' − ' + X() + '<sub>1</sub>).', X('y') + ' − ' + par(y1) + ' = ' + neg(m) + '(' + X() + ' − ' + par(x1) + ')<br>' + X('y') + ' = ' + lin(m, b), { keys: ['(', ')'], ansText: X('y') + ' = ' + lin(m, b) });
+    },
+    function parPerp(l) {
+      const mk = pick([[1, 2], [2, 1], [3, 1], [1, 3], [2, 3], [3, 2]]), k = ri(0, 2);
+      const a = mk[0], b = mk[1], c1 = ri(-9, 9), c2 = ri(-9, 9);
+      const L1 = poly([[a, X()], [b, X('y')]]) + ' = ' + neg(c1);
+      const L2 = k === 0 ? poly([[2 * a, X()], [2 * b, X('y')]]) + ' = ' + neg(2 * c2 + 1) : k === 1 ? poly([[b, X()], [-a, X('y')]]) + ' = ' + neg(c2) : poly([[b, X()], [a, X('y')]]) + ' = ' + neg(c2);
+      const m1 = -a / b, m2 = k === 0 ? -a / b : k === 1 ? b / a : -b / a, right = k === 0 ? 'parallel' : k === 1 ? 'perpendicular' : (a === b ? 'parallel' : 'neither');
+      const fm = (n, d) => (n * d < 0 ? '−' : '') + fl(Math.abs(n), Math.abs(d));
+      return ch(p('Lines ' + X('k') + ': ' + L1 + ' and ' + X('l') + ': ' + L2 + '. Are they parallel, perpendicular or neither?'), right, ['parallel', 'perpendicular', 'neither'].filter(o => o !== right), 'Write both lines as y = mx + q. Parallel: equal gradients. Perpendicular: m<sub>k</sub> · m<sub>l</sub> = −1.', 'm<sub>k</sub> = ' + fm(-a, b) + ' and m<sub>l</sub> = ' + fm(k === 0 ? -a : k === 1 ? b : -b, k === 0 ? b : a) + '. ' + (right === 'parallel' ? 'The gradients are equal: parallel.' : right === 'perpendicular' ? 'm<sub>k</sub> · m<sub>l</sub> = −1: perpendicular.' : 'Not equal and the product is not −1: neither.'));
+    },
+    function circleO(l) {
+      const tr = pick([[3, 4, 5], [6, 8, 10], [5, 12, 13], [0, 7, 7], [8, 15, 17]]), sx = pick([1, -1]), sy = pick([1, -1]), x = sx * tr[0], y = sy * tr[1], r = tr[2], ask = Math.random() < .5;
+      if (ask) return nu(p('A circle has centre O(0, 0) and passes through ' + PT(x, y) + '. Calculate the radius.'), r, 'r² = x² + y² (Pythagoras).', 'r² = ' + par(x) + '² + ' + par(y) + '² = ' + r * r + '<br>r = ' + r);
+      const on = Math.random() < .5, yy = on ? y : y + 1;
+      return ch(p('Does the point ' + PT(x, yy) + ' lie on the circle ' + X() + '² + ' + X('y') + '² = ' + r * r + '?'), on ? 'yes' : 'no', [on ? 'no' : 'yes'], 'Substitute the point and check if you get ' + r * r + '.', par(x) + '² + ' + par(yy) + '² = ' + (x * x + yy * yy) + (on ? ': yes.' : ', not ' + r * r + ': no.'));
+    }
+  ];
+  const V5 = [
+    function isProposition(l) {
+      const S = [['The square root of 25 is 5.', 'yes'], ['There are infinitely many prime numbers.', 'yes'], ['Is it raining?', 'no'], ['Close the door!', 'no'], ['Amsterdam is the capital of Belgium.', 'yes'], ['Chocolate ice cream is the best.', 'no'], ['7 is an even number.', 'yes'], ['What time is it?', 'no']];
+      const s = pick(S);
+      return ch(p('Is this a proposition?') + p('<i>' + s[0] + '</i>'), s[1], [s[1] === 'yes' ? 'no' : 'yes'], 'A proposition is a statement that is either true or false. Questions, orders and opinions are not propositions.', s[1] === 'yes' ? 'It is either true or false, so it is a proposition.' : 'It cannot be true or false (a question, an order or an opinion), so it is not a proposition.');
+    },
+    function symbols(l) {
+      const A = 'I drink tea', B = 'I eat a biscuit', forms = [['A ∧ B', A + ' and ' + B + '.'], ['A ∨ B', A + ' or ' + B + '.'], ['A ∧ ¬B', A + ' and I do not eat a biscuit.'], ['¬A ∧ ¬B', 'I do not drink tea and I do not eat a biscuit.'], ['¬A ∨ B', 'I do not drink tea or ' + B + '.']];
+      const f = pick(forms);
+      return ch(p('A: <i>' + A + '</i>. B: <i>' + B + '</i>. Which sentence means <b>' + f[0] + '</b>?'), f[1], forms.filter(x => x !== f).map(x => x[1]).slice(0, 3), '¬ means NOT, ∧ means AND, ∨ means OR.', f[0] + ' means: ' + f[1]);
+    },
+    function truthValue(l) {
+      const a = Math.random() < .5, b = Math.random() < .5, forms = [['A ∧ B', a && b], ['A ∨ B', a || b], ['¬A', !a], ['A ∧ ¬B', a && !b], ['¬A ∨ B', !a || b], ['¬(A ∧ B)', !(a && b)]], f = pick(l === 0 ? forms.slice(0, 3) : forms);
+      const T = v => v ? 'true' : 'false';
+      return ch(p('A is ' + T(a) + ' and B is ' + T(b) + '. Is <b>' + f[0] + '</b> true or false?'), T(f[1]), [T(!f[1])], 'A ∧ B is only true when both are true. A ∨ B is true when at least one is true. ¬ turns true into false.', f[0] + ' is ' + T(f[1]) + '.');
+    },
+    function validConclusion(l) {
+      const C = [['When it rains, I carry an umbrella. It rains.', 'So I carry an umbrella.', 'valid'], ['When it rains, I carry an umbrella. I carry an umbrella.', 'So it rains.', 'not valid'], ['All birds have feathers. A parrot is a bird.', 'So a parrot has feathers.', 'valid'], ['All mathematicians like puzzles. Some British people like puzzles.', 'So some British people are mathematicians.', 'not valid'], ['It rains on Sunday. Today is not Sunday.', 'So it does not rain today.', 'not valid'], ['All squares are rectangles. ABCD is a square.', 'So ABCD is a rectangle.', 'valid']];
+      const c = pick(C);
+      return ch(p('Premises: <i>' + c[0] + '</i>') + p('Conclusion: <i>' + c[1] + '</i> Is this conclusion valid?'), c[2], [c[2] === 'valid' ? 'not valid' : 'valid'], 'A conclusion is valid only if it must be true whenever the premises are true.', c[2] === 'valid' ? 'If the premises are true, the conclusion must be true: valid.' : 'The premises can be true while the conclusion is false: not valid.');
+    }
+  ];
+  const V6 = [
+    function spaceDiagonal(l) {
+      const a = ri(2, 10), b = ri(2, 10), c = ri(2, 10), s = a * a + b * b + c * c, d = rd(Math.sqrt(s), 2);
+      return nu(p('A cuboid is ' + a + ' by ' + b + ' by ' + c + ' cm. Calculate the length of a space diagonal. <small>(Round to 2 decimals.)</small>'), d, 'First the diagonal of the bottom face, then Pythagoras again. Or: √(a² + b² + c²).', 'bottom diagonal² = ' + a + '² + ' + b + '² = ' + (a * a + b * b) + '<br>space diagonal = √(' + (a * a + b * b) + ' + ' + c + '²) = √' + s + (Number.isInteger(Math.sqrt(s)) ? ' = ' : ' ≈ ') + d, { tol: .0051, needStep: true });
+    },
+    function diagonalAngle(l) {
+      const a = ri(2, 10), b = ri(2, 10), c = ri(2, 10), base = Math.sqrt(a * a + b * b), ang = rd(Math.atan(c / base) * 180 / Math.PI, 1);
+      return nu(p('A cuboid is ' + a + ' by ' + b + ' cm at the bottom and ' + c + ' cm high. Calculate the angle between a space diagonal and the bottom face. <small>(Round to 1 decimal.)</small>'), ang, 'The space diagonal, the bottom diagonal and a vertical edge form a right-angled triangle.', 'bottom diagonal = √(' + a + '² + ' + b + '²) = √' + (a * a + b * b) + '<br>tan(α) = ' + c + ' / √' + (a * a + b * b) + '<br>α ≈ ' + ang + '°', { tol: .051, needStep: true });
+    },
+    function frustum(l) {
+      const top = pick([1.5, 2, 3]), k = pick([2, 3, 4]), bot = top * k, x = pick([3, 4, 5, 6]), h = x * (k - 1);
+      return nu(p('A frustum (a pyramid with the top cut off) has height ' + h + '. The bottom square has side ' + bot + ' and the top square has side ' + top + '. Calculate the height of the original pyramid.'), h + x, 'Call the height of the cut-off top part x. Similar triangles: ' + top + ' / ' + bot + ' = x / (x + ' + h + ').', top + ' · (x + ' + h + ') = ' + bot + 'x<br>' + rd(top * h) + ' = ' + rd(bot - top) + 'x<br>x = ' + x + '<br>height = ' + h + ' + ' + x + ' = ' + (h + x), { needStep: true });
+    },
+    function hypercube(l) {
+      const n = ri(2, 6), what = pick(['vertices', 'edges']), v = Math.pow(2, n), e = n * Math.pow(2, n - 1);
+      return nu(p('A cube in ' + n + ' dimensions is made by copying a cube in ' + (n - 1) + ' dimensions and connecting the corresponding vertices. How many <b>' + what + '</b> does it have?'), what === 'vertices' ? v : e, 'Every step doubles the number of vertices. Edges: 2 · (old edges) + (old vertices).', what === 'vertices' ? '2<sup>' + n + '</sup> = ' + v : 'vertices of the ' + (n - 1) + '-cube: ' + Math.pow(2, n - 1) + ', edges: ' + (n - 1) * Math.pow(2, n - 2) + '<br>2 · ' + (n - 1) * Math.pow(2, n - 2) + ' + ' + Math.pow(2, n - 1) + ' = ' + e);
+    }
+  ];
+  G['8.2'] = V2; G['8.3'] = V3; G['8.4'] = V4; G['8.5'] = V5; G['8.6'] = V6;
+  XG['8.2'] = []; XG['8.3'] = []; XG['8.4'] = []; XG['8.5'] = []; XG['8.6'] = [];
+  SECTIONS.splice(0, SECTIONS.length, SECTIONS[0],
+    { id: '8.2', title: '8.2 Probability distributions', sub: 'Two dice, drawing marbles, games, areas' },
+    { id: '8.3', title: '8.3 Functions with a parameter', sub: 'f with p, vertex, touching, number of intersections' },
+    { id: '8.4', title: '8.4 Analytic geometry', sub: 'Distance, midpoint, lines, parallel and perpendicular, circles' },
+    { id: '8.5', title: '8.5 Logic', sub: 'Propositions, ¬ ∧ ∨, valid conclusions' },
+    { id: '8.6', title: '8.6 Spatial geometry', sub: 'Space diagonals, angles, frustums, hypercubes' });
+  GOALS.splice(1, GOALS.length - 1,
+    ['8.2', 'I can make and use a probability distribution', ['diceSum', 'diceAtMost', 'drawTwo', 'gamesWon', 'missingProb', 'targetProb'], 'All probabilities add up to 1.'],
+    ['8.3', 'I can work with functions with a parameter', ['evalFp', 'familyP', 'vertexP', 'touchP', 'intersectCount'], 'Touching: D = 0.'],
+    ['8.4', 'I can calculate distances, midpoints and line formulas', ['distance', 'midpoint', 'lineThrough', 'parPerp', 'circleO'], 'Perpendicular: m₁ · m₂ = −1.'],
+    ['8.5', 'I can work with propositions and logical symbols', ['isProposition', 'symbols', 'truthValue', 'validConclusion'], '¬ not, ∧ and, ∨ or.'],
+    ['8.6', 'I can calculate lengths and angles in solids', ['spaceDiagonal', 'diagonalAngle', 'frustum', 'hypercube'], 'Look for a right-angled triangle.']);
+}
+return { key: 'nx-' + P.cls.toLowerCase() + '-ch8-v1', SECTIONS, LESSONS: [], G, XG, defaultMode: 'para', GOALS };
