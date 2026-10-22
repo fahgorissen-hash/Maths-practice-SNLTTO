@@ -1,0 +1,1370 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>3HT Chapter 5 Equations and inequalities - practice</title>
+<style>
+:root{--bg:#f4f7fa;--card:#fff;--ink:#17222d;--mut:#5b6b7a;--line:#d5dee7;--brand:#1b5fa8;--brand2:#e8f1fb;--ok:#16803c;--okbg:#e6f6ec;--bad:#b3261e;--badbg:#fdecea;--warn:#8a5a00;--warnbg:#fff4d6}
+*{box-sizing:border-box}
+body{margin:0;font-family:Calibri,"Segoe UI",system-ui,sans-serif;background:var(--bg);color:var(--ink);font-size:18px;line-height:1.45}
+header{background:var(--brand);color:#fff;padding:14px 20px}
+header h1{margin:0;font-size:24px}header p{margin:2px 0 0;opacity:.9;font-size:15px}
+.wrap{display:grid;grid-template-columns:290px 1fr;gap:18px;max-width:1150px;margin:18px auto;padding:0 14px}
+nav{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px;align-self:start}
+nav button.sec{display:block;width:100%;text-align:left;background:none;border:2px solid transparent;border-radius:10px;padding:9px 11px;margin:3px 0;font:inherit;cursor:pointer;color:inherit}
+nav button.sec:hover{background:var(--brand2)}
+nav button.sec[aria-current=true]{background:var(--brand2);border-color:var(--brand)}
+nav .t{font-weight:700}nav .s{font-size:14px;color:var(--mut)}
+.bar{height:7px;background:#e3eaf1;border-radius:5px;margin-top:5px;overflow:hidden}.bar i{display:block;height:100%;background:var(--ok);width:0}
+.reset{margin:8px 4px 2px;font-size:14px;color:var(--mut);background:none;border:0;text-decoration:underline;cursor:pointer;font-family:inherit}
+main{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px 22px;min-height:420px}
+.top{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:8px}
+.badge{padding:3px 12px;border-radius:99px;font-weight:700;font-size:15px}
+.l0{background:#dff3e5;color:#0f6a31}.l1{background:#fff0c9;color:#7a5200}.l2{background:#fde0d9;color:#a3341b}.l3{background:#f3d9f5;color:#6b1f78}.lm{background:#e3def7;color:#40318a}
+header{display:flex;align-items:center;gap:14px;flex-wrap:wrap}header .hd{flex:1;min-width:240px}.pbtn{font:inherit;font-weight:700;background:#fff;color:var(--brand);border:0;border-radius:10px;padding:8px 16px;cursor:pointer;font-size:16px}
+nav button.mm{margin-left:14px;width:calc(100% - 14px);background:#f1edfb;border-color:#cbbdf0;font-weight:700;color:#40318a;font-size:16px}
+.pg h2{margin-top:0}.pg table{border-collapse:collapse;width:100%;font-size:16px;margin:8px 0 14px}.pg th,.pg td{border-bottom:1px solid var(--line);padding:8px 6px;text-align:left;vertical-align:middle}.pg th{color:var(--mut);font-size:14px}.chip{display:inline-block;padding:2px 9px;border-radius:99px;font-size:13px;font-weight:700;margin:1px 2px 1px 0;border:2px solid #cfd8e0;color:#8795a3;background:#fff}.chip.ach{background:var(--okbg);border-color:#8fd1a8;color:var(--ok)}.chip.act{border-color:var(--brand);color:var(--brand);background:var(--brand2)}
+nav .seg{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin:2px 0 8px}nav .seg button{font:inherit;font-size:15px;font-weight:700;padding:7px 4px;border-radius:9px;border:2px solid var(--brand);background:#fff;color:var(--brand);cursor:pointer}nav .seg button.on{background:var(--brand);color:#fff}
+@media print{header .pbtn,.topnav,nav,.btns{display:none!important}.wrap{display:block}main{border:0}}
+.streak{margin-left:auto;color:var(--mut);font-size:15px}
+.dot{display:inline-block;width:11px;height:11px;border-radius:50%;background:#d6dee6;margin-left:4px}.dot.on{background:var(--ok)}
+.q p{margin:.4em 0 .6em;font-size:20px}
+.tbl{border-collapse:collapse;margin:8px 0 12px;font-size:19px}.tbl th,.tbl td{border:1px solid #9fb0bf;padding:5px 13px;text-align:center;min-width:44px}.tbl th{background:var(--brand2)}
+svg.grid{width:100%;max-width:470px;height:auto;border:1px solid var(--line);border-radius:8px;display:block;margin:6px 0 10px;touch-action:manipulation}
+svg.grid[data-click]{cursor:crosshair}
+.ans{margin:8px 0}
+.ans label{display:block;font-size:16px;color:var(--mut);margin-top:6px}
+.ans input[type=text]{font:inherit;font-size:20px;padding:7px 11px;border:2px solid #9fb0bf;border-radius:9px;width:210px}
+.ans input:focus{outline:3px solid #9cc4ee;border-color:var(--brand)}
+.choices{display:grid;gap:8px;max-width:520px}
+.choice{display:block;text-align:left;font:inherit;font-size:19px;padding:10px 14px;border:2px solid #9fb0bf;border-radius:10px;background:#fff;cursor:pointer}
+.choice:hover{border-color:var(--brand)}.choice[aria-pressed=true]{background:var(--brand2);border-color:var(--brand)}
+.btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+.btn{font:inherit;font-weight:700;padding:9px 20px;border-radius:10px;border:2px solid var(--brand);background:var(--brand);color:#fff;cursor:pointer;font-size:18px}
+.btn.alt{background:#fff;color:var(--brand)}.btn:disabled{opacity:.45;cursor:default}
+.fb{margin-top:14px;padding:11px 14px;border-radius:10px;display:none}
+.fb.show{display:block}.fb.ok{background:var(--okbg);border:1px solid #8fd1a8}.fb.no{background:var(--badbg);border:1px solid #eba8a3}.fb.hint{background:var(--warnbg);border:1px solid #e6c874}
+.fb b.h{display:block;margin-bottom:2px}
+.res h2{margin-top:0}.grade{font-size:44px;font-weight:700;color:var(--brand)}
+.rev{border-top:1px solid var(--line);padding:10px 0;font-size:17px}.rev .st{color:var(--mut)}
+@media(max-width:760px){.wrap{grid-template-columns:1fr}nav{display:grid;grid-template-columns:1fr 1fr;gap:4px}nav .reset{grid-column:1/-1}}
+.sr{position:absolute;left:-9999px}
+
+.mx{font-size:1.06em;white-space:nowrap}
+.mx i{font-family:"Cambria Math","Times New Roman",serif;font-style:italic}
+.fr{display:inline-flex;flex-direction:column;vertical-align:middle;text-align:center;margin:0 3px;line-height:1.2}
+.fr .nu{border-bottom:1.6px solid currentColor;padding:0 4px 1px}.fr .de{padding:1px 4px 0}
+.rt{display:inline-block;position:relative;white-space:nowrap;line-height:1.1;padding-left:.72em;margin-right:.08em}.rt.rn{margin-left:.4em}
+.rt .ov{display:inline-block;padding:.14em 3px 0 0;border-top:1.6px solid currentColor}
+.rt .sq{position:absolute;left:0;top:0;bottom:-.12em;width:.72em;background:currentColor;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 20' preserveAspectRatio='none'%3E%3Cpath d='M0.6 11.2 L2.4 10 L4.8 18.6 L9.6 0.8' fill='none' stroke='black' stroke-width='1.7' stroke-linejoin='miter' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E") center/100% 100% no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 20' preserveAspectRatio='none'%3E%3Cpath d='M0.6 11.2 L2.4 10 L4.8 18.6 L9.6 0.8' fill='none' stroke='black' stroke-width='1.7' stroke-linejoin='miter' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E") center/100% 100% no-repeat}
+.rt .ix{position:absolute;left:-.42em;top:.12em;font-size:.62em;line-height:1}
+.q sup{font-size:.7em;line-height:0}
+.mx i{padding-right:.09em}.mx sup{font-style:normal;margin-left:.05em;font-size:.7em;line-height:0}
+.kp{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 2px}.kp button{font:inherit;font-size:19px;min-width:42px;padding:5px 10px;border:2px solid #9fb0bf;border-radius:9px;background:#f7fafc;cursor:pointer}.kp button:hover{border-color:var(--brand);background:var(--brand2)}
+.pv{min-height:34px;margin:6px 0 0;font-size:20px;color:#223}.pv .pl{font-size:14px;color:var(--mut);margin-right:6px}
+.ans input[type=text].wide{width:min(520px,100%)}
+.ans input#in0{width:min(420px,100%)}
+.fb .mx{font-size:1.05em}
+.lead{color:var(--mut);font-size:15px;margin:2px 0 0}
+svg.fig{max-width:430px;width:100%;height:auto;display:block;margin:6px 0 10px}
+.topnav{flex-basis:100%;display:flex;gap:8px;align-items:center;flex-wrap:wrap}.topnav .nb,.topnav summary{font:inherit;font-size:14px;font-weight:700;background:rgba(255,255,255,.18);color:#fff;border:1px solid rgba(255,255,255,.5);border-radius:10px;padding:5px 12px;cursor:pointer;text-decoration:none;list-style:none}.topnav .nb:hover,.topnav summary:hover{background:rgba(255,255,255,.3)}.topnav summary::-webkit-details-marker{display:none}.topnav details{position:relative}.topnav .menu{position:absolute;z-index:50;top:110%;left:0;background:#fff;border-radius:10px;box-shadow:0 4px 16px rgba(0,0,0,.25);padding:6px;min-width:260px;display:flex;flex-direction:column}.topnav .menu a{color:var(--brand);text-decoration:none;padding:7px 10px;border-radius:8px;font-size:15px}.topnav .menu a:hover{background:#eef2f7}.topnav .menu a.cur{font-weight:800;background:#e3ecf7}
+.topnav .nb.cur{background:#fff;color:var(--brand);border-color:#fff}
+.goals{background:#f3f8fd;border:1px solid var(--line);border-radius:12px;padding:8px 14px;margin:8px 0 12px}.goals .gh{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;align-items:center}.goals .gb{display:flex;gap:12px;flex-wrap:wrap}.lk{font:inherit;font-size:15px;background:none;border:0;color:var(--brand);text-decoration:underline;cursor:pointer;padding:2px 0}.goals ul{list-style:none;margin:6px 0 2px;padding:0}.goals li{display:flex;gap:9px;align-items:flex-start;padding:4px 6px;border-radius:8px;font-size:16px}.goals li.cur{background:#fff;border:1px solid var(--brand);font-weight:700}.goals .sd{flex:0 0 11px;height:11px;border-radius:50%;margin-top:7px}
+.hc{background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px 14px;margin:8px 0}.hc h4{margin:0 0 6px;font-size:18px}.hc .hr{margin:8px 0;font-size:16px}.hc .hr p{margin:2px 0}.hc .ex{background:#f7fafc;border-radius:8px;padding:2px 12px}.hc .ex .exa{margin:2px 0 8px}.hc .warn{background:var(--warnbg);border-radius:8px;padding:4px 10px}
+.pmbar{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:2px 0 8px}.pml{font-size:14px;color:var(--mut);margin-left:4px}.pm{font:inherit;font-size:14px;font-weight:700;padding:3px 11px;border-radius:99px;border:2px solid #9fb0bf;background:#fff;color:var(--ink);cursor:pointer}.pm.on{background:var(--brand);border-color:var(--brand);color:#fff}.pm.l0.on{background:#0f6a31;border-color:#0f6a31}.pm.l1.on{background:#9a6a00;border-color:#9a6a00}.pm.l2.on{background:#a3341b;border-color:#a3341b}.pm.l3.on{background:#6b1f78;border-color:#6b1f78}
+.pmnote{background:#eef4fb;border:1px solid #b9d0ea;border-radius:10px;padding:6px 12px;margin:0 0 10px;font-size:16px}.btn.sm{font-size:14px;padding:3px 12px;margin-left:8px}
+.hl{margin-top:16px;font-size:15px}.hl summary{cursor:pointer;color:var(--mut)}.hl ul{margin:6px 0;padding-left:0;list-style:none}.hl li{padding:2px 0;border-bottom:1px solid #eef2f6}.hl .ok{color:var(--ok);font-weight:700}.hl .no{color:var(--bad);font-weight:700}.hl .lq{color:var(--mut)}
+.at{margin-top:8px;font-size:15px;color:var(--mut)}.at .ok{color:var(--ok);font-weight:700;margin-right:8px}.at .no{color:var(--bad);font-weight:700;margin-right:8px}
+.cards{display:flex;gap:12px;flex-wrap:wrap;margin:6px 0}.card2{flex:1;min-width:150px;border:1px solid var(--line);border-radius:12px;padding:10px 14px;background:#f7fafc}.card2 b{display:block;font-size:28px;color:var(--brand)}.card2 span{font-size:14px;color:var(--mut)}
+.stc{display:inline-block;border:1px solid;border-radius:99px;padding:1px 10px;font-size:14px;font-weight:700;white-space:nowrap}.stkey{display:flex;gap:6px;flex-wrap:wrap}.gt .gsec td{background:#eef4fb}.gt td.num{white-space:nowrap}.mut{color:var(--mut);font-size:15px}
+.bdg{display:inline-block;margin:3px 6px 3px 0;padding:3px 12px;border-radius:99px;border:1px solid var(--line);color:#8a98a6;background:#f4f7fa;font-size:15px}.bdg.got{background:#fff4d6;color:#7a5200;border-color:#e6c874;font-weight:700}
+.filebtn{display:inline-block;cursor:pointer}.btn.danger{color:var(--bad);border-color:var(--bad)}.rname{font:inherit;font-size:18px;padding:3px 8px;border:1px solid #9fb0bf;border-radius:8px}
+.ws .wq{display:flex;gap:12px;padding:10px 0;border-bottom:1px solid var(--line);break-inside:avoid}.ws .wn{font-weight:700;color:var(--brand);min-width:26px}.ws .wl{margin-top:10px;color:var(--mut)}.ws .wo{margin:4px 0}.ws .wa{padding:6px 0;border-bottom:1px solid #eef2f6;font-size:16px}.pbreak{page-break-before:always;break-before:page}
+@media print{body.printing header,body.printing nav,body.printing .noprint,body.printing .goals{display:none!important}body.printing .wrap{display:block;margin:0;padding:0}body.printing main{border:0;padding:0}body{background:#fff}}
+.autoc{display:block;margin:.6rem 0 0;font-size:.9rem;color:var(--mut,#556)}.autoc input{margin-right:.4rem}
+.stp .stl{font-size:1.15rem;margin:.35rem 0;color:var(--ink,inherit)}.stp .eq{margin-left:.15rem;font-weight:700}
+.stp .stl{display:flex;gap:.6rem;align-items:flex-start}.ci{flex:none;width:1.5rem;height:1.5rem;border-radius:50%;border:2px solid #22a050;color:#22a050;display:inline-flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:700;line-height:1;margin-top:.1rem}.ci.open{color:transparent}.ci.full{background:#22a050;color:#fff}.fnote{font-size:.85rem;color:#16803c;margin-top:.1rem}.stepnote{margin:.5rem 0;padding:.45rem .7rem;border-left:4px solid #b7791f;background:#fff7e6;border-radius:6px;font-size:.92rem;color:#5a3d00}@media (prefers-color-scheme:dark){.stepnote{background:#3a2d12;color:#f3d9a4}}
+</style>
+</head>
+<body>
+<header><div class="topnav" role="navigation" aria-label="Site navigation"><a class="nb" href="../">Home</a><a class="nb" href="../3ht-chapter-1/">Chapter 1</a><a class="nb" href="../3ht-chapter-2/">Chapter 2</a><a class="nb" href="../3ht-chapter-3/">Chapter 3</a><a class="nb" href="../3ht-chapter-4/">Chapter 4</a><a class="nb cur" href="../3ht-chapter-5/" aria-current="page">Chapter 5</a></div><div class="hd"><h1>3HT · Chapter 5 · Equations and inequalities</h1><p>Practise as long as you like. The questions adapt to you: Mild, Medium, Spicy and Extra spicy.</p></div><button class="pbtn" id="pbtn" type="button">My progress</button></header>
+<div class="wrap">
+  <nav id="nav" aria-label="Topics"></nav>
+  <main id="main" aria-live="polite"></main>
+</div>
+<script>
+/* NX core: shared helpers, expression parser/grader, renderer, engine builder. No DOM. */
+(function (root) {
+'use strict';
+const ri = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
+const pick = arr => arr[Math.floor(Math.random() * arr.length)];
+const shuffle = arr => { const a = arr.slice(); for (let i = a.length - 1; i > 0; i--) { const j = ri(0, i); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const nz = (a, b) => { let v = 0; while (v === 0) v = ri(a, b); return v; };
+const f = n => (n < 0 ? '−' : '') + (Math.round(Math.abs(n) * 1e6) / 1e6);
+const gcd = (a, b) => { a = Math.abs(a); b = Math.abs(b); while (b) { [a, b] = [b, a % b]; } return a; };
+const lcm = (a, b) => a / gcd(a, b) * b;
+const isPrime = n => { if (n < 2) return false; for (let i = 2; i * i <= n; i++) if (n % i === 0) return false; return true; };
+const primeFactors = n => { const r = []; for (let p = 2; p * p <= n; p++) while (n % p === 0) { r.push(p); n /= p; } if (n > 1) r.push(n); return r; };
+const squarefree = n => { for (let p = 2; p * p <= n; p++) if (n % (p * p) === 0) return false; return true; };
+const sqrtSplit = n => { let o = 1, r = n; for (let p = 2; p * p <= r; p++) while (r % (p * p) === 0) { o *= p; r /= p * p; } return [o, r]; };  // n = o^2 * r
+const SUP = '⁰¹²³⁴⁵⁶⁷⁸⁹';
+
+/* ================= tokenizer / parser ================= */
+function tokenize(src, o) {
+  o = o || {};
+  let s = String(src).replace(/[−–—]/g, '-').replace(/ /g, ' ');
+  s = s.replace(/(^|[^\d.,])(-?)(\d+)[ ]+(\d+)[ ]*\/[ ]*(\d+)/g, (m, pre, sg, w, n, d) => pre + (sg ? '-' : '') + '(' + w + '+' + n + '/' + d + ')');   // mixed number 2 1/3
+  s = s.replace(/sqrt/gi, '√').replace(/(?<![a-zA-Z])pi(?![a-zA-Z])/gi, 'π');
+  s = s.replace(/([⁰¹²³⁴⁵⁶⁷⁸⁹]+)√/g, (m, d) => '\u0001' + d.split('').map(c => SUP.indexOf(c)).join('') + ';');
+  s = s.replace(/(\d+)\s*V/g, (m, d) => '\u0001' + d + ';');   // 3V27 = cube root of 27
+  s = s.replace(/∛/g, '\u00013;').replace(/∜/g, '\u00014;');
+  s = s.replace(/[⁰¹²³⁴⁻⁵⁶⁷⁸⁹]+/g, m => '^(' + m.split('').map(c => c === '⁻' ? '-' : SUP.indexOf(c)).join('') + ')');
+  const t = []; let i = 0;
+  while (i < s.length) {
+    const c = s[i];
+    if (/\s/.test(c)) { i++; continue; }
+    if (c === '\u0001') { const j = s.indexOf(';', i); t.push({ k: 'sqrt', n: +s.slice(i + 1, j) }); i = j + 1; continue; }
+    if (c === '√') { t.push({ k: 'sqrt', n: 2 }); i++; continue; }
+    let m;
+    if ((m = /^\d+(?:[.,]\d+)?|^[.,]\d+/.exec(s.slice(i)))) { t.push({ k: 'num', v: parseFloat(m[0].replace(',', '.')), s: m[0].replace(',', '.') }); i += m[0].length; continue; }
+    if (c === 'π') { t.push({ k: 'pi' }); i++; continue; }
+    if (/[×·⋅*]/.test(c)) { t.push({ k: 'op', v: '*' }); i++; continue; }
+    if (/[x]/i.test(c) && o.noVars) { t.push({ k: 'op', v: '*' }); i++; continue; }
+    if (/[a-zA-Z]/.test(c)) { if (o.noVars) throw new Error('var'); t.push({ k: 'var', n: c }); i++; continue; }
+    if (c === '÷' || c === ':') { t.push({ k: 'op', v: '÷' }); i++; continue; }
+    if ('+-/^()'.indexOf(c) >= 0) { t.push({ k: 'op', v: c }); i++; continue; }
+    if (c === '[') { t.push({ k: 'op', v: '(' }); i++; continue; }
+    if (c === ']') { t.push({ k: 'op', v: ')' }); i++; continue; }
+    throw new Error('char ' + c);
+  }
+  return t;
+}
+function parse(src, o) {
+  const T = tokenize(src, o); let p = 0;
+  const peek = () => T[p], isOp = v => T[p] && T[p].k === 'op' && T[p].v === v;
+  const startsFactor = () => { const k = T[p]; return k && (k.k === 'num' || k.k === 'var' || k.k === 'pi' || k.k === 'sqrt' || (k.k === 'op' && k.v === '(')); };
+  function expr() {
+    let a = term();
+    while (isOp('+') || isOp('-')) { const op = T[p++].v; const b = term(); a = { t: op === '+' ? 'add' : 'sub', a, b }; }
+    return a;
+  }
+  function term() {
+    let a = unary();
+    for (;;) {
+      if (isOp('*')) { p++; a = { t: 'mul', a, b: unary() }; }
+      else if (isOp('/')) { p++; a = { t: 'div', a, b: unary() }; }
+      else if (isOp('÷')) { p++; a = { t: 'div', a, b: unary(), inl: true }; }
+      else if (startsFactor()) { a = { t: 'mul', a, b: unary(), imp: true }; }
+      else break;
+    }
+    return a;
+  }
+  function unary() {
+    if (isOp('-')) { p++; return { t: 'neg', a: unary() }; }
+    if (isOp('+')) { p++; return unary(); }
+    return power();
+  }
+  function power() {
+    const a = atom();
+    if (isOp('^')) { p++; let sgn = 1; if (isOp('-')) { p++; sgn = -1; } else if (isOp('+')) p++; let b = power(); if (sgn < 0) b = { t: 'neg', a: b }; return { t: 'pow', a, b }; }
+    return a;
+  }
+  function atom() {
+    const k = T[p]; if (!k) throw new Error('end');
+    if (k.k === 'num') { p++; return { t: 'n', v: k.v, s: k.s }; }
+    if (k.k === 'var') { p++; return { t: 'v', n: k.n }; }
+    if (k.k === 'pi') { p++; return { t: 'pi' }; }
+    if (k.k === 'sqrt') {
+      p++; let neg = false;
+      if (isOp('-')) { p++; neg = true; }
+      let r; const q = T[p];
+      if (isOp('(')) r = atom();
+      else if (q && q.k === 'num') { p++; r = { t: 'n', v: q.v, s: q.s }; }
+      else if (q && q.k === 'var') { p++; r = { t: 'v', n: q.n }; }
+      else if (q && q.k === 'pi') { p++; r = { t: 'pi' }; }
+      else throw new Error('sqrt');
+      if (neg) r = { t: 'neg', a: r };
+      return { t: 'sqrt', a: r, k: k.n };
+    }
+    if (isOp('(')) { p++; const e = expr(); if (!isOp(')')) throw new Error('paren'); p++; e.par = true; return e; }
+    throw new Error('atom');
+  }
+  const e = expr(); if (p < T.length) throw new Error('trailing'); return e;
+}
+function evalAst(n, env) {
+  switch (n.t) {
+    case 'n': return n.v; case 'v': { if (!(n.n in env)) env[n.n] = 0.6 + Math.random() * 2.2; return env[n.n]; }
+    case 'pi': return Math.PI; case 'neg': return -evalAst(n.a, env);
+    case 'add': return evalAst(n.a, env) + evalAst(n.b, env); case 'sub': return evalAst(n.a, env) - evalAst(n.b, env);
+    case 'mul': return evalAst(n.a, env) * evalAst(n.b, env); case 'div': return evalAst(n.a, env) / evalAst(n.b, env);
+    case 'pow': return Math.pow(evalAst(n.a, env), evalAst(n.b, env));
+    case 'sqrt': { const x = evalAst(n.a, env); if (n.k % 2 === 1) return (x < 0 ? -1 : 1) * Math.pow(Math.abs(x), 1 / n.k); return x < 0 ? NaN : Math.pow(x, 1 / n.k); }
+  }
+  return NaN;
+}
+function numEq(a, b) {                       // asts equivalent? (random numeric test)
+  for (let i = 0; i < 6; i++) {
+    const env = {}; const x = evalAst(a, env), y = evalAst(b, env);  // vars filled lazily, shared env
+    const y2 = evalAst(b, env);
+    if (!isFinite(x) || !isFinite(y2)) { if (i < 5) continue; return false; }
+    if (Math.abs(x - y2) > 1e-7 * Math.max(1, Math.abs(x), Math.abs(y2))) return false;
+  }
+  return true;
+}
+const isInt = v => Math.abs(v - Math.round(v)) < 1e-9;
+const lit = n => n.t === 'n' ? n.v : (n.t === 'neg' && n.a.t === 'n' ? -n.a.v : null);
+
+/* ----- polynomials: Map(key -> coef) ; key = 'a1b2' sorted ----- */
+const PK = m => Object.keys(m).sort().map(v => v + m[v]).join('');
+const Poly = {
+  c: v => (v === 0 ? {} : { '': v }),
+  v: n => ({ [n + '1']: 1 }),
+  add(a, b, s) { const r = Object.assign({}, a); for (const k in b) { r[k] = (r[k] || 0) + (s || 1) * b[k]; if (Math.abs(r[k]) < 1e-12) delete r[k]; } return r; },
+  mulm(k1, k2) { const m = {}; const re = /([^\d])(\d+)/g; let x; [k1, k2].forEach(k => { re.lastIndex = 0; while ((x = re.exec(k))) m[x[1]] = (m[x[1]] || 0) + +x[2]; }); return PK(m); },
+  mul(a, b) { const r = {}; for (const k1 in a) for (const k2 in b) { const k = Poly.mulm(k1, k2); r[k] = (r[k] || 0) + a[k1] * b[k2]; if (Math.abs(r[k]) < 1e-12) delete r[k]; } return r; },
+  pow(a, n) { let r = Poly.c(1); for (let i = 0; i < n; i++) r = Poly.mul(r, a); return r; },
+  isConst: a => Object.keys(a).every(k => k === ''),
+  cval: a => a[''] || 0
+};
+function toRF(n) {                           // rational function {N,D} or null
+  switch (n.t) {
+    case 'n': return { N: Poly.c(n.v), D: Poly.c(1) };
+    case 'v': return { N: Poly.v(n.n), D: Poly.c(1) };
+    case 'pi': return { N: Poly.v('π'), D: Poly.c(1) };
+    case 'neg': { const a = toRF(n.a); return a && { N: Poly.mul(a.N, Poly.c(-1)), D: a.D }; }
+    case 'add': case 'sub': { const a = toRF(n.a), b = toRF(n.b); if (!a || !b) return null; return { N: Poly.add(Poly.mul(a.N, b.D), Poly.mul(b.N, a.D), n.t === 'add' ? 1 : -1), D: Poly.mul(a.D, b.D) }; }
+    case 'mul': { const a = toRF(n.a), b = toRF(n.b); return a && b && { N: Poly.mul(a.N, b.N), D: Poly.mul(a.D, b.D) }; }
+    case 'div': { const a = toRF(n.a), b = toRF(n.b); if (!a || !b || !Object.keys(b.N).length) return null; return { N: Poly.mul(a.N, b.D), D: Poly.mul(a.D, b.N) }; }
+    case 'pow': { const e = lit(n.b); if (e === null || !isInt(e) || Math.abs(e) > 12) return null; const a = toRF(n.a); if (!a) return null; if (e >= 0) return { N: Poly.pow(a.N, e), D: Poly.pow(a.D, e) }; if (!Object.keys(a.N).length) return null; return { N: Poly.pow(a.D, -e), D: Poly.pow(a.N, -e) }; }
+  }
+  return null;
+}
+/* ----- structural analysis ----- */
+function flat(n, s, out) {
+  if (n.t === 'add') { flat(n.a, s, out); flat(n.b, s, out); }
+  else if (n.t === 'sub') { flat(n.a, s, out); flat(n.b, -s, out); }
+  else if (n.t === 'neg') flat(n.a, -s, out);
+  else out.push({ s, n });
+  return out;
+}
+function monoTerm(n, allowNegExp) {           // {c, vars} or null
+  switch (n.t) {
+    case 'n': return { c: n.v, vars: {} };
+    case 'pi': return { c: 1, vars: { 'π': 1 } };
+    case 'v': return { c: 1, vars: { [n.n]: 1 } };
+    case 'neg': { const a = monoTerm(n.a, allowNegExp); return a && { c: -a.c, vars: a.vars }; }
+    case 'mul': { const a = monoTerm(n.a, allowNegExp), b = monoTerm(n.b, allowNegExp); if (!a || !b) return null; const vars = Object.assign({}, a.vars); for (const k in b.vars) { if (k in vars) return null; vars[k] = b.vars[k]; } return { c: a.c * b.c, vars }; }
+    case 'div': { const a = monoTerm(n.a, allowNegExp), b = monoTerm(n.b, allowNegExp); if (!a || !b || Object.keys(b.vars).length || b.c === 0) return null; return { c: a.c / b.c, vars: a.vars }; }
+    case 'pow': { const e = lit(n.b); if (e === null || !isInt(e)) return null; if (e < 0 && !allowNegExp) return null; if (n.a.t === 'v') return { c: 1, vars: { [n.a.n]: e } }; if (n.a.t === 'pi') return { c: 1, vars: { 'π': e } }; return null; }
+  }
+  return null;
+}
+const hasBrackets = (n) => { if (n.par && n.t !== 'n' && !(n.t === 'neg' && n.a.t === 'n') && !(n.t === 'div' && n.a.t === 'n' && n.b.t === 'n')) return true; for (const k of ['a', 'b']) if (n[k] && hasBrackets(n[k])) return true; return false; };
+function sigOf(vars) { return Object.keys(vars).sort().map(k => k + vars[k]).join(''); }
+
+function formCheck(form, ast, q) {            // returns null if ok else message
+  if (!form || form === 'any') return null;
+  if (form === 'mono') {
+    const t = flat(ast, 1, []); if (t.length !== 1) return 'Write your answer as a single term.';
+    if (!monoTerm(t[0].n, q && q.negExp)) return 'Not fully simplified yet: write it as one number times each letter to a single power.'; return null;
+  }
+  if (form === 'poly') {
+    const t = flat(ast, 1, []); const seen = {};
+    for (const x of t) { const m = monoTerm(x.n); if (!m) return 'Not finished yet: expand the brackets and write every term as a number times letters.'; const s = sigOf(m.vars); if (seen[s]) return 'Not finished yet: add the like terms.'; seen[s] = 1; if (m.c === 0) return 'Remove the terms that are 0.'; }
+    return null;
+  }
+  if (form === 'lowest') {
+    const rf = toRF(ast); if (!rf) return 'I cannot read that as a fraction.';
+    const D = rf.D, N = rf.N; if (Object.keys(D).length !== 1) return 'Write one fraction with a single term in the denominator.';
+    const dk = Object.keys(D)[0]; let dc = D[dk]; if (!isInt(dc)) return null;
+    const cs = Object.keys(N).map(k => N[k]); if (!cs.length) return null;
+    if (cs.some(c => !isInt(c))) { return null; }
+    let g = Math.abs(dc); cs.forEach(c => { g = gcd(g, c); }); if (g > 1) return 'Not fully simplified: the numbers still have a common factor.';
+    const vs = (dk.match(/[^\d]/g) || []);
+    for (const v of vs) { if (Object.keys(N).every(k => k.indexOf(v) >= 0)) return 'Not fully simplified: you can still cancel the letter ' + v + '.'; }
+    // the user must not leave nested fractions / brackets-free requirement: ok
+    return null;
+  }
+  if (form === 'root') {
+    const terms = flat(ast, 1, []); const rads = {};
+    function rootTerm(n) {            // {c, r} or null
+      switch (n.t) {
+        case 'n': return { c: n.v, r: 1 };
+        case 'neg': { const a = rootTerm(n.a); return a && { c: -a.c, r: a.r }; }
+        case 'sqrt': { if (n.k !== 2) return null; const v = lit(n.a); if (v === null || !isInt(v) || v <= 1) return null; if (!squarefree(v)) return { bad: 'sq' }; return { c: 1, r: v }; }
+        case 'mul': { const a = rootTerm(n.a), b = rootTerm(n.b); if (!a || !b || a.bad || b.bad) return a && a.bad ? a : b && b.bad ? b : null; if (a.r > 1 && b.r > 1) return { bad: 'two' }; return { c: a.c * b.c, r: a.r * b.r }; }
+        case 'div': { const a = rootTerm(n.a), b = rootTerm(n.b); if (!a || !b) return null; if (a.bad) return a; if (b.bad) return b; if (b.r > 1) return { bad: 'den' }; if (isInt(a.c) && isInt(b.c) && gcd(a.c, b.c) > 1) return { bad: 'cancel' }; return { c: a.c / b.c, r: a.r }; }
+      }
+      return null;
+    }
+    for (const x of terms) {
+      const r = rootTerm(x.n); if (!r) return 'Not in the simplest form: write each term as a number times √ of a whole number.';
+      if (r.bad === 'sq') return 'Not fully simplified: there is still a square factor under the root.';
+      if (r.bad === 'two') return 'Not fully simplified: combine the roots into one.';
+      if (r.bad === 'den') return 'There is still a root in the denominator.';
+      if (r.bad === 'cancel') return 'Not fully simplified: the fraction can still be cancelled.';
+      if (rads[r.r]) return 'Not finished: add the like radicals.'; rads[r.r] = 1;
+    }
+    return null;
+  }
+  if (form === 'primes') {
+    let bad = null;
+    (function walk(n, inPow) {
+      if (n.t === 'n') { if (!isInt(n.v) || !isPrime(n.v)) bad = 'Every factor must be a prime number.'; }
+      else if (n.t === 'mul') { walk(n.a); walk(n.b); }
+      else if (n.t === 'pow') { walk(n.a); if (n.b.t !== 'n') bad = 'Use whole-number exponents.'; }
+      else bad = 'Write only prime numbers multiplied together, like 2^3 · 5.';
+    })(ast); return bad;
+  }
+  if (form === 'sci') {
+    let n = ast; if (n.t !== 'mul') return 'Write it as a number between 1 and 10 times a power of 10.';
+    const a = lit(n.a), p = n.b; if (a === null || Math.abs(a) < 1 || Math.abs(a) >= 10) return 'The first number must be at least 1 and less than 10.';
+    if (p.t !== 'pow' || lit(p.a) !== 10 || lit(p.b) === null || !isInt(lit(p.b))) return 'Write it as a · 10^n.'; return null;
+  }
+  if (form === 'frac') {       // one fraction a/b in lowest terms (or a whole number)
+    if (ast.t === 'n' || (ast.t === 'neg' && ast.a.t === 'n')) return isInt(lit(ast)) ? null : 'Write your answer as a fraction, like 5/33.';
+    if (ast.t === 'div') { const a = lit(ast.a), b = lit(ast.b); if (a === null || b === null || !isInt(a) || !isInt(b)) return 'Write your answer as one fraction of two whole numbers, like 5/33.'; if (gcd(a, b) > 1) return 'Not fully simplified: the top and bottom still have a common factor.'; if (Math.abs(b) === 1) return 'Write a whole number without the 1 below it.'; return null; }
+    return 'Write your answer as one fraction, like 5/33.';
+  }
+  if (form === 'powfrac') { if (ast.t !== 'pow') return 'Write it as a single power, like (2/5)^3.'; const e = lit(ast.b); if (e === null || !isInt(e) || ast.a.t !== 'div') return 'Write it as a power of a fraction, like (2/5)^3.'; return null; }
+  if (form === 'power') {
+    if (ast.t !== 'pow') return 'Write it as a single power.'; const b = lit(ast.a), e = lit(ast.b);
+    if (b === null || e === null || !isInt(e)) return 'Write it as a single power.'; if (q && q.base !== undefined && b !== q.base) return 'Use the base ' + q.base + '.'; return null;
+  }
+  return null;
+}
+function gradeExpr(q, u) {
+  let ua, ea; const o = q.noVars ? { noVars: true } : {};
+  try { ua = parse(u, o); } catch (e) { return { ok: false, why: 'parse' }; }
+  ea = parse(q.ans, o);
+  if (!numEq(ea, ua)) return { ok: false, why: 'value' };
+  if (q.form === 'mixed') { const t = String(u).replace(/[−–—]/g, '-').trim(); const mm = /^-?\d+[ ]+(\d+)[ ]*\/[ ]*(\d+)$/.exec(t); const isI = /^-?\d+$/.test(t); const pf_ = /^-?(\d+)[ ]*\/[ ]*(\d+)$/.exec(t); if (!isI && pf_ && !mm) { const n1 = +pf_[1], d1 = +pf_[2]; if (n1 >= d1) return { ok: false, why: 'form', msg: 'Write it as a mixed number: a whole number, a space and a fraction, like 2 1/3.' }; if (gcd(n1, d1) > 1) return { ok: false, why: 'form', msg: 'Not fully simplified: the fraction can still be simplified.' }; return { ok: true }; } if (!isI) { if (!mm) return { ok: false, why: 'form', msg: 'Write it as a mixed number: a whole number, a space and a fraction, like 2 1/3.' }; const nn = +mm[1], dd = +mm[2]; if (nn >= dd) return { ok: false, why: 'form', msg: 'The fraction part must be smaller than 1.' }; if (gcd(nn, dd) > 1) return { ok: false, why: 'form', msg: 'Not fully simplified: the fraction part can still be simplified.' }; } return { ok: true }; }
+  if (q.form === 'improper') { if (/\d[ ]+\d+[ ]*\/[ ]*\d/.test(String(u).trim())) return { ok: false, why: 'form', msg: 'Write it as one fraction (no whole number in front), like 7/4.' }; const m2 = formCheck('lowest', ua, q); if (m2) return { ok: false, why: 'form', msg: m2 }; return { ok: true }; }
+  const m = formCheck(q.form, ua, q); if (m) return { ok: false, why: 'form', msg: m };
+  if (q.needPi && !/π|pi/i.test(String(u))) return { ok: false, why: 'form', msg: 'Give the exact answer, with π.' };
+  return { ok: true };
+}
+
+/* ================= rendering ================= */
+function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;'); }
+function R(src, o) {
+  let ast; try { ast = parse(src, o); } catch (e) { return null; }
+  function P(n, strip) {
+    const w = (n.par && !strip) ? x => '(' + x + ')' : x => x;
+    switch (n.t) {
+      case 'n': return w(esc(n.s !== undefined ? String(n.s).replace('.', ',') : n.v));
+      case 'v': return '<i>' + n.n + '</i>';
+      case 'pi': return 'π';
+      case 'neg': return w('−' + P(n.a));
+      case 'add': return w(P(n.a) + ' + ' + P(n.b));
+      case 'sub': return w(P(n.a) + ' − ' + P(n.b));
+      case 'mul': return w(n.imp ? P(n.a) + P(n.b) : P(n.a) + ' · ' + P(n.b));
+      case 'div': return n.inl ? w(P(n.a) + ' ÷ ' + P(n.b)) : w('<span class="fr"><span class="nu">' + P(n.a, true) + '</span><span class="de">' + P(n.b, true) + '</span></span>');
+      case 'pow': return w(P(n.a) + '<sup>' + P(n.b, true) + '</sup>');
+      case 'sqrt': return w('<span class="rt' + (n.k > 2 ? ' rn' : '') + '">' + (n.k > 2 ? '<sup class="ix">' + n.k + '</sup>' : '') + '<span class="sq"></span><span class="ov">' + P(n.a, true) + '</span></span>');
+    }
+    return '';
+  }
+  return '<span class="mx">' + P(ast) + '</span>';
+}
+const M = (s, o) => R(s, o) || esc(s);                       // render math
+const fr = (a, b) => '<span class="mx"><span class="fr"><span class="nu">' + a + '</span><span class="de">' + b + '</span></span></span>';
+const mixed = (w, n, d) => '<span class="mx">' + w + fr(n, d) + '</span>';
+const tbl = (rows) => '<table class="tbl">' + rows.map(r => '<tr>' + r.map((c, i) => (i === 0 ? '<th>' : '<td>') + c + (i === 0 ? '</th>' : '</td>')).join('') + '</tr>').join('') + '</table>';
+
+/* ---- number formatting for answers ---- */
+function fmtNum(n) { if (isInt(n)) return f(Math.round(n)); return f(Math.round(n * 1e4) / 1e4).replace('.', ','); }
+function ratText(n, d) { const g = gcd(n, d); n /= g; d /= g; if (d < 0) { n = -n; d = -d; } return d === 1 ? String(n) : n + '/' + d; }
+
+/* ================= grading ================= */
+function parseNum(s) {
+  if (s === null || s === undefined) return NaN;
+  s = String(s).replace(/[−–—]/g, '-').replace(/\s*(?:°|degrees?)\s*$/i, '').replace(/\s+/g, '').replace(',', '.');
+  const fr_ = s.match(/^([+-]?\d+\.?\d*)\/([+-]?\d+\.?\d*)$/);
+  if (fr_ && parseFloat(fr_[2]) !== 0) return parseFloat(fr_[1]) / parseFloat(fr_[2]);
+  if (!/^[+-]?(\d+\.?\d*|\.\d+)$/.test(s)) return NaN;
+  return parseFloat(s);
+}
+function parsePoint(s) {
+  s = String(s || '').replace(/[−–—]/g, '-').replace(/\s+/g, '').replace(/^\(|\)$/g, '');
+  const m = s.split(/[;,]/); if (m.length === 2 && /^[+-]?\d+(\.\d+)?$/.test(m[0]) && /^[+-]?\d+(\.\d+)?$/.test(m[1])) return [parseFloat(m[0]), parseFloat(m[1])];
+  return null;
+}
+function check(q, u) {                      // -> {ok, why?, msg?}
+  if (typeof q.grade === 'function') { let r = false; try { r = q.grade(u); } catch (e) { } return r && typeof r === 'object' ? r : { ok: !!r }; }   // own grading (protractor questions, roots with letters): true/false or {ok, why, msg}
+  if (q.type === 'num') { const n = parseNum(u); if (isNaN(n)) return { ok: false, why: 'parse' }; return { ok: Math.abs(n - q.ans) <= (q.tol || 1e-9) }; }
+  if (q.type === 'multi') { const ok = Array.isArray(u) && u.length === q.ans.length && u.every((v, i) => { const n = parseNum(v); return !isNaN(n) && Math.abs(n - q.ans[i]) <= (q.tol || 1e-9); }); return { ok }; }
+  if (q.type === 'point') { const p = parsePoint(u); return { ok: !!p && Math.abs(p[0] - q.ans[0]) < 1e-9 && Math.abs(p[1] - q.ans[1]) < 1e-9 }; }
+  if (q.type === 'choice') return { ok: Number(u) === q.ans };
+  if (q.type === 'expr') return gradeExpr(q, u);
+  if (q.type === 'click') { const got = Array.isArray(u) ? u : []; if (q.valid) { let ok = false; try { ok = !!q.valid(got); } catch (e) { } return { ok }; } const k = p => p[0] + ',' + p[1]; return { ok: got.map(k).sort().join('|') === (q.ans || []).map(k).sort().join('|') }; }
+  return { ok: false };
+}
+const grade = (q, u) => check(q, u).ok;
+function answerText(q) {
+  if (q.ansText) return q.ansText;
+  if (q.type === 'num') return fmtNum(q.ans);
+  if (q.type === 'multi') return q.ans.map(fmtNum).join(' and ');
+  if (q.type === 'point') return '(' + f(q.ans[0]) + ', ' + f(q.ans[1]) + ')';
+  if (q.type === 'choice') return q.opts[q.ans];
+  if (q.type === 'expr') return M(q.ans, q.noVars ? { noVars: true } : {});
+  if (q.type === 'click') return (q.ans || []).map(p => '(' + f(p[0]) + ', ' + f(p[1]) + ')').join(' and ');
+  return '';
+}
+
+/* ================= engine builder ================= */
+function engine(def) {
+  const { SECTIONS, LESSONS, G, XG } = def;
+  const fnOf = (list, sec, name) => (list[sec] || []).find(x => x.name === name);
+  function makeOne(key, lvl) {
+    const mixq = lvl === 'mix'; if (mixq) lvl = pick([0, 1, 1, 2, 2, 3, 3]);
+    const lesson = LESSONS.find(x => x.id === key);
+    let gens, xgs;
+    if (lesson) { gens = lesson.gens.map(e => [e[1], fnOf(G, e[0], e[1])]).filter(e => e[1]); xgs = (lesson.xg || []).map(e => [e[1], fnOf(XG, e[0], e[1])]).filter(e => e[1]); }
+    else { gens = (G[key] || []).map(x => [x.name, x]); xgs = (XG[key] || []).map(x => [x.name, x]); }
+    let q, e;
+    if (lvl === 3 && xgs.length && Math.random() < 0.7) { e = pick(xgs); q = e[1](2); }
+    else { e = pick(gens); q = e[1](Math.min(lvl, 2)); }
+    q.gen = e[0]; q.sec = key; q.lvl = lvl; q.mix = mixq; return q;
+  }
+  const fingerprint = q => String(q.html || '').replace(/<svg[\s\S]*?<\/svg>/g, '') + '|' + JSON.stringify(q.ans);
+  function make(key, lvl, recent) {
+    recent = Array.isArray(recent) ? recent : [];
+    const fps = recent.map(r => r.f), gens = recent.slice(-3).map(r => r.g);
+    let q;
+    for (let t = 0; t < 60; t++) {
+      try { q = makeOne(key, lvl); } catch (e) { if (t > 50) throw e; continue; }
+      q.fp = fingerprint(q);
+      if (fps.includes(q.fp)) continue;
+      if (q.type === 'choice' && q.opts && q.opts.length <= 2 && typeof q.lvl === 'number' && q.lvl > 0 && t < 55) continue;
+      if (t < 30 && gens.includes(q.gen)) continue;
+      break;
+    }
+    return q;
+  }
+  function makeTest() {
+    const n = SECTIONS.length, N = 24;
+    const lv = shuffle([0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2]);
+    const secs = []; for (let i = 0; i < N; i++) secs.push(SECTIONS[i % n].id);
+    const seen = []; return shuffle(secs).map((s, i) => { const q = make(s, lv[i], seen); seen.push({ g: null, f: q.fp }); q.hint = null; return q; });
+  }
+  return { KEY: def.key, SECTIONS, LESSONS, G, XG, make, makeTest, grade, check, answerText, evalNum: s => evalAst(parse(String(s), { noVars: true }), {}), parseNum, parsePoint, f, M, parse, defaultMode: def.defaultMode || 'lesson' };
+}
+
+/* ---------- click grid (shared) ---------- */
+let _gid = 0;
+function clipLine(p, d, xmin, xmax, ymin, ymax) {   // line through p with direction d, clipped to the rectangle
+  let t0 = -1e9, t1 = 1e9;
+  for (const [pp, dd, lo, hi] of [[p[0], d[0], xmin, xmax], [p[1], d[1], ymin, ymax]]) {
+    if (Math.abs(dd) < 1e-12) { if (pp < lo || pp > hi) return null; continue; }
+    let a = (lo - pp) / dd, b = (hi - pp) / dd; if (a > b) [a, b] = [b, a]; t0 = Math.max(t0, a); t1 = Math.min(t1, b);
+  }
+  if (t0 > t1) return null; return { a: [p[0] + d[0] * t0, p[1] + d[1] * t0], b: [p[0] + d[0] * t1, p[1] + d[1] * t1] };
+}
+function gridSVG(o) {
+  const u = o.u || 26, pad = 24, xmin = o.xmin, xmax = o.xmax, ymin = o.ymin, ymax = o.ymax, cells = !!o.cells;
+  const w = (xmax - xmin + (cells ? 1 : 0)) * u + 2 * pad, h = (ymax - ymin + (cells ? 1 : 0)) * u + 2 * pad;
+  const off = cells ? u / 2 : 0;
+  const X = x => pad + off + (x - xmin) * u, Y = y => pad + off + (ymax - y) * u;
+  const id = 'g' + (++_gid);
+  let s = '<svg class="grid" viewBox="0 0 ' + w + ' ' + h + '" role="img" aria-label="grid"' + (o.click ? ' data-click="1"' : '') + ' data-xmin="' + xmin + '" data-ymax="' + ymax + '" data-u="' + u + '" data-pad="' + (pad + off) + '" data-w="' + w + '"' + (cells ? ' data-cell="1"' : '') + '>';
+  s += '<defs><clipPath id="' + id + '"><rect x="' + (X(xmin) - off) + '" y="' + (Y(ymax) - off) + '" width="' + (w - 2 * pad) + '" height="' + (h - 2 * pad) + '"/></clipPath></defs>';
+  s += '<rect x="0" y="0" width="' + w + '" height="' + h + '" fill="#fff"/>';
+  if (cells) {
+    for (let x = xmin; x <= xmax + 1; x++) s += '<line x1="' + (X(x) - u / 2) + '" y1="' + pad + '" x2="' + (X(x) - u / 2) + '" y2="' + (h - pad) + '" stroke="#b9c6d3" stroke-width="1"/>';
+    for (let y = ymin; y <= ymax + 1; y++) s += '<line x1="' + pad + '" y1="' + (Y(y) + u / 2) + '" x2="' + (w - pad) + '" y2="' + (Y(y) + u / 2) + '" stroke="#b9c6d3" stroke-width="1"/>';
+    (o.fill || []).forEach(p => { s += '<rect x="' + (X(p[0]) - u / 2 + 1) + '" y="' + (Y(p[1]) - u / 2 + 1) + '" width="' + (u - 2) + '" height="' + (u - 2) + '" fill="#9cc3ea" stroke="#345" stroke-width="1.2"/>'; });
+  } else {
+    for (let x = xmin; x <= xmax; x++) s += '<line x1="' + X(x) + '" y1="' + Y(ymin) + '" x2="' + X(x) + '" y2="' + Y(ymax) + '" stroke="#dbe3ea" stroke-width="1"/>';
+    for (let y = ymin; y <= ymax; y++) s += '<line x1="' + X(xmin) + '" y1="' + Y(y) + '" x2="' + X(xmax) + '" y2="' + Y(y) + '" stroke="#dbe3ea" stroke-width="1"/>';
+    if (!o.noAxes) {
+      s += '<line x1="' + X(xmin) + '" y1="' + Y(0) + '" x2="' + X(xmax) + '" y2="' + Y(0) + '" stroke="#334" stroke-width="1.6"/>';
+      s += '<line x1="' + X(0) + '" y1="' + Y(ymin) + '" x2="' + X(0) + '" y2="' + Y(ymax) + '" stroke="#334" stroke-width="1.6"/>';
+      const stx = xmax - xmin > 12 ? 2 : 1, sty = ymax - ymin > 12 ? 2 : 1;
+      for (let x = xmin; x <= xmax; x++) if (x !== 0 && x % stx === 0) s += '<text x="' + X(x) + '" y="' + (Y(0) + 14) + '" font-size="10" text-anchor="middle" fill="#556">' + f(x) + '</text>';
+      for (let y = ymin; y <= ymax; y++) if (y !== 0 && y % sty === 0) s += '<text x="' + (X(0) - 5) + '" y="' + (Y(y) + 3.5) + '" font-size="10" text-anchor="end" fill="#556">' + f(y) + '</text>';
+    }
+  }
+  (o.polys || []).forEach(g => { s += '<polygon points="' + g.pts.map(p => X(p[0]) + ',' + Y(p[1])).join(' ') + '" fill="' + (g.fill || 'rgba(27,95,168,.12)') + '" stroke="' + (g.stroke || '#1b5fa8') + '" stroke-width="2.2" clip-path="url(#' + id + ')"/>'; });
+  (o.segs || []).forEach(g => { s += '<line x1="' + X(g.a[0]) + '" y1="' + Y(g.a[1]) + '" x2="' + X(g.b[0]) + '" y2="' + Y(g.b[1]) + '" stroke="' + (g.color || '#1b5fa8') + '" stroke-width="' + (g.w || 2.4) + '"' + (g.dash ? ' stroke-dasharray="6 4"' : '') + ' stroke-linecap="round" clip-path="url(#' + id + ')"/>'; });
+  (o.pts || []).forEach(p => {
+    s += '<circle cx="' + X(p.x) + '" cy="' + Y(p.y) + '" r="4.6" fill="' + (p.color || '#1b5fa8') + '" stroke="#fff" stroke-width="1.2"/>';
+    if (p.label) s += '<text x="' + (X(p.x) + 7) + '" y="' + (Y(p.y) - 7) + '" font-size="13" font-weight="700" fill="#123">' + p.label + '</text>';
+  });
+  return s + '<g class="marks"></g></svg>';
+}
+const U = { gridSVG, clipLine, ri, pick, shuffle, nz, f, gcd, lcm, isPrime, primeFactors, squarefree, sqrtSplit, parse, evalAst, numEq, R, M, fr, mixed, tbl, fmtNum, ratText, formCheck, gradeExpr, toRF, flat, monoTerm, Poly, engine, esc, parseNum };
+if (typeof module !== 'undefined' && module.exports) module.exports = U; else root.NX = U;
+})(typeof window !== 'undefined' ? window : globalThis);
+
+</script>
+<script>
+/* 3HT Chapter 5: equations and inequalities.  */
+const __def = (function (NX, P) {
+const { ri, pick, shuffle, gcd, M, fr, ratText } = NX;
+const LR = (l, lo, hi) => { const s = hi - lo; if (s < 1 || l === undefined || l === 'mix') return ri(lo, hi); l = Math.min(l, 2); const a = l === 0 ? lo : l === 1 ? lo + Math.floor(s * .25) : lo + Math.floor(s * .5); const b = l === 0 ? lo + Math.max(1, Math.ceil(s * .5)) : l === 1 ? hi - Math.floor(s * .15) : hi + Math.ceil(s * .4); return ri(a, b); };
+const ch = (html, right, wrongs, hint, steps, extra) => { let o = [right]; wrongs.forEach(w => { if (!o.includes(w)) o.push(w); }); const opts = shuffle(o); return Object.assign({ type: 'choice', opts, ans: opts.indexOf(right), html, hint, steps, keys: [] }, extra || {}); };
+const ex = (html, ans, form, hint, steps, extra) => Object.assign({ type: 'expr', html, ans, form, hint, steps }, extra || {});
+const nu = (html, ans, hint, steps, extra) => Object.assign({ type: 'num', html, ans, hint, steps }, extra || {});
+const p = x => '<p>' + x + '</p>';
+const G = {}, XG = {}, H = {}, HX = {};
+
+/* ---------- helpers ---------- */
+const nz = (a, b) => { let v = 0; while (v === 0) v = ri(a, b); return v; };
+const must = (a, b) => { if (!(Math.abs(a - b) < 1e-6)) throw new Error('consistency check failed: ' + a + ' vs ' + b); };
+const neg = n => n < 0 ? '−' + Math.abs(n) : String(n);
+const X = v => '<i>' + (v || 'x') + '</i>';
+/* a·x + b as text, e.g. 3x − 5, −x + 2, 7 */
+function lin(a, b, v, first) {
+  v = v || 'x'; let s = '';
+  if (a !== 0) s = (a === 1 ? '' : a === -1 ? '−' : neg(a)) + X(v);
+  if (b !== 0 || a === 0) s += s ? (b < 0 ? ' − ' + Math.abs(b) : ' + ' + b) : neg(b);
+  return s;
+}
+/* fraction value n/d as html: whole number, mixed number or fraction (with sign) */
+function fv(n, d, mixed) {
+  if (d < 0) { n = -n; d = -d; } const g = gcd(n, d); n /= g; d /= g; if (d === 1) return neg(n);
+  const s = n < 0 ? '−' : '', a = Math.abs(n);
+  if (mixed && a > d) return s + Math.floor(a / d) + fr(a % d, d);
+  return s + fr(a, d);
+}
+/* the answer of "x = n/d": num if it is a whole number or a short decimal, else a typed fraction */
+function solQ(html, n, d, v, hint, steps, extra) {
+  if (d < 0) { n = -n; d = -d; } const g = gcd(n, d); n /= g; d /= g; v = v || 'x';
+  const q = d === 1 ? nu(html, n, hint, steps) : ex(html + p('<small>Give the exact value of ' + X(v) + ': a fraction like 7/3, a mixed number like 2 1/3, or a decimal if it ends.</small>'), ratText(n, d), null, hint, steps, { keys: ['/', '−', '(', ')'] });
+  q.noStep = true; q.ansText = X(v) + ' = ' + fv(n, d, true); return Object.assign(q, extra || {});
+}
+/* balance-method steps: rows [equation html, operation] */
+const bal = rows => '<table style="border-collapse:collapse;margin:6px 0">' + rows.map(r => '<tr><td style="text-align:right;padding:3px 16px 3px 0">' + r[0] + '</td><td style="color:#d1471f;padding:3px 0">' + (r[1] || '') + '</td></tr>').join('') + '</table>';
+const op = (s, n) => s + ' ' + (n < 0 ? '(' + neg(n) + ')' : n);
+/* solve ax + b = cx + d, return rows of the balance method and the solution as [n, den] */
+function solveLin(a, b, c, d, v) {
+  const rows = [[lin(a, b, v) + ' = ' + lin(c, d, v)]];
+  let A = a, B = b, C = c, D = d;
+  if (B !== 0) { rows[rows.length - 1][1] = B > 0 ? '− ' + B : '+ ' + (-B); D -= B; B = 0; rows.push([lin(A, 0, v) + ' = ' + lin(C, D, v)]); }
+  if (C !== 0) { rows[rows.length - 1][1] = C > 0 ? '− ' + lin(C, 0, v) : '+ ' + lin(-C, 0, v); A -= C; C = 0; rows.push([lin(A, 0, v) + ' = ' + neg(D)]); }
+  if (A !== 1) { rows[rows.length - 1][1] = ': ' + (A < 0 ? '(' + neg(A) + ')' : A); rows.push([X(v) + ' = ' + fv(D, A, true)]); }
+  const xs = D / A; must(a * xs + b, c * xs + d);
+  return { rows, n: D, d: A };
+}
+const ineqSym = { '<': '&lt;', '>': '&gt;', '≤': '≤', '≥': '≥' };
+const flip = s => ({ '<': '>', '>': '<', '≤': '≥', '≥': '≤' })[s];
+const svgWrap = (h, px) => '<div style="max-width:' + (px || 300) + 'px">' + h + '</div>';
+function linesFig(L1, L2, lab1, lab2, rng) {
+  rng = rng || 8; const segs = [];
+  [[L1, '#1b5fa8'], [L2, '#d1471f']].forEach(e => { const c = NX.clipLine([0, e[0][1]], [1, e[0][0]], -rng, rng, -rng, rng); if (c) segs.push({ a: c.a, b: c.b, color: e[1] }); });
+  return svgWrap(NX.gridSVG({ xmin: -rng, xmax: rng, ymin: -rng, ymax: rng, u: 16, segs }), 300) + p('<span style="color:#1b5fa8"><b>' + lab1 + '</b></span>: ' + X('y') + ' = ' + lin(L1[0], L1[1]) + ' &nbsp; <span style="color:#d1471f"><b>' + lab2 + '</b></span>: ' + X('y') + ' = ' + lin(L2[0], L2[1]));
+}
+
+/* ======================= 6.1 Linear equations ======================= */
+H.a1 = [
+  function oneStep(l) {
+    let a, b, rhs; do { a = nz(-9, 9); b = nz(-15, 15); rhs = l === 0 ? a * ri(-9, 12) + b : nz(-30, 30); } while (a === 1 || (l === 0 && a < 0));
+    const s = solveLin(a, b, 0, rhs);
+    return solQ(p('Solve: ' + lin(a, b) + ' = ' + neg(rhs)), s.n, s.d, 'x', 'Use the balance method: first get rid of the number on the left (do the same on the right), then divide by the number in front of ' + X() + '.', bal(s.rows));
+  },
+  function bothSides(l) {
+    let a, c, b, d; do { a = nz(-9, 12); c = nz(-9, 12); b = ri(-15, 15); d = ri(-15, 15); } while (a === c || (l === 0 && (d - b) % (a - c) !== 0));
+    const s = solveLin(a, b, c, d);
+    return solQ(p('Solve: ' + lin(a, b) + ' = ' + lin(c, d)), s.n, s.d, 'x', 'Get all the ' + X() + '-terms on one side and all the numbers on the other side. Do the same thing on both sides.', bal(s.rows));
+  },
+  function decimals(l) {
+    const a = pick([.5, 1.5, 2.5, .25, .75, 1.25]), c = pick([2, 1.5, -1.75, .5, 3.5, -.5]); if (a === c) return H.a1[2](l);
+    const x = ri(-8, 8) * (l === 2 ? .5 : 1), b = pick([-6, -4, -3, 2, 3, 4, 6]), d = Math.round((a * x + b - c * x) * 1e6) / 1e6;
+    const st = [[lin(a, b) + ' = ' + lin(c, d), (b > 0 ? '− ' + b : '+ ' + -b)], [lin(a, 0) + ' = ' + lin(c, Math.round((d - b) * 1e6) / 1e6), c > 0 ? '− ' + lin(c, 0) : '+ ' + lin(-c, 0)], [lin(Math.round((a - c) * 1e6) / 1e6, 0) + ' = ' + neg(Math.round((d - b) * 1e6) / 1e6), ': ' + (a - c < 0 ? '(' + neg(a - c) + ')' : a - c)], [X() + ' = ' + neg(x)]];
+    return nu(p('Solve: ' + lin(a, b) + ' = ' + lin(c, d)), x, 'Decimals work the same as whole numbers. You can also first multiply both sides by 4 (or 2) to get rid of the decimals.', bal(st), { noStep: true, ansText: X() + ' = ' + neg(x) });
+  },
+  function withFractions(l) {
+    // (p/q)x + r = s with nice numbers: multiply by q
+    const q = pick([2, 3, 4, 5]), pp = l === 0 ? 1 : ri(1, q - 1), x = ri(-6, 9) * q, r = nz(-8, 8), s = pp * x / q + r;
+    if (gcd(pp, q) !== 1) return H.a1[3](l);
+    const rows = [[fr(pp, q) + X() + ' ' + (r < 0 ? '− ' + -r : '+ ' + r) + ' = ' + neg(s), '× ' + q], [lin(pp, r * q) + ' = ' + neg(s * q), r > 0 ? '− ' + r * q : '+ ' + -r * q], [lin(pp, 0) + ' = ' + neg(s * q - r * q), pp === 1 ? '' : ': ' + pp]];
+    if (pp !== 1) rows.push([X() + ' = ' + fv(s * q - r * q, pp, true)]);
+    return solQ(p('Solve: ' + fr(pp, q) + X() + ' ' + (r < 0 ? '− ' + -r : '+ ' + r) + ' = ' + neg(s)), s * q - r * q, pp, 'x', 'First multiply both sides by ' + q + ' to get rid of the fraction.', bal(rows));
+  },
+  function lcmFractions(l) {
+    // (a/q1)x + b = (c/q2)x + d : multiply by lcm
+    const q1 = pick([2, 3, 4, 6]), q2 = pick([2, 3, 4, 5, 6].filter(z => z !== q1)), m = q1 * q2 / gcd(q1, q2);
+    const a = pick([1, 1, 2, 3].filter(z => gcd(z, q1) === 1)), c = pick([1, 1, 2, 5].filter(z => gcd(z, q2) === 1)), b = nz(-6, 6), d = nz(-6, 6);
+    const A = a * m / q1, C = c * m / q2; if (A === C) return H.a1[4](l);
+    const s = solveLin(A, b * m, C, d * m);
+    const head = [fr(a, q1) + X() + ' ' + (b < 0 ? '− ' + -b : '+ ' + b) + ' = ' + fr(c, q2) + X() + ' ' + (d < 0 ? '− ' + -d : '+ ' + d), '× ' + m];
+    return solQ(p('Solve: ' + head[0]), s.n, s.d, 'x', 'Multiply both sides by ' + m + ', the lowest common multiple of ' + q1 + ' and ' + q2 + '. Then use the balance method.', p('Multiply by ' + m + ' (the LCM of ' + q1 + ' and ' + q2 + ').') + bal([head].concat(s.rows)));
+  },
+  function brackets(l) {
+    const k = nz(-6, 6), h = nz(-9, 9), b = ri(-10, 10), c = nz(-5, 5), d = ri(-12, 12);
+    if (k === c) return H.a1[5](l);
+    const s = solveLin(k, k * h + b, c, d);
+    const first = (k === -1 ? '−' : neg(k)) + '(' + lin(1, h) + ')' + (b === 0 ? '' : b < 0 ? ' − ' + -b : ' + ' + b) + ' = ' + lin(c, d);
+    return solQ(p('Solve: ' + first), s.n, s.d, 'x', 'First remove the brackets: multiply ' + neg(k) + ' by both terms inside. Then use the balance method.', bal([[first, 'remove brackets']].concat(s.rows)));
+  },
+  function intersect(l) {
+    const x0 = ri(-5, 5), y0 = ri(-6, 6); let m1, m2; do { m1 = nz(-4, 4); m2 = nz(-4, 4); } while (m1 === m2);
+    const b1 = y0 - m1 * x0, b2 = y0 - m2 * x0, s = solveLin(m1, b1, m2, b2);
+    return Object.assign({ type: 'point', ans: [x0, y0], html: p('Calculate the coordinates of the point of intersection of the lines ' + X('k') + ': ' + X('y') + ' = ' + lin(m1, b1) + ' and ' + X('m') + ': ' + X('y') + ' = ' + lin(m2, b2) + '.') + p('<small>Type your answer like (2, −5).</small>'), hint: 'Make the two formulas equal and solve the equation. Then put the ' + X() + ' you found into one of the formulas to find ' + X('y') + '.', steps: bal(s.rows) + p(X('y') + ' = ' + neg(m1) + ' · ' + (x0 < 0 ? '(' + neg(x0) + ')' : x0) + (b1 < 0 ? ' − ' + -b1 : ' + ' + b1) + ' = ' + neg(y0)) + p('The point of intersection is (' + neg(x0) + ', ' + neg(y0) + ').'), noStep: true });
+  },
+  function rectangleEq(l) {
+    const w = ri(3, 20), dd = ri(2, 9), len = w + dd, P = 2 * (w + len);
+    return nu(p('A rectangle is <b>' + dd + ' cm</b> longer than it is wide. Its perimeter is <b>' + P + ' cm</b>. Use ' + X() + ' for the width. Set up an equation and calculate the <b>width</b> (in cm).'), w, 'The length is ' + X() + ' + ' + dd + '. Perimeter = 2 · width + 2 · length.', p('2' + X() + ' + 2(' + X() + ' + ' + dd + ') = ' + P) + bal([['2' + X() + ' + 2' + X() + ' + ' + 2 * dd + ' = ' + P, '− ' + 2 * dd], ['4' + X() + ' = ' + (P - 2 * dd), ': 4'], [X() + ' = ' + w]]) + p('The length is ' + len + ' cm and the width is ' + w + ' cm.'), { noStep: true });
+  }
+];
+HX.a1 = [
+  function fracBothSides(l) {
+    const q = pick([3, 4, 5, 6]), a = pick([1, 2].filter(z => gcd(z, q) === 1)), c = pick([1, 2, 3]), b = nz(-8, 8), d = nz(-8, 8);
+    const A = a, C = c * q; if (A === C) return HX.a1[0](l);
+    const s = solveLin(A, b * q, C, d * q), head = [fr(a, q) + X() + ' ' + (b < 0 ? '− ' + -b : '+ ' + b) + ' = ' + lin(c, d), '× ' + q];
+    return solQ(p('Solve: ' + head[0]), s.n, s.d, 'x', 'Multiply BOTH sides (every term!) by ' + q + '.', bal([head].concat(s.rows)));
+  },
+  function costCompare(l) {
+    const f1 = pick([5, 8, 10, 12, 15]), r1 = pick([.2, .25, .3, .4]), f2 = f1 + pick([5, 10, 15, 20]), r2 = r1 - pick([.05, .1, .15].filter(z => z < r1));
+    const t = Math.round((f2 - f1) / (r1 - r2) * 1000) / 1000;
+    if (!Number.isInteger(t)) return HX.a1[1](l);
+    return nu(p('Phone plan A costs €' + f1 + ' per month plus €' + r1.toFixed(2) + ' per minute. Plan B costs €' + f2 + ' per month plus €' + r2.toFixed(2) + ' per minute. For how many minutes do both plans cost the <b>same</b>?'), t, 'Write a formula for each plan with ' + X('t') + ' minutes. Make them equal and solve.', p('A: ' + f1 + ' + ' + r1 + X('t') + ' &nbsp; B: ' + f2 + ' + ' + Math.round(r2 * 100) / 100 + X('t')) + bal([[f1 + ' + ' + r1 + X('t') + ' = ' + f2 + ' + ' + Math.round(r2 * 100) / 100 + X('t'), '− ' + Math.round(r2 * 100) / 100 + X('t')], [f1 + ' + ' + Math.round((r1 - r2) * 100) / 100 + X('t') + ' = ' + f2, '− ' + f1], [Math.round((r1 - r2) * 100) / 100 + X('t') + ' = ' + (f2 - f1), ': ' + Math.round((r1 - r2) * 100) / 100], [X('t') + ' = ' + t]]) + p('After ' + t + ' minutes both plans cost the same.'), { noStep: true });
+  }
+];
+
+/* ======================= 6.2 Inequalities ======================= */
+function ineqChoice(html, sym, n, d, hint, steps) {
+  const val = fv(n, d, true), opts = ['<', '>', '≤', '≥'].map(s => X() + ' ' + ineqSym[s] + ' ' + val);
+  return ch(html, X() + ' ' + ineqSym[sym] + ' ' + val, opts.filter(o => o !== X() + ' ' + ineqSym[sym] + ' ' + val), hint, steps);
+}
+H.b1 = [
+  function ineqSimple(l) {
+    let a, b, c, sym = pick(['<', '>', '≤', '≥']); do { a = l === 0 ? ri(2, 9) : nz(-9, 9); b = ri(-10, 10); c = ri(-12, 15); } while (a === 1 || a === -1 || (l === 0 && (c - b) % a !== 0));
+    const rows = [[lin(a, b) + ' ' + ineqSym[sym] + ' ' + neg(c), b === 0 ? '' : b > 0 ? '− ' + b : '+ ' + -b]];
+    if (b !== 0) rows.push([lin(a, 0) + ' ' + ineqSym[sym] + ' ' + neg(c - b), ': ' + (a < 0 ? '(' + neg(a) + ')' : a) + (a < 0 ? ' — the sign turns around!' : '')]); else rows[0][1] = ': ' + (a < 0 ? '(' + neg(a) + ') — the sign turns around!' : a);
+    const s2 = a < 0 ? flip(sym) : sym; rows.push([X() + ' ' + ineqSym[s2] + ' ' + fv(c - b, a, true)]);
+    return ineqChoice(p('Solve the inequality: ' + rows[0][0]), s2, c - b, a, 'Solve it like an equation. When you multiply or divide by a <b>negative</b> number, the inequality sign turns around.', bal(rows));
+  },
+  function ineqBoth(l) {
+    let a, b, c, d; do { a = nz(-8, 10); c = nz(-8, 10); b = ri(-12, 12); d = ri(-12, 12); } while (a === c || (l === 0 && ((d - b) % (a - c) !== 0 || a - c < 0)));
+    const sym = pick(['<', '>', '≤', '≥']), s = solveLin(a, b, c, d), A = a - c;
+    const rows = s.rows.map((r, i) => [r[0].replace(' = ', ' ' + ineqSym[i === s.rows.length - 1 && A < 0 ? flip(sym) : sym] + ' '), r[1]]);
+    if (A < 0 && rows.length > 1) rows[rows.length - 2][1] += ' — the sign turns around!';
+    return ineqChoice(p('Solve the inequality: ' + rows[0][0]), A < 0 ? flip(sym) : sym, s.n, s.d, 'Get the ' + X() + '-terms on one side. Watch out: dividing by a negative number turns the sign around.', bal(rows));
+  },
+  function ineqGraph(l) {
+    const x0 = ri(-4, 4), y0 = ri(-4, 4); let m1, m2; do { m1 = nz(-3, 3); m2 = nz(-3, 3); } while (m1 === m2);
+    const L1 = [m1, y0 - m1 * x0], L2 = [m2, y0 - m2 * x0], above = Math.random() < .5;
+    // l above n where (m1 - m2)(x - x0) > 0
+    const sym = (m1 > m2) === above ? '>' : '<';
+    return ch(p('The graphs of the lines ' + X('l') + ' and ' + X('n') + ' intersect at ' + X() + ' = ' + neg(x0) + '. For which values of ' + X() + ' is line ' + X('l') + ' <b>' + (above ? 'above' : 'below') + '</b> line ' + X('n') + '?') + linesFig(L1, L2, 'l', 'n'), X() + ' ' + ineqSym[sym] + ' ' + neg(x0), [X() + ' ' + ineqSym[flip(sym)] + ' ' + neg(x0), X() + ' ' + ineqSym[sym] + ' ' + neg(y0 === x0 ? y0 + 1 : y0), X() + ' ' + ineqSym[flip(sym)] + ' ' + neg(y0 === x0 ? y0 + 1 : y0)], 'Look left and right of the point of intersection. Where is the blue line ' + X('l') + ' higher (or lower) than the red line?', 'The lines intersect at (' + neg(x0) + ', ' + neg(y0) + '). ' + (sym === '>' ? 'To the right' : 'To the left') + ' of the point of intersection, line ' + X('l') + ' is ' + (above ? 'above' : 'below') + ' line ' + X('n') + '. So ' + X() + ' ' + ineqSym[sym] + ' ' + neg(x0) + '.');
+  },
+  function ineqContext(l) {
+    const f1 = pick([20, 25, 30, 40, 50]), r1 = pick([.3, .35, .4, .45]), f2 = f1 + pick([10, 15, 20, 25]), r2 = Math.round((r1 - pick([.1, .15, .2])) * 100) / 100;
+    if (r2 <= 0) return H.b1[3](l);
+    const t = (f2 - f1) / (r1 - r2), ans = Number.isInteger(Math.round(t * 1e6) / 1e6) ? Math.round(t) + 1 : Math.ceil(t);
+    return nu(p('Car rental A: €' + f1 + ' plus €' + r1.toFixed(2) + ' per km. Car rental B: €' + f2 + ' plus €' + r2.toFixed(2) + ' per km. From how many km (whole number) is B <b>cheaper</b> than A?'), ans, 'Solve ' + f2 + ' + ' + r2 + X('k') + ' &lt; ' + f1 + ' + ' + r1 + X('k') + '.', bal([[f2 + ' + ' + r2 + X('k') + ' &lt; ' + f1 + ' + ' + r1 + X('k'), '− ' + r1 + X('k')], [f2 + ' − ' + Math.round((r1 - r2) * 100) / 100 + X('k') + ' &lt; ' + f1, '− ' + f2], ['−' + Math.round((r1 - r2) * 100) / 100 + X('k') + ' &lt; ' + neg(f1 - f2), ': (−' + Math.round((r1 - r2) * 100) / 100 + ') — the sign turns around!'], [X('k') + ' &gt; ' + Math.round(t * 1000) / 1000]]) + p('So B is cheaper from ' + ans + ' km.'), { noStep: true });
+  },
+  function signTurn(l) {
+    const a = nz(-6, 6), sym = pick(['<', '>', '≤', '≥']), c = nz(-20, 20) * Math.abs(a);
+    return ch(p('You solve ' + lin(a, 0) + ' ' + ineqSym[sym] + ' ' + neg(c) + ' by dividing both sides by ' + neg(a) + '. Which answer is correct?'), X() + ' ' + ineqSym[a < 0 ? flip(sym) : sym] + ' ' + neg(c / a), [X() + ' ' + ineqSym[a < 0 ? sym : flip(sym)] + ' ' + neg(c / a), X() + ' ' + ineqSym[a < 0 ? flip(sym) : sym] + ' ' + neg(-c / a)], 'Dividing by a negative number turns the inequality sign around. Dividing by a positive number does not.', neg(c) + ' : ' + (a < 0 ? '(' + neg(a) + ')' : a) + ' = ' + neg(c / a) + '. ' + (a < 0 ? 'You divide by a negative number, so ' + ineqSym[sym] + ' becomes ' + ineqSym[flip(sym)] + '.' : 'You divide by a positive number, so the sign stays the same.'));
+  }
+];
+HX.b1 = [
+  function ineqFrac(l) {
+    const q = pick([2, 3, 4]), b = nz(-6, 6), c = nz(-6, 6), sym = pick(['<', '≥']), k = nz(-3, 3);
+    // (1/q)(x + b) sym c  -> x + b sym qc -> x sym qc - b ; or with negative factor k: k/q ... keep: −(1/q)x
+    const negA = Math.random() < .5, A = negA ? -1 : 1;
+    const rows = [[(negA ? '−' : '') + fr(1, q) + X() + ' ' + (b < 0 ? '− ' + -b : '+ ' + b) + ' ' + ineqSym[sym] + ' ' + neg(c), '× ' + q], [lin(A, b * q) + ' ' + ineqSym[sym] + ' ' + neg(c * q), b > 0 ? '− ' + b * q : '+ ' + -b * q], [lin(A, 0) + ' ' + ineqSym[sym] + ' ' + neg(c * q - b * q), negA ? ': (−1) — the sign turns around!' : '']];
+    const fs = negA ? flip(sym) : sym, val = (c * q - b * q) * A; if (negA) rows.push([X() + ' ' + ineqSym[fs] + ' ' + neg(val)]);
+    return ineqChoice(p('Solve the inequality: ' + rows[0][0]), fs, val, 1, 'Multiply both sides by ' + q + ' first (a positive number, so the sign stays).', bal(rows));
+  }
+];
+
+/* ======================= 6.3 Quadratic equations x² = c ======================= */
+const fields2 = ['smallest solution: x =', 'largest solution: x ='];
+const multi = (html, a, b, hint, steps, extra) => Object.assign({ type: 'multi', fields: fields2, ans: [Math.min(a, b), Math.max(a, b)], html: html + p('<small>Type the smallest solution first.</small>'), hint, steps, noStep: true, ansText: X() + ' = ' + neg(Math.min(a, b)) + ' or ' + X() + ' = ' + neg(Math.max(a, b)) }, extra || {});
+const r2 = x => Math.round(x * 100) / 100;
+H.a2 = [
+  function howMany(l) {
+    const kind = pick(['pos', 'zero', 'neg']), a = l === 0 ? 1 : pick([1, 2, 3, -1, -2]), q = ri(1, 10);
+    // a(x + p)^2 + b = c  ->  (x+p)^2 = (c-b)/a
+    const pp = l === 0 ? 0 : nz(-6, 6), rhs = kind === 'pos' ? q * q : kind === 'zero' ? 0 : -q, b = ri(-10, 10), c = a * rhs + b;
+    const left = (a === 1 ? '' : a === -1 ? '−' : a) + (pp === 0 ? X() + '²' : '(' + lin(1, pp) + ')²') + (b === 0 ? '' : b < 0 ? ' − ' + -b : ' + ' + b);
+    const ans = { pos: '2 solutions', zero: '1 solution', neg: 'no solutions' }[kind];
+    return ch(p('How many solutions does this equation have? &nbsp; ' + left + ' = ' + neg(c)), ans, ['2 solutions', '1 solution', 'no solutions'], 'Rewrite it to (something)² = number. A square is never negative.', p(left + ' = ' + neg(c)) + p((pp === 0 ? X() + '²' : '(' + lin(1, pp) + ')²') + ' = ' + neg(rhs)) + p(kind === 'pos' ? 'A positive number: two solutions.' : kind === 'zero' ? 'Equal to 0: one solution.' : 'A square can never be negative: no solutions.'));
+  },
+  function squareEq(l) {
+    const r = LR(l, 2, 12), a = l === 0 ? 1 : pick([1, 2, 3, 5]), b = l === 0 ? 0 : nz(-20, 20), c = a * r * r + b;
+    const left = (a === 1 ? '' : a) + X() + '²' + (b === 0 ? '' : b < 0 ? ' − ' + -b : ' + ' + b), rows = [[left + ' = ' + c, b === 0 ? (a === 1 ? '±√' : ': ' + a) : (b > 0 ? '− ' + b : '+ ' + -b)]];
+    if (b !== 0) rows.push([(a === 1 ? '' : a) + X() + '² = ' + (c - b), a === 1 ? '±√' : ': ' + a]);
+    if (a !== 1) rows.push([X() + '² = ' + r * r, '±√']);
+    rows.push([X() + ' = −√' + r * r + ' or ' + X() + ' = √' + r * r]); rows.push([X() + ' = ' + neg(-r) + ' or ' + X() + ' = ' + r]);
+    [-r, r].forEach(x => must(a * x * x + b, c));
+    return multi(p('Solve: ' + left + ' = ' + c), -r, r, 'Get ' + X() + '² alone on one side. Then take the square root: there is a positive AND a negative solution.', bal(rows));
+  },
+  function bracketSq(l) {
+    const pp = nz(-9, 9), r = LR(l, 1, 9), k = l === 2 ? pick([2, 3]) : 1, m = l === 2 ? nz(-10, 10) : 0, c = k * r * r + m;
+    const left = (k === 1 ? '' : k) + '(' + lin(1, pp) + ')²' + (m === 0 ? '' : m < 0 ? ' − ' + -m : ' + ' + m);
+    const rows = [[left + ' = ' + neg(c), m !== 0 ? (m > 0 ? '− ' + m : '+ ' + -m) : k !== 1 ? ': ' + k : '±√']];
+    if (m !== 0) rows.push([(k === 1 ? '' : k) + '(' + lin(1, pp) + ')² = ' + (c - m), k !== 1 ? ': ' + k : '±√']);
+    if (k !== 1) rows.push(['(' + lin(1, pp) + ')² = ' + r * r, '±√']);
+    rows.push([lin(1, pp) + ' = ' + neg(-r) + ' or ' + lin(1, pp) + ' = ' + r, pp > 0 ? '− ' + pp : '+ ' + -pp]);
+    rows.push([X() + ' = ' + neg(-r - pp) + ' or ' + X() + ' = ' + neg(r - pp)]);
+    [-r - pp, r - pp].forEach(x => must(k * (x + pp) ** 2 + m, c));
+    return multi(p('Solve: ' + left + ' = ' + neg(c)), -r - pp, r - pp, 'Get the square (the part with brackets) alone. Take the square root (±). Then solve two simple equations.', bal(rows));
+  },
+  function roundedSq(l) {
+    const pp = l === 0 ? 0 : nz(-6, 6); let c; do { c = ri(2, 40); } while (Number.isInteger(Math.sqrt(c)));
+    const s = Math.sqrt(c), a = -s - pp, b = s - pp, sq = pp === 0 ? X() + '²' : '(' + lin(1, pp) + ')²';
+    const rows = [[sq + ' = ' + c, '±√'], [(pp === 0 ? X() : lin(1, pp)) + ' = −√' + c + ' or ' + (pp === 0 ? X() : lin(1, pp)) + ' = √' + c, pp === 0 ? '' : pp > 0 ? '− ' + pp : '+ ' + -pp]];
+    if (pp !== 0) rows.push([X() + ' = −√' + c + ' ' + (pp > 0 ? '− ' + pp : '+ ' + -pp) + ' or ' + X() + ' = √' + c + ' ' + (pp > 0 ? '− ' + pp : '+ ' + -pp)]);
+    rows.push([X() + ' ≈ ' + r2(a) + ' or ' + X() + ' ≈ ' + r2(b)]);
+    return multi(p('Solve: ' + sq + ' = ' + c + '. Round your answers <b>to 2 decimal places</b>.'), r2(a), r2(b), 'Take the square root on both sides: ± √' + c + '. Use your calculator at the end.', bal(rows), { tol: .0051, ansText: X() + ' ≈ ' + r2(a) + ' or ' + X() + ' ≈ ' + r2(b) });
+  },
+  function exactSq(l) {
+    let c; do { c = ri(2, 30); } while (Number.isInteger(Math.sqrt(c)));
+    const k = l === 0 ? 1 : pick([2, 3]), m = l === 0 ? 0 : ri(1, 9), right = X() + ' = −√' + c + ' or ' + X() + ' = √' + c;
+    const left = (k === 1 ? '' : k) + X() + '²' + (m ? ' + ' + m : ''), rhs = k * c + m;
+    return ch(p('Solve exactly: ' + left + ' = ' + rhs), right, [X() + ' = √' + c, X() + ' = −' + c / 2 + ' or ' + X() + ' = ' + c / 2, X() + ' = −√' + rhs + ' or ' + X() + ' = √' + rhs].filter(o => o !== right), 'Get ' + X() + '² alone first. Then ±√.', bal([[left + ' = ' + rhs, m ? '− ' + m : k !== 1 ? ': ' + k : '±√']].concat(m ? [[(k === 1 ? '' : k) + X() + '² = ' + k * c, k === 1 ? '±√' : ': ' + k]] : []).concat(k !== 1 ? [[X() + '² = ' + c, '±√']] : []).concat([[right]])));
+  }
+];
+HX.a2 = [
+  function cubeArea(l) {
+    const z = pick([2, 3, 4, 5, 6, 7, 8, 10]), A = 6 * z * z;
+    return nu(p('A cube has a total surface area of <b>' + A + ' cm²</b>. How long is one edge of the cube (in cm)?'), z, 'A cube has 6 equal square faces: area = 6' + X('z') + '². Solve 6' + X('z') + '² = ' + A + '.', bal([['6' + X('z') + '² = ' + A, ': 6'], [X('z') + '² = ' + z * z, '±√'], [X('z') + ' = −' + z + ' or ' + X('z') + ' = ' + z]]) + p('A length cannot be negative, so the edge is ' + z + ' cm.'), { noStep: true });
+  },
+  function negSquare(l) {
+    const pp = nz(-6, 6), r = ri(1, 6), k = ri(2, 4), m = ri(1, 20), c = m - k * r * r;
+    [-r - pp, r - pp].forEach(x => must(m - k * (x + pp) ** 2, c));
+    return multi(p('Solve: ' + m + ' − ' + k + '(' + lin(1, pp) + ')² = ' + neg(c)), -r - pp, r - pp, 'First subtract ' + m + ' on both sides, then divide by −' + k + '.', bal([[m + ' − ' + k + '(' + lin(1, pp) + ')² = ' + neg(c), '− ' + m], ['−' + k + '(' + lin(1, pp) + ')² = ' + neg(c - m), ': (−' + k + ')'], ['(' + lin(1, pp) + ')² = ' + r * r, '±√'], [lin(1, pp) + ' = ' + neg(-r) + ' or ' + lin(1, pp) + ' = ' + r, pp > 0 ? '− ' + pp : '+ ' + -pp], [X() + ' = ' + neg(-r - pp) + ' or ' + X() + ' = ' + neg(r - pp)]]));
+  }
+];
+
+/* ======================= 6.4 Factorising ======================= */
+const quad = (a, b, c, v) => { v = v || 'x'; let s = (a === 1 ? '' : a === -1 ? '−' : neg(a)) + X(v) + '²'; if (b) s += (b < 0 ? ' − ' : ' + ') + (Math.abs(b) === 1 ? '' : Math.abs(b)) + X(v); if (c) s += (c < 0 ? ' − ' : ' + ') + Math.abs(c); return s; };
+const fac = (r, v) => '(' + lin(1, -r, v) + ')';   // (x − r)
+function psTable(P, S) {   // product-sum table (whole number pairs with product P), highlight the pair with sum S
+  const rows = []; for (let a = 1; a * a <= Math.abs(P); a++) if (P % a === 0) { const b = P / a; rows.push([a, b]); if (b !== -a) rows.push([-a, -b]); }
+  return '<table class="tbl"><tr><th>product ' + neg(P) + '</th><th>sum ' + neg(S) + '</th></tr>' + rows.map(pr => '<tr' + (pr[0] + pr[1] === S ? ' style="background:#fde3d8"' : '') + '><td>' + neg(pr[0]) + ' × ' + neg(pr[1]) + '</td><td>' + neg(pr[0]) + ' + ' + neg(pr[1]) + ' = ' + neg(pr[0] + pr[1]) + '</td></tr>').join('') + '</table>';
+}
+H.b2 = [
+  function productZero(l) {
+    let r1, r2_; do { r1 = ri(-9, 9); r2_ = ri(-9, 9); } while (r1 === r2_);
+    if (l === 2) { const a = pick([2, 3, 5]), b = nz(-12, 12); // (ax − b)(x − r2) = 0 with nice b/a
+      const n = b, d = a, frac = n % d === 0; if (!frac) return H.b2[0](1);
+      return multi(p('Solve: (' + lin(a, -b) + ')' + fac(r2_) + ' = 0'), b / a, r2_, 'A product is 0 when one of the factors is 0.', p(lin(a, -b) + ' = 0 or ' + lin(1, -r2_) + ' = 0') + p(lin(a, 0) + ' = ' + neg(b) + ' or ' + X() + ' = ' + neg(r2_)) + p(X() + ' = ' + neg(b / a) + ' or ' + X() + ' = ' + neg(r2_))); }
+    const left = (r1 === 0 ? X() : fac(r1)) + fac(r2_);
+    return multi(p('Solve: ' + left + ' = 0'), r1, r2_, 'A product is 0 when one of the factors is 0. Make each factor 0.', p((r1 === 0 ? X() : lin(1, -r1)) + ' = 0 or ' + lin(1, -r2_) + ' = 0') + p(X() + ' = ' + neg(r1) + ' or ' + X() + ' = ' + neg(r2_)));
+  },
+  function commonFactor(l) {
+    const k = l === 0 ? 1 : pick([2, 3, 4, 5, -1, -2, -3]), r = nz(-9, 9), a = k, b = -k * r;   // k x (x - r)
+    const K = k === 1 ? '' : k === -1 ? '−' : neg(k), right = K + X() + fac(r);
+    const wrongs = [K + X() + fac(-r), K + X() + '(' + lin(1, b) + ')', K + fac(r), X() + '(' + lin(k, -r) + ')'];
+    return ch(p('Factorise as far as possible: ' + quad(a, b, 0)), right, wrongs.filter(w => w !== right), 'Look for the highest common factor of both terms (number AND letter). Put it in front of the brackets.', 'Both terms contain ' + (k === 1 ? X() : K + X()) + '. ' + quad(a, b, 0) + ' = ' + right + '.<br>Check by expanding: ' + right + ' = ' + quad(a, b, 0) + '.');
+  },
+  function commonFactorEq(l) {
+    const k = l === 0 ? 1 : pick([2, 3, -1, -2, 4]), r = nz(-9, 9), a = k, b = -k * r, rhs = l === 2 ? nz(-5, 5) : 0;
+    const left = l === 2 ? quad(a, b + rhs, 0) + ' = ' + lin(rhs, 0) : quad(a, b, 0) + ' = 0';
+    const steps = (l === 2 ? p(quad(a, b, 0) + ' = 0') : '') + p((k === 1 ? '' : k === -1 ? '−' : neg(k)) + X() + fac(r) + ' = 0') + p((k === 1 ? X() : lin(k, 0)) + ' = 0 or ' + lin(1, -r) + ' = 0') + p(X() + ' = 0 or ' + X() + ' = ' + neg(r));
+    return multi(p('Solve: ' + left), 0, r, (l === 2 ? 'First make one side 0. ' : '') + 'Take ' + X() + ' (and the common number) outside the brackets. Then a product = 0.', steps);
+  },
+  function productSum(l) {
+    let r1, r2_; do { r1 = ri(-9, 9); r2_ = ri(-9, 9); } while (r1 === r2_ || r1 === 0 || r2_ === 0 || (l === 0 && (r1 > 0 || r2_ > 0)));
+    const S = -(r1 + r2_), P = r1 * r2_;
+    [r1, r2_].forEach(x => must(x * x + S * x + P, 0));
+    return multi(p('Solve: ' + quad(1, S, P) + ' = 0'), r1, r2_, 'Find two numbers with product ' + neg(P) + ' and sum ' + neg(S) + '. Then write (' + X() + ' + .. )(' + X() + ' + .. ) = 0.', psTable(P, S) + p(fac(r1) + fac(r2_) + ' = 0') + p(lin(1, -r1) + ' = 0 or ' + lin(1, -r2_) + ' = 0') + p(X() + ' = ' + neg(r1) + ' or ' + X() + ' = ' + neg(r2_)));
+  },
+  function factorTrinomial(l) {
+    let r1, r2_; do { r1 = nz(-9, 9); r2_ = nz(-9, 9); } while (r1 === r2_);
+    const S = -(r1 + r2_), P = r1 * r2_, right = fac(r1) + fac(r2_);
+    return ch(p('Factorise: ' + quad(1, S, P)), right, [fac(-r1) + fac(-r2_), fac(r1) + fac(-r2_), fac(-r1) + fac(r2_)].filter(o => o !== right), 'Find two numbers with product ' + neg(P) + ' and sum ' + neg(S) + '.', psTable(P, S) + p(quad(1, S, P) + ' = ' + right));
+  },
+  function rearrange(l) {
+    let r1, r2_; do { r1 = nz(-8, 8); r2_ = nz(-8, 8); } while (r1 === r2_);
+    const S = -(r1 + r2_), P = r1 * r2_, m = nz(-6, 6), k = ri(-12, 12);
+    // x² + (S+m)x + (P+k) = m x + k
+    const left = quad(1, S + m, P + k), right = lin(m, k);
+    [r1, r2_].forEach(x => must(x * x + (S + m) * x + P + k, m * x + k));
+    return multi(p('Solve: ' + left + ' = ' + right), r1, r2_, 'First make the right side 0: bring all terms to the left. Then use product-sum.', p(quad(1, S, P) + ' = 0') + psTable(P, S) + p(fac(r1) + fac(r2_) + ' = 0') + p(X() + ' = ' + neg(r1) + ' or ' + X() + ' = ' + neg(r2_)));
+  }
+];
+HX.b2 = [
+  function areaEq(l) {
+    const w = ri(2, 12), dd = ri(1, 8), L = w + dd, A = w * L;
+    return nu(p('A rectangle is <b>' + dd + ' cm</b> longer than it is wide. Its area is <b>' + A + ' cm²</b>. Use ' + X() + ' for the width. How wide is the rectangle (in cm)?'), w, X() + '(' + X() + ' + ' + dd + ') = ' + A + '. Make one side 0 and use product-sum.', p(X() + '(' + lin(1, dd) + ') = ' + A) + p(quad(1, dd, -A) + ' = 0') + psTable(-A, dd) + p(fac(w) + fac(-L) + ' = 0') + p(X() + ' = ' + w + ' or ' + X() + ' = ' + neg(-L)) + p('A width cannot be negative, so the width is ' + w + ' cm.'), { noStep: true });
+  },
+  function vertexFromZeros(l) {
+    const a = pick([1, -1]), r = nz(-8, 8) * 2;   // y = a x (x - r): zeros 0 and r, vertex at r/2
+    const xv = r / 2, yv = a * xv * (xv - r);
+    return Object.assign({ type: 'point', ans: [xv, yv], html: p('The graph of ' + X('y') + ' = ' + quad(a, -a * r, 0) + ' is a parabola. Calculate the coordinates of the <b>vertex</b>.') + p('<small>Type your answer like (3, −9).</small>'), hint: 'First find where the graph crosses the ' + X() + '-axis (' + X('y') + ' = 0). The vertex is exactly in the middle.', steps: p(quad(a, -a * r, 0) + ' = 0') + p((a === -1 ? '−' : '') + X() + fac(r) + ' = 0, so ' + X() + ' = 0 or ' + X() + ' = ' + neg(r)) + p(X() + '<sub>vertex</sub> = (0 + ' + neg(r) + ') : 2 = ' + neg(xv)) + p(X('y') + ' = ' + neg(yv)) + p('The vertex is (' + neg(xv) + ', ' + neg(yv) + ').'), noStep: true });
+  }
+];
+
+
+/* ======================= 5.3 The quadratic formula ======================= */
+const par = n => n < 0 ? '(' + neg(n) + ')' : String(n);
+const Dtxt = (a, b, c) => 'D = ' + X('b') + '² − 4' + X('a') + X('c') + ' = ' + par(b) + '² − 4 · ' + par(a) + ' · ' + par(c) + ' = ' + neg(b * b - 4 * a * c);
+const abcLine = (a, b, c) => X('a') + ' = ' + neg(a) + ', ' + X('b') + ' = ' + neg(b) + ' and ' + X('c') + ' = ' + neg(c);
+const formula = (a, b, D, sgn) => M('(' + (b === 0 ? '' : '-' + par(b)) + (sgn < 0 ? '-' : '+') + 'sqrt(' + D + '))/(2*' + par(a) + ')');
+const solveSteps = (a, b, c, roots, exact) => { const D = b * b - 4 * a * c; return p(abcLine(a, b, c)) + p(Dtxt(a, b, c)) + p(X() + ' = ' + formula(a, b, D, -1) + ' or ' + X() + ' = ' + formula(a, b, D, 1)) + p(X() + (exact ? ' = ' : ' ≈ ') + neg(roots[0]) + ' or ' + X() + (exact ? ' = ' : ' ≈ ') + neg(roots[1])); };
+const nice = x => Math.round(x * 1e6) / 1e6;
+const fracTxt = x => { for (const d of [1, 2, 3, 4, 5, 6, 8]) { const n = Math.round(x * d); if (Math.abs(n / d - x) < 1e-9) return d === 1 ? neg(n) : (n < 0 ? '−' : '') + Math.abs(n) / gcd(Math.abs(n), d) + '/' + d / gcd(Math.abs(n), d); } return neg(r2(x)); };
+G['5.3'] = [
+  function readABC(l) {
+    let a, b, c; do { a = nz(-5, 5); b = ri(-9, 9); c = ri(-9, 9); } while (c === 0 && b === 0);
+    const terms = [[a, X() + '²'], [b, X()], [c, '']].filter(t => t[0] !== 0), order = l === 0 ? terms : shuffle(terms);
+    const txt = order.map((t, i) => { const v = t[0], s = Math.abs(v) === 1 && t[1] ? t[1] : Math.abs(v) + t[1]; return (i === 0 ? (v < 0 ? '−' : '') : (v < 0 ? ' − ' : ' + ')) + s; }).join('');
+    return { type: 'multi', fields: ['a =', 'b =', 'c ='], ans: [a, b, c], html: p('The equation ' + txt + ' = 0 has the form ' + X('a') + X() + '² + ' + X('b') + X() + ' + ' + X('c') + ' = 0. What are ' + X('a') + ', ' + X('b') + ' and ' + X('c') + '?'), hint: X('a') + ' is the number in front of ' + X() + '², ' + X('b') + ' the number in front of ' + X() + ' and ' + X('c') + ' the number without ' + X() + '. Take the sign with it. No term means 0.', steps: p('In the right order: ' + quad(a, b, c) + ' = 0') + p(abcLine(a, b, c)), noStep: true, ansText: abcLine(a, b, c) };
+  },
+  function discriminant(l) {
+    const a = l === 0 ? pick([1, 2, 3]) : nz(-6, 6), b = ri(-10, 10), c = l === 0 ? ri(-9, 9) : nz(-9, 9), D = b * b - 4 * a * c;
+    return nu(p('Calculate the discriminant ' + X('D') + ' = ' + X('b') + '² − 4' + X('a') + X('c') + ' of ' + quad(a, b, c) + ' = 0.'), D, 'First write down ' + X('a') + ', ' + X('b') + ' and ' + X('c') + '. Put negative numbers in brackets.', p(abcLine(a, b, c)) + p(Dtxt(a, b, c)), { needStep: true });
+  },
+  function numSolutions(l) {
+    const kind = pick(['two', 'one', 'none']); let a, b, c;
+    if (kind === 'one') { const r = nz(-6, 6), k = l === 0 ? 1 : pick([1, 2, -1, 3]); a = k; b = -2 * k * r; c = k * r * r; }
+    else do { a = nz(-5, 5); b = ri(-9, 9); c = nz(-9, 9); } while ((kind === 'two') !== (b * b - 4 * a * c > 0) || b * b - 4 * a * c === 0);
+    const D = b * b - 4 * a * c, right = kind === 'two' ? 'two solutions' : kind === 'one' ? 'one solution' : 'no solutions';
+    return ch(p('How many solutions does ' + quad(a, b, c) + ' = 0 have?'), right, ['two solutions', 'one solution', 'no solutions'].filter(o => o !== right), 'Calculate the discriminant ' + X('D') + ' = ' + X('b') + '² − 4' + X('a') + X('c') + '. ' + X('D') + ' > 0: two, ' + X('D') + ' = 0: one, ' + X('D') + ' < 0: none.', p(abcLine(a, b, c)) + p(Dtxt(a, b, c) + (D > 0 ? ' > 0' : D < 0 ? ' < 0' : '')) + p('So the equation has ' + right + '.'));
+  },
+  function abcExact(l) {
+    let a, r1, r2_; do { a = l === 0 ? 1 : pick([1, 2, 3, 4, -1, -2]); const dn = l === 0 ? 1 : pick([1, 2, a]); r1 = nz(-6, 6) / dn; r2_ = nz(-6, 6) / (l === 2 ? pick([1, 2, 3]) : 1); } while (r1 === r2_ || !Number.isInteger(a * (r1 + r2_)) || !Number.isInteger(a * r1 * r2_));
+    const b = nice(-a * (r1 + r2_)), c = nice(a * r1 * r2_), D = b * b - 4 * a * c, rs = [r1, r2_].sort((x, y) => x - y);
+    must(a * r1 * r1 + b * r1 + c, 0);
+    return multi(p('Solve with the quadratic formula: ' + quad(a, b, c) + ' = 0. <small>(Fractions like 1/2 are fine.)</small>'), rs[0], rs[1], X('x') + ' = (−' + X('b') + ' ± √' + X('D') + ') / 2' + X('a') + ' with ' + X('D') + ' = ' + X('b') + '² − 4' + X('a') + X('c') + '.', solveSteps(a, b, c, [(-b - Math.sqrt(D)) / (2 * a), (-b + Math.sqrt(D)) / (2 * a)].map(fracTxt), true), { ansText: X() + ' = ' + fracTxt(rs[0]) + ' or ' + X() + ' = ' + fracTxt(rs[1]) });
+  },
+  function abcRounded(l) {
+    let a, b, c, D; do { a = l === 0 ? 1 : nz(-4, 5); b = ri(-9, 9); c = nz(-9, 9); D = b * b - 4 * a * c; } while (D <= 0 || Number.isInteger(Math.sqrt(D)));
+    const x1 = (-b - Math.sqrt(D)) / (2 * a), x2 = (-b + Math.sqrt(D)) / (2 * a), rs = [x1, x2].map(r2);
+    return multi(p('Solve with the quadratic formula: ' + quad(a, b, c) + ' = 0. Round your answers <b>to 2 decimal places</b>.'), rs[0], rs[1], 'Write down ' + X('a') + ', ' + X('b') + ', ' + X('c') + ', calculate ' + X('D') + ', then use ' + X() + ' = (−' + X('b') + ' ± √' + X('D') + ') / 2' + X('a') + '.', solveSteps(a, b, c, rs, false), { tol: .0051, ansText: X() + ' ≈ ' + Math.min(...rs) + ' or ' + X() + ' ≈ ' + Math.max(...rs) });
+  },
+  function abcRearrange(l) {
+    let a, b, c, D; do { a = nz(-4, 5); b = ri(-9, 9); c = nz(-9, 9); D = b * b - 4 * a * c; } while (D <= 0 || Number.isInteger(Math.sqrt(D)));
+    const m = nz(-3, 3), k = ri(-6, 6);   // a x² + b x + c = 0 written as (a+... ) = m x + k  ->  left side a x² + (b+m) x + (c+k)
+    const left = quad(a, b + m, c + k), right = lin(m, k);
+    const x1 = (-b - Math.sqrt(D)) / (2 * a), x2 = (-b + Math.sqrt(D)) / (2 * a), rs = [x1, x2].map(r2);
+    must(a * x1 * x1 + (b + m) * x1 + c + k, m * x1 + k);
+    return multi(p('Solve: ' + left + ' = ' + right + '. Round your answers <b>to 2 decimal places</b>.'), rs[0], rs[1], 'First make the right side 0. Then use the quadratic formula.', p(left + ' = ' + right) + p(quad(a, b, c) + ' = 0') + solveSteps(a, b, c, rs, false), { tol: .0051, ansText: X() + ' ≈ ' + Math.min(...rs) + ' or ' + X() + ' ≈ ' + Math.max(...rs) });
+  }
+];
+XG['5.3'] = [
+  function oneSolution(l) {
+    const r = ri(2, 9), cc = r * r, pAns = 2 * r;   // x² + p x + c = 0 has one solution when p² = 4c
+    return nu(p('For which <b>positive</b> number ' + X('p') + ' does ' + X() + '² + ' + X('p') + X() + ' + ' + cc + ' = 0 have exactly <b>one</b> solution?'), pAns, 'One solution means ' + X('D') + ' = 0.', p(X('D') + ' = ' + X('p') + '² − 4 · 1 · ' + cc + ' = ' + X('p') + '² − ' + 4 * cc) + p(X('p') + '² − ' + 4 * cc + ' = 0, so ' + X('p') + '² = ' + 4 * cc) + p(X('p') + ' = −' + pAns + ' or ' + X('p') + ' = ' + pAns + '. Positive: ' + X('p') + ' = ' + pAns + '.'), { noStep: true });
+  },
+  function parabolaLine(l) {
+    let b, c, D; do { b = nz(-8, 8); c = nz(-12, 12); D = b * b + 4 * c; } while (D <= 0 || Number.isInteger(Math.sqrt(D)));
+    // y = x² and y = b x + c  ->  x² − b x − c = 0
+    const x1 = (b - Math.sqrt(D)) / 2, x2 = (b + Math.sqrt(D)) / 2, rs = [x1, x2].map(r2);
+    return multi(p('Calculate the ' + X() + '-coordinates of the points of intersection of ' + X('y') + ' = ' + X() + '² and ' + X('y') + ' = ' + lin(b, c) + '. Round to 2 decimal places.'), rs[0], rs[1], 'Make the formulas equal and make one side 0. Then use the quadratic formula.', p(X() + '² = ' + lin(b, c)) + p(quad(1, -b, -c) + ' = 0') + solveSteps(1, -b, -c, rs, false), { tol: .0051, fields: ['smallest x =', 'largest x ='] });
+  }
+];
+const rd = (x, d) => Math.round(x * Math.pow(10, d === undefined ? 6 : d)) / Math.pow(10, d === undefined ? 6 : d);
+
+/* sections 5.1 and 5.2 use the 2HT generators above */
+G['5.1'] = H.a1.concat(H.b1); XG['5.1'] = HX.a1.concat(HX.b1);
+G['5.2'] = H.a2.concat(H.b2); XG['5.2'] = HX.a2.concat(HX.b2);
+
+/* ======================= 5.4 Quadratic inequalities ======================= */
+const OR = ' ∨ ';
+/* the four interval answers for zeros a < b */
+function intervals(a, b, strict) {
+  const lt = strict ? '&lt;' : '≤', gt = strict ? '&gt;' : '≥', A = typeof a === 'number' ? neg(a) : a, B = typeof b === 'number' ? neg(b) : b;
+  return { inside: A + ' ' + lt + ' ' + X() + ' ' + lt + ' ' + B, outside: X() + ' ' + lt + ' ' + A + OR + X() + ' ' + gt + ' ' + B };
+}
+function intervalQ(html, a, b, strict, inside, hint, steps) {
+  const I = intervals(a, b, strict), J = intervals(a, b, !strict), right = inside ? I.inside : I.outside;
+  return ch(html, right, [inside ? I.outside : I.inside, J.inside, J.outside].filter(o => o !== right), hint, steps);
+}
+const parabolaFig = (f, r1, r2) => { const lo = Math.min(r1, r2) - 4, hi = Math.max(r1, r2) + 4, m = Math.max(Math.abs(f((r1 + r2) / 2)), 4); const ym = Math.ceil(Math.min(m + 1, 12)); const segs = []; let prev = null; for (let x = lo; x <= hi + 1e-9; x += .1) { const y = f(x); if (prev && Math.abs(y) <= ym && Math.abs(prev[1]) <= ym) segs.push({ a: prev, b: [x, y], color: '#d1471f' }); prev = [x, y]; } return svgWrap(NX.gridSVG({ xmin: Math.floor(lo), xmax: Math.ceil(hi), ymin: -ym, ymax: ym, u: 300 / (Math.ceil(hi) - Math.floor(lo)) > 22 ? 22 : 300 / (Math.ceil(hi) - Math.floor(lo)), segs, pts: [{ x: r1, y: 0 }, { x: r2, y: 0 }] }), 300); };
+G['5.4'] = [
+  function readIneq(l) {
+    let r1, r2_; do { r1 = ri(-6, 4); r2_ = ri(-4, 6); } while (r2_ - r1 < 2);
+    const a = pick([1, -1]), f = x => a * (x - r1) * (x - r2_), want = pick(['&gt; 0', '&lt; 0', '≥ 0', '≤ 0']), strict = want[0] === '&', pos = want.includes('&gt;') || want.includes('≥'), inside = (a > 0) !== pos;
+    return intervalQ(p('The graph of ' + X('f') + '(' + X() + ') = ' + (a < 0 ? '−' : '') + fac(r1) + fac(r2_) + ' is shown. Solve ' + X('f') + '(' + X() + ') ' + want + '.') + parabolaFig(f, r1, r2_), r1, r2_, strict, inside, (pos ? 'Above' : 'Below') + ' the ' + X() + '-axis: where is the graph ' + (pos ? 'above' : 'below') + ' the ' + X() + '-axis?' + (strict ? '' : ' The zeros themselves count too.'), p('The graph crosses the ' + X() + '-axis at ' + X() + ' = ' + neg(r1) + ' and ' + X() + ' = ' + neg(r2_) + '.') + p('It opens ' + (a > 0 ? 'upwards' : 'downwards') + ', so it is ' + (pos ? 'above' : 'below') + ' the axis ' + (inside ? 'between the zeros' : 'outside the zeros') + '.') + p('Solution: ' + (inside ? intervals(r1, r2_, strict).inside : intervals(r1, r2_, strict).outside)));
+  },
+  function solveIneq(l) {
+    let r1, r2_; do { r1 = nz(-8, 8); r2_ = nz(-8, 8); } while (r1 >= r2_);
+    const S = -(r1 + r2_), P = r1 * r2_, sym = pick(['&lt;', '&gt;', '≤', '≥']), strict = sym[0] === '&', pos = sym === '&gt;' || sym === '≥', inside = !pos;
+    return intervalQ(p('Solve: ' + quad(1, S, P) + ' ' + sym + ' 0'), r1, r2_, strict, inside, 'First solve the equation ' + quad(1, S, P) + ' = 0. Then sketch the parabola: it opens upwards.', p('Solve ' + quad(1, S, P) + ' = 0: ' + fac(r1) + fac(r2_) + ' = 0, so ' + X() + ' = ' + neg(r1) + ' or ' + X() + ' = ' + neg(r2_) + '.') + p('The parabola opens upwards (' + X('a') + ' = 1 > 0), so it is ' + (pos ? 'above' : 'below') + ' the ' + X() + '-axis ' + (inside ? 'between' : 'outside') + ' these values.') + p('Solution: ' + (inside ? intervals(r1, r2_, strict).inside : intervals(r1, r2_, strict).outside)));
+  },
+  function squareIneq(l) {
+    const k = l === 0 ? pick([1, 4, 9, 16, 25, 36, 49]) : ri(2, 30), sym = pick(['&lt;', '&gt;', '≤', '≥']), strict = sym[0] === '&', pos = sym === '&gt;' || sym === '≥', r = Number.isInteger(Math.sqrt(k)) ? Math.sqrt(k) : null, A = r !== null ? -r : '−√' + k, B = r !== null ? r : '√' + k;
+    return intervalQ(p('Solve exactly: ' + X() + '² ' + sym + ' ' + k), A, B, strict, !pos, 'Solve ' + X() + '² = ' + k + ' first. Then think of the graph of ' + X('y') + ' = ' + X() + '² and the line ' + X('y') + ' = ' + k + '.', p(X() + '² = ' + k + ' gives ' + X() + ' = ' + (r !== null ? neg(-r) : '−√' + k) + ' or ' + X() + ' = ' + (r !== null ? r : '√' + k) + '.') + p('The parabola ' + X('y') + ' = ' + X() + '² is ' + (pos ? 'above' : 'below') + ' the line ' + X('y') + ' = ' + k + ' ' + (pos ? 'outside' : 'between') + ' these values.') + p('Solution: ' + (pos ? intervals(A, B, strict).outside : intervals(A, B, strict).inside)));
+  },
+  function rearrangeIneq(l) {
+    let r1, r2_; do { r1 = nz(-7, 7); r2_ = nz(-7, 7); } while (r1 >= r2_);
+    const a = pick([-1, 1]), S = -(r1 + r2_), P = r1 * r2_, m = nz(-5, 5), k = ri(-9, 9), sym = pick(['&lt;', '&gt;', '≤', '≥']), strict = sym[0] === '&', pos = sym === '&gt;' || sym === '≥', inside = (a > 0) !== pos;
+    // a(x² + Sx + P) + (m x + k) sym m x + k
+    const left = quad(a, a * S + m, a * P + k), right = lin(m, k);
+    return intervalQ(p('Solve: ' + left + ' ' + sym + ' ' + right), r1, r2_, strict, inside, 'Make the right side 0 first. Then solve the equation, and sketch the parabola.', p(quad(a, a * S, a * P) + ' ' + sym + ' 0') + p('Equation: ' + quad(a, a * S, a * P) + ' = 0 gives ' + X() + ' = ' + neg(r1) + ' or ' + X() + ' = ' + neg(r2_) + '.') + p('The parabola opens ' + (a > 0 ? 'upwards' : 'downwards') + ', so it is ' + (pos ? 'above' : 'below') + ' the ' + X() + '-axis ' + (inside ? 'between' : 'outside') + ' these values.') + p('Solution: ' + (inside ? intervals(r1, r2_, strict).inside : intervals(r1, r2_, strict).outside)));
+  },
+  function alwaysNever(l) {
+    const c = pick([2, 3, 5, 6, 7, 8, 10]), sym = pick(['&lt;', '&gt;']), right = sym === '&gt;' ? 'every number ' + X() + ' is a solution' : 'there are no solutions';
+    return ch(p('Solve: ' + X() + '² + ' + c + ' ' + sym + ' 0'), right, ['every number ' + X() + ' is a solution', 'there are no solutions', '−√' + c + ' &lt; ' + X() + ' &lt; √' + c, X() + ' &lt; −√' + c + OR + X() + ' &gt; √' + c].filter(o => o !== right), X() + '² is never negative. What do you know about ' + X() + '² + ' + c + '?', X() + '² ≥ 0, so ' + X() + '² + ' + c + ' ≥ ' + c + ' &gt; 0 for every ' + X() + '. So ' + right + '.');
+  }
+];
+XG['5.4'] = [
+  function ballHeight(l) {
+    const T = pick([4, 5, 6, 8]), H0 = pick([2, 4, 6]), t1 = pick([1, 2]), t2 = T - t1;   // h = −5(t − t1)(t − t2) + H0
+    const a = -5, b = rd(5 * (t1 + t2)), c = rd(-5 * t1 * t2 + H0);
+    return intervalQ(p('A ball follows ' + X('h') + ' = ' + quad(a, b, c, 't') + ' with ' + X('h') + ' in metres and ' + X('t') + ' in seconds. When is the ball higher than ' + H0 + ' m?'), t1, t2, true, true, 'Solve ' + X('h') + ' = ' + H0 + ' first.', p(quad(a, b, c, 't') + ' = ' + H0) + p(quad(a, b, c - H0, 't') + ' = 0, divide by −5: ' + quad(1, -(t1 + t2), t1 * t2, 't') + ' = 0') + p(fac(t1, 't') + fac(t2, 't') + ' = 0, so ' + X('t') + ' = ' + t1 + ' or ' + X('t') + ' = ' + t2) + p('The parabola opens downwards, so it is higher than ' + H0 + ' between ' + t1 + ' and ' + t2 + '.').replace(/<i>x<\/i>/g, X('t')));
+  }
+];
+
+/* ======================= 5.5 Higher powers ======================= */
+const sup = n => ({ 2: '²', 3: '³', 4: '⁴', 5: '⁵', 6: '⁶', 7: '⁷' })[n];
+G['5.5'] = [
+  function oddPower(l) {
+    let n, r; do { n = pick([3, 3, 5]); r = n === 3 ? nz(-9, 9) : nz(-4, 4); } while (Math.abs(r) < 2); const c = Math.pow(r, n);
+    return nu(p('Solve: ' + X() + sup(n) + ' = ' + neg(c)), r, 'For an odd power there is exactly one solution: ' + X() + ' = <sup>' + n + '</sup>√(' + neg(c) + ').', p('Check: ' + (r < 0 ? '(' + neg(r) + ')' : r) + sup(n) + ' = ' + neg(c) + '.') + p(X() + ' = <sup>' + n + '</sup>√(' + neg(c) + ') = ' + neg(r)), { noStep: true, ansText: X() + ' = ' + neg(r) });
+  },
+  function evenPower(l) {
+    const n = pick([2, 4, 4, 6]), r = n === 6 ? ri(1, 3) : n === 4 ? ri(1, 5) : ri(2, 12), c = Math.pow(r, n);
+    return multi(p('Solve: ' + X() + sup(n) + ' = ' + c), -r, r, 'For an even power and a positive number there are two solutions: ± <sup>' + n + '</sup>√' + c + '.', p(X() + ' = −<sup>' + n + '</sup>√' + c + ' or ' + X() + ' = <sup>' + n + '</sup>√' + c) + p(X() + ' = ' + neg(-r) + ' or ' + X() + ' = ' + r));
+  },
+  function howManyPower(l) {
+    const n = ri(2, 7), c = pick([nz(-50, 50), 0]), right = c === 0 ? 'one solution' : n % 2 ? 'one solution' : c > 0 ? 'two solutions' : 'no solutions';
+    return ch(p('How many solutions does ' + X() + sup(n) + ' = ' + neg(c) + ' have?'), right, ['one solution', 'two solutions', 'no solutions'].filter(o => o !== right), 'Is the power even or odd? Is the number positive, negative or 0?', c === 0 ? X() + sup(n) + ' = 0 only for ' + X() + ' = 0: one solution.' : n % 2 ? 'The power ' + n + ' is odd: always exactly one solution.' : 'The power ' + n + ' is even' + (c > 0 ? ' and ' + c + ' is positive: two solutions.' : ', so ' + X() + sup(n) + ' is never negative: no solutions.'));
+  },
+  function powerRounded(l) {
+    const n = pick([3, 4, 5]), k = pick([2, 3, 4, 5]); let c; do { c = k * ri(3, 60); } while (Number.isInteger(rd(Math.pow(c / k, 1 / n), 6)));
+    const v = c / k, r = rd(Math.pow(v, 1 / n), 2);
+    if (n % 2) return nu(p('Solve: ' + k + X() + sup(n) + ' = ' + c + '. Round to 2 decimals.'), r, 'Divide by ' + k + ' first. Then take the ' + n + 'th root.', p(X() + sup(n) + ' = ' + c + ' : ' + k + ' = ' + rd(v, 4)) + p(X() + ' = <sup>' + n + '</sup>√' + rd(v, 4) + ' ≈ ' + r), { tol: .0051, ansText: X() + ' ≈ ' + r });
+    return multi(p('Solve: ' + k + X() + sup(n) + ' = ' + c + '. Round to 2 decimals.'), -r, r, 'Divide by ' + k + ' first. The power is even: two solutions.', p(X() + sup(n) + ' = ' + c + ' : ' + k + ' = ' + rd(v, 4)) + p(X() + ' = −<sup>' + n + '</sup>√' + rd(v, 4) + ' or ' + X() + ' = <sup>' + n + '</sup>√' + rd(v, 4)) + p(X() + ' ≈ ' + neg(-r) + ' or ' + X() + ' ≈ ' + r), { tol: .0051, ansText: X() + ' ≈ ' + neg(-r) + ' or ' + X() + ' ≈ ' + r });
+  },
+  function shiftedPower(l) {
+    const h = nz(-8, 8), n = pick([3, 3, 4]), r = n === 3 ? nz(-4, 4) : ri(1, 3), c = Math.pow(r, n), base = '(' + lin(1, h) + ')' + sup(n);
+    if (n === 3) return nu(p('Solve: ' + base + ' = ' + neg(c)), r - h, 'First find what is inside the brackets: ' + lin(1, h) + ' = <sup>3</sup>√(' + neg(c) + ').', bal([[base + ' = ' + neg(c), '<sup>3</sup>√'], [lin(1, h) + ' = ' + neg(r), h > 0 ? '− ' + h : '+ ' + -h], [X() + ' = ' + neg(r - h)]]), { noStep: true, ansText: X() + ' = ' + neg(r - h) });
+    return multi(p('Solve: ' + base + ' = ' + c), -r - h, r - h, 'The power is even: ' + lin(1, h) + ' = ± <sup>4</sup>√' + c + '.', bal([[base + ' = ' + c, '±<sup>4</sup>√'], [lin(1, h) + ' = ' + neg(-r) + ' or ' + lin(1, h) + ' = ' + r, h > 0 ? '− ' + h : '+ ' + -h], [X() + ' = ' + neg(-r - h) + ' or ' + X() + ' = ' + neg(r - h)]]));
+  }
+];
+XG['5.5'] = [
+  function boxVolume(l) {
+    const x = ri(2, 6), k = pick([2, 3, 4]), V = k * k * x * x * x;
+    return nu(p('A box has length ' + k + X() + ', width ' + k + X() + ' and height ' + X() + ' (in cm). Its volume is ' + V + ' cm³. Calculate ' + X() + '.'), x, 'Volume = length · width · height = ' + k * k + X() + '³.', bal([[k * k + X() + '³ = ' + V, ': ' + k * k], [X() + '³ = ' + x * x * x, '<sup>3</sup>√'], [X() + ' = ' + x]]), { noStep: true });
+  },
+  function sphereRadius(l) {
+    const V = pick([500, 1000, 2000, 4000, 300]), r = rd(Math.pow(3 * V / (4 * Math.PI), 1 / 3), 1);
+    return nu(p('The volume of a ball is ' + X('V') + ' = ' + fr(4, 3) + 'π' + X('r') + '³. A ball has a volume of ' + V + ' cm³. Calculate the radius. Round to 1 decimal.'), r, 'Solve ' + fr(4, 3) + 'π' + X('r') + '³ = ' + V + ': divide by ' + fr(4, 3) + 'π first.', p(X('r') + '³ = ' + V + ' : (' + fr(4, 3) + 'π) ≈ ' + rd(3 * V / (4 * Math.PI), 2)) + p(X('r') + ' = <sup>3</sup>√' + rd(3 * V / (4 * Math.PI), 2) + ' ≈ ' + r + ' cm'), { tol: .051 });
+  }
+];
+
+const SECTIONS = [
+  { id: '5.1', title: '5.1 Linear equations and inequalities', sub: 'Balance method, intersections, inequalities' },
+  { id: '5.2', title: '5.2 Quadratic equations', sub: 'x² = c, (x + p)² = c, factorising' },
+  { id: '5.3', title: '5.3 The quadratic formula', sub: 'a, b, c, the discriminant and the formula' },
+  { id: '5.4', title: '5.4 Quadratic inequalities', sub: 'Solve the equation, sketch, read off' },
+  { id: '5.5', title: '5.5 Higher powers', sub: 'x³ = c, x⁴ = c and roots' }
+];
+const GOALS = [
+  ['5.1', 'I can solve linear equations and inequalities', ['oneStep', 'bothSides', 'decimals', 'withFractions', 'lcmFractions', 'brackets', 'intersect', 'rectangleEq', 'ineqSimple', 'ineqBoth', 'ineqGraph', 'ineqContext', 'signTurn'], 'Dividing by a negative number turns the inequality sign around.'],
+  ['5.2', 'I can solve quadratic equations by taking roots and by factorising', ['howMany', 'squareEq', 'bracketSq', 'roundedSq', 'exactSq', 'productZero', 'commonFactor', 'commonFactorEq', 'productSum', 'factorTrinomial', 'rearrange'], 'A · B = 0 gives A = 0 or B = 0.'],
+  ['5.3', 'I can use the quadratic formula', ['readABC', 'discriminant', 'numSolutions', 'abcExact', 'abcRounded', 'abcRearrange'], 'x = (−b ± √D) / 2a with D = b² − 4ac'],
+  ['5.4', 'I can solve quadratic inequalities', ['readIneq', 'solveIneq', 'squareIneq', 'rearrangeIneq', 'alwaysNever'], 'Solve the equation, sketch the graph, read off.'],
+  ['5.5', 'I can solve equations with higher powers', ['oddPower', 'evenPower', 'howManyPower', 'powerRounded', 'shiftedPower'], 'Odd power: one solution. Even power: 0, 1 or 2.']
+];
+return { key: 'nx-3ht-ch5-v1', SECTIONS, LESSONS: [], G, XG, defaultMode: 'para', GOALS };
+
+})(NX, {"cls": "3HT"});
+window.Ch3 = NX.engine(__def); window.Ch3.GOALS = __def.GOALS;
+</script>
+<script>
+(function(){
+'use strict';
+const E=window.Ch3,$=s=>document.querySelector(s);
+const LV=['Mild','Medium','Spicy','Extra spicy'],GOAL=10;let mix=false;
+const hasLessons=Array.isArray(E.LESSONS)&&E.LESSONS.length>0;
+const KEY=E.KEY||'nx-page';
+const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const plain=h=>String(h).replace(/<svg[\s\S]*?<\/svg>/g,' [figure] ').replace(/<span class="nu">/g,'(').replace(/<\/span><span class="de">/g,')/(').replace(/<sup[^>]*>/g,'^').replace(/<[^>]+>/g,'').replace(/&nbsp;/g,' ').replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/\s+/g,' ').trim();
+const items=()=>hasLessons&&st.mode==='lesson'?E.LESSONS:E.SECTIONS;
+const todayISO=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
+const latestLesson=()=>{const t=todayISO();let L=E.LESSONS[0];E.LESSONS.forEach(x=>{if(x.date&&x.date<=t&&!x.rev&&x.id!=='L10')L=x});return L.id};
+function defaultFor(mode){return mode==='lesson'&&hasLessons?latestLesson():E.SECTIONS[0].id}
+function setMode(m){if(st.mode===m)return;st.secs[st.mode]=st.sec;st.mode=m;st.sec=st.secs[m]||defaultFor(m);test=null;mix=false;free=null;focus=null;save();next(true)}
+let st={mode:E.defaultMode||'lesson',secs:{},done:{},stat:{},best:{},tests:[],sec:'',prog:{},lvl:{},res:{},log:[],badges:{},bestRow:0,goalsAll:false};
+try{const r=JSON.parse(localStorage.getItem(KEY)||'null');if(r&&r.prog)st=Object.assign(st,r)}catch(e){}
+if(!hasLessons)st.mode='para';
+if(!st.modeSet&&st.prog&&Object.keys(st.prog).length&&hasLessons)st.mode='para';
+['secs','done','stat','best','res','badges'].forEach(k=>{st[k]=st[k]||{}});st.tests=st.tests||[];st.log=st.log||[];st.prog=st.prog||{};st.lvl=st.lvl||{};
+if(!st.sec||!items().some(x=>x.id===st.sec))st.sec=defaultFor(st.mode);
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify({mode:st.mode,modeSet:1,secs:st.secs,sec:st.sec,prog:st.prog,lvl:st.lvl,done:st.done,stat:st.stat,best:st.best,tests:st.tests,res:st.res,log:st.log,badges:st.badges,bestRow:st.bestRow,goalsAll:st.goalsAll,auto:st.auto}))}catch(e){}};
+let protoAngle=null;let cur=null,tries=0,done=false,streak=0,wrongRun=0,recent=[],clicked=[],choiceSel=null,hintUsed=false,attempts=[],stepLines=[],row=0;
+let test=null;      // {qs,i,score,log}
+let free=null;      // free practice level (0..3) or null = adaptive
+let focus=null;     // {ids:[goal ids], i}
+
+/* ---------- learning goals ---------- */
+const GL=[],gOfGen={};
+(function buildGoals(){
+  const lists=[];[E.G||{},E.XG||{}].forEach((T,xi)=>Object.keys(T).forEach(sec=>T[sec].forEach(f=>lists.push([sec,f.name,xi===1]))));
+  const present=new Set(lists.map(x=>x[1]));
+  (E.GOALS||[]).forEach((g,i)=>{const gens=g[2].filter(n=>present.has(n));if(!gens.length)return;const o={id:'g'+GL.length,sec:g[0],title:g[1],gens,warn:g[3]||''};GL.push(o);gens.forEach(n=>{if(!(n in gOfGen))gOfGen[n]=o})});
+  const secTitle={};E.SECTIONS.forEach(s=>secTitle[s.id]=s.title.replace(/^[\d.]+\s*/,''));
+  const ch={};
+  lists.forEach(([sec,name])=>{if(name in gOfGen)return;let o=ch[sec];if(!o){o=ch[sec]={id:'g'+GL.length,sec,title:'I can solve harder and mixed questions about '+(secTitle[sec]||sec).toLowerCase(),gens:[],warn:'',challenge:true};GL.push(o)}o.gens.push(name);gOfGen[name]=o});
+})();
+const goalById=id=>GL.find(g=>g.id===id);
+const genName=q=>{if(!q)return null;if(typeof q.gen!=='number')return q.gen;const g=q.gen>=100?(E.XG[q.sec]||[])[q.gen-100]:(E.G[q.sec]||[])[q.gen];return g?g.name:null};
+const goalOfQ=q=>q&&gOfGen[genName(q)]||null;
+function itemGens(it){const s=new Set();if(it.gens){it.gens.concat(it.xg||[]).forEach(e=>s.add(e[1]))}else{(E.G[it.id]||[]).concat(E.XG[it.id]||[]).forEach(f=>s.add(f.name))}return s}
+function goalsForItem(id){const it=items().find(x=>x.id===id)||E.SECTIONS.find(x=>x.id===id);if(!it)return GL;const gs=itemGens(it);return GL.filter(g=>g.gens.some(n=>gs.has(n)))}
+/* mastery: last six results, weights like the chapter 1 page */
+const STAT={mastered:['Mastered','#16803c','#e6f6ec'],almost:['Almost mastered','#2f7d32','#eef7e4'],way:['On the way','#8a5a00','#fff4d6'],attention:['Needs attention','#b25a00','#ffe9d1'],extra:['Extra practice','#b3261e','#fdecea'],none:['Not enough practice yet','#5b6b7a','#eef2f6']};
+function goalScore(g){const r=st.res[g.id]||[];const w=r.slice(-6);const n=w.length;return{n:r.length,pct:n?Math.round(100*w.reduce((a,b)=>a+b,0)/n):null,key:r.length<3?'none':(function(p){return p>=80?'mastered':p>=70?'almost':p>=55?'way':p>=40?'attention':'extra'})(Math.round(100*w.reduce((a,b)=>a+b,0)/n))}}
+function record(q,w){const g=goalOfQ(q);if(!g)return;const r=st.res[g.id]=st.res[g.id]||[];r.push(w);if(r.length>30)r.splice(0,r.length-30)}
+
+/* ---------- badges ---------- */
+const BADGES=[['first','First try!','Answer a question correctly on your first try.'],['row5','5 in a row','Answer 5 questions in a row correctly on the first try.'],['row10','10 in a row','Answer 10 questions in a row correctly on the first try.'],['up','Level up','Reach the next level.'],['spicy','Spicy!','Reach the Spicy level in any section.'],['mm','Master Mix','Unlock a Master Mix.'],['goal','Objective mastered','Get the status Mastered on a learning objective.'],['test','Test ready','Score at least 20 out of 24 in a test preparation.']];
+function award(id){if(st.badges[id])return '';st.badges[id]=todayISO();const b=BADGES.find(x=>x[0]===id);return ' <b>🏅 New badge: '+b[1]+'!</b>'}
+
+/* ---------- navigation ---------- */
+function renderNav(){
+  const n=$('#nav');n.innerHTML='';
+  if(hasLessons){const tg=document.createElement('div');tg.className='seg';tg.innerHTML='<button type="button" class="'+(st.mode==='lesson'?'on':'')+'" data-m="lesson">By lesson</button><button type="button" class="'+(st.mode==='para'?'on':'')+'" data-m="para">By paragraph</button>';
+    tg.querySelectorAll('button').forEach(b=>b.onclick=()=>setMode(b.dataset.m));n.appendChild(tg)}
+  const t0=todayISO(),lat=hasLessons&&st.mode==='lesson'?latestLesson():'';
+  const inMain=!test&&!view;
+  items().forEach(s=>{
+    const b=document.createElement('button');b.className='sec';b.setAttribute('aria-current',String(inMain&&!mix&&st.sec===s.id));
+    const p=Math.min(GOAL,st.prog[s.id]||0);
+    b.innerHTML='<div class="t">'+s.title+'</div><div class="s">'+s.sub+(st.mode==='lesson'&&s.date?(s.date>t0?' · coming up':s.id===lat?' · latest lesson':''):'')+'</div><div class="bar" aria-hidden="true"><i style="width:'+p*100/GOAL+'%"></i></div>';
+    b.onclick=()=>{test=null;view=null;mix=false;free=null;focus=null;st.sec=s.id;save();next(true)};n.appendChild(b);
+    if(st.done[s.id]){const m=document.createElement('button');m.className='sec mm';m.setAttribute('aria-current',String(inMain&&mix&&st.sec===s.id));m.textContent='★ Master Mix';m.onclick=()=>{test=null;view=null;mix=true;free=null;focus=null;st.sec=s.id;save();next(true)};n.appendChild(m)}
+  });
+  const t=document.createElement('button');t.className='sec';t.setAttribute('aria-current',String(!!test));
+  t.innerHTML='<div class="t">Test preparation</div><div class="s">24 mixed questions, no hints</div>';
+  t.onclick=startTest;n.appendChild(t);
+}
+let view=null;
+function lvl(){return st.lvl[st.sec]||0}
+function curLevel(){return mix?'mix':free!==null?free:lvl()}
+function fingerprint(q){return String(q.html||'').replace(/<svg[\s\S]*?<\/svg>/g,'')+'|'+JSON.stringify(q.ans)}
+function findGen(name){for(const T of [E.G||{},E.XG||{}])for(const sec of Object.keys(T)){const f=T[sec].find(x=>x.name===name);if(f)return [f,sec,T===E.XG]}return null}
+function makeFromGoal(g,level){
+  for(let t=0;t<40;t++){
+    const name=g.gens[Math.floor(Math.random()*g.gens.length)],hit=findGen(name);if(!hit)continue;
+    const [f,sec,isX]=hit;let q;try{q=f(Math.min(level,2))}catch(e){continue}
+    q.gen=name;q.sec=sec;q.lvl=level;q.mix=false;q.fp=fingerprint(q);
+    if(q.type==='choice'&&q.opts&&q.opts.length<=2&&level>0&&t<30)continue;
+    if(recent.some(r=>r.f===q.fp))continue;return q;
+  }
+  return E.make(st.sec,level,recent);
+}
+let autoT=null;
+function next(reset){
+  clearTimeout(autoT);view=null;
+  if(reset){streak=0;wrongRun=0;recent=[]}
+  if(focus){const g=goalById(focus.ids[focus.i%focus.ids.length]);focus.i++;const sec=g.sec;cur=makeFromGoal(g,st.lvl[sec]||0)}
+  else cur=E.make(st.sec,curLevel(),recent);
+  if(window.__force)for(let i=0;i<500&&String(cur.gen).replace(/^X/,'')!==window.__force;i++)cur=E.make(st.sec,curLevel(),recent);
+  recent.push({g:cur.gen,f:cur.fp});recent=recent.slice(-12);tries=0;done=false;clicked=[];choiceSel=null;protoAngle=null;hintUsed=false;attempts=[];stepLines=[];renderQ();renderNav();
+}
+
+/* ---------- steps: which questions need working ---------- */
+const NOSTEP=new Set('missingExp multDiv rootEq volPrism volPyramid volCone volHemisphere cylinderNet surfCuboid primeFact nthRootCalc findNumber centroidRatio zToMidpoint decimalToFraction subInt missingNumber divInt missingFactor toMixed toImproper likeAdd equivFrac fractionOf fracDivInt riverShare missingFraction areaVolume maxIntersect maxIntersect5 axisDist substitute readLineY valueAt squareArea findK context graphK symmetryLine findKInv inverseContext axisFromPoints yIntercept exactTrig lcmTwo hcfTwo'.split(' '));
+const ADDMULTI=new Set('divideTerms nthRootFraction rootOfFraction calcRoots nthMix minusBracket binomMul threeFactors powerSpecial simplifyBinom numFracAdd numFracMulDiv numberAndFraction intDivFraction longProduct quotientPower chainBrackets differenceOfSquares2 sumDiff threeFracs binomialDen rootsFractionSum nthRootPow substitute addUnlike quotientRoots difference gauss howManyTerms productRule evenSum sumBetween sumRationalise aspectRatio twoFactors areaFactor mulSci timesBigger commonFactorCount coneInCylinder frustum identity tanFromSinCos missingAngle thirdAngle bisectAngle bisectedFull reflex isosceles angleFromTwo isoscelesAngle slopeToAngle rectDiagAngle cubeAngle cuboidDiag pyramidAngle angleOfElevation'.split(' '));
+const EXPRSTEP=new Set('divideTerms nthRootFraction rootOfFraction calcRoots minusBracket binomMul threeFactors powerSpecial simplifyBinom numFracAdd numFracMulDiv numberAndFraction intDivFraction longProduct quotientPower chainBrackets differenceOfSquares2 sumDiff threeFracs binomialDen rootsFractionSum sumRationalise quotientRoots mulSci timesBigger commonFactorCount simplifyRoot likeRadicals simplifySum mixedRoot rationaliseSimplify threeRoots bigRoot addSci distance surfCylinder surfCone divideRoots pythRoot addSimplify simplifyByPrimes rootOfFractionSimp exactRatios mixedLike addUnlike landUse mixedUnlike pyramid mulFrac fracOrder fracDivOrder threeMixed remainingTrip fracChain tenPower'.split(' '));
+const DISC=new Set('identity tanFromSinCos sideKnownHyp angleInverse isoscelesBase twoArms howManyOn'.split(' '));
+const NODISC=new Set('primeOrNot readPoint gradientIntercept abc vertex table frontView sideView cubeNet pickSkew'.split(' '));
+const DIVSTEP=new Set('bisectAngle'.split(' '));   /* a typed a/b is a division step here, not a fraction answer */
+const eqN=q=>(String(q.steps||'').replace(/<svg[\s\S]*?<\/svg>/g,'').replace(/<[^>]+>/g,'').match(/=/g)||[]).length;
+const canType=q=>q.type==='num'||(q.type==='expr'&&!!E.check);
+function stepMode(q){
+  if(!q||q.noStep)return '';
+  const gn=String(genName(q)||'').replace(/^X/,'');
+  const st_=String(q.steps||'');
+  if(!(q.needStep||eqN(q)>=2||ADDMULTI.has(gn)))return '';
+  if(canType(q)){
+    if(test)return 'note';
+    if(q.needStep)return E.parse?'enforce':'note';
+    if(q.type==='expr'&&!EXPRSTEP.has(gn))return '';
+    if(NOSTEP.has(gn))return '';
+    if(DISC.has(gn)||/\b(sin|cos|tan)\b|sin⁻|cos⁻|tan⁻/.test(st_.replace(/<[^>]+>/g,'')))return 'note';
+    return E.parse?'enforce':'note';   /* pages on the older engine cannot parse typed working, so they only show the note */
+  }
+  return NODISC.has(gn)?'':'note';
+}
+const STEPNOTE='<p class="stepnote"><b>Steps count.</b> Showing your steps is part of a correct answer. '+'This page can only check the final answer of this question, so write your working on paper too (in a test you always must).</p>';
+function qHTML(q){
+  let h='<div class="q">'+q.html+'</div>'+(stepMode(q)==='note'?STEPNOTE:'')+'<div id="stp" class="stp"></div><div class="ans" id="ans">';
+  if(q.type==='num')h+='<label class="sr" for="in0">Your answer</label><input type="text" id="in0" inputmode="text" autocomplete="off" placeholder="your answer">';
+  else if(q.type==='expr')h+='<label class="sr" for="in0">Your answer</label><input type="text" id="in0" inputmode="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="type your answer"><div class="kp" id="kp">'+(q.keys||['√','³√','⁴√','^','/','·','(',')','π']).map(k=>'<button type="button" data-k="'+k+'">'+k+'</button>').join('')+'<button type="button" data-k="⌫" aria-label="delete">⌫</button></div><div class="pv" id="pv" aria-live="polite"></div>';
+  else if(q.type==='point')h+='<label class="sr" for="in0">Your answer</label><input type="text" id="in0" autocomplete="off" placeholder="(x, y)">';
+  else if(q.type==='multi')q.fields.forEach((f,i)=>{h+='<label for="in'+i+'">'+f+'</label><input type="text" id="in'+i+'" autocomplete="off">'});
+  else if(q.type==='choice'){h+='<div class="choices">'+q.opts.map((o,i)=>'<button type="button" class="choice" data-i="'+i+'" aria-pressed="false">'+o+'</button>').join('')+'</div>'}
+  h+='</div>';return h;
+}
+/* ---------- learning-goals panel ---------- */
+function goalsPanel(q){
+  if(!GL.length)return '';
+  const cg=goalOfQ(q),all=st.goalsAll,list=goalsForItem(st.sec);
+  const shown=all?list:(cg?[cg]:[]);
+  const li=g=>{const sc=goalScore(g),S=STAT[sc.key];return '<li'+(cg&&g.id===cg.id?' class="cur" aria-current="step"':'')+'><span class="sd" style="background:'+S[1]+'" title="'+S[0]+'"></span><span class="gt">'+esc(g.title)+'</span></li>'};
+  return '<div class="goals"><div class="gh"><b>Key learning goals</b><span class="gb"><button type="button" class="lk" id="gtoggle" aria-expanded="'+all+'">'+(all?'Show current goal only':'Show all learning goals')+'</button>'+(cg&&!test?'<button type="button" class="lk" id="gexplain">Explain this goal</button>':'')+'</span></div><ul>'+shown.map(li).join('')+'</ul><div id="gcard"></div></div>';
+}
+function modeBar(){
+  if(mix||test)return '';
+  const a=free===null&&!focus;
+  let h='<div class="pmbar"><span class="pml">Practice:</span><button type="button" class="pm'+(a?' on':'')+'" data-f="a">Adaptive</button><span class="pml">Free practice:</span>'+LV.map((l,i)=>'<button type="button" class="pm l'+i+(free===i?' on':'')+'" data-f="'+i+'">'+l+'</button>').join('')+'</div>';
+  if(free!==null)h+='<div class="pmnote"><b>Free practice: '+LV[free]+'.</b> These questions do not count towards reaching the next level. <button type="button" class="btn alt sm" id="back2a">← Back to adaptive</button></div>';
+  if(focus){const g=goalById(focus.ids[(focus.i-1+focus.ids.length)%focus.ids.length]);h+='<div class="pmnote"><b>Focused practice</b> on your weakest objectives'+(g?': '+esc(g.title):'')+'. These questions do not count towards the next level. <button type="button" class="btn alt sm" id="back2a">← Back to adaptive</button></div>'}
+  return h;
+}
+function renderQ(){
+  const m=$('#main'),q=cur;
+  const lvLabel=free!==null?'Free practice · '+LV[q.lvl]:LV[q.lvl];
+  m.innerHTML='<div class="top">'+(q.mix?'<span class="badge lm">Master Mix</span> ':'')+'<span class="badge l'+q.lvl+'">'+lvLabel+'</span><span class="streak">'+(free!==null||focus?'Free practice':'In a row: '+[0,1,2].map(i=>'<span class="dot'+(i<streak?' on':'')+'"></span>').join('')+' &nbsp; Done: '+Math.min(GOAL,st.prog[st.sec]||0)+'/'+GOAL)+'</span></div>'+modeBar()+goalsPanel(q)+
+   qHTML(q)+'<div class="btns"><button class="btn" id="chk">Check</button><button class="btn alt" id="hnt">Hint</button><button class="btn alt" id="sol" style="display:none">Show solution</button><button class="btn alt" id="nxt" style="display:none">Next question</button></div><label class="autoc"><input type="checkbox" id="autoc"'+(st.auto===false?'':' checked')+'> Go to the next question automatically after a correct answer</label><div class="fb" id="fb"></div><div id="hist"></div>'+logPanel();
+  wire();wireChrome();
+  const f=$('#in0');if(f)f.focus();
+}
+function logPanel(){
+  if(!st.log.length)return '';
+  return '<details class="hl"><summary>My recent answers ('+Math.min(st.log.length,15)+')</summary><ul>'+st.log.slice(-15).reverse().map(l=>'<li><span class="'+(l.ok?'ok':'no')+'">'+(l.ok?'✓':'✗')+'</span> <span class="lq">'+esc(l.t)+'</span> → <b>'+esc(l.a)+'</b></li>').join('')+'</ul></details>';
+}
+function wireChrome(){
+  document.querySelectorAll('.pmbar .pm').forEach(b=>b.onclick=()=>{const f=b.dataset.f;free=f==='a'?null:+f;focus=null;mix=false;next(true)});
+  const b2=$('#back2a');if(b2)b2.onclick=()=>{free=null;focus=null;next(true)};
+  const gt=$('#gtoggle');if(gt)gt.onclick=()=>{st.goalsAll=!st.goalsAll;save();const g=document.querySelector('.goals');const tmp=document.createElement('div');tmp.innerHTML=goalsPanel(cur);g.replaceWith(tmp.firstChild);wireChrome()};
+  const ge=$('#gexplain');if(ge)ge.onclick=()=>{const c=$('#gcard');if(c.innerHTML){c.innerHTML='';ge.textContent='Explain this goal';return}ge.textContent='Hide explanation';c.innerHTML=helpCard(goalOfQ(cur))};
+}
+const ENTER={num:'Type a number. A comma or a point both work for decimals.',expr:'Type your answer in the box. Use the buttons under the box for √, higher roots (³√ is the cube root; you can also type 3V27), powers (^) and fractions (/). Use brackets in the bottom of a fraction: 5/(2x). The line “Your answer reads” shows what I understood.',choice:'Click the answer you think is right, then press Check.',point:'Type the coordinates like (2, 3).',multi:'Fill in every box.',click:'Click on the picture, then press Check.',proto:'Click on the protractor scale, then press Check.'};
+const WARN={root:'Simplify completely: no square factor may stay under the root.',mono:'Write the answer as simply as possible: one number, then each letter with one exponent.',poly:'Collect like terms and write everything out without brackets.',lowest:'Cancel the fraction as far as possible.',primes:'Write only prime numbers, in increasing order, with exponents.',sci:'In scientific notation the first number is at least 1 and less than 10.'};
+function helpCard(g){
+  if(!g)return '';
+  let q=null;for(const n of g.gens){const hit=findGen(n);if(!hit)continue;try{q=hit[0](0);q.gen=n;break}catch(e){}}
+  if(!q)return '<div class="hc"><p>No explanation available yet.</p></div>';
+  const how=q.hint?String(q.hint):'Read the question carefully and work step by step.';
+  const form=q.form&&WARN[q.form]?WARN[q.form]:'';
+  const warn=g.warn||form;
+  return '<div class="hc"><h4>'+esc(g.title)+'</h4><div class="hr"><b>What to do</b><p>'+how+'</p></div><div class="hr"><b>Example</b><div class="ex">'+q.html+'<p class="exa"><b>Answer: '+E.answerText(q)+'</b></p></div></div><div class="hr"><b>Steps</b><div>'+(q.steps||'')+'</div></div><div class="hr"><b>What to enter</b><p>'+(ENTER[q.type]||'Enter your answer.')+'</p></div>'+(warn?'<div class="hr warn"><b>Watch out</b><p>'+warn+'</p></div>':'')+'</div>';
+}
+/* ---------- question wiring ---------- */
+function wire(){
+  wireProto();$('#chk').onclick=check;$('#hnt').onclick=hint;$('#sol').onclick=showSolution;$('#nxt').onclick=()=>{if(Date.now()-finT<400)return;test?testNext():next(false)};{const ac=$('#autoc');if(ac)ac.onchange=()=>{st.auto=ac.checked;if(!ac.checked)clearTimeout(autoT);save()}}
+  document.querySelectorAll('.choice').forEach(b=>b.onclick=()=>{if(done)return;choiceSel=+b.dataset.i;document.querySelectorAll('.choice').forEach(x=>x.setAttribute('aria-pressed',String(x===b)))});
+  document.querySelectorAll('#ans input').forEach(i=>i.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();check()}}));
+  wireExpr();wireGrid();
+}
+function wireGrid(){
+  const sv=document.querySelector('svg.grid[data-click]');
+  if(sv)sv.addEventListener('click',ev=>{
+    if(done)return;const r=sv.getBoundingClientRect(),W=+sv.dataset.w,u=+sv.dataset.u,pad=+sv.dataset.pad;
+    const px=(ev.clientX-r.left)*W/r.width,py=(ev.clientY-r.top)*W/r.width;
+    const x=Math.round((px-pad)/u)+ +sv.dataset.xmin,y=+sv.dataset.ymax-Math.round((py-pad)/u);
+    const k=clicked.findIndex(p=>p[0]===x&&p[1]===y);if(k>=0)clicked.splice(k,1);else clicked.push([x,y]);drawMarks(sv);
+  });
+}
+function wireExpr(){
+  const kp=document.getElementById('kp');if(!kp)return;const inp=$('#in0'),pv=$('#pv');
+  const upd=()=>{const v=inp.value.trim();if(!v){pv.innerHTML='';return}let h=null;try{h=E.M(v,cur.noVars?{noVars:true}:{})}catch(e){}pv.innerHTML=h&&E.parse&&(()=>{try{E.parse(v,cur.noVars?{noVars:true}:{});return true}catch(e){return false}})()?'<span class="pl">Your answer reads:</span> '+h:'<span class="pl">I cannot read that yet. Check your brackets and symbols.</span>'};
+  inp.addEventListener('input',upd);
+  kp.querySelectorAll('button').forEach(b=>b.onclick=()=>{if(done)return;const k=b.dataset.k,s=inp.selectionStart,e=inp.selectionEnd,v=inp.value;
+    if(k==='⌫'){if(s!==e){inp.value=v.slice(0,s)+v.slice(e);inp.setSelectionRange(s,s)}else if(s>0){inp.value=v.slice(0,s-1)+v.slice(s);inp.setSelectionRange(s-1,s-1)}}
+    else{inp.value=v.slice(0,s)+k+v.slice(e);const n=s+k.length;inp.setSelectionRange(n,n)}
+    inp.focus();upd()});
+}
+function drawMarks(sv){
+  const u=+sv.dataset.u,pad=+sv.dataset.pad,xmin=+sv.dataset.xmin,ymax=+sv.dataset.ymax;
+  sv.querySelector('.marks').innerHTML=clicked.map(p=>{const cx=pad+(p[0]-xmin)*u,cy=pad+(ymax-p[1])*u;return sv.dataset.cell?'<rect x="'+(cx-u/2+1)+'" y="'+(cy-u/2+1)+'" width="'+(u-2)+'" height="'+(u-2)+'" fill="#f4a58a" stroke="#d1471f" stroke-width="2"/>':'<circle cx="'+cx+'" cy="'+cy+'" r="6" fill="#d1471f" stroke="#fff" stroke-width="1.5"/>'}).join('');
+}
+function userAns(q){
+  if(q.type==='proto')return protoAngle;
+  if(q.type==='num'||q.type==='point'||q.type==='expr')return $('#in0').value;
+  if(q.type==='multi')return q.fields.map((_,i)=>$('#in'+i).value);
+  if(q.type==='choice')return choiceSel;
+  return clicked;
+}
+function ansText(q,u){
+  if(q.type==='choice')return u===null?'':plain(q.opts[u]);
+  if(q.type==='multi')return u.join(' and ');
+  if(q.type==='click')return u.map(p=>'('+p[0]+', '+p[1]+')').join(' ');
+  if(q.type==='proto')return u+'°';
+  return String(u);
+}
+function fb(cls,t){const b=$('#fb');b.className='fb show '+cls;b.innerHTML=t}
+function hint(){if(cur.hint){hintUsed=true;fb('hint','<b class="h">Hint</b>'+cur.hint)}}
+function empty(q,u){if(q.type==='proto')return u===null;if(q.type==='num'||q.type==='point'||q.type==='expr')return !String(u).trim();if(q.type==='multi')return u.some(v=>!String(v).trim());if(q.type==='choice')return u===null;return u.length===0}
+function logAnswer(q,u,ok){
+  const a=ansText(q,u);attempts.push({a,ok});
+  st.log.push({t:plain(q.html).slice(0,90),a:a.slice(0,60),ok,d:todayISO()});if(st.log.length>40)st.log.splice(0,st.log.length-40);
+  const h=$('#hist');if(h)h.innerHTML='<div class="at">Your answers on this question: '+attempts.map(x=>'<span class="'+(x.ok?'ok':'no')+'">'+(x.ok?'✓':'✗')+' '+esc(x.a)+'</span>').join(' ')+'</div>';
+}
+const chk=(q,u)=>E.check?E.check(q,u):{ok:E.grade(q,u)};
+function fmtStep(t){let h=null;if(/\//.test(t)||(cur&&cur.type==='expr'&&/[\^√]/.test(t))){try{h=E.M(t,{noVars:cur&&cur.type!=='expr'})}catch(e){}}else h=esc(t).replace(/\*|·/g,'×').replace(/-/g,'−');return h||esc(t)}
+function drawSteps(fin){const d=$('#stp');if(!d)return;d.innerHTML=stepLines.map(t=>'<div class="stl"><span class="ci open" aria-label="correct step">○</span><span class="sv">'+fmtStep(t)+' <span class="eq">=</span></span></div>').join('')+(fin?'<div class="stl fin"><span class="ci full" aria-label="correct final answer">✓</span><span class="sv">'+fmtStep(fin)+'<div class="fnote">Completely correct! This is the correct final answer.</div></span></div>':'')}
+function stepEq(q,pt){
+  if(q.type==='num'){if(q.tol&&E.evalNum){try{return Math.abs(E.evalNum(pt)-q.ans)<=q.tol}catch(e){return false}}try{E.parse(pt,{noVars:true})}catch(e){return false}return E.check({type:'expr',ans:String(q.ans),form:'any',noVars:true},pt).ok}
+  return E.check({type:'expr',ans:q.ans,form:'any'},pt).ok}
+function check(){
+  if(done)return;const q=cur;let u=userAns(q);
+  if(empty(q,u)){fb('hint','Fill in your answer first.');return}
+  if((q.type==='num'||(q.type==='expr'&&E.check&&!/=/.test(String(q.ans))))&&typeof u==='string'&&u.indexOf('=')>0&&E.parse){
+    const raw=u.split('=').map(x=>x.trim()).filter(Boolean);
+    /* numeric answers: ignore a bare label such as "∠R", "<R", "R" or "angle R", and a trailing ° (so 360-76-86-111=∠R=87° counts) */
+    const parts=q.type==='num'?raw.filter(x=>!/^(?:∠|<|angle\s*)?[A-Za-z]{1,4}°?$/i.test(x)).map(x=>x.replace(/°$/,'').trim()):raw;
+    if(raw.length>=2&&parts.length>=1){const fin=parts[parts.length-1],pre=parts.slice(0,-1);
+      let okPre=false;try{okPre=pre.every(pt=>stepEq(q,pt))}catch(e){}
+      if(okPre&&chk(q,fin).ok){if(!test)stepLines.push(...pre);u=fin;const i0=$('#in0');if(i0)i0.value=fin}}}
+  if(test){return testCheck(q,u)}
+  const sm=stepMode(q);
+  const slashCalc=q.type==='num'&&DIVSTEP.has(String(genName(q)||'').replace(/^X/,''))&&/^\s*\d+(?:[.,]\d+)?\s*\/\s*\d+(?:[.,]\d+)?\s*$/.test(String(u));
+  if(sm==='enforce'&&q.type==='num'&&!stepLines.length&&!isNaN(E.parseNum(u))&&!slashCalc){fb('hint','<b class="h">Show your working first.</b>Showing your steps is part of a correct answer. Type the first calculation you do (for example <i>(4+5)*9</i> or <i>9*9</i>), then work towards the final answer.');return}
+  let calcWrong=false;
+  if(q.type==='num'&&(isNaN(E.parseNum(u))||slashCalc)&&E.parse){let calc=false;try{E.parse(String(u),{noVars:true});calc=true}catch(e){}
+    if(calc){let rr;if(q.tol&&E.evalNum){let vv=NaN;try{vv=E.evalNum(u)}catch(e){}rr={ok:Math.abs(vv-q.ans)<=q.tol}}else rr=E.check({type:'expr',ans:String(q.ans),form:'any',noVars:true},u);
+      if(rr.ok){fb('hint','<b class="h">✓ That calculation is right.</b>Now work it out and type the <b>final number</b> as your answer.');stepLines.push(String(u).trim());drawSteps();const i0=$('#in0');i0.value='';i0.focus();const pv=$('#pv');if(pv)pv.innerHTML='';return}calcWrong=true}}
+  if(q.type==='expr'&&E.check){const r0=E.check(q,u);
+    if(r0.ok){if(sm==='enforce'&&!stepLines.length){fb('hint','<b class="h">Show your working first.</b>Showing your steps is part of a correct answer. Type an in-between step first (for example before you simplify or add things up), then type your final answer.');return}}
+    else if(r0.why==='form'&&stepLines.length<4){stepLines.push(String(u).trim());drawSteps();fb('hint','<b class="h">✓ Good step.</b>That has the right value, but it is not finished yet. Now work it out and type the final answer'+(r0.msg?' ('+esc(r0.msg)+')':'')+'.');const i0=$('#in0');i0.value='';i0.focus();const pv=$('#pv');if(pv)pv.innerHTML='';return}}
+  const R_=chk(q,u),ok=R_.ok;tries++;
+  logAnswer(q,u,ok);
+  const S=st.stat[st.sec]=st.stat[st.sec]||{n:0,ok:0};
+  const counts=free===null&&!focus;
+  if(ok){
+    done=true;if(counts)st.prog[st.sec]=(st.prog[st.sec]||0)+1;S.n++;if(tries===1)S.ok++;
+    const w=hintUsed?0.5:tries===1?1:0.75;record(q,w);
+    let up='';
+    if(tries===1&&!hintUsed){row++;streak+=counts?1:0;wrongRun=0;if(row>st.bestRow)st.bestRow=row;up+=award('first');if(row>=5)up+=award('row5');if(row>=10)up+=award('row10')}else if(tries>1){row=0;if(counts)streak=0}
+    if(counts&&!mix&&streak>=3){streak=0;
+      if(lvl()<3){st.lvl[st.sec]=lvl()+1;st.best[st.sec]=Math.max(st.best[st.sec]||0,lvl());up+=' <b>Level up: '+LV[lvl()]+'!</b>'+(lvl()===3?' These are challenge questions.':'')+award('up');if(lvl()>=2)up+=award('spicy')}
+      else if(!st.done[st.sec]){st.done[st.sec]=true;up+=' <b>Extra spicy completed! ★ Master Mix is now unlocked for this section (see the menu).</b>'+award('mm')}}
+    const g=goalOfQ(q);if(g&&goalScore(g).key==='mastered')up+=award('goal');
+    if(stepLines.length&&(q.type==='num'||q.type==='expr'))drawSteps(String(u).trim());save();fb('ok','<b class="h">Correct!'+(tries>1?' (second try)':'')+'</b>'+q.steps+up);finish();
+    if(st.auto!==false){clearTimeout(autoT);autoT=setTimeout(()=>{if(done&&cur===q&&!test&&!view)next(false)},1000)}
+  }else if(tries===1){
+    row=0;if(counts)streak=0;
+    $('#sol').style.display='';
+    fb('no','<b class="h">Not yet. Try again.</b>'+(R_.why==='form'?(R_.msg||'That has the right value, but it is not in the form asked for.')+' ':calcWrong?'That calculation does not give the right answer. ':R_.why==='parse'?'I could not read that answer. ':'')+(q.hint?q.hint:''));
+  }else{
+    done=true;row=0;wrongRun+=counts?1:0;S.n++;record(q,0);let dn='';
+    if(counts&&!mix&&wrongRun>=2&&lvl()>0){st.lvl[st.sec]=lvl()-1;wrongRun=0;dn=' <i>Next questions will be a bit easier.</i>'}
+    save();fb('no','<b class="h">The answer is: '+E.answerText(q)+'</b>'+q.steps+dn);finish();
+  }
+}
+function showSolution(){
+  if(done||test)return;const q=cur;done=true;row=0;if(free===null&&!focus)streak=0;
+  const S=st.stat[st.sec]=st.stat[st.sec]||{n:0,ok:0};S.n++;record(q,0);
+  attempts.push({a:'(solution shown)',ok:false});
+  save();fb('no','<b class="h">Solution — the answer is: '+E.answerText(q)+'</b>'+q.steps+'<p><i>This question does not count as correct. Try the next one.</i></p>');finish();
+}
+function wireProto(){
+  const sv=document.querySelector('svg.proto[data-proto]');if(!sv)return;
+  sv.addEventListener('click',ev=>{if(done)return;
+    const r=sv.getBoundingClientRect(),W=+sv.dataset.w,H=+sv.dataset.h,cx=+sv.dataset.cx,cy=+sv.dataset.cy,R=+sv.dataset.r;
+    const px=(ev.clientX-r.left)*W/r.width,py=(ev.clientY-r.top)*H/r.height;
+    let a=Math.atan2(cy-py,px-cx)*180/Math.PI;if(py>cy)a=px>=cx?0:180;a=Math.max(0,Math.min(180,Math.round(a)));protoAngle=a;
+    const t=a*Math.PI/180,x2=cx+(R+22)*Math.cos(t),y2=cy-(R+22)*Math.sin(t),xd=cx+R*Math.cos(t),yd=cy-R*Math.sin(t);
+    sv.querySelector('.pm').innerHTML='<line x1="'+cx+'" y1="'+cy+'" x2="'+x2+'" y2="'+y2+'" stroke="#223" stroke-width="3" stroke-linecap="round"/><circle cx="'+xd+'" cy="'+yd+'" r="6" fill="#d1471f" stroke="#fff" stroke-width="1.5"/>';
+  });
+}
+function revealQ(q){
+  if(q.type==='proto'){const sv=document.querySelector('svg.proto');if(!sv||sv.querySelector('.rev'))return;const cx=+190,cy=188,R=160,t=q.target*Math.PI/180;
+    sv.insertAdjacentHTML('beforeend','<g class="rev"><line x1="'+cx+'" y1="'+cy+'" x2="'+(cx+(R+22)*Math.cos(t))+'" y2="'+(cy-(R+22)*Math.sin(t))+'" stroke="#16803c" stroke-width="3" stroke-dasharray="7 4"/><circle cx="'+(cx+R*Math.cos(t))+'" cy="'+(cy-R*Math.sin(t))+'" r="5.5" fill="#16803c" stroke="#fff" stroke-width="1.5"/></g>');return}
+  if(q.type!=='click')return;const sv=document.querySelector('svg.grid[data-click]');if(!sv||sv.querySelector('.rev'))return;
+  const u=+sv.dataset.u,pad=+sv.dataset.pad,xmin=+sv.dataset.xmin,ymax=+sv.dataset.ymax,X=x=>pad+(x-xmin)*u,Y=y=>pad+(ymax-y)*u;
+  const R=q.reveal||{segs:[],pts:q.targets};let h='';
+  (R.segs||[]).forEach(g=>{h+='<line x1="'+X(g.a[0])+'" y1="'+Y(g.a[1])+'" x2="'+X(g.b[0])+'" y2="'+Y(g.b[1])+'" stroke="#16803c" stroke-width="2.2" stroke-dasharray="6 4" opacity=".75"/>'});
+  (R.pts||[]).forEach(p=>{h+=sv.dataset.cell?'<rect x="'+(X(p[0])-u/2+1)+'" y="'+(Y(p[1])-u/2+1)+'" width="'+(u-2)+'" height="'+(u-2)+'" fill="#9be0b3" stroke="#16803c" stroke-width="2" opacity=".85"/>':'<circle cx="'+X(p[0])+'" cy="'+Y(p[1])+'" r="5" fill="#16803c" stroke="#fff" stroke-width="1.5"/>'});
+  sv.querySelector('.marks').insertAdjacentHTML('beforebegin','<g class="rev">'+h+'</g>');
+}
+let finT=0;function finish(){finT=Date.now();revealQ(cur);$('#chk').disabled=true;$('#hnt').disabled=true;$('#sol').style.display='none';$('#nxt').style.display='';$('#nxt').focus();document.querySelectorAll('.choice').forEach(b=>b.disabled=true);document.querySelectorAll('#ans input').forEach(i=>i.disabled=true);document.querySelectorAll('#kp button').forEach(i=>i.disabled=true);renderNavSoft();const lp=document.querySelector('details.hl');if(lp){const o=lp.open;lp.outerHTML=logPanel();const n=document.querySelector('details.hl');if(n)n.open=o}}
+function renderNavSoft(){if(items().some(s=>st.done[s.id]&&!document.querySelector('#nav .mm')))renderNav();const bars=document.querySelectorAll('#nav .bar i');items().forEach((s,i)=>{if(bars[i])bars[i].style.width=Math.min(GOAL,st.prog[s.id]||0)*100/GOAL+'%'});const sd=document.querySelectorAll('.goals .sd');}
+
+/* ---------- test preparation ---------- */
+function startTest(){view=null;free=null;focus=null;test={qs:E.makeTest(),i:0,score:0,log:[]};renderNav();testShow()}
+function testShow(){
+  const q=cur=test.qs[test.i];done=false;clicked=[];choiceSel=null;protoAngle=null;hintUsed=false;
+  $('#main').innerHTML='<div class="top"><span class="badge l1">Test preparation</span><span class="streak">Question '+(test.i+1)+' of '+test.qs.length+'</span></div>'+qHTML(q)+
+   '<div class="btns"><button class="btn" id="chk">Check</button><button class="btn alt" id="nxt" style="display:none">'+(test.i===test.qs.length-1?'See my result':'Next question')+'</button></div><div class="fb" id="fb"></div>';
+  wireProto();$('#chk').onclick=check;$('#nxt').onclick=testNext;
+  const tmp=document.createElement('button');tmp.id='hnt';tmp.style.display='none';$('.btns').appendChild(tmp);
+  document.querySelectorAll('.choice').forEach(b=>b.onclick=()=>{if(done)return;choiceSel=+b.dataset.i;document.querySelectorAll('.choice').forEach(x=>x.setAttribute('aria-pressed',String(x===b)))});
+  document.querySelectorAll('#ans input').forEach(i=>i.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();check()}}));
+  wireExpr();wireGrid();
+  const f=$('#in0');if(f)f.focus();
+}
+function testCheck(q,u){
+  done=true;const ok=E.grade(q,u);if(ok)test.score++;revealQ(q);record(q,ok?1:0);
+  test.log.push({q,ok,u});
+  fb(ok?'ok':'no',ok?'<b class="h">Correct</b>':'<b class="h">Not correct. The answer is: '+E.answerText(q)+'</b>'+q.steps);
+  $('#chk').disabled=true;document.querySelectorAll('.choice').forEach(b=>b.disabled=true);document.querySelectorAll('#ans input').forEach(i=>i.disabled=true);document.querySelectorAll('#kp button').forEach(i=>i.disabled=true);
+  $('#nxt').style.display='';$('#nxt').focus();
+}
+function testNext(){
+  test.i++;if(test.i<test.qs.length)return testShow();
+  const n=test.qs.length,g=Math.round((test.score/n*9+1)*10)/10;
+  const wrong=test.log.filter(x=>!x.ok);st.tests.push({d:new Date().toISOString().slice(0,10),s:test.score,n:n});st.tests=st.tests.slice(-20);
+  const bd=test.score>=20?award('test'):'';save();
+  $('#main').innerHTML='<div class="res"><h2>Your result</h2><div class="grade">'+test.score+' / '+n+'</div><p>That is a '+String(g).replace('.',',')+' on a scale of 1 to 10 (a rough guide only).'+bd+'</p>'+
+   (wrong.length?'<h3>Look at these again</h3>'+wrong.map(x=>{const gg=goalOfQ(x.q);return '<div class="rev"><div>'+x.q.html+'</div><div><b>Answer: '+E.answerText(x.q)+'</b></div><div class="st">'+x.q.steps+'</div>'+(gg?'<div class="st"><i>Learning goal: '+esc(gg.title)+'</i></div>':'')+'</div>'}).join(''):'<p><b>Everything correct. Great work!</b></p>')+
+   '<div class="btns"><button class="btn" id="again">Try a new test</button></div></div>';
+  $('#again').onclick=startTest;
+}
+
+/* ---------- progress overview ---------- */
+function overall(){let n=0,s=0;GL.forEach(g=>{const w=(st.res[g.id]||[]).slice(-6);w.forEach(x=>{n++;s+=x})});return{n,pct:n?Math.round(100*s/n):null}}
+function statusChip(key){const S=STAT[key];return '<span class="stc" style="background:'+S[2]+';color:'+S[1]+';border-color:'+S[1]+'">'+S[0]+'</span>'}
+function showProgress(){
+  test=null;view='progress';renderNav();
+  const rows=items().map(s=>{
+    const cur_=st.lvl[s.id]||0,best=Math.max(st.best[s.id]||0,cur_),d=!!st.done[s.id],S=st.stat[s.id]||{n:0,ok:0};
+    const chips=LV.map((l,i)=>'<span class="chip '+(d||i<best?'ach':i===cur_&&(S.n>0||cur_>0)?'act':'')+'">'+l+'</span>').join('');
+    const gs=goalsForItem(s.id),sc=gs.map(goalScore).filter(x=>x.pct!==null);
+    return '<tr><td><b>'+s.title+'</b></td><td>'+chips+'</td><td>'+(S.n||0)+'</td><td>'+(d?'★ unlocked':'not yet')+'</td></tr>';
+  }).join('');
+  const O=overall(),mastered=GL.filter(g=>goalScore(g).key==='mastered').length;
+  const bySec={};GL.forEach(g=>{(bySec[g.sec]=bySec[g.sec]||[]).push(g)});
+  const goalRows=Object.keys(bySec).map(sec=>{const s=E.SECTIONS.find(x=>x.id===sec);return '<tr class="gsec"><td colspan="3"><b>'+(s?s.title:sec)+'</b></td></tr>'+bySec[sec].map(g=>{const sc=goalScore(g);return '<tr><td>'+esc(g.title)+'</td><td>'+statusChip(sc.key)+'</td><td class="num">'+(sc.pct===null?'–':sc.pct+'%')+' <span class="mut">('+sc.n+')</span></td></tr>'}).join('')}).join('');
+  const weak=weakGoals();
+  const T=st.tests.length?'<h3>Test preparation results</h3><table><tr><th>Date</th><th>Score</th></tr>'+st.tests.slice().reverse().map(t=>'<tr><td>'+t.d+'</td><td>'+t.s+' / '+t.n+'</td></tr>').join('')+'</table>':'<p>You have not done a test preparation yet.</p>';
+  const bad=BADGES.map(b=>'<span class="bdg'+(st.badges[b[0]]?' got':'')+'" title="'+esc(b[2])+'">'+(st.badges[b[0]]?'🏅 ':'🔒 ')+b[1]+'</span>').join('');
+  $('#main').innerHTML='<div class="pg"><h2>My progress'+(hasLessons?' ('+(st.mode==='lesson'?'by lesson':'by paragraph')+')':'')+'</h2>'+
+    '<div class="cards"><div class="card2"><b>'+O.n+'</b><span>answers counted (last 6 per objective)</span></div><div class="card2"><b>'+(O.pct===null?'–':O.pct+'%')+'</b><span>recent score</span></div><div class="card2"><b>'+mastered+' / '+GL.length+'</b><span>objectives mastered</span></div></div>'+
+    '<p class="mut">Recent score: for every learning objective only your <b>last six answers</b> count. Correct on the first try = 100%, first try with a hint = 50%, correct on the second try = 75%, not correct or solution shown = 0%.</p>'+
+    '<h3>Levels</h3><p>Green = level reached. Blue = the level you are working on. Reach Extra spicy and answer 3 in a row correctly to unlock the Master Mix.</p><table><tr><th>'+(st.mode==='lesson'&&hasLessons?'Lesson':'Section')+'</th><th>Levels</th><th>Questions</th><th>Master Mix</th></tr>'+rows+'</table>'+
+    '<h3>Results by learning objective</h3><p class="stkey">'+['mastered','almost','way','attention','extra','none'].map(statusChip).join(' ')+'</p><p class="mut">The status uses your last six answers on that objective (you need at least three answers).</p><table class="gt"><tr><th>Learning objective</th><th>Status</th><th>Score</th></tr>'+goalRows+'</table>'+
+    '<h3>Continue practising</h3>'+(weak.length?'<p>Your weakest objectives right now: '+weak.slice(0,3).map(g=>'<b>'+esc(g.title)+'</b>').join('; ')+'.</p>':'<p>Answer some more questions first, then I can point out what to practise.</p>')+
+    '<div class="btns"><button class="btn" id="fprac">Practise my weakest objectives online</button><button class="btn alt" id="wsheet">Printable practice worksheet</button></div>'+
+    '<h3>Badges</h3><p>'+bad+'</p>'+T+
+    '<h3>My data</h3><p class="mut">Your progress is stored on this device only (in this browser). Make a backup if you want to continue on another device.</p><div class="btns"><button class="btn alt" id="rep">Progress report (PDF)</button><button class="btn alt" id="bk">Download backup</button><label class="btn alt filebtn" for="rs">Restore backup<input type="file" id="rs" accept=".json,application/json" hidden></label><button class="btn alt danger" id="rst">Start again</button></div><div id="datamsg" class="mut"></div>'+
+    '<div class="btns"><button class="btn" id="back">Back to practice</button></div></div>';
+  $('#back').onclick=()=>next(true);$('#fprac').onclick=startFocus;$('#wsheet').onclick=showWorksheet;$('#rep').onclick=showReport;$('#bk').onclick=backup;$('#rst').onclick=startAgain;$('#rs').onchange=restore;
+}
+function weakGoals(){return GL.filter(g=>{const s=goalScore(g);return s.pct!==null&&s.n>=3&&s.key!=='mastered'}).sort((a,b)=>goalScore(a).pct-goalScore(b).pct)}
+function weakOrAny(k){let w=weakGoals();if(w.length<k){const att=GL.filter(g=>!w.includes(g)).sort((a,b)=>{const A=goalScore(a),B=goalScore(b);return (A.pct===null?101:A.pct)-(B.pct===null?101:B.pct)});w=w.concat(att)}return w.slice(0,k)}
+function startFocus(){const w=weakOrAny(4);if(!w.length)return;free=null;mix=false;focus={ids:w.map(g=>g.id),i:0};next(true)}
+function showWorksheet(){
+  view='ws';renderNav();const gs=weakOrAny(4);const qs=[];
+  gs.forEach(g=>{let k=0,guard=0;while(k<3&&guard++<30){const q=makeFromGoal(g,st.lvl[g.sec]||0);if(['num','expr','choice','point'].includes(q.type)&&!qs.some(x=>x.fp===q.fp)){qs.push(q);k++}}});
+  const t0=todayISO();
+  const qh=qs.map((q,i)=>'<div class="wq"><div class="wn">'+(i+1)+'</div><div class="wb">'+q.html+(q.type==='choice'?'<ol type="a" class="wo">'+q.opts.map(o=>'<li>'+o+'</li>').join('')+'</ol>':'<div class="wl">Answer: ________________________</div>')+'</div></div>').join('');
+  const ah=qs.map((q,i)=>'<div class="wa"><b>'+(i+1)+'.</b> '+(q.type==='choice'?String.fromCharCode(97+q.ans)+') ':'')+'<b>'+E.answerText(q)+'</b><div class="st">'+q.steps+'</div></div>').join('');
+  $('#main').innerHTML='<div class="pg ws"><div class="btns noprint"><button class="btn" id="wp">Print / save as PDF</button><button class="btn alt" id="wb">Back to my progress</button></div><h2>Practice worksheet · '+esc(document.querySelector('header h1').textContent)+'</h2><p class="mut">Name: ______________________ &nbsp; Date: '+t0+'</p><p class="mut">Objectives: '+gs.map(g=>esc(g.title)).join(' · ')+'</p>'+qh+'<div class="pbreak"></div><h2>Answers</h2>'+ah+'</div>';
+  $('#wp').onclick=()=>{document.body.classList.add('printing');window.print();setTimeout(()=>document.body.classList.remove('printing'),500)};$('#wb').onclick=showProgress;
+}
+function showReport(){
+  view='report';renderNav();const O=overall();
+  const bySec={};GL.forEach(g=>{(bySec[g.sec]=bySec[g.sec]||[]).push(g)});
+  const gr=Object.keys(bySec).map(sec=>{const s=E.SECTIONS.find(x=>x.id===sec);return '<tr class="gsec"><td colspan="3"><b>'+(s?s.title:sec)+'</b></td></tr>'+bySec[sec].map(g=>{const sc=goalScore(g);return '<tr><td>'+esc(g.title)+'</td><td>'+STAT[sc.key][0]+'</td><td>'+(sc.pct===null?'–':sc.pct+'%')+' ('+sc.n+')</td></tr>'}).join('')}).join('');
+  $('#main').innerHTML='<div class="pg ws"><div class="btns noprint"><button class="btn" id="wp">Print / save as PDF</button><button class="btn alt" id="wb">Back to my progress</button></div><h2>Progress report · '+esc(document.querySelector('header h1').textContent)+'</h2><p>Name: <input type="text" id="rn" class="rname" placeholder="your name"> &nbsp; Date: '+todayISO()+'</p><p><b>Recent score:</b> '+(O.pct===null?'–':O.pct+'%')+' over '+O.n+' counted answers. <b>Objectives mastered:</b> '+GL.filter(g=>goalScore(g).key==='mastered').length+' of '+GL.length+'.</p><table class="gt"><tr><th>Learning objective</th><th>Status</th><th>Score (answers)</th></tr>'+gr+'</table>'+(st.tests.length?'<h3>Test preparation</h3><p>'+st.tests.slice(-5).map(t=>t.d+': '+t.s+'/'+t.n).join(' · ')+'</p>':'')+'<p class="mut">Score = average of the last six answers per objective (first try 100%, with hint 50%, second try 75%, wrong 0%).</p></div>';
+  $('#wp').onclick=()=>{const n=$('#rn');if(n){n.setAttribute('value',n.value)}document.body.classList.add('printing');window.print();setTimeout(()=>document.body.classList.remove('printing'),500)};$('#wb').onclick=showProgress;
+}
+function backup(){
+  const data={page:KEY,saved:new Date().toISOString(),state:JSON.parse(localStorage.getItem(KEY)||'{}')};
+  const blob=new Blob([JSON.stringify(data)],{type:'application/json'}),a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);a.download=KEY+'-backup-'+todayISO()+'.json';document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},500);
+  const m=$('#datamsg');if(m)m.textContent='Backup downloaded.';
+}
+function restore(ev){
+  const f=ev.target.files&&ev.target.files[0];if(!f)return;const r=new FileReader();
+  r.onload=()=>{try{const d=JSON.parse(r.result);if(!d||d.page!==KEY||!d.state||!d.state.prog)throw new Error('wrong file');
+    if(!confirm('Replace the progress on this device with the backup?'))return;localStorage.setItem(KEY,JSON.stringify(d.state));location.reload()}catch(e){const m=$('#datamsg');if(m)m.textContent='That file is not a backup of this page.'}};
+  r.readAsText(f);
+}
+function startAgain(){
+  if(!confirm('Delete all your progress on this page and start again?'))return;
+  st={mode:st.mode,secs:{},done:{},stat:{},best:{},tests:[],sec:st.sec,prog:{},lvl:{},res:{},log:[],badges:{},bestRow:0,goalsAll:st.goalsAll,auto:st.auto};mix=false;free=null;focus=null;save();test=null;renderNav();next(true);
+}
+document.getElementById('pbtn').onclick=showProgress;
+window.__dbg=()=>cur;window.__next=()=>next(false);renderNav();next(true);
+})();
+
+</script>
+</body>
+</html>
