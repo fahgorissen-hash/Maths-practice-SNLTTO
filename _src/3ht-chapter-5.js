@@ -439,7 +439,116 @@ XG['5.5'] = [
   }
 ];
 
-const SECTIONS = [
+/* ======================= 3VT: systems of equations, completing the square, root and fractional equations ======================= */
+const VT = P.cls === '3VT';
+if (VT) {
+  const mu2 = (html, fields, ans, hint, steps, extra) => Object.assign({ type: 'multi', fields, ans, html, hint, steps, noStep: true }, extra || {});
+  const rn = x => neg(rd(x));
+  const sgnT = (c, t, first) => first ? (c < 0 ? '−' : '') + (Math.abs(c) === 1 && t ? '' : Math.abs(rd(c))) + t : (c < 0 ? ' − ' : ' + ') + (Math.abs(c) === 1 && t ? '' : Math.abs(rd(c))) + t;
+  const lin2 = (a, b, c) => (a ? sgnT(a, X(), true) : '') + (b ? sgnT(b, X('y'), !a) : '') + ' = ' + rn(c);   // ax + by = c
+  const sys = (e1, e2) => '<div style="margin:6px 0;padding-left:10px;border-left:3px solid #1b5fa8">' + e1 + '<br>' + e2 + '</div>';
+  const xy = (x, y) => X() + ' = ' + rn(x) + ' and ' + X('y') + ' = ' + rn(y);
+  const V1 = [
+    function slopeForm(l) {
+      let a, b, c; do { a = nz(-9, 9); b = pick(l === 0 ? [1, -1, 2, 3] : [2, 3, 4, 5, -2, -4, 6]); c = ri(-24, 24); } while (!Number.isInteger(rd(a / b * 100, 6)) || !Number.isInteger(rd(c / b * 100, 6)));
+      const m = rd(-a / b), q = rd(c / b);
+      return mu2(p('Write the line ' + lin2(a, b, c) + ' in the form ' + X('y') + ' = ' + X('m') + X() + ' + ' + X('b') + '. Give ' + X('m') + ' and ' + X('b') + '.'), ['m =', 'b ='], [m, q], 'Get ' + X('y') + ' on its own: first move the ' + X() + '-term to the other side, then divide by ' + neg(b) + '.', p(lin2(a, b, c)) + p((b === 1 ? '' : b === -1 ? '−' : neg(b)) + X('y') + ' = ' + rn(c) + sgnT(-a, X())) + (b === 1 ? '' : p(X('y') + ' = ' + rn(q) + sgnT(m, X()))) + p('So ' + X('m') + ' = ' + rn(m) + ' and ' + X('b') + ' = ' + rn(q) + '.'), { ansText: X('y') + ' = ' + lin(m, q) });
+    },
+    function axisIntercepts(l) {
+      let a, b, c; do { a = nz(-6, 6); b = nz(-6, 6); c = nz(-6, 6) * a * b; } while (Math.abs(c) > 60);
+      const which = Math.random() < .5 ? 'x' : 'y', v = which === 'x' ? c / a : c / b;
+      return Object.assign({ type: 'point', ans: which === 'x' ? [v, 0] : [0, v], html: p('Where does the line ' + lin2(a, b, c) + ' intersect the <b>' + X(which) + '-axis</b>?') + p('<small>Type a point like (3, −2).</small>'), hint: 'On the ' + X(which) + '-axis ' + (which === 'x' ? X('y') : X()) + ' = 0.', steps: which === 'x' ? p('Substitute ' + X('y') + ' = 0: ' + sgnT(a, X(), true) + ' = ' + rn(c) + ', so ' + X() + ' = ' + rn(v) + '.') + p('The point is (' + rn(v) + ', 0).') : p('Substitute ' + X() + ' = 0: ' + sgnT(b, X('y'), true) + ' = ' + rn(c) + ', so ' + X('y') + ' = ' + rn(v) + '.') + p('The point is (0, ' + rn(v) + ').'), noStep: true });
+    },
+    function substitution(l) {
+      const x0 = ri(-6, 6), y0 = ri(-6, 6), a1 = nz(-5, 5); let a2, b2; do { a2 = nz(-6, 6); b2 = nz(-6, 6); } while (a2 - b2 * a1 === 0);
+      const c1 = a1 * x0 + y0, c2 = a2 * x0 + b2 * y0, k = a2 - b2 * a1, r = c2 - b2 * c1;
+      return mu2(p('Solve the system of equations by substitution.') + sys(lin2(a1, 1, c1), lin2(a2, b2, c2)), ['x =', 'y ='], [x0, y0], 'Make ' + X('y') + ' the subject of the first equation. Substitute it into the second equation.', p('Equation 1: ' + X('y') + ' = ' + rn(c1) + sgnT(-a1, X())) + p('Substitute: ' + sgnT(a2, X(), true) + sgnT(b2, '(' + rn(c1) + sgnT(-a1, X()) + ')') + ' = ' + rn(c2)) + p(sgnT(a2, X(), true) + ' ' + (b2 * c1 < 0 ? '− ' : '+ ') + Math.abs(b2 * c1) + sgnT(-a1 * b2, X()) + ' = ' + rn(c2)) + p(sgnT(k, X(), true) + ' = ' + rn(r) + ', so ' + X() + ' = ' + rn(x0)) + p(X('y') + ' = ' + rn(c1) + ' − ' + par(a1) + ' · ' + par(x0) + ' = ' + rn(y0)), { ansText: xy(x0, y0) });
+    },
+    function elimination(l) {
+      const x0 = ri(-6, 6), y0 = ri(-6, 6), a1 = nz(-5, 5), b1 = nz(-4, 4), k = l === 0 ? pick([1, -1]) : pick([2, 3, -2, -3]); let a2; do { a2 = nz(-6, 6); } while (a2 === -k * a1 || a2 === a1 * -k);
+      const b2 = -k * b1, c1 = a1 * x0 + b1 * y0, c2 = a2 * x0 + b2 * y0, A = k * a1 + a2, C = k * c1 + c2;
+      if (A === 0) return V1[3](l);
+      return mu2(p('Solve the system of equations by elimination.') + sys(lin2(a1, b1, c1), lin2(a2, b2, c2)), ['x =', 'y ='], [x0, y0], 'Multiply the first equation by ' + neg(k) + ' so the ' + X('y') + '-terms are opposite numbers. Then add the equations.', (k === 1 ? '' : p('Equation 1 × ' + par(k) + ': ' + lin2(k * a1, k * b1, k * c1))) + p('Add: ' + sgnT(A, X(), true) + ' = ' + rn(C) + ', so ' + X() + ' = ' + rn(C) + ' : ' + par(A) + ' = ' + rn(x0)) + p('Substitute ' + X() + ' = ' + rn(x0) + ' into equation 1: ' + rn(a1 * x0) + sgnT(b1, X('y')) + ' = ' + rn(c1)) + p(sgnT(b1, X('y'), true) + ' = ' + rn(c1 - a1 * x0) + (b1 === 1 ? '' : ', so ' + X('y') + ' = ' + rn(y0))), { ansText: xy(x0, y0) });
+    },
+    function checkSolution(l) {
+      const x0 = ri(-5, 5), y0 = ri(-5, 5), a1 = nz(-5, 5), b1 = nz(-5, 5), a2 = nz(-5, 5), b2 = nz(-5, 5), good = Math.random() < .5, off = good ? 0 : nz(-2, 2);
+      const c1 = a1 * x0 + b1 * y0, c2 = a2 * x0 + b2 * y0 + off, right = good ? 'yes, it fits both equations' : 'no';
+      return ch(p('Is ' + xy(x0, y0) + ' the solution of this system?') + sys(lin2(a1, b1, c1), lin2(a2, b2, c2)), right, ['yes, it fits both equations', 'no'].filter(o => o !== right), 'Substitute the values into both equations.', p(par(a1) + ' · ' + par(x0) + ' + ' + par(b1) + ' · ' + par(y0) + ' = ' + rn(c1) + ' ✓') + p(par(a2) + ' · ' + par(x0) + ' + ' + par(b2) + ' · ' + par(y0) + ' = ' + rn(c2 - off) + (good ? ' ✓' : ', not ' + rn(c2) + ' ✗')));
+    }
+  ];
+  const VX1 = [
+    function tickets(l) {
+      const pc = pick([2.5, 4, 6, 7.5]), pa = pc + pick([2.5, 3, 5]), ch_ = ri(40, 150), ad = ri(30, 120), N = ch_ + ad, R = rd(pc * ch_ + pa * ad);
+      return mu2(p('A theatre sells ' + N + ' tickets: tickets for children cost € ' + pc.toFixed(2) + ' and tickets for adults € ' + pa.toFixed(2) + '. The total is € ' + R.toFixed(2) + '. How many tickets of each kind were sold?'), ['children =', 'adults ='], [ch_, ad], 'Let ' + X() + ' = children and ' + X('y') + ' = adults. Write two equations: one for the number of tickets and one for the money.', sys(X() + ' + ' + X('y') + ' = ' + N, pc + X() + ' + ' + pa + X('y') + ' = ' + R) + p(X('y') + ' = ' + N + ' − ' + X() + ', so ' + pc + X() + ' + ' + pa + '(' + N + ' − ' + X() + ') = ' + R) + p(rn(pc - pa) + X() + ' + ' + rd(pa * N) + ' = ' + R + ', so ' + rn(pc - pa) + X() + ' = ' + rn(R - pa * N)) + p(X() + ' = ' + ch_ + ' and ' + X('y') + ' = ' + N + ' − ' + ch_ + ' = ' + ad), { ansText: ch_ + ' children and ' + ad + ' adults' });
+    }
+  ];
+  const V2 = [
+    function completeSquare(l) {
+      const h = l === 0 ? nz(-5, 5) : nz(-9, 9), r = l === 2 ? null : ri(1, 8), c = r === null ? ri(-20, h * h - 1) : h * h - r * r, R2 = h * h - c, s = Math.sqrt(R2);
+      const a1 = rd(-h - s, 2), a2 = rd(-h + s, 2), exact = Number.isInteger(s);
+      return multi(p('Solve by completing the square: ' + quad(1, 2 * h, c) + ' = 0.' + (exact ? '' : ' <small>Round to 2 decimals.</small>')), a1, a2, X() + '² ' + (h < 0 ? '−' : '+') + ' ' + Math.abs(2 * h) + X() + ' = (' + lin(1, h) + ')² − ' + h * h + '.', p('(' + lin(1, h) + ')² − ' + h * h + (c < 0 ? ' − ' + -c : ' + ' + c) + ' = 0') + p('(' + lin(1, h) + ')² = ' + R2) + p(lin(1, h) + ' = −' + (exact ? s : '√' + R2) + ' or ' + lin(1, h) + ' = ' + (exact ? s : '√' + R2)) + p(exact ? X() + ' = ' + neg(a1) + ' or ' + X() + ' = ' + neg(a2) : X() + ' = ' + neg(-h) + ' − √' + R2 + ' ≈ ' + a1 + ' or ' + X() + ' = ' + neg(-h) + ' + √' + R2 + ' ≈ ' + a2), exact ? {} : { tol: .006 });
+    }
+  ];
+  const V4 = [
+    function rootEq(l) {
+      const s = ri(1, 9), a = l === 0 ? 1 : pick([2, 3, 5, -2, 4]), b = ri(-9, 9), c = l === 0 ? 0 : nz(-12, 12), d = a * s + c, x = s * s - b;
+      const inside = b === 0 ? X() : lin(1, b), lhs = (a === 1 ? '' : a === -1 ? '−' : neg(a)) + '√(' + inside + ')' + (c ? (c < 0 ? ' − ' + -c : ' + ' + c) : '');
+      return nu(p('Solve ' + lhs + ' = ' + neg(d) + '.'), x, 'Get the root on its own. Then square both sides. Check your answer.', (c ? p((a === 1 ? '' : neg(a)) + '√(' + inside + ') = ' + neg(a * s)) : '') + (a === 1 ? '' : p('√(' + inside + ') = ' + s)) + p(inside + ' = ' + s + '² = ' + s * s) + p(X() + ' = ' + x) + p('Check: ' + (a === 1 ? '' : neg(a) + ' · ') + '√(' + par(x) + (b ? (b < 0 ? ' − ' + -b : ' + ' + b) : '') + ')' + (c ? (c < 0 ? ' − ' + -c : ' + ' + c) : '') + ' = ' + neg(d) + ' ✓') + p('So ' + X() + ' = ' + x + '.'), { noStep: true });
+    },
+    function rootSolvable(l) {
+      const s = ri(1, 8), a = pick([1, 2, 3, -1, -2]), c = ri(-6, 6), sign = pick([1, -1]), d = a * sign * s + c, ok = sign > 0;
+      const lhs = (a === 1 ? '' : a === -1 ? '−' : neg(a)) + '√' + X() + (c ? (c < 0 ? ' − ' + -c : ' + ' + c) : ''), right = ok ? X() + ' = ' + s * s : 'no solution';
+      return ch(p('Solve ' + lhs + ' = ' + neg(d) + '.'), right, [ok ? 'no solution' : X() + ' = ' + s * s, X() + ' = ' + neg(-s * s), X() + ' = ' + s].filter(o => o !== right), 'Get √' + X() + ' on its own. A square root is never negative.', p((a === 1 ? '' : a === -1 ? '−' : neg(a)) + '√' + X() + ' = ' + neg(d - c)) + p('√' + X() + ' = ' + neg(sign * s)) + p(ok ? X() + ' = ' + s + '² = ' + s * s : 'A square root cannot be negative: no solution.'));
+    }
+  ];
+  const VX4 = [
+    function soundSpeed(l) {
+      const v = pick([320, 330, 340, 300]), T = rd(Math.pow(v / 20, 2) - 273, 2);
+      return nu(p('The speed of sound is ' + X('v') + ' = 20√(273 + ' + X('T') + ') m/s, with ' + X('T') + ' the temperature in °C. At what temperature is the speed ' + v + ' m/s? <small>(Round to 1 decimal.)</small>'), rd(T, 1), 'Divide by 20, then square both sides.', p('√(273 + ' + X('T') + ') = ' + v + ' : 20 = ' + rd(v / 20)) + p('273 + ' + X('T') + ' = ' + rd(v / 20) + '² = ' + rd(Math.pow(v / 20, 2))) + p(X('T') + ' = ' + rd(Math.pow(v / 20, 2)) + ' − 273 ≈ ' + rd(T, 1) + ' °C'), { tol: .051, noStep: true });
+    }
+  ];
+  const V5 = [
+    function crossMultiply(l) {
+      let a, b, c, d, e, x; do { b = l === 0 ? 1 : pick([2, 3, -2, 4]); x = ri(-6, 8); c = ri(-9, 9); e = pick([2, 3, 4, 5, 6]); d = nz(-6, 6); a = d * (b * x + c) / e; } while (b * x + c === 0 || !Number.isInteger(a) || a === 0 || Math.abs(a) > 40);
+      const den = lin(b, c);
+      return nu(p('Solve ' + fr(neg(a), den) + ' = ' + fr(neg(d), e) + '.'), x, 'Cross-multiply: ' + fr('A', 'B') + ' = ' + fr('C', 'D') + ' gives A · D = B · C.', p(neg(a) + ' · ' + e + ' = ' + neg(d) + '(' + den + ')') + p(neg(a * e) + ' = ' + lin(d * b, d * c)) + p(lin(d * b, 0) + ' = ' + neg(a * e - d * c)) + p(X() + ' = ' + neg(x)) + p('Check: the denominator ' + den + ' is not 0 for ' + X() + ' = ' + neg(x) + '.'), { noStep: true });
+    },
+    function notAllowed(l) {
+      const b = pick([1, 2, 3, 5]), r = nz(-8, 8), c = -b * r, a = nz(-6, 6), k = ri(-9, 9), right = X() + ' = ' + neg(r);
+      return ch(p('Which value of ' + X() + ' is not allowed in ' + fr(lin(a, k), lin(b, c)) + '?'), right, [X() + ' = ' + neg(-r), X() + ' = 0', X() + ' = ' + neg(c), X() + ' = ' + neg(r + 1)].filter(o => o !== right).slice(0, 3), 'You cannot divide by 0. When is the denominator 0?', lin(b, c) + ' = 0 gives ' + X() + ' = ' + neg(r) + '. So ' + X() + ' ≠ ' + neg(r) + '.');
+    },
+    function fracZero(l) {
+      const a = nz(-5, 5), z = ri(-8, 8), b = -a * z; let q; do { q = nz(-8, 8); } while (q === z);
+      const den = lin(1, -q), excl = l === 2 && Math.random() < .4, num = excl ? lin(a, -a * q) : lin(a, b), right = excl ? 'no solution' : X() + ' = ' + neg(z);
+      return ch(p('Solve ' + fr(num, den) + ' = 0.'), right, [excl ? X() + ' = ' + neg(q) : 'no solution', X() + ' = ' + neg(excl ? -q : q), X() + ' = ' + neg(excl ? 0 : -z)].filter(o => o !== right), 'A fraction is 0 when the numerator is 0 and the denominator is not 0.', p('Condition: ' + den + ' ≠ 0, so ' + X() + ' ≠ ' + neg(q) + '.') + p(num + ' = 0 gives ' + X() + ' = ' + neg(excl ? q : z) + '.') + p(excl ? X() + ' = ' + neg(q) + ' is not allowed: no solution.' : 'This is allowed, so ' + X() + ' = ' + neg(z) + '.'));
+    },
+    function rationalZero(l) {
+      let a, h, q; do { a = nz(-12, 12); h = ri(-6, 6); q = nz(-6, 6); } while (!Number.isInteger(rd(-a / q * 4, 6)));
+      const den = h === 0 ? X() : lin(1, h), x = rd(-a / q - h);
+      return nu(p('Calculate where the graph of ' + X('f') + '(' + X() + ') = ' + fr(neg(a), den) + (q < 0 ? ' − ' + -q : ' + ' + q) + ' intersects the ' + X() + '-axis. Give the ' + X() + '-coordinate.'), x, 'Solve ' + X('f') + '(' + X() + ') = 0: first get the fraction on its own, then cross-multiply.', p(fr(neg(a), den) + ' = ' + neg(-q)) + p(neg(a) + ' = ' + (h === 0 ? neg(-q) + ' · ' + X() : neg(-q) + '(' + den + ')')) + p(neg(a) + ' = ' + lin(-q, -q * h)) + p(lin(-q, 0) + ' = ' + rn(a + q * h)) + p(X() + ' = ' + rn(x)), { noStep: true });
+    }
+  ];
+  const VX5 = [
+    function soilMoisture(l) {
+      const N = pick([280, 300, 240]), L = pick([110, 120, 100]), pct = pick([10, 20, 30, 40, 60]), d = rd(L - N / pct, 2);
+      return nu(p('The moisture content of soil is ' + X('p') + ' = ' + fr(N, L + ' − ' + X('d')) + ' %, with ' + X('d') + ' the depth in cm. At what depth is the moisture content ' + pct + '%? <small>(Round to 2 decimals if needed.)</small>'), d, 'Write ' + fr(N, L + ' − ' + X('d')) + ' = ' + pct + ' and cross-multiply.', p(N + ' = ' + pct + '(' + L + ' − ' + X('d') + ')') + p(N + ' = ' + pct * L + ' − ' + pct + X('d')) + p(pct + X('d') + ' = ' + (pct * L - N)) + p(X('d') + ' = ' + d + ' cm'), { tol: .006, noStep: true });
+    }
+  ];
+  const lin51 = H.a1.filter(f => f.name === 'intersect');
+  G['5.1'] = V1.concat(lin51); XG['5.1'] = VX1;
+  G['5.2'] = H.a2.concat(H.b2, G['5.3'], V2); XG['5.2'] = HX.a2.concat(HX.b2, XG['5.3']);
+  G['5.3'] = H.b1.concat(G['5.4']); XG['5.3'] = HX.b1.concat(XG['5.4']);
+  G['5.4'] = G['5.5'].concat(V4); XG['5.4'] = XG['5.5'].concat(VX4);
+  G['5.5'] = V5; XG['5.5'] = VX5;
+}
+
+const SECTIONS = VT ? [
+  { id: '5.1', title: '5.1 Systems of equations', sub: 'ax + by = c, substitution, elimination' },
+  { id: '5.2', title: '5.2 Quadratic equations', sub: 'Factorising, completing the square, the quadratic formula' },
+  { id: '5.3', title: '5.3 Inequalities', sub: 'Linear and quadratic inequalities' },
+  { id: '5.4', title: '5.4 Power and root equations', sub: 'xⁿ = c, √ equations' },
+  { id: '5.5', title: '5.5 Fractional equations', sub: 'Cross-multiplying, conditions' }
+] : [
   { id: '5.1', title: '5.1 Linear equations and inequalities', sub: 'Balance method, intersections, inequalities' },
   { id: '5.2', title: '5.2 Quadratic equations', sub: 'x² = c, (x + p)² = c, factorising' },
   { id: '5.3', title: '5.3 The quadratic formula', sub: 'a, b, c, the discriminant and the formula' },
@@ -453,4 +562,11 @@ const GOALS = [
   ['5.4', 'I can solve quadratic inequalities', ['readIneq', 'solveIneq', 'squareIneq', 'rearrangeIneq', 'alwaysNever'], 'Solve the equation, sketch the graph, read off.'],
   ['5.5', 'I can solve equations with higher powers', ['oddPower', 'evenPower', 'howManyPower', 'powerRounded', 'shiftedPower'], 'Odd power: one solution. Even power: 0, 1 or 2.']
 ];
-return { key: 'nx-3ht-ch5-v1', SECTIONS, LESSONS: [], G, XG, defaultMode: 'para', GOALS };
+const GV = [
+  ['5.1', 'I can solve systems of linear equations', ['slopeForm', 'axisIntercepts', 'substitution', 'elimination', 'checkSolution', 'intersect'], 'Make one variable the subject and substitute, or add multiples of the equations.'],
+  ['5.2', 'I can solve quadratic equations', ['howMany', 'squareEq', 'bracketSq', 'roundedSq', 'exactSq', 'productZero', 'commonFactor', 'commonFactorEq', 'productSum', 'factorTrinomial', 'rearrange', 'readABC', 'discriminant', 'numSolutions', 'abcExact', 'abcRounded', 'abcRearrange', 'completeSquare'], 'x = (−b ± √D) / 2a with D = b² − 4ac'],
+  ['5.3', 'I can solve linear and quadratic inequalities', ['ineqSimple', 'ineqBoth', 'ineqGraph', 'ineqContext', 'signTurn', 'readIneq', 'solveIneq', 'squareIneq', 'rearrangeIneq', 'alwaysNever'], 'Solve the equation first, then read off.'],
+  ['5.4', 'I can solve power and root equations', ['oddPower', 'evenPower', 'howManyPower', 'powerRounded', 'shiftedPower', 'rootEq', 'rootSolvable'], 'Get the root on its own, square, and check.'],
+  ['5.5', 'I can solve fractional equations', ['crossMultiply', 'notAllowed', 'fracZero', 'rationalZero'], 'A/B = C/D gives A · D = B · C. The denominator may not be 0.']
+];
+return { key: 'nx-' + P.cls.toLowerCase() + '-ch5-v1', SECTIONS, LESSONS: [], G, XG, defaultMode: 'para', GOALS: VT ? GV : GOALS };
