@@ -252,7 +252,85 @@ XG['3.5'] = [
   }
 ];
 
-const SECTIONS = [
+/* ======================= 3VT extras (function notation, power / rational functions, even and odd) ======================= */
+const VT = P.cls === '3VT';
+const F = (f, x) => X(f) + '(' + x + ')';
+const aTxt = a => a === 1 ? '' : a === -1 ? '−' : neg(a);
+const sq = (h, q) => '(' + lin(1, -h) + ')²' + (q ? (q < 0 ? ' − ' : ' + ') + neg(Math.abs(q)) : '');
+if (VT) {
+  G['3.1'].unshift(
+    function fValue(l) {
+      const m = l === 0 ? nz(-6, 6) : pick([-4, -3, -0.5, 0.5, 2, 5, 1.5, -2.5]), b = nz(-12, 12), x = l === 0 ? ri(-5, 8) : nz(-10, 10), y = rd(m * x + b);
+      return nu(p('Given ' + F('f', X()) + ' = ' + lin(m, b) + '. Calculate ' + F('f', neg(x)) + '.'), y, 'Replace ' + X() + ' by ' + par(x) + '.', F('f', neg(x)) + ' = ' + neg(m) + ' · ' + par(x) + (b < 0 ? ' − ' : ' + ') + Math.abs(b) + ' = ' + neg(rd(m * x)) + (b < 0 ? ' − ' : ' + ') + Math.abs(b) + ' = ' + neg(y), { needStep: true });
+    },
+    function fSolve(l) {
+      let m, b, c, x; do { m = nz(-6, 6); b = nz(-12, 12); x = l === 2 ? nz(-16, 16) / 4 : nz(-9, 9); c = rd(m * x + b); } while (m === 1 || !Number.isInteger(c));
+      return nu(p('Given ' + F('f', X()) + ' = ' + lin(m, b) + '. Solve ' + F('f', X()) + ' = ' + neg(c) + '.'), x, 'Write the equation ' + lin(m, b) + ' = ' + neg(c) + ' and solve it.', p(lin(m, b) + ' = ' + neg(c)) + p(lin(m, 0) + ' = ' + neg(rd(c - b))) + p(X() + ' = ' + neg(rd(c - b)) + ' : ' + par(m) + ' = ' + neg(x)), { noStep: true });
+    }
+  );
+  G['3.2'].push(
+    function vertexFormFind(l) {
+      const a = l === 0 ? pick([1, -1, 2, -2]) : pick([-3, -2, -0.5, 0.5, 2, 3, 0.25]), h = nz(-6, 6), q = ri(-9, 9), d = pick([2, -2, 3, -3, 4]), x0 = h + d, y0 = rd(a * d * d + q);
+      return nu(p('A parabola has vertex ' + P2(h, q) + ' and passes through ' + P2(x0, y0) + '. The formula is ' + F('f', X()) + ' = ' + X('a') + sq(h, q) + '. Calculate ' + X('a') + '.'), a, 'Use the vertex form ' + F('f', X()) + ' = ' + X('a') + '(' + X() + ' − ' + X('p') + ')² + ' + X('q') + '. Then substitute the point.', p(F('f', neg(x0)) + ' = ' + neg(y0)) + p(X('a') + '(' + neg(x0) + ' − ' + par(h) + ')²' + (q ? (q < 0 ? ' − ' : ' + ') + Math.abs(q) : '') + ' = ' + neg(y0)) + p(neg(d * d) + X('a') + (q ? (q < 0 ? ' − ' : ' + ') + Math.abs(q) : '') + ' = ' + neg(y0)) + p(neg(d * d) + X('a') + ' = ' + neg(rd(y0 - q))) + p(X('a') + ' = ' + neg(rd(y0 - q)) + ' : ' + d * d + ' = ' + neg(a)), { noStep: true });
+    },
+    function factoredFind(l) {
+      let r1, r2, x0, a; do { r1 = ri(-8, 6); r2 = r1 + ri(2, 9); x0 = ri(-9, 9); a = l === 0 ? pick([1, -1, 2, -2]) : pick([-3, -2, -0.5, 0.5, 2, 3, 0.1]); } while (x0 === r1 || x0 === r2);
+      const k = (x0 - r1) * (x0 - r2), y0 = rd(a * k), fac = r => '(' + lin(1, -r) + ')';
+      return nu(p('A parabola intersects the ' + X() + '-axis at ' + P2(r1, 0) + ' and ' + P2(r2, 0) + ' and passes through ' + P2(x0, y0) + '. The formula is ' + F('f', X()) + ' = ' + X('a') + fac(r1) + fac(r2) + '. Calculate ' + X('a') + '.'), a, 'Substitute the point ' + P2(x0, y0) + ' in the factored form.', p(X('a') + '(' + neg(x0) + ' − ' + par(r1) + ')(' + neg(x0) + ' − ' + par(r2) + ') = ' + neg(y0)) + p(X('a') + ' · ' + par(x0 - r1) + ' · ' + par(x0 - r2) + ' = ' + neg(y0)) + p(neg(k) + X('a') + ' = ' + neg(y0)) + p(X('a') + ' = ' + neg(y0) + ' : ' + par(k) + ' = ' + neg(a)), { noStep: true });
+    },
+    function vertexFormZeros(l) {
+      const a = l === 0 ? pick([1, -1]) : pick([1, -1, 2, -2, 3, 0.5, -4]), h = ri(-6, 6), r = ri(1, 6), q = rd(-a * r * r);
+      return mu(p('Calculate where the graph of ' + F('f', X()) + ' = ' + aTxt(a) + sq(h, q) + ' intersects the ' + X() + '-axis. Give both ' + X() + '-coordinates.') + p('<small>Type the smallest first.</small>'), ['smallest x =', 'largest x ='], [h - r, h + r], 'Solve ' + F('f', X()) + ' = 0. Get the square on its own first.', p(aTxt(a) + sq(h, q) + ' = 0') + (a === 1 ? '' : p(aTxt(a) + sq(h, 0) + ' = ' + neg(-q))) + p(sq(h, 0) + ' = ' + r * r) + p(lin(1, -h) + ' = −' + r + ' or ' + lin(1, -h) + ' = ' + r) + p(X() + ' = ' + neg(h - r) + ' or ' + X() + ' = ' + neg(h + r)), { ansText: X() + ' = ' + neg(h - r) + ' and ' + X() + ' = ' + neg(h + r) });
+    }
+  );
+  G['3.3'].push(
+    function powerValue(l) {
+      const a = l === 0 ? pick([1, 2, -1]) : pick([2, 3, -2, 0.5, -0.25, 4]), n = l === 0 ? pick([3, 4]) : pick([3, 4, 5, 6]), x = n > 4 ? pick([-2, -1, 2]) : nz(-3, 3), y = rd(a * Math.pow(x, n));
+      return nu(p('Given the power function ' + F('f', X()) + ' = ' + aTxt(a) + X() + '<sup>' + n + '</sup>. Calculate ' + F('f', neg(x)) + '.'), y, 'Calculate the power first, then multiply by ' + neg(a) + '.', F('f', neg(x)) + ' = ' + (a === 1 ? '' : a === -1 ? '−' : neg(a) + ' · ') + par(x) + '<sup>' + n + '</sup> = ' + (a === 1 ? '' : a === -1 ? '−' : neg(a) + ' · ') + par(Math.pow(x, n)) + ' = ' + neg(y), { needStep: a !== 1 });
+    },
+    function asymptotes(l) {
+      const a = nz(-12, 12), h = ri(-7, 7), q = ri(-6, 6), den = h === 0 ? X() : lin(1, -h);
+      return mu(p('Give the equations of the asymptotes of the graph of ' + F('f', X()) + ' = ' + neg(a) + ' / (' + den + ')' + (q ? (q < 0 ? ' − ' : ' + ') + Math.abs(q) : '') + '.'), ['vertical: x =', 'horizontal: y ='], [h, q], 'Vertical asymptote: where the denominator is 0. Horizontal asymptote: the fraction gets close to 0, so ' + X('y') + ' gets close to the number that is added.', p('Denominator ' + den + ' = 0 gives ' + X() + ' = ' + neg(h) + ': vertical asymptote ' + X() + ' = ' + neg(h) + '.') + p('The fraction is never 0, so ' + F('f', X()) + ' never reaches ' + neg(q) + ': horizontal asymptote ' + X('y') + ' = ' + neg(q) + '.'), { ansText: X() + ' = ' + neg(h) + ' and ' + X('y') + ' = ' + neg(q) });
+    },
+    function rootEndpoint(l) {
+      const c = l === 0 ? 1 : pick([2, 3, -1, -2, 4]), e = ri(-6, 6), d = rd(-c * e), k = pick([1, 2, 3, -1, -2, 0.5]), q = ri(-8, 8);
+      const inside = poly([[c, X()], [d, '']]), f = (q ? neg(q) + (k < 0 ? ' − ' : ' + ') : (k < 0 ? '−' : '')) + (Math.abs(k) === 1 ? '' : neg(Math.abs(k))) + '√(' + inside + ')';
+      return pt(p('What are the coordinates of the endpoint of the graph of ' + F('f', X()) + ' = ' + f + '?'), e, q, 'The graph ends where the number under the root is 0.', p(inside + ' = 0 gives ' + X() + ' = ' + neg(e) + '.') + p(F('f', neg(e)) + ' = ' + neg(q) + ' + ' + neg(k) + ' · √0 = ' + neg(q) + '. The endpoint is ' + P2(e, q) + '.') + p(X() + ' must make ' + inside + ' ≥ 0, so ' + X() + (c > 0 ? ' ≥ ' : ' ≤ ') + neg(e) + '.'));
+    }
+  );
+  G['3.4'].push(
+    function transformFunc(l) {
+      const a = nz(-9, 9), q = nz(-5, 5), k = pick([2, 3, 4, -1, -2, 0.5]), add = nz(-6, 6), mult = Math.random() < .5, type = pick(['rat', 'root']);
+      const fmt = (A, Q) => type === 'rat' ? neg(A) + ' / ' + X() + (Q ? (Q < 0 ? ' − ' : ' + ') + neg(Math.abs(Q)) : '') : (A === 1 ? '' : A === -1 ? '−' : neg(A)) + '√' + X() + (Q ? (Q < 0 ? ' − ' : ' + ') + neg(Math.abs(Q)) : '');
+      const right = mult ? fmt(rd(k * a), rd(k * q)) : fmt(a, q + add), wr = mult ? [fmt(rd(k * a), q), fmt(a, rd(k * q)), fmt(rd(a + k), rd(q + k))] : [fmt(rd(a + add), q), fmt(a, rd(q - add)), fmt(rd(a + add), rd(q + add))];
+      const how = mult ? F('g', X()) + ' = ' + neg(k) + ' · ' + F('f', X()) : F('g', X()) + ' = ' + F('f', X()) + (add < 0 ? ' − ' : ' + ') + Math.abs(add);
+      return ch(p('Given ' + F('f', X()) + ' = ' + fmt(a, q) + ' and ' + how + '. Which formula belongs to ' + X('g') + '?'), F('g', X()) + ' = ' + right, wr.filter(w => w !== right).map(w => F('g', X()) + ' = ' + w), mult ? 'Multiply every term of ' + F('f', X()) + ' by ' + neg(k) + '.' : 'Only the number at the end changes.', mult ? F('g', X()) + ' = ' + neg(k) + '(' + fmt(a, q) + ') = ' + right : F('g', X()) + ' = ' + fmt(a, q) + (add < 0 ? ' − ' : ' + ') + Math.abs(add) + ' = ' + right);
+    }
+  );
+  G['3.5'].unshift(
+    function evenOdd(l) {
+      const a = nz(-5, 5), c = nz(-9, 9), T = [
+        [() => aTxt(a) + X() + '<sup>' + pick([2, 4, 6]) + '</sup>', 'even', 'only even powers of ' + X() + ', so ' + F('f', '−' + X()) + ' = ' + F('f', X()) + '.'],
+        [() => aTxt(a) + X() + '<sup>' + pick([3, 5]) + '</sup>', 'odd', 'only odd powers of ' + X() + ', so ' + F('f', '−' + X()) + ' = −' + F('f', X()) + '.'],
+        [() => aTxt(a) + X() + '²' + (c < 0 ? ' − ' : ' + ') + Math.abs(c), 'even', F('f', '−' + X()) + ' = ' + aTxt(a) + '(−' + X() + ')²' + (c < 0 ? ' − ' : ' + ') + Math.abs(c) + ' = ' + F('f', X()) + '.'],
+        [() => aTxt(a) + X() + '³' + (c < 0 ? ' − ' : ' + ') + Math.abs(c), 'neither', 'the number ' + neg(c) + ' does not change sign: ' + F('f', '−' + X()) + ' is not ' + F('f', X()) + ' and not −' + F('f', X()) + '.'],
+        [() => neg(a) + ' / ' + X(), 'odd', F('f', '−' + X()) + ' = ' + neg(a) + ' / (−' + X() + ') = −' + F('f', X()) + '.'],
+        [() => X() + '³ + ' + X() + '⁵', 'odd', F('f', '−' + X()) + ' = −' + X() + '³ − ' + X() + '⁵ = −' + F('f', X()) + '.'],
+        [() => X() + '³ + ' + X() + '²', 'neither', 'one odd and one even power: for example ' + F('f', '1') + ' = 2 and ' + F('f', '−1') + ' = 0.'],
+        [() => aTxt(a) + X() + '⁴ − ' + X() + '²', 'even', 'only even powers of ' + X() + ', so ' + F('f', '−' + X()) + ' = ' + F('f', X()) + '.']
+      ], t = pick(T), right = t[1] === 'even' ? 'even: symmetric in the y-axis' : t[1] === 'odd' ? 'odd: point symmetric in the origin' : 'neither even nor odd';
+      return ch(p('Is ' + F('f', X()) + ' = ' + t[0]() + ' even, odd or neither?'), right, ['even: symmetric in the y-axis', 'odd: point symmetric in the origin', 'neither even nor odd'].filter(o => o !== right), 'Calculate ' + F('f', '−' + X()) + '. Even: ' + F('f', '−' + X()) + ' = ' + F('f', X()) + '. Odd: ' + F('f', '−' + X()) + ' = −' + F('f', X()) + '.', right.charAt(0).toUpperCase() + right.slice(1) + ': ' + t[2]);
+    }
+  );
+}
+
+const SECTIONS = VT ? [
+  { id: '3.1', title: '3.1 Linear functions', sub: 'f(x) notation, gradient, formula of a line' },
+  { id: '3.2', title: '3.2 Quadratic functions', sub: 'Vertex, vertex form, factored form' },
+  { id: '3.3', title: '3.3 Other functions', sub: 'Power, square root and rational functions' },
+  { id: '3.4', title: '3.4 Transformations', sub: 'Translating and multiplying graphs' },
+  { id: '3.5', title: '3.5 Symmetry and periodic functions', sub: 'Even and odd, period, equilibrium, amplitude' }
+] : [
   { id: '3.1', title: '3.1 Linear relationships', sub: 'Intercepts, gradient, formula of a line' },
   { id: '3.2', title: '3.2 Quadratic relationships', sub: 'a, b, c, vertex, intercepts' },
   { id: '3.3', title: '3.3 Other relationships', sub: 'Direct and inverse proportion, square roots' },
@@ -266,4 +344,10 @@ const GOALS = [
   ['3.4', 'I can translate and multiply graphs', ['shiftUp', 'shiftRight', 'multiplyX', 'vertexAfter', 'whichTransform'], 'To the right by 3: replace x by (x − 3).'],
   ['3.5', 'I can work with periodic relationships', ['readPeriodic', 'farValue', 'dayOfWeek', 'frequency', 'heartbeat'], 'Subtract whole periods.']
 ];
-return { key: 'nx-3ht-ch3-v1', SECTIONS, LESSONS: [], G, XG, defaultMode: 'para', GOALS };
+if (VT) {
+  const add = { '3.1': ['fValue', 'fSolve'], '3.2': ['vertexFormFind', 'factoredFind', 'vertexFormZeros'], '3.3': ['powerValue', 'asymptotes', 'rootEndpoint'], '3.4': ['transformFunc'], '3.5': ['evenOdd'] };
+  GOALS.forEach(g => { g[2] = add[g[0]].concat(g[2]); });
+  GOALS[2][1] = 'I can work with power, square root and rational functions';
+  GOALS[4][1] = 'I can work with even, odd and periodic functions';
+}
+return { key: 'nx-' + P.cls.toLowerCase() + '-ch3-v1', SECTIONS, LESSONS: [], G, XG, defaultMode: 'para', GOALS };
