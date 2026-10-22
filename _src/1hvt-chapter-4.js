@@ -52,7 +52,7 @@ G['4.1'] = [
   },
   function missingValue(l) {
     const n = ri(4, 6), m = ri(5, 15), xs = Array.from({ length: n - 1 }, () => ri(m - 4, m + 4)), last = n * m - sum(xs);
-    if (last < 0) return G['4.1'][3](l);
+    if (last < 0) return missingValue(l);
     return nu(p('The mean of ' + n + ' numbers is ' + m + '. Four' .replace('Four', n - 1 === 4 ? 'Four' : String(n - 1)) + ' of the numbers are ' + xs.join(', ') + '. What is the last number?'), last, 'The total of all ' + n + ' numbers is ' + n + ' · ' + m + '.', 'total = ' + n + ' · ' + m + ' = ' + n * m + '<br>' + n * m + ' − (' + xs.join(' + ') + ') = ' + n * m + ' − ' + sum(xs) + ' = ' + last, { needStep: true });
   }
 ];
@@ -67,10 +67,10 @@ G['4.2'] = [
   },
   function roundContext(l) {
     const k = ri(0, 3);
-    if (k === 0) { const area = ri(25, 90), per = pick([6, 8, 10, 12]); if (area % per === 0) return G['4.2'][1](l); const c = Math.ceil(area / per); return nu(p('One can of paint is enough for ' + per + ' m². You want to paint ' + area + ' m². How many cans do you need?'), c, 'Divide. Can you round down here, or do you need to round up?', area + ' : ' + per + ' ≈ ' + rd(area / per, 2) + '. With ' + Math.floor(area / per) + ' cans you cannot paint everything, so round up: ' + c + ' cans.', { needStep: true }); }
-    if (k === 1) { const money = ri(30, 90), pr = pick([4, 6, 7, 8, 9]); if (money % pr === 0) return G['4.2'][1](l); const c = Math.floor(money / pr); return nu(p('A poster costs £' + pr + '. You have £' + money + '. How many posters can you buy?'), c, 'Divide. Can you buy part of a poster?', money + ' : ' + pr + ' ≈ ' + rd(money / pr, 2) + '. You cannot buy part of a poster, so round down: ' + c + ' posters.', { needStep: true }); }
-    if (k === 2) { const st = ri(200, 600), seat = pick([50, 60, 75]); if (st % seat === 0) return G['4.2'][1](l); const c = Math.ceil(st / seat); return nu(p(st + ' students and teachers go on a school trip. One bus has ' + seat + ' seats. How many buses are needed?'), c, 'Everybody needs a seat. Round up or down?', st + ' : ' + seat + ' ≈ ' + rd(st / seat, 2) + '. Round up: ' + c + ' buses.', { needStep: true }); }
-    const len = ri(20, 60), car = pick([4.5, 5, 5.5, 6]); if (Number.isInteger(len / car)) return G['4.2'][1](l); const c = Math.floor(len / car); return nu(p('A parking strip is ' + len + ' m long. Every car needs ' + car + ' m. How many cars can park there at most?'), c, 'Divide. A car cannot park in half a space.', len + ' : ' + car + ' ≈ ' + rd(len / car, 2) + '. Round down: ' + c + ' cars.', { needStep: true });
+    if (k === 0) { const area = ri(25, 90), per = pick([6, 8, 10, 12]); if (area % per === 0) return roundContext(l); const c = Math.ceil(area / per); return nu(p('One can of paint is enough for ' + per + ' m². You want to paint ' + area + ' m². How many cans do you need?'), c, 'Divide. Can you round down here, or do you need to round up?', area + ' : ' + per + ' ≈ ' + rd(area / per, 2) + '. With ' + Math.floor(area / per) + ' cans you cannot paint everything, so round up: ' + c + ' cans.', { needStep: true }); }
+    if (k === 1) { const money = ri(30, 90), pr = pick([4, 6, 7, 8, 9]); if (money % pr === 0) return roundContext(l); const c = Math.floor(money / pr); return nu(p('A poster costs £' + pr + '. You have £' + money + '. How many posters can you buy?'), c, 'Divide. Can you buy part of a poster?', money + ' : ' + pr + ' ≈ ' + rd(money / pr, 2) + '. You cannot buy part of a poster, so round down: ' + c + ' posters.', { needStep: true }); }
+    if (k === 2) { const st = ri(200, 600), seat = pick([50, 60, 75]); if (st % seat === 0) return roundContext(l); const c = Math.ceil(st / seat); return nu(p(st + ' students and teachers go on a school trip. One bus has ' + seat + ' seats. How many buses are needed?'), c, 'Everybody needs a seat. Round up or down?', st + ' : ' + seat + ' ≈ ' + rd(st / seat, 2) + '. Round up: ' + c + ' buses.', { needStep: true }); }
+    const len = ri(20, 60), car = pick([4.5, 5, 5.5, 6]); if (Number.isInteger(len / car)) return roundContext(l); const c = Math.floor(len / car); return nu(p('A parking strip is ' + len + ' m long. Every car needs ' + car + ' m. How many cars can park there at most?'), c, 'Divide. A car cannot park in half a space.', len + ' : ' + car + ' ≈ ' + rd(len / car, 2) + '. Round down: ' + c + ' cars.', { needStep: true });
   },
   function roundBounds(l) {
     const r = ri(100, 999) * 100, lo = r - 50, hi = r + 49, ask = Math.random() < .5;
@@ -84,7 +84,7 @@ G['4.2'] = [
 XG['4.2'] = [
   function neededMark(l) {
     const n = 5, marks = Array.from({ length: n - 1 }, () => rd(ri(10, 18) / 2, 1)), target = 6.5, need = rd(n * target - sum(marks), 1);
-    if (need < 1 || need > 10) return XG['4.2'][0](l);
+    if (need < 1 || need > 10) return neededMark(l);
     return nu(p('A student has the marks ' + marks.join(', ') + '. There is one more test. The mean of the five marks must be at least 6.5 (so it rounds to a 7). What is the lowest mark needed on the last test?'), need, 'The five marks together must be at least 5 · 6.5.', '5 · 6.5 = 32.5<br>' + marks.join(' + ') + ' = ' + rd(sum(marks)) + '<br>32.5 − ' + rd(sum(marks)) + ' = ' + need, { needStep: true });
   }
 ];
@@ -92,7 +92,7 @@ XG['4.2'] = [
 /* ======================= 4.3 Ratios and scale ======================= */
 G['4.3'] = [
   function simplifyRatio(l) {
-    const a = ri(1, 9), b = ri(1, 12), k = ri(2, 12); if (gcd(a, b) !== 1 || a === b) return G['4.3'][0](l);
+    const a = ri(1, 9), b = ri(1, 12), k = ri(2, 12); if (gcd(a, b) !== 1 || a === b) return simplifyRatio(l);
     const right = a + ' : ' + b; return ch(p('Write the ratio ' + a * k + ' : ' + b * k + ' as simple as possible.'), right, [b + ' : ' + a, a * 2 + ' : ' + b * 2, (a + 1) + ' : ' + b, a + ' : ' + (b + 1)], 'Divide both numbers by the same number, as far as possible.', a * k + ' : ' + b * k + ' — divide both by ' + k + ' — = ' + right);
   },
   function partWhole(l) {
@@ -156,7 +156,7 @@ XG['4.4'] = [
 G['4.5'] = [
   function pieAngle(l) {
     const tot = pick([20, 24, 36, 40, 60, 72, 90, 120]), part = ri(1, tot - 1), ang = rd(part / tot * 360, 1);
-    if (l === 0 && !Number.isInteger(ang)) return G['4.5'][0](l);
+    if (l === 0 && !Number.isInteger(ang)) return pieAngle(l);
     return nu(p('In a class survey, ' + part + ' of the ' + tot + ' students chose Texel. Calculate the angle of the Texel sector in a pie chart. <small>(Round to 1 decimal.)</small>'), ang, 'The whole circle is 360°. The part is ' + part + '/' + tot + ' of the circle.', part + '/' + tot + ' × 360°' + (Number.isInteger(ang) ? ' = ' : ' ≈ ') + ang + '°', { needStep: true, tol: .051, ansText: ang + '°' });
   },
   function percentAngle(l) {
@@ -165,7 +165,7 @@ G['4.5'] = [
   },
   function angleToCount(l) {
     const tot = pick([360, 720, 1800, 5000000, 1200]), ang = pick([30, 45, 60, 72, 90, 120, 40, 82]), n = rd(tot * ang / 360);
-    if (!Number.isInteger(n) && tot < 10000) return G['4.5'][2](l);
+    if (!Number.isInteger(n) && tot < 10000) return angleToCount(l);
     return nu(p('A pie chart shows ' + sp(tot) + ' members of sports clubs. The football sector has an angle of ' + ang + '°. About how many members play football?' + (Number.isInteger(n) ? '' : ' <small>(Round to a whole number.)</small>')), Math.round(n), 'The part is ' + ang + '/360 of the whole.', ang + '/360 × ' + sp(tot) + (Number.isInteger(n) ? ' = ' : ' ≈ ') + sp(Math.round(n)), { needStep: true, tol: .5 });
   },
   function barRead(l) {
@@ -192,7 +192,7 @@ G['4.6'] = [
   },
   function maxRise(l) {
     const v = temps(); let best = 0, bi = 0; for (let i = 0; i < 11; i++) { const d = v[i + 1] - v[i]; if (d > best) { best = d; bi = i; } }
-    if (v.filter((x, i) => i < 11 && v[i + 1] - x === best).length > 1) return G['4.6'][1](l);
+    if (v.filter((x, i) => i < 11 && v[i + 1] - x === best).length > 1) return maxRise(l);
     const right = MON[bi] + ' to ' + MON[bi + 1], wr = shuffle([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].filter(i => i !== bi)).slice(0, 3).map(i => MON[i] + ' to ' + MON[i + 1]);
     return ch(p('Between which two months does the temperature rise the most?') + lineGraph(v, 2, '°C'), right, wr, 'Look for the steepest rising part of the graph. Or calculate the differences.', 'From ' + MON[bi] + ' to ' + MON[bi + 1] + ' the temperature rises ' + v[bi + 1] + ' − ' + v[bi] + ' = ' + best + ' °C. That is the largest rise.');
   },
@@ -209,20 +209,28 @@ G['4.6'] = [
 ];
 XG['4.6'] = [];
 
+/* the book's paragraphs: 4.1 Data, 4.2 Ratios, 4.3 Percentages, 4.4 Graphs and charts, 4.5 Relationships and graphs */
+const by = (L, names) => names.map(n => L.find(f => f.name === n));
+const ALL = [].concat(...Object.values(G)), ALLX = [].concat(...Object.values(XG));
+G['4.1'] = by(ALL, ['tableMean', 'listMean', 'totalFreq', 'missingValue', 'roundNumber', 'roundContext', 'roundBounds', 'weightedMean']);
+G['4.2'] = by(ALL, ['simplifyRatio', 'partWhole', 'share', 'scaleMap', 'findScale']);
+G['4.3'] = by(ALL, ['fracToPercent', 'percentOf', 'discount', 'vat', 'whatPercent']);
+G['4.4'] = by(ALL, ['pieAngle', 'percentAngle', 'angleToCount', 'barRead', 'whichDiagram', 'readLine']);
+G['4.5'] = by(ALL, ['maxRise', 'riseFall', 'axisChoice']); delete G['4.6'];
+XG['4.1'] = by(ALLX, ['neededMark']); XG['4.2'] = by(ALLX, ['whichSweeter']); XG['4.3'] = by(ALLX, ['backToWhole']); XG['4.4'] = []; XG['4.5'] = []; delete XG['4.6'];
 const SECTIONS = [
-  { id: '4.1', title: '4.1 Frequency tables and the mean', sub: 'Tally marks, frequency, the mean' },
-  { id: '4.2', title: '4.2 Rounding', sub: 'Rounding rules, rounding up or down, weighted mean' },
-  { id: '4.3', title: '4.3 Ratios and scale', sub: 'Simplifying, part-to-whole ratio, sharing, scale' },
-  { id: '4.4', title: '4.4 Percentages', sub: 'Fractions as percentages, discount, VAT' },
-  { id: '4.5', title: '4.5 Diagrams', sub: 'Bar charts and pie charts' },
-  { id: '4.6', title: '4.6 Graphs', sub: 'Reading line graphs, rising and falling' }
+  { id: '4.1', title: '4.1 Data', sub: 'Frequency tables, the mean, rounding' },
+  { id: '4.2', title: '4.2 Ratios', sub: 'Simplifying, part-to-whole ratio, sharing, scale' },
+  { id: '4.3', title: '4.3 Percentages', sub: 'Fractions as percentages, discount, VAT' },
+  { id: '4.4', title: '4.4 Graphs and charts', sub: 'Bar charts, pie charts, line graphs' },
+  { id: '4.5', title: '4.5 Relationships and graphs', sub: 'Rising and falling, which axis' }
 ];
 const GOALS = [
-  ['4.1', 'I can use a frequency table and calculate the mean', ['tableMean', 'listMean', 'totalFreq', 'missingValue'], 'mean = total : number of values'],
-  ['4.2', 'I can round numbers and decide to round up or down', ['roundNumber', 'roundContext', 'roundBounds', 'weightedMean'], '5 or more: round up.'],
-  ['4.3', 'I can calculate with ratios and scale', ['simplifyRatio', 'partWhole', 'share', 'scaleMap', 'findScale'], 'Scale 1 : 100 000 means 1 cm is 1 km.'],
-  ['4.4', 'I can calculate with percentages', ['fracToPercent', 'percentOf', 'discount', 'vat', 'whatPercent'], 'percentage = part / whole × 100%'],
-  ['4.5', 'I can read and make bar charts and pie charts', ['pieAngle', 'percentAngle', 'angleToCount', 'barRead', 'whichDiagram'], '1% of a pie chart is 3.6°.'],
-  ['4.6', 'I can read line graphs', ['readLine', 'maxRise', 'riseFall', 'axisChoice'], 'Time goes on the horizontal axis.']
+  ['4.1', 'I can use a frequency table and calculate the mean', ['tableMean', 'listMean', 'totalFreq', 'missingValue', 'weightedMean'], 'mean = total : number of values'],
+  ['4.1', 'I can round numbers and decide to round up or down', ['roundNumber', 'roundContext', 'roundBounds'], '5 or more: round up.'],
+  ['4.2', 'I can calculate with ratios and scale', ['simplifyRatio', 'partWhole', 'share', 'scaleMap', 'findScale'], 'Scale 1 : 100 000 means 1 cm is 1 km.'],
+  ['4.3', 'I can calculate with percentages', ['fracToPercent', 'percentOf', 'discount', 'vat', 'whatPercent'], 'percentage = part / whole × 100%'],
+  ['4.4', 'I can read and make bar charts, pie charts and line graphs', ['pieAngle', 'percentAngle', 'angleToCount', 'barRead', 'whichDiagram', 'readLine'], '1% of a pie chart is 3.6°.'],
+  ['4.5', 'I can describe a relationship with a graph', ['maxRise', 'riseFall', 'axisChoice'], 'Time goes on the horizontal axis.']
 ];
 return { key: 'nx-1hvt-ch4-v1', SECTIONS, LESSONS: [], G, XG, defaultMode: 'para', GOALS };
