@@ -322,6 +322,11 @@ function formCheck(form, ast, q) {            // returns null if ok else message
     const a = lit(n.a), p = n.b; if (a === null || Math.abs(a) < 1 || Math.abs(a) >= 10) return 'The first number must be at least 1 and less than 10.';
     if (p.t !== 'pow' || lit(p.a) !== 10 || lit(p.b) === null || !isInt(lit(p.b))) return 'Write it as a · 10^n.'; return null;
   }
+  if (form === 'frac') {       // one fraction a/b in lowest terms (or a whole number)
+    if (ast.t === 'n' || (ast.t === 'neg' && ast.a.t === 'n')) return isInt(lit(ast)) ? null : 'Write your answer as a fraction, like 5/33.';
+    if (ast.t === 'div') { const a = lit(ast.a), b = lit(ast.b); if (a === null || b === null || !isInt(a) || !isInt(b)) return 'Write your answer as one fraction of two whole numbers, like 5/33.'; if (gcd(a, b) > 1) return 'Not fully simplified: the top and bottom still have a common factor.'; if (Math.abs(b) === 1) return 'Write a whole number without the 1 below it.'; return null; }
+    return 'Write your answer as one fraction, like 5/33.';
+  }
   if (form === 'powfrac') { if (ast.t !== 'pow') return 'Write it as a single power, like (2/5)^3.'; const e = lit(ast.b); if (e === null || !isInt(e) || ast.a.t !== 'div') return 'Write it as a power of a fraction, like (2/5)^3.'; return null; }
   if (form === 'power') {
     if (ast.t !== 'pow') return 'Write it as a single power.'; const b = lit(ast.a), e = lit(ast.b);

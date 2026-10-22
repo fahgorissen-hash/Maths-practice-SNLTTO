@@ -1,0 +1,55 @@
+{
+ "1hvt-chapter-1": {
+  "cls": "1HVT",
+  "title": "Numbers"
+ },
+ "1hvt-chapter-2": {
+  "cls": "1HVT",
+  "title": "Plane figures"
+ },
+ "1hvt-chapter-3": {
+  "cls": "1HVT",
+  "title": "Relations"
+ },
+ "2ht-chapter-1": {
+  "cls": "2HT",
+  "title": "Numbers"
+ },
+ "2ht-chapter-2": {
+  "cls": "2HT",
+  "title": "Solid geometry"
+ },
+ "2ht-chapter-3": {
+  "cls": "2HT",
+  "title": "Relationships"
+ },
+ "2vt-chapter-1": {
+  "cls": "2VT",
+  "title": "Numbers"
+ },
+ "2vt-chapter-2": {
+  "cls": "2VT",
+  "title": "Solid geometry"
+ },
+ "3ht-chapter-1": {
+  "cls": "3HT",
+  "title": "Numbers and variables"
+ },
+ "3ht-chapter-2": {
+  "cls": "3HT",
+  "title": "Geometric reasoning"
+ },
+ "3vt-chapter-1": {
+  "cls": "3VT",
+  "title": "Numbers"
+ },
+ "3vt-chapter-2": {
+  "cls": "3VT",
+  "title": "Trigonometry"
+ },
+ "2ht-chapter-4": {
+  "cls": "2HT",
+  "title": "Probability",
+  "note": "(scope: KERN Wiskunde 2 havo ch 4 Kansrekening; chapter number to be confirmed against the 2TTOB book)"
+ }
+}

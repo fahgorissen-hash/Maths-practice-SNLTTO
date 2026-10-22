@@ -1,0 +1,1346 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>2HT Chapter 4 Probability - practice</title>
+<style>
+:root{--bg:#f4f7fa;--card:#fff;--ink:#17222d;--mut:#5b6b7a;--line:#d5dee7;--brand:#1b5fa8;--brand2:#e8f1fb;--ok:#16803c;--okbg:#e6f6ec;--bad:#b3261e;--badbg:#fdecea;--warn:#8a5a00;--warnbg:#fff4d6}
+*{box-sizing:border-box}
+body{margin:0;font-family:Calibri,"Segoe UI",system-ui,sans-serif;background:var(--bg);color:var(--ink);font-size:18px;line-height:1.45}
+header{background:var(--brand);color:#fff;padding:14px 20px}
+header h1{margin:0;font-size:24px}header p{margin:2px 0 0;opacity:.9;font-size:15px}
+.wrap{display:grid;grid-template-columns:290px 1fr;gap:18px;max-width:1150px;margin:18px auto;padding:0 14px}
+nav{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px;align-self:start}
+nav button.sec{display:block;width:100%;text-align:left;background:none;border:2px solid transparent;border-radius:10px;padding:9px 11px;margin:3px 0;font:inherit;cursor:pointer;color:inherit}
+nav button.sec:hover{background:var(--brand2)}
+nav button.sec[aria-current=true]{background:var(--brand2);border-color:var(--brand)}
+nav .t{font-weight:700}nav .s{font-size:14px;color:var(--mut)}
+.bar{height:7px;background:#e3eaf1;border-radius:5px;margin-top:5px;overflow:hidden}.bar i{display:block;height:100%;background:var(--ok);width:0}
+.reset{margin:8px 4px 2px;font-size:14px;color:var(--mut);background:none;border:0;text-decoration:underline;cursor:pointer;font-family:inherit}
+main{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px 22px;min-height:420px}
+.top{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:8px}
+.badge{padding:3px 12px;border-radius:99px;font-weight:700;font-size:15px}
+.l0{background:#dff3e5;color:#0f6a31}.l1{background:#fff0c9;color:#7a5200}.l2{background:#fde0d9;color:#a3341b}.l3{background:#f3d9f5;color:#6b1f78}.lm{background:#e3def7;color:#40318a}
+header{display:flex;align-items:center;gap:14px;flex-wrap:wrap}header .hd{flex:1;min-width:240px}.pbtn{font:inherit;font-weight:700;background:#fff;color:var(--brand);border:0;border-radius:10px;padding:8px 16px;cursor:pointer;font-size:16px}
+nav button.mm{margin-left:14px;width:calc(100% - 14px);background:#f1edfb;border-color:#cbbdf0;font-weight:700;color:#40318a;font-size:16px}
+.pg h2{margin-top:0}.pg table{border-collapse:collapse;width:100%;font-size:16px;margin:8px 0 14px}.pg th,.pg td{border-bottom:1px solid var(--line);padding:8px 6px;text-align:left;vertical-align:middle}.pg th{color:var(--mut);font-size:14px}.chip{display:inline-block;padding:2px 9px;border-radius:99px;font-size:13px;font-weight:700;margin:1px 2px 1px 0;border:2px solid #cfd8e0;color:#8795a3;background:#fff}.chip.ach{background:var(--okbg);border-color:#8fd1a8;color:var(--ok)}.chip.act{border-color:var(--brand);color:var(--brand);background:var(--brand2)}
+nav .seg{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin:2px 0 8px}nav .seg button{font:inherit;font-size:15px;font-weight:700;padding:7px 4px;border-radius:9px;border:2px solid var(--brand);background:#fff;color:var(--brand);cursor:pointer}nav .seg button.on{background:var(--brand);color:#fff}
+@media print{header .pbtn,.topnav,nav,.btns{display:none!important}.wrap{display:block}main{border:0}}
+.streak{margin-left:auto;color:var(--mut);font-size:15px}
+.dot{display:inline-block;width:11px;height:11px;border-radius:50%;background:#d6dee6;margin-left:4px}.dot.on{background:var(--ok)}
+.q p{margin:.4em 0 .6em;font-size:20px}
+.tbl{border-collapse:collapse;margin:8px 0 12px;font-size:19px}.tbl th,.tbl td{border:1px solid #9fb0bf;padding:5px 13px;text-align:center;min-width:44px}.tbl th{background:var(--brand2)}
+svg.grid{width:100%;max-width:470px;height:auto;border:1px solid var(--line);border-radius:8px;display:block;margin:6px 0 10px;touch-action:manipulation}
+svg.grid[data-click]{cursor:crosshair}
+.ans{margin:8px 0}
+.ans label{display:block;font-size:16px;color:var(--mut);margin-top:6px}
+.ans input[type=text]{font:inherit;font-size:20px;padding:7px 11px;border:2px solid #9fb0bf;border-radius:9px;width:210px}
+.ans input:focus{outline:3px solid #9cc4ee;border-color:var(--brand)}
+.choices{display:grid;gap:8px;max-width:520px}
+.choice{display:block;text-align:left;font:inherit;font-size:19px;padding:10px 14px;border:2px solid #9fb0bf;border-radius:10px;background:#fff;cursor:pointer}
+.choice:hover{border-color:var(--brand)}.choice[aria-pressed=true]{background:var(--brand2);border-color:var(--brand)}
+.btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+.btn{font:inherit;font-weight:700;padding:9px 20px;border-radius:10px;border:2px solid var(--brand);background:var(--brand);color:#fff;cursor:pointer;font-size:18px}
+.btn.alt{background:#fff;color:var(--brand)}.btn:disabled{opacity:.45;cursor:default}
+.fb{margin-top:14px;padding:11px 14px;border-radius:10px;display:none}
+.fb.show{display:block}.fb.ok{background:var(--okbg);border:1px solid #8fd1a8}.fb.no{background:var(--badbg);border:1px solid #eba8a3}.fb.hint{background:var(--warnbg);border:1px solid #e6c874}
+.fb b.h{display:block;margin-bottom:2px}
+.res h2{margin-top:0}.grade{font-size:44px;font-weight:700;color:var(--brand)}
+.rev{border-top:1px solid var(--line);padding:10px 0;font-size:17px}.rev .st{color:var(--mut)}
+@media(max-width:760px){.wrap{grid-template-columns:1fr}nav{display:grid;grid-template-columns:1fr 1fr;gap:4px}nav .reset{grid-column:1/-1}}
+.sr{position:absolute;left:-9999px}
+
+.mx{font-size:1.06em;white-space:nowrap}
+.mx i{font-family:"Cambria Math","Times New Roman",serif;font-style:italic}
+.fr{display:inline-flex;flex-direction:column;vertical-align:middle;text-align:center;margin:0 3px;line-height:1.2}
+.fr .nu{border-bottom:1.6px solid currentColor;padding:0 4px 1px}.fr .de{padding:1px 4px 0}
+.rt{display:inline-block;position:relative;white-space:nowrap;line-height:1.1;padding-left:.72em;margin-right:.08em}.rt.rn{margin-left:.4em}
+.rt .ov{display:inline-block;padding:.14em 3px 0 0;border-top:1.6px solid currentColor}
+.rt .sq{position:absolute;left:0;top:0;bottom:-.12em;width:.72em;background:currentColor;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 20' preserveAspectRatio='none'%3E%3Cpath d='M0.6 11.2 L2.4 10 L4.8 18.6 L9.6 0.8' fill='none' stroke='black' stroke-width='1.7' stroke-linejoin='miter' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E") center/100% 100% no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 20' preserveAspectRatio='none'%3E%3Cpath d='M0.6 11.2 L2.4 10 L4.8 18.6 L9.6 0.8' fill='none' stroke='black' stroke-width='1.7' stroke-linejoin='miter' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E") center/100% 100% no-repeat}
+.rt .ix{position:absolute;left:-.42em;top:.12em;font-size:.62em;line-height:1}
+.q sup{font-size:.7em;line-height:0}
+.mx i{padding-right:.09em}.mx sup{font-style:normal;margin-left:.05em;font-size:.7em;line-height:0}
+.kp{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 2px}.kp button{font:inherit;font-size:19px;min-width:42px;padding:5px 10px;border:2px solid #9fb0bf;border-radius:9px;background:#f7fafc;cursor:pointer}.kp button:hover{border-color:var(--brand);background:var(--brand2)}
+.pv{min-height:34px;margin:6px 0 0;font-size:20px;color:#223}.pv .pl{font-size:14px;color:var(--mut);margin-right:6px}
+.ans input[type=text].wide{width:min(520px,100%)}
+.ans input#in0{width:min(420px,100%)}
+.fb .mx{font-size:1.05em}
+.lead{color:var(--mut);font-size:15px;margin:2px 0 0}
+svg.fig{max-width:430px;width:100%;height:auto;display:block;margin:6px 0 10px}
+.topnav{flex-basis:100%;display:flex;gap:8px;align-items:center;flex-wrap:wrap}.topnav .nb,.topnav summary{font:inherit;font-size:14px;font-weight:700;background:rgba(255,255,255,.18);color:#fff;border:1px solid rgba(255,255,255,.5);border-radius:10px;padding:5px 12px;cursor:pointer;text-decoration:none;list-style:none}.topnav .nb:hover,.topnav summary:hover{background:rgba(255,255,255,.3)}.topnav summary::-webkit-details-marker{display:none}.topnav details{position:relative}.topnav .menu{position:absolute;z-index:50;top:110%;left:0;background:#fff;border-radius:10px;box-shadow:0 4px 16px rgba(0,0,0,.25);padding:6px;min-width:260px;display:flex;flex-direction:column}.topnav .menu a{color:var(--brand);text-decoration:none;padding:7px 10px;border-radius:8px;font-size:15px}.topnav .menu a:hover{background:#eef2f7}.topnav .menu a.cur{font-weight:800;background:#e3ecf7}
+.topnav .nb.cur{background:#fff;color:var(--brand);border-color:#fff}
+.goals{background:#f3f8fd;border:1px solid var(--line);border-radius:12px;padding:8px 14px;margin:8px 0 12px}.goals .gh{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;align-items:center}.goals .gb{display:flex;gap:12px;flex-wrap:wrap}.lk{font:inherit;font-size:15px;background:none;border:0;color:var(--brand);text-decoration:underline;cursor:pointer;padding:2px 0}.goals ul{list-style:none;margin:6px 0 2px;padding:0}.goals li{display:flex;gap:9px;align-items:flex-start;padding:4px 6px;border-radius:8px;font-size:16px}.goals li.cur{background:#fff;border:1px solid var(--brand);font-weight:700}.goals .sd{flex:0 0 11px;height:11px;border-radius:50%;margin-top:7px}
+.hc{background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px 14px;margin:8px 0}.hc h4{margin:0 0 6px;font-size:18px}.hc .hr{margin:8px 0;font-size:16px}.hc .hr p{margin:2px 0}.hc .ex{background:#f7fafc;border-radius:8px;padding:2px 12px}.hc .ex .exa{margin:2px 0 8px}.hc .warn{background:var(--warnbg);border-radius:8px;padding:4px 10px}
+.pmbar{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:2px 0 8px}.pml{font-size:14px;color:var(--mut);margin-left:4px}.pm{font:inherit;font-size:14px;font-weight:700;padding:3px 11px;border-radius:99px;border:2px solid #9fb0bf;background:#fff;color:var(--ink);cursor:pointer}.pm.on{background:var(--brand);border-color:var(--brand);color:#fff}.pm.l0.on{background:#0f6a31;border-color:#0f6a31}.pm.l1.on{background:#9a6a00;border-color:#9a6a00}.pm.l2.on{background:#a3341b;border-color:#a3341b}.pm.l3.on{background:#6b1f78;border-color:#6b1f78}
+.pmnote{background:#eef4fb;border:1px solid #b9d0ea;border-radius:10px;padding:6px 12px;margin:0 0 10px;font-size:16px}.btn.sm{font-size:14px;padding:3px 12px;margin-left:8px}
+.hl{margin-top:16px;font-size:15px}.hl summary{cursor:pointer;color:var(--mut)}.hl ul{margin:6px 0;padding-left:0;list-style:none}.hl li{padding:2px 0;border-bottom:1px solid #eef2f6}.hl .ok{color:var(--ok);font-weight:700}.hl .no{color:var(--bad);font-weight:700}.hl .lq{color:var(--mut)}
+.at{margin-top:8px;font-size:15px;color:var(--mut)}.at .ok{color:var(--ok);font-weight:700;margin-right:8px}.at .no{color:var(--bad);font-weight:700;margin-right:8px}
+.cards{display:flex;gap:12px;flex-wrap:wrap;margin:6px 0}.card2{flex:1;min-width:150px;border:1px solid var(--line);border-radius:12px;padding:10px 14px;background:#f7fafc}.card2 b{display:block;font-size:28px;color:var(--brand)}.card2 span{font-size:14px;color:var(--mut)}
+.stc{display:inline-block;border:1px solid;border-radius:99px;padding:1px 10px;font-size:14px;font-weight:700;white-space:nowrap}.stkey{display:flex;gap:6px;flex-wrap:wrap}.gt .gsec td{background:#eef4fb}.gt td.num{white-space:nowrap}.mut{color:var(--mut);font-size:15px}
+.bdg{display:inline-block;margin:3px 6px 3px 0;padding:3px 12px;border-radius:99px;border:1px solid var(--line);color:#8a98a6;background:#f4f7fa;font-size:15px}.bdg.got{background:#fff4d6;color:#7a5200;border-color:#e6c874;font-weight:700}
+.filebtn{display:inline-block;cursor:pointer}.btn.danger{color:var(--bad);border-color:var(--bad)}.rname{font:inherit;font-size:18px;padding:3px 8px;border:1px solid #9fb0bf;border-radius:8px}
+.ws .wq{display:flex;gap:12px;padding:10px 0;border-bottom:1px solid var(--line);break-inside:avoid}.ws .wn{font-weight:700;color:var(--brand);min-width:26px}.ws .wl{margin-top:10px;color:var(--mut)}.ws .wo{margin:4px 0}.ws .wa{padding:6px 0;border-bottom:1px solid #eef2f6;font-size:16px}.pbreak{page-break-before:always;break-before:page}
+@media print{body.printing header,body.printing nav,body.printing .noprint,body.printing .goals{display:none!important}body.printing .wrap{display:block;margin:0;padding:0}body.printing main{border:0;padding:0}body{background:#fff}}
+.autoc{display:block;margin:.6rem 0 0;font-size:.9rem;color:var(--mut,#556)}.autoc input{margin-right:.4rem}
+.stp .stl{font-size:1.15rem;margin:.35rem 0;color:var(--ink,inherit)}.stp .eq{margin-left:.15rem;font-weight:700}
+.stp .stl{display:flex;gap:.6rem;align-items:flex-start}.ci{flex:none;width:1.5rem;height:1.5rem;border-radius:50%;border:2px solid #22a050;color:#22a050;display:inline-flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:700;line-height:1;margin-top:.1rem}.ci.open{color:transparent}.ci.full{background:#22a050;color:#fff}.fnote{font-size:.85rem;color:#16803c;margin-top:.1rem}.stepnote{margin:.5rem 0;padding:.45rem .7rem;border-left:4px solid #b7791f;background:#fff7e6;border-radius:6px;font-size:.92rem;color:#5a3d00}@media (prefers-color-scheme:dark){.stepnote{background:#3a2d12;color:#f3d9a4}}
+</style>
+</head>
+<body>
+<header><div class="topnav" role="navigation" aria-label="Site navigation"><a class="nb" href="../">Home</a><a class="nb" href="../2ht-chapter-1/">Chapter 1</a><a class="nb" href="../2ht-chapter-2/">Chapter 2</a><a class="nb" href="../2ht-chapter-3/">Chapter 3</a><a class="nb cur" href="../2ht-chapter-4/" aria-current="page">Chapter 4</a></div><div class="hd"><h1>2HT · Chapter 4 · Probability</h1><p>Practise as long as you like. The questions adapt to you: Mild, Medium, Spicy and Extra spicy.</p></div><button class="pbtn" id="pbtn" type="button">My progress</button></header>
+<div class="wrap">
+  <nav id="nav" aria-label="Topics"></nav>
+  <main id="main" aria-live="polite"></main>
+</div>
+<script>
+/* NX core: shared helpers, expression parser/grader, renderer, engine builder. No DOM. */
+(function (root) {
+'use strict';
+const ri = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
+const pick = arr => arr[Math.floor(Math.random() * arr.length)];
+const shuffle = arr => { const a = arr.slice(); for (let i = a.length - 1; i > 0; i--) { const j = ri(0, i); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const nz = (a, b) => { let v = 0; while (v === 0) v = ri(a, b); return v; };
+const f = n => (n < 0 ? '−' : '') + (Math.round(Math.abs(n) * 1e6) / 1e6);
+const gcd = (a, b) => { a = Math.abs(a); b = Math.abs(b); while (b) { [a, b] = [b, a % b]; } return a; };
+const lcm = (a, b) => a / gcd(a, b) * b;
+const isPrime = n => { if (n < 2) return false; for (let i = 2; i * i <= n; i++) if (n % i === 0) return false; return true; };
+const primeFactors = n => { const r = []; for (let p = 2; p * p <= n; p++) while (n % p === 0) { r.push(p); n /= p; } if (n > 1) r.push(n); return r; };
+const squarefree = n => { for (let p = 2; p * p <= n; p++) if (n % (p * p) === 0) return false; return true; };
+const sqrtSplit = n => { let o = 1, r = n; for (let p = 2; p * p <= r; p++) while (r % (p * p) === 0) { o *= p; r /= p * p; } return [o, r]; };  // n = o^2 * r
+const SUP = '⁰¹²³⁴⁵⁶⁷⁸⁹';
+
+/* ================= tokenizer / parser ================= */
+function tokenize(src, o) {
+  o = o || {};
+  let s = String(src).replace(/[−–—]/g, '-').replace(/ /g, ' ');
+  s = s.replace(/(^|[^\d.,])(-?)(\d+)[ ]+(\d+)[ ]*\/[ ]*(\d+)/g, (m, pre, sg, w, n, d) => pre + (sg ? '-' : '') + '(' + w + '+' + n + '/' + d + ')');   // mixed number 2 1/3
+  s = s.replace(/sqrt/gi, '√').replace(/(?<![a-zA-Z])pi(?![a-zA-Z])/gi, 'π');
+  s = s.replace(/([⁰¹²³⁴⁵⁶⁷⁸⁹]+)√/g, (m, d) => '\u0001' + d.split('').map(c => SUP.indexOf(c)).join('') + ';');
+  s = s.replace(/(\d+)\s*V/g, (m, d) => '\u0001' + d + ';');   // 3V27 = cube root of 27
+  s = s.replace(/∛/g, '\u00013;').replace(/∜/g, '\u00014;');
+  s = s.replace(/[⁰¹²³⁴⁻⁵⁶⁷⁸⁹]+/g, m => '^(' + m.split('').map(c => c === '⁻' ? '-' : SUP.indexOf(c)).join('') + ')');
+  const t = []; let i = 0;
+  while (i < s.length) {
+    const c = s[i];
+    if (/\s/.test(c)) { i++; continue; }
+    if (c === '\u0001') { const j = s.indexOf(';', i); t.push({ k: 'sqrt', n: +s.slice(i + 1, j) }); i = j + 1; continue; }
+    if (c === '√') { t.push({ k: 'sqrt', n: 2 }); i++; continue; }
+    let m;
+    if ((m = /^\d+(?:[.,]\d+)?|^[.,]\d+/.exec(s.slice(i)))) { t.push({ k: 'num', v: parseFloat(m[0].replace(',', '.')), s: m[0].replace(',', '.') }); i += m[0].length; continue; }
+    if (c === 'π') { t.push({ k: 'pi' }); i++; continue; }
+    if (/[×·⋅*]/.test(c)) { t.push({ k: 'op', v: '*' }); i++; continue; }
+    if (/[x]/i.test(c) && o.noVars) { t.push({ k: 'op', v: '*' }); i++; continue; }
+    if (/[a-zA-Z]/.test(c)) { if (o.noVars) throw new Error('var'); t.push({ k: 'var', n: c }); i++; continue; }
+    if (c === '÷' || c === ':') { t.push({ k: 'op', v: '÷' }); i++; continue; }
+    if ('+-/^()'.indexOf(c) >= 0) { t.push({ k: 'op', v: c }); i++; continue; }
+    if (c === '[') { t.push({ k: 'op', v: '(' }); i++; continue; }
+    if (c === ']') { t.push({ k: 'op', v: ')' }); i++; continue; }
+    throw new Error('char ' + c);
+  }
+  return t;
+}
+function parse(src, o) {
+  const T = tokenize(src, o); let p = 0;
+  const peek = () => T[p], isOp = v => T[p] && T[p].k === 'op' && T[p].v === v;
+  const startsFactor = () => { const k = T[p]; return k && (k.k === 'num' || k.k === 'var' || k.k === 'pi' || k.k === 'sqrt' || (k.k === 'op' && k.v === '(')); };
+  function expr() {
+    let a = term();
+    while (isOp('+') || isOp('-')) { const op = T[p++].v; const b = term(); a = { t: op === '+' ? 'add' : 'sub', a, b }; }
+    return a;
+  }
+  function term() {
+    let a = unary();
+    for (;;) {
+      if (isOp('*')) { p++; a = { t: 'mul', a, b: unary() }; }
+      else if (isOp('/')) { p++; a = { t: 'div', a, b: unary() }; }
+      else if (isOp('÷')) { p++; a = { t: 'div', a, b: unary(), inl: true }; }
+      else if (startsFactor()) { a = { t: 'mul', a, b: unary(), imp: true }; }
+      else break;
+    }
+    return a;
+  }
+  function unary() {
+    if (isOp('-')) { p++; return { t: 'neg', a: unary() }; }
+    if (isOp('+')) { p++; return unary(); }
+    return power();
+  }
+  function power() {
+    const a = atom();
+    if (isOp('^')) { p++; let sgn = 1; if (isOp('-')) { p++; sgn = -1; } else if (isOp('+')) p++; let b = power(); if (sgn < 0) b = { t: 'neg', a: b }; return { t: 'pow', a, b }; }
+    return a;
+  }
+  function atom() {
+    const k = T[p]; if (!k) throw new Error('end');
+    if (k.k === 'num') { p++; return { t: 'n', v: k.v, s: k.s }; }
+    if (k.k === 'var') { p++; return { t: 'v', n: k.n }; }
+    if (k.k === 'pi') { p++; return { t: 'pi' }; }
+    if (k.k === 'sqrt') {
+      p++; let neg = false;
+      if (isOp('-')) { p++; neg = true; }
+      let r; const q = T[p];
+      if (isOp('(')) r = atom();
+      else if (q && q.k === 'num') { p++; r = { t: 'n', v: q.v, s: q.s }; }
+      else if (q && q.k === 'var') { p++; r = { t: 'v', n: q.n }; }
+      else if (q && q.k === 'pi') { p++; r = { t: 'pi' }; }
+      else throw new Error('sqrt');
+      if (neg) r = { t: 'neg', a: r };
+      return { t: 'sqrt', a: r, k: k.n };
+    }
+    if (isOp('(')) { p++; const e = expr(); if (!isOp(')')) throw new Error('paren'); p++; e.par = true; return e; }
+    throw new Error('atom');
+  }
+  const e = expr(); if (p < T.length) throw new Error('trailing'); return e;
+}
+function evalAst(n, env) {
+  switch (n.t) {
+    case 'n': return n.v; case 'v': { if (!(n.n in env)) env[n.n] = 0.6 + Math.random() * 2.2; return env[n.n]; }
+    case 'pi': return Math.PI; case 'neg': return -evalAst(n.a, env);
+    case 'add': return evalAst(n.a, env) + evalAst(n.b, env); case 'sub': return evalAst(n.a, env) - evalAst(n.b, env);
+    case 'mul': return evalAst(n.a, env) * evalAst(n.b, env); case 'div': return evalAst(n.a, env) / evalAst(n.b, env);
+    case 'pow': return Math.pow(evalAst(n.a, env), evalAst(n.b, env));
+    case 'sqrt': { const x = evalAst(n.a, env); if (n.k % 2 === 1) return (x < 0 ? -1 : 1) * Math.pow(Math.abs(x), 1 / n.k); return x < 0 ? NaN : Math.pow(x, 1 / n.k); }
+  }
+  return NaN;
+}
+function numEq(a, b) {                       // asts equivalent? (random numeric test)
+  for (let i = 0; i < 6; i++) {
+    const env = {}; const x = evalAst(a, env), y = evalAst(b, env);  // vars filled lazily, shared env
+    const y2 = evalAst(b, env);
+    if (!isFinite(x) || !isFinite(y2)) { if (i < 5) continue; return false; }
+    if (Math.abs(x - y2) > 1e-7 * Math.max(1, Math.abs(x), Math.abs(y2))) return false;
+  }
+  return true;
+}
+const isInt = v => Math.abs(v - Math.round(v)) < 1e-9;
+const lit = n => n.t === 'n' ? n.v : (n.t === 'neg' && n.a.t === 'n' ? -n.a.v : null);
+
+/* ----- polynomials: Map(key -> coef) ; key = 'a1b2' sorted ----- */
+const PK = m => Object.keys(m).sort().map(v => v + m[v]).join('');
+const Poly = {
+  c: v => (v === 0 ? {} : { '': v }),
+  v: n => ({ [n + '1']: 1 }),
+  add(a, b, s) { const r = Object.assign({}, a); for (const k in b) { r[k] = (r[k] || 0) + (s || 1) * b[k]; if (Math.abs(r[k]) < 1e-12) delete r[k]; } return r; },
+  mulm(k1, k2) { const m = {}; const re = /([^\d])(\d+)/g; let x; [k1, k2].forEach(k => { re.lastIndex = 0; while ((x = re.exec(k))) m[x[1]] = (m[x[1]] || 0) + +x[2]; }); return PK(m); },
+  mul(a, b) { const r = {}; for (const k1 in a) for (const k2 in b) { const k = Poly.mulm(k1, k2); r[k] = (r[k] || 0) + a[k1] * b[k2]; if (Math.abs(r[k]) < 1e-12) delete r[k]; } return r; },
+  pow(a, n) { let r = Poly.c(1); for (let i = 0; i < n; i++) r = Poly.mul(r, a); return r; },
+  isConst: a => Object.keys(a).every(k => k === ''),
+  cval: a => a[''] || 0
+};
+function toRF(n) {                           // rational function {N,D} or null
+  switch (n.t) {
+    case 'n': return { N: Poly.c(n.v), D: Poly.c(1) };
+    case 'v': return { N: Poly.v(n.n), D: Poly.c(1) };
+    case 'pi': return { N: Poly.v('π'), D: Poly.c(1) };
+    case 'neg': { const a = toRF(n.a); return a && { N: Poly.mul(a.N, Poly.c(-1)), D: a.D }; }
+    case 'add': case 'sub': { const a = toRF(n.a), b = toRF(n.b); if (!a || !b) return null; return { N: Poly.add(Poly.mul(a.N, b.D), Poly.mul(b.N, a.D), n.t === 'add' ? 1 : -1), D: Poly.mul(a.D, b.D) }; }
+    case 'mul': { const a = toRF(n.a), b = toRF(n.b); return a && b && { N: Poly.mul(a.N, b.N), D: Poly.mul(a.D, b.D) }; }
+    case 'div': { const a = toRF(n.a), b = toRF(n.b); if (!a || !b || !Object.keys(b.N).length) return null; return { N: Poly.mul(a.N, b.D), D: Poly.mul(a.D, b.N) }; }
+    case 'pow': { const e = lit(n.b); if (e === null || !isInt(e) || Math.abs(e) > 12) return null; const a = toRF(n.a); if (!a) return null; if (e >= 0) return { N: Poly.pow(a.N, e), D: Poly.pow(a.D, e) }; if (!Object.keys(a.N).length) return null; return { N: Poly.pow(a.D, -e), D: Poly.pow(a.N, -e) }; }
+  }
+  return null;
+}
+/* ----- structural analysis ----- */
+function flat(n, s, out) {
+  if (n.t === 'add') { flat(n.a, s, out); flat(n.b, s, out); }
+  else if (n.t === 'sub') { flat(n.a, s, out); flat(n.b, -s, out); }
+  else if (n.t === 'neg') flat(n.a, -s, out);
+  else out.push({ s, n });
+  return out;
+}
+function monoTerm(n, allowNegExp) {           // {c, vars} or null
+  switch (n.t) {
+    case 'n': return { c: n.v, vars: {} };
+    case 'pi': return { c: 1, vars: { 'π': 1 } };
+    case 'v': return { c: 1, vars: { [n.n]: 1 } };
+    case 'neg': { const a = monoTerm(n.a, allowNegExp); return a && { c: -a.c, vars: a.vars }; }
+    case 'mul': { const a = monoTerm(n.a, allowNegExp), b = monoTerm(n.b, allowNegExp); if (!a || !b) return null; const vars = Object.assign({}, a.vars); for (const k in b.vars) { if (k in vars) return null; vars[k] = b.vars[k]; } return { c: a.c * b.c, vars }; }
+    case 'div': { const a = monoTerm(n.a, allowNegExp), b = monoTerm(n.b, allowNegExp); if (!a || !b || Object.keys(b.vars).length || b.c === 0) return null; return { c: a.c / b.c, vars: a.vars }; }
+    case 'pow': { const e = lit(n.b); if (e === null || !isInt(e)) return null; if (e < 0 && !allowNegExp) return null; if (n.a.t === 'v') return { c: 1, vars: { [n.a.n]: e } }; if (n.a.t === 'pi') return { c: 1, vars: { 'π': e } }; return null; }
+  }
+  return null;
+}
+const hasBrackets = (n) => { if (n.par && n.t !== 'n' && !(n.t === 'neg' && n.a.t === 'n') && !(n.t === 'div' && n.a.t === 'n' && n.b.t === 'n')) return true; for (const k of ['a', 'b']) if (n[k] && hasBrackets(n[k])) return true; return false; };
+function sigOf(vars) { return Object.keys(vars).sort().map(k => k + vars[k]).join(''); }
+
+function formCheck(form, ast, q) {            // returns null if ok else message
+  if (!form || form === 'any') return null;
+  if (form === 'mono') {
+    const t = flat(ast, 1, []); if (t.length !== 1) return 'Write your answer as a single term.';
+    if (!monoTerm(t[0].n, q && q.negExp)) return 'Not fully simplified yet: write it as one number times each letter to a single power.'; return null;
+  }
+  if (form === 'poly') {
+    const t = flat(ast, 1, []); const seen = {};
+    for (const x of t) { const m = monoTerm(x.n); if (!m) return 'Not finished yet: expand the brackets and write every term as a number times letters.'; const s = sigOf(m.vars); if (seen[s]) return 'Not finished yet: add the like terms.'; seen[s] = 1; if (m.c === 0) return 'Remove the terms that are 0.'; }
+    return null;
+  }
+  if (form === 'lowest') {
+    const rf = toRF(ast); if (!rf) return 'I cannot read that as a fraction.';
+    const D = rf.D, N = rf.N; if (Object.keys(D).length !== 1) return 'Write one fraction with a single term in the denominator.';
+    const dk = Object.keys(D)[0]; let dc = D[dk]; if (!isInt(dc)) return null;
+    const cs = Object.keys(N).map(k => N[k]); if (!cs.length) return null;
+    if (cs.some(c => !isInt(c))) { return null; }
+    let g = Math.abs(dc); cs.forEach(c => { g = gcd(g, c); }); if (g > 1) return 'Not fully simplified: the numbers still have a common factor.';
+    const vs = (dk.match(/[^\d]/g) || []);
+    for (const v of vs) { if (Object.keys(N).every(k => k.indexOf(v) >= 0)) return 'Not fully simplified: you can still cancel the letter ' + v + '.'; }
+    // the user must not leave nested fractions / brackets-free requirement: ok
+    return null;
+  }
+  if (form === 'root') {
+    const terms = flat(ast, 1, []); const rads = {};
+    function rootTerm(n) {            // {c, r} or null
+      switch (n.t) {
+        case 'n': return { c: n.v, r: 1 };
+        case 'neg': { const a = rootTerm(n.a); return a && { c: -a.c, r: a.r }; }
+        case 'sqrt': { if (n.k !== 2) return null; const v = lit(n.a); if (v === null || !isInt(v) || v <= 1) return null; if (!squarefree(v)) return { bad: 'sq' }; return { c: 1, r: v }; }
+        case 'mul': { const a = rootTerm(n.a), b = rootTerm(n.b); if (!a || !b || a.bad || b.bad) return a && a.bad ? a : b && b.bad ? b : null; if (a.r > 1 && b.r > 1) return { bad: 'two' }; return { c: a.c * b.c, r: a.r * b.r }; }
+        case 'div': { const a = rootTerm(n.a), b = rootTerm(n.b); if (!a || !b) return null; if (a.bad) return a; if (b.bad) return b; if (b.r > 1) return { bad: 'den' }; if (isInt(a.c) && isInt(b.c) && gcd(a.c, b.c) > 1) return { bad: 'cancel' }; return { c: a.c / b.c, r: a.r }; }
+      }
+      return null;
+    }
+    for (const x of terms) {
+      const r = rootTerm(x.n); if (!r) return 'Not in the simplest form: write each term as a number times √ of a whole number.';
+      if (r.bad === 'sq') return 'Not fully simplified: there is still a square factor under the root.';
+      if (r.bad === 'two') return 'Not fully simplified: combine the roots into one.';
+      if (r.bad === 'den') return 'There is still a root in the denominator.';
+      if (r.bad === 'cancel') return 'Not fully simplified: the fraction can still be cancelled.';
+      if (rads[r.r]) return 'Not finished: add the like radicals.'; rads[r.r] = 1;
+    }
+    return null;
+  }
+  if (form === 'primes') {
+    let bad = null;
+    (function walk(n, inPow) {
+      if (n.t === 'n') { if (!isInt(n.v) || !isPrime(n.v)) bad = 'Every factor must be a prime number.'; }
+      else if (n.t === 'mul') { walk(n.a); walk(n.b); }
+      else if (n.t === 'pow') { walk(n.a); if (n.b.t !== 'n') bad = 'Use whole-number exponents.'; }
+      else bad = 'Write only prime numbers multiplied together, like 2^3 · 5.';
+    })(ast); return bad;
+  }
+  if (form === 'sci') {
+    let n = ast; if (n.t !== 'mul') return 'Write it as a number between 1 and 10 times a power of 10.';
+    const a = lit(n.a), p = n.b; if (a === null || Math.abs(a) < 1 || Math.abs(a) >= 10) return 'The first number must be at least 1 and less than 10.';
+    if (p.t !== 'pow' || lit(p.a) !== 10 || lit(p.b) === null || !isInt(lit(p.b))) return 'Write it as a · 10^n.'; return null;
+  }
+  if (form === 'frac') {       // one fraction a/b in lowest terms (or a whole number)
+    if (ast.t === 'n' || (ast.t === 'neg' && ast.a.t === 'n')) return isInt(lit(ast)) ? null : 'Write your answer as a fraction, like 5/33.';
+    if (ast.t === 'div') { const a = lit(ast.a), b = lit(ast.b); if (a === null || b === null || !isInt(a) || !isInt(b)) return 'Write your answer as one fraction of two whole numbers, like 5/33.'; if (gcd(a, b) > 1) return 'Not fully simplified: the top and bottom still have a common factor.'; if (Math.abs(b) === 1) return 'Write a whole number without the 1 below it.'; return null; }
+    return 'Write your answer as one fraction, like 5/33.';
+  }
+  if (form === 'powfrac') { if (ast.t !== 'pow') return 'Write it as a single power, like (2/5)^3.'; const e = lit(ast.b); if (e === null || !isInt(e) || ast.a.t !== 'div') return 'Write it as a power of a fraction, like (2/5)^3.'; return null; }
+  if (form === 'power') {
+    if (ast.t !== 'pow') return 'Write it as a single power.'; const b = lit(ast.a), e = lit(ast.b);
+    if (b === null || e === null || !isInt(e)) return 'Write it as a single power.'; if (q && q.base !== undefined && b !== q.base) return 'Use the base ' + q.base + '.'; return null;
+  }
+  return null;
+}
+function gradeExpr(q, u) {
+  let ua, ea; const o = q.noVars ? { noVars: true } : {};
+  try { ua = parse(u, o); } catch (e) { return { ok: false, why: 'parse' }; }
+  ea = parse(q.ans, o);
+  if (!numEq(ea, ua)) return { ok: false, why: 'value' };
+  if (q.form === 'mixed') { const t = String(u).replace(/[−–—]/g, '-').trim(); const mm = /^-?\d+[ ]+(\d+)[ ]*\/[ ]*(\d+)$/.exec(t); const isI = /^-?\d+$/.test(t); const pf_ = /^-?(\d+)[ ]*\/[ ]*(\d+)$/.exec(t); if (!isI && pf_ && !mm) { const n1 = +pf_[1], d1 = +pf_[2]; if (n1 >= d1) return { ok: false, why: 'form', msg: 'Write it as a mixed number: a whole number, a space and a fraction, like 2 1/3.' }; if (gcd(n1, d1) > 1) return { ok: false, why: 'form', msg: 'Not fully simplified: the fraction can still be simplified.' }; return { ok: true }; } if (!isI) { if (!mm) return { ok: false, why: 'form', msg: 'Write it as a mixed number: a whole number, a space and a fraction, like 2 1/3.' }; const nn = +mm[1], dd = +mm[2]; if (nn >= dd) return { ok: false, why: 'form', msg: 'The fraction part must be smaller than 1.' }; if (gcd(nn, dd) > 1) return { ok: false, why: 'form', msg: 'Not fully simplified: the fraction part can still be simplified.' }; } return { ok: true }; }
+  if (q.form === 'improper') { if (/\d[ ]+\d+[ ]*\/[ ]*\d/.test(String(u).trim())) return { ok: false, why: 'form', msg: 'Write it as one fraction (no whole number in front), like 7/4.' }; const m2 = formCheck('lowest', ua, q); if (m2) return { ok: false, why: 'form', msg: m2 }; return { ok: true }; }
+  const m = formCheck(q.form, ua, q); if (m) return { ok: false, why: 'form', msg: m };
+  if (q.needPi && !/π|pi/i.test(String(u))) return { ok: false, why: 'form', msg: 'Give the exact answer, with π.' };
+  return { ok: true };
+}
+
+/* ================= rendering ================= */
+function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;'); }
+function R(src, o) {
+  let ast; try { ast = parse(src, o); } catch (e) { return null; }
+  function P(n, strip) {
+    const w = (n.par && !strip) ? x => '(' + x + ')' : x => x;
+    switch (n.t) {
+      case 'n': return w(esc(n.s !== undefined ? String(n.s).replace('.', ',') : n.v));
+      case 'v': return '<i>' + n.n + '</i>';
+      case 'pi': return 'π';
+      case 'neg': return w('−' + P(n.a));
+      case 'add': return w(P(n.a) + ' + ' + P(n.b));
+      case 'sub': return w(P(n.a) + ' − ' + P(n.b));
+      case 'mul': return w(n.imp ? P(n.a) + P(n.b) : P(n.a) + ' · ' + P(n.b));
+      case 'div': return n.inl ? w(P(n.a) + ' ÷ ' + P(n.b)) : w('<span class="fr"><span class="nu">' + P(n.a, true) + '</span><span class="de">' + P(n.b, true) + '</span></span>');
+      case 'pow': return w(P(n.a) + '<sup>' + P(n.b, true) + '</sup>');
+      case 'sqrt': return w('<span class="rt' + (n.k > 2 ? ' rn' : '') + '">' + (n.k > 2 ? '<sup class="ix">' + n.k + '</sup>' : '') + '<span class="sq"></span><span class="ov">' + P(n.a, true) + '</span></span>');
+    }
+    return '';
+  }
+  return '<span class="mx">' + P(ast) + '</span>';
+}
+const M = (s, o) => R(s, o) || esc(s);                       // render math
+const fr = (a, b) => '<span class="mx"><span class="fr"><span class="nu">' + a + '</span><span class="de">' + b + '</span></span></span>';
+const mixed = (w, n, d) => '<span class="mx">' + w + fr(n, d) + '</span>';
+const tbl = (rows) => '<table class="tbl">' + rows.map(r => '<tr>' + r.map((c, i) => (i === 0 ? '<th>' : '<td>') + c + (i === 0 ? '</th>' : '</td>')).join('') + '</tr>').join('') + '</table>';
+
+/* ---- number formatting for answers ---- */
+function fmtNum(n) { if (isInt(n)) return f(Math.round(n)); return f(Math.round(n * 1e4) / 1e4).replace('.', ','); }
+function ratText(n, d) { const g = gcd(n, d); n /= g; d /= g; if (d < 0) { n = -n; d = -d; } return d === 1 ? String(n) : n + '/' + d; }
+
+/* ================= grading ================= */
+function parseNum(s) {
+  if (s === null || s === undefined) return NaN;
+  s = String(s).replace(/[−–—]/g, '-').replace(/\s*(?:°|degrees?)\s*$/i, '').replace(/\s+/g, '').replace(',', '.');
+  const fr_ = s.match(/^([+-]?\d+\.?\d*)\/([+-]?\d+\.?\d*)$/);
+  if (fr_ && parseFloat(fr_[2]) !== 0) return parseFloat(fr_[1]) / parseFloat(fr_[2]);
+  if (!/^[+-]?(\d+\.?\d*|\.\d+)$/.test(s)) return NaN;
+  return parseFloat(s);
+}
+function parsePoint(s) {
+  s = String(s || '').replace(/[−–—]/g, '-').replace(/\s+/g, '').replace(/^\(|\)$/g, '');
+  const m = s.split(/[;,]/); if (m.length === 2 && /^[+-]?\d+(\.\d+)?$/.test(m[0]) && /^[+-]?\d+(\.\d+)?$/.test(m[1])) return [parseFloat(m[0]), parseFloat(m[1])];
+  return null;
+}
+function check(q, u) {                      // -> {ok, why?, msg?}
+  if (q.type === 'num') { const n = parseNum(u); if (isNaN(n)) return { ok: false, why: 'parse' }; return { ok: Math.abs(n - q.ans) <= (q.tol || 1e-9) }; }
+  if (q.type === 'multi') { const ok = Array.isArray(u) && u.length === q.ans.length && u.every((v, i) => { const n = parseNum(v); return !isNaN(n) && Math.abs(n - q.ans[i]) <= (q.tol || 1e-9); }); return { ok }; }
+  if (q.type === 'point') { const p = parsePoint(u); return { ok: !!p && Math.abs(p[0] - q.ans[0]) < 1e-9 && Math.abs(p[1] - q.ans[1]) < 1e-9 }; }
+  if (q.type === 'choice') return { ok: Number(u) === q.ans };
+  if (q.type === 'expr') return gradeExpr(q, u);
+  if (q.type === 'click') { const got = Array.isArray(u) ? u : []; if (q.valid) { let ok = false; try { ok = !!q.valid(got); } catch (e) { } return { ok }; } const k = p => p[0] + ',' + p[1]; return { ok: got.map(k).sort().join('|') === (q.ans || []).map(k).sort().join('|') }; }
+  return { ok: false };
+}
+const grade = (q, u) => check(q, u).ok;
+function answerText(q) {
+  if (q.ansText) return q.ansText;
+  if (q.type === 'num') return fmtNum(q.ans);
+  if (q.type === 'multi') return q.ans.map(fmtNum).join(' and ');
+  if (q.type === 'point') return '(' + f(q.ans[0]) + ', ' + f(q.ans[1]) + ')';
+  if (q.type === 'choice') return q.opts[q.ans];
+  if (q.type === 'expr') return M(q.ans, q.noVars ? { noVars: true } : {});
+  if (q.type === 'click') return (q.ans || []).map(p => '(' + f(p[0]) + ', ' + f(p[1]) + ')').join(' and ');
+  return '';
+}
+
+/* ================= engine builder ================= */
+function engine(def) {
+  const { SECTIONS, LESSONS, G, XG } = def;
+  const fnOf = (list, sec, name) => (list[sec] || []).find(x => x.name === name);
+  function makeOne(key, lvl) {
+    const mixq = lvl === 'mix'; if (mixq) lvl = pick([0, 1, 1, 2, 2, 3, 3]);
+    const lesson = LESSONS.find(x => x.id === key);
+    let gens, xgs;
+    if (lesson) { gens = lesson.gens.map(e => [e[1], fnOf(G, e[0], e[1])]).filter(e => e[1]); xgs = (lesson.xg || []).map(e => [e[1], fnOf(XG, e[0], e[1])]).filter(e => e[1]); }
+    else { gens = (G[key] || []).map(x => [x.name, x]); xgs = (XG[key] || []).map(x => [x.name, x]); }
+    let q, e;
+    if (lvl === 3 && xgs.length && Math.random() < 0.7) { e = pick(xgs); q = e[1](2); }
+    else { e = pick(gens); q = e[1](Math.min(lvl, 2)); }
+    q.gen = e[0]; q.sec = key; q.lvl = lvl; q.mix = mixq; return q;
+  }
+  const fingerprint = q => String(q.html || '').replace(/<svg[\s\S]*?<\/svg>/g, '') + '|' + JSON.stringify(q.ans);
+  function make(key, lvl, recent) {
+    recent = Array.isArray(recent) ? recent : [];
+    const fps = recent.map(r => r.f), gens = recent.slice(-3).map(r => r.g);
+    let q;
+    for (let t = 0; t < 60; t++) {
+      try { q = makeOne(key, lvl); } catch (e) { if (t > 50) throw e; continue; }
+      q.fp = fingerprint(q);
+      if (fps.includes(q.fp)) continue;
+      if (q.type === 'choice' && q.opts && q.opts.length <= 2 && typeof q.lvl === 'number' && q.lvl > 0 && t < 55) continue;
+      if (t < 30 && gens.includes(q.gen)) continue;
+      break;
+    }
+    return q;
+  }
+  function makeTest() {
+    const n = SECTIONS.length, N = 24;
+    const lv = shuffle([0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2]);
+    const secs = []; for (let i = 0; i < N; i++) secs.push(SECTIONS[i % n].id);
+    const seen = []; return shuffle(secs).map((s, i) => { const q = make(s, lv[i], seen); seen.push({ g: null, f: q.fp }); q.hint = null; return q; });
+  }
+  return { KEY: def.key, SECTIONS, LESSONS, G, XG, make, makeTest, grade, check, answerText, evalNum: s => evalAst(parse(String(s), { noVars: true }), {}), parseNum, parsePoint, f, M, parse, defaultMode: def.defaultMode || 'lesson' };
+}
+
+/* ---------- click grid (shared) ---------- */
+let _gid = 0;
+function clipLine(p, d, xmin, xmax, ymin, ymax) {   // line through p with direction d, clipped to the rectangle
+  let t0 = -1e9, t1 = 1e9;
+  for (const [pp, dd, lo, hi] of [[p[0], d[0], xmin, xmax], [p[1], d[1], ymin, ymax]]) {
+    if (Math.abs(dd) < 1e-12) { if (pp < lo || pp > hi) return null; continue; }
+    let a = (lo - pp) / dd, b = (hi - pp) / dd; if (a > b) [a, b] = [b, a]; t0 = Math.max(t0, a); t1 = Math.min(t1, b);
+  }
+  if (t0 > t1) return null; return { a: [p[0] + d[0] * t0, p[1] + d[1] * t0], b: [p[0] + d[0] * t1, p[1] + d[1] * t1] };
+}
+function gridSVG(o) {
+  const u = o.u || 26, pad = 24, xmin = o.xmin, xmax = o.xmax, ymin = o.ymin, ymax = o.ymax, cells = !!o.cells;
+  const w = (xmax - xmin + (cells ? 1 : 0)) * u + 2 * pad, h = (ymax - ymin + (cells ? 1 : 0)) * u + 2 * pad;
+  const off = cells ? u / 2 : 0;
+  const X = x => pad + off + (x - xmin) * u, Y = y => pad + off + (ymax - y) * u;
+  const id = 'g' + (++_gid);
+  let s = '<svg class="grid" viewBox="0 0 ' + w + ' ' + h + '" role="img" aria-label="grid"' + (o.click ? ' data-click="1"' : '') + ' data-xmin="' + xmin + '" data-ymax="' + ymax + '" data-u="' + u + '" data-pad="' + (pad + off) + '" data-w="' + w + '"' + (cells ? ' data-cell="1"' : '') + '>';
+  s += '<defs><clipPath id="' + id + '"><rect x="' + (X(xmin) - off) + '" y="' + (Y(ymax) - off) + '" width="' + (w - 2 * pad) + '" height="' + (h - 2 * pad) + '"/></clipPath></defs>';
+  s += '<rect x="0" y="0" width="' + w + '" height="' + h + '" fill="#fff"/>';
+  if (cells) {
+    for (let x = xmin; x <= xmax + 1; x++) s += '<line x1="' + (X(x) - u / 2) + '" y1="' + pad + '" x2="' + (X(x) - u / 2) + '" y2="' + (h - pad) + '" stroke="#b9c6d3" stroke-width="1"/>';
+    for (let y = ymin; y <= ymax + 1; y++) s += '<line x1="' + pad + '" y1="' + (Y(y) + u / 2) + '" x2="' + (w - pad) + '" y2="' + (Y(y) + u / 2) + '" stroke="#b9c6d3" stroke-width="1"/>';
+    (o.fill || []).forEach(p => { s += '<rect x="' + (X(p[0]) - u / 2 + 1) + '" y="' + (Y(p[1]) - u / 2 + 1) + '" width="' + (u - 2) + '" height="' + (u - 2) + '" fill="#9cc3ea" stroke="#345" stroke-width="1.2"/>'; });
+  } else {
+    for (let x = xmin; x <= xmax; x++) s += '<line x1="' + X(x) + '" y1="' + Y(ymin) + '" x2="' + X(x) + '" y2="' + Y(ymax) + '" stroke="#dbe3ea" stroke-width="1"/>';
+    for (let y = ymin; y <= ymax; y++) s += '<line x1="' + X(xmin) + '" y1="' + Y(y) + '" x2="' + X(xmax) + '" y2="' + Y(y) + '" stroke="#dbe3ea" stroke-width="1"/>';
+    if (!o.noAxes) {
+      s += '<line x1="' + X(xmin) + '" y1="' + Y(0) + '" x2="' + X(xmax) + '" y2="' + Y(0) + '" stroke="#334" stroke-width="1.6"/>';
+      s += '<line x1="' + X(0) + '" y1="' + Y(ymin) + '" x2="' + X(0) + '" y2="' + Y(ymax) + '" stroke="#334" stroke-width="1.6"/>';
+      const stx = xmax - xmin > 12 ? 2 : 1, sty = ymax - ymin > 12 ? 2 : 1;
+      for (let x = xmin; x <= xmax; x++) if (x !== 0 && x % stx === 0) s += '<text x="' + X(x) + '" y="' + (Y(0) + 14) + '" font-size="10" text-anchor="middle" fill="#556">' + f(x) + '</text>';
+      for (let y = ymin; y <= ymax; y++) if (y !== 0 && y % sty === 0) s += '<text x="' + (X(0) - 5) + '" y="' + (Y(y) + 3.5) + '" font-size="10" text-anchor="end" fill="#556">' + f(y) + '</text>';
+    }
+  }
+  (o.polys || []).forEach(g => { s += '<polygon points="' + g.pts.map(p => X(p[0]) + ',' + Y(p[1])).join(' ') + '" fill="' + (g.fill || 'rgba(27,95,168,.12)') + '" stroke="' + (g.stroke || '#1b5fa8') + '" stroke-width="2.2" clip-path="url(#' + id + ')"/>'; });
+  (o.segs || []).forEach(g => { s += '<line x1="' + X(g.a[0]) + '" y1="' + Y(g.a[1]) + '" x2="' + X(g.b[0]) + '" y2="' + Y(g.b[1]) + '" stroke="' + (g.color || '#1b5fa8') + '" stroke-width="' + (g.w || 2.4) + '"' + (g.dash ? ' stroke-dasharray="6 4"' : '') + ' stroke-linecap="round" clip-path="url(#' + id + ')"/>'; });
+  (o.pts || []).forEach(p => {
+    s += '<circle cx="' + X(p.x) + '" cy="' + Y(p.y) + '" r="4.6" fill="' + (p.color || '#1b5fa8') + '" stroke="#fff" stroke-width="1.2"/>';
+    if (p.label) s += '<text x="' + (X(p.x) + 7) + '" y="' + (Y(p.y) - 7) + '" font-size="13" font-weight="700" fill="#123">' + p.label + '</text>';
+  });
+  return s + '<g class="marks"></g></svg>';
+}
+const U = { gridSVG, clipLine, ri, pick, shuffle, nz, f, gcd, lcm, isPrime, primeFactors, squarefree, sqrtSplit, parse, evalAst, numEq, R, M, fr, mixed, tbl, fmtNum, ratText, formCheck, gradeExpr, toRF, flat, monoTerm, Poly, engine, esc, parseNum };
+if (typeof module !== 'undefined' && module.exports) module.exports = U; else root.NX = U;
+})(typeof window !== 'undefined' ? window : globalThis);
+
+</script>
+<script>
+/* 2HT Chapter 4: probability. (scope: KERN Wiskunde 2 havo ch 4 Kansrekening; chapter number to be confirmed against the 2TTOB book) */
+const __def = (function (NX, P) {
+const { ri, pick, shuffle, nz, f, gcd, M, fr, fmtNum, ratText, tbl } = NX;
+const LR = (l, lo, hi) => { const s = hi - lo; if (s < 1 || l === undefined || l === 'mix') return ri(lo, hi); l = Math.min(l, 2); const a = l === 0 ? lo : l === 1 ? lo + Math.floor(s * .25) : lo + Math.floor(s * .5); const b = l === 0 ? lo + Math.max(1, Math.ceil(s * .5)) : l === 1 ? hi - Math.floor(s * .15) : hi + Math.ceil(s * .4); return ri(a, b); };
+const PL = (l, arr) => { const n = arr.length; if (l === undefined || l === 'mix') return pick(arr); l = Math.min(l, 2); const k = Math.max(2, Math.ceil(n * .6)); return pick(l === 0 ? arr.slice(0, k) : l === 1 ? arr.slice(Math.floor((n - k) / 2), Math.floor((n - k) / 2) + k + 1) : arr.slice(n - k)); };
+const ch = (html, right, wrongs, hint, steps, extra) => { let o = [right]; wrongs.forEach(w => { if (!o.includes(w)) o.push(w); }); const opts = shuffle(o); return Object.assign({ type: 'choice', opts, ans: opts.indexOf(right), html, hint, steps }, extra || {}); };
+const ex = (html, ans, form, hint, steps, extra) => Object.assign({ type: 'expr', html, ans, form, hint, steps }, extra || {});
+const nu = (html, ans, hint, steps, extra) => Object.assign({ type: 'num', html, ans, hint, steps }, extra || {});
+const p = x => '<p>' + x + '</p>';
+const G = {}, XG = {};
+
+/* ---------- helpers ---------- */
+const KEYS = ['/', '·', '(', ')', '+', '−', '^'];
+const must = (a, b) => { if (Math.abs(a - b) > 1e-9) throw new Error('consistency check failed: ' + a + ' vs ' + b); };
+const frq = (html, n, d, hint, steps, extra) => ex(html, ratText(n, d), 'frac', hint, steps, Object.assign({ keys: KEYS }, extra || {}));
+const fl = (n, d) => { const g = gcd(n, d); n /= g; d /= g; return d === 1 ? String(n) : fr(n, d); };   // reduced stacked fraction
+const dec = x => String(Math.round(x * 1e6) / 1e6);
+const thou = n => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+const Cn = (n, k) => { let r = 1; for (let i = 1; i <= k; i++) r = r * (n - k + i) / i; return Math.round(r); };
+const fact = n => n <= 1 ? 1 : n * fact(n - 1);
+const times = a => a.join(' · ');
+const range = (a, b) => { const r = []; for (let i = a; i <= b; i++) r.push(i); return r; };
+const isPr = n => { if (n < 2) return false; for (let i = 2; i * i <= n; i++) if (n % i === 0) return false; return true; };
+const isSq = n => Number.isInteger(Math.sqrt(n));
+const ordinal = n => ['', 'first', 'second', 'third', 'fourth'][n];
+
+/* ---------- SVG helpers ---------- */
+const svg = (w, h, body) => '<svg class="fig" viewBox="0 0 ' + w + ' ' + h + '" role="img" xmlns="http://www.w3.org/2000/svg">' + body + '</svg>';
+const sfrac = (x, y, n, d, fs, anchor) => {   // stacked fraction centred at x (y = baseline of the fraction bar)
+  fs = fs || 12; const w = Math.max(String(n).length, String(d).length) * fs * .62 + 4;
+  return '<g font-size="' + fs + '" text-anchor="middle" style="paint-order:stroke;stroke:#fff;stroke-width:3px"><text x="' + x + '" y="' + (y - 3) + '">' + n + '</text><line x1="' + (x - w / 2) + '" y1="' + y + '" x2="' + (x + w / 2) + '" y2="' + y + '" stroke="#223" stroke-width="1"/><text x="' + x + '" y="' + (y + fs) + '">' + d + '</text></g>';
+};
+const lab = (s, x, y, fs, anchor, bold) => '<text x="' + x + '" y="' + y + '" font-size="' + (fs || 13) + '" text-anchor="' + (anchor || 'start') + '"' + (bold ? ' font-weight="700"' : '') + ' fill="#17222d">' + s + '</text>';
+/* Tree diagram. o.stages: [[outcome labels of stage 1], [stage 2], ...] (same branches at every node)
+   o.edge(stage, path, b) -> 'a/b' | '0.7' | ''   label on that branch; o.leaf(path) -> text after the leaf; o.leafP(path) -> 'a/b' | '0.343' | '' */
+function treeSVG(o) {
+  const S = o.stages, dx = o.dx || 118, dy = o.dy || 52, x0 = 16, top = 16;
+  const nL = S.reduce((a, s) => a * s.length, 1), H = nL * dy + 2 * top, W = x0 + S.length * dx + (o.leafW || 150);
+  let body = '', li = 0;
+  function node(stage, path, x) {
+    if (stage === S.length) { const y = top + dy * (li++ + .5); const t = o.leaf ? o.leaf(path) : ''; const lp = o.leafP ? o.leafP(path) : '';
+      let s = lab(t, x + 10, y + 4, 13, 'start', true);
+      if (lp) { const tx = x + 14 + t.length * 8.5 + 6; s += lab('=', tx, y + 4, 12) + (/^\d+\/\d+$/.test(lp) ? sfrac(tx + 24, y + 1, lp.split('/')[0], lp.split('/')[1], 11) : lab(lp, tx + 12, y + 4, 12)); }
+      body += s; return y; }
+    const ys = []; S[stage].forEach((lb, b) => { ys.push(node(stage + 1, path.concat(lb), x + dx)); });
+    const y = ys.reduce((a, c) => a + c, 0) / ys.length;
+    S[stage].forEach((lb, b) => {
+      const cy = ys[b]; body += '<line x1="' + x + '" y1="' + y + '" x2="' + (x + dx) + '" y2="' + cy + '" stroke="#5b6b7a" stroke-width="1.8"/>';
+      const el = o.edge ? o.edge(stage, path, b) : ''; const mx = x + dx * .52, my = y + (cy - y) * .52;
+      const up = b < S[stage].length / 2, oy = up ? -16 : 22;
+      body += lab(lb, mx - 22, my + oy + 4, 13, 'middle', true);
+      if (el) body += /^\d+\/\d+$/.test(el) ? sfrac(mx + 6, my + oy, el.split('/')[0], el.split('/')[1], 11) : lab(el, mx + 6, my + oy + 4, 12, 'middle');
+    });
+    body += '<circle cx="' + x + '" cy="' + y + '" r="3" fill="#1b5fa8"/>'; return y;
+  }
+  const ry = node(0, [], x0); return svg(W, H, body);
+}
+function vennSVG(a, both, b, out, nA, nB, hide) {
+  hide = hide || []; const v = (k, val) => hide.includes(k) ? '?' : val;
+  return svg(320, 170, '<rect x="4" y="4" width="312" height="162" rx="6" fill="#fff" stroke="#5b6b7a" stroke-width="1.5"/>' +
+    '<circle cx="125" cy="88" r="58" fill="rgba(27,95,168,.15)" stroke="#1b5fa8" stroke-width="2"/><circle cx="195" cy="88" r="58" fill="rgba(209,71,31,.15)" stroke="#d1471f" stroke-width="2"/>' +
+    lab(nA, 100, 22, 13, 'middle', true) + lab(nB, 220, 22, 13, 'middle', true) +
+    lab(v('a', a), 98, 94, 20, 'middle') + lab(v('ab', both), 160, 94, 20, 'middle') + lab(v('b', b), 222, 94, 20, 'middle') + lab(v('out', out), 288, 152, 18, 'middle'));
+}
+function targetSVG(kind, a, b, c) {   // 'sq': outer square side a, inner square side b | 'circ': radius a, inner radius b, optional third c
+  if (kind === 'sq') { const s = 150, t = 150 * b / a, o = (170 - s) / 2; return svg(170, 170, '<rect x="' + o + '" y="' + o + '" width="' + s + '" height="' + s + '" fill="#fff" stroke="#223" stroke-width="2"/><rect x="' + (85 - t / 2) + '" y="' + (85 - t / 2) + '" width="' + t + '" height="' + t + '" fill="rgba(209,71,31,.35)" stroke="#d1471f" stroke-width="2"/>' + lab(a + ' cm', 85, 168, 12, 'middle') + lab(b + ' cm', 85, 90, 12, 'middle')); }
+  const R = 78, r = R * b / a, r2 = c ? R * c / a : 0;
+  return svg(190, 180, '<circle cx="95" cy="90" r="' + R + '" fill="#fff" stroke="#223" stroke-width="2"/>' + (c ? '<circle cx="95" cy="90" r="' + r + '" fill="rgba(27,95,168,.25)" stroke="#1b5fa8" stroke-width="2"/><circle cx="95" cy="90" r="' + r2 + '" fill="rgba(209,71,31,.4)" stroke="#d1471f" stroke-width="2"/>' : '<circle cx="95" cy="90" r="' + r + '" fill="rgba(209,71,31,.35)" stroke="#d1471f" stroke-width="2"/>') +
+    '<line x1="95" y1="90" x2="' + (95 + R) + '" y2="90" stroke="#223"/>' + lab('R = ' + a, 95 + R / 2, 84, 11, 'middle') + (c ? lab('r = ' + c, 95 + r2 / 2, 106, 11, 'middle') : lab('r = ' + b, 95 + r / 2, 106, 11, 'middle')));
+}
+
+/* ======================= 4.1 Grids and tree diagrams ======================= */
+const THINGS = [['a coin', 2], ['a die', 6], ['a spinner with 4 equal sections', 4], ['a spinner with 5 equal sections', 5], ['a spinner with 8 equal sections', 8], ['a die with 8 faces', 8], ['a die with 10 faces', 10]];
+const GRIDEV = [
+  (a, b) => { const S = ri(Math.max(4, Math.floor((a + b) / 2)), a + b - 1); return ['the sum is at least ' + S, (i, j) => i + j >= S]; },
+  () => ['the two numbers are equal', (i, j) => i === j],
+  () => ['both numbers are even', (i, j) => i % 2 === 0 && j % 2 === 0],
+  (a, b) => { const d = ri(1, Math.min(a, b) - 2); return ['the difference between the numbers is exactly ' + d, (i, j) => Math.abs(i - j) === d]; },
+  (a, b) => { const T = ri(Math.floor(a * b / 3), Math.floor(a * b / 2)); return ['the product is greater than ' + T, (i, j) => i * j > T]; },
+  () => ['the sum is a prime number', (i, j) => isPr(i + j)],
+  () => ['the product is a square number', (i, j) => isSq(i * j)],
+  () => ['the sum is even and larger than 5', (i, j) => (i + j) % 2 === 0 && i + j > 5]
+];
+function gridEvent(a, b, l) { const k = l === 0 ? [0, 1, 2] : l === 1 ? [0, 3, 4, 2] : [4, 5, 6, 7, 3]; return GRIDEV[pick(k)](a, b); }
+G['4.1'] = [
+  function gridSize(l) {
+    const k = l === 2 ? 3 : 2, sel = shuffle(THINGS.slice(0, l === 0 ? 4 : THINGS.length)).slice(0, k), tot = sel.reduce((a, t) => a * t[1], 1);
+    return nu(p('You throw ' + sel.map(t => t[0]).join(k === 3 ? ', ' : ' and ').replace(/, ([^,]*)$/, ' and $1') + ' at the same time. How many different outcomes are possible?'), tot, 'Make a grid or a tree diagram, or multiply the number of outcomes of each object.', 'Multiply the numbers of outcomes: ' + times(sel.map(t => t[1])) + ' = ' + tot + '.');
+  },
+  function sumWays(l) {
+    const a = l === 0 ? 6 : l === 1 ? pick([6, 8]) : pick([8, 10, 12]), b = l === 2 ? pick([4, 6]) : a, S = ri(3, a + b - 1), prs = []; for (let i = 1; i <= a; i++) for (let j = 1; j <= b; j++) if (i + j === S) prs.push('(' + i + ', ' + j + ')');
+    return nu(p(l === 0 ? 'You throw two dice and add the numbers. In how many ways can you get a sum of <b>' + S + '</b>?' : 'Two spinners, numbered 1 to ' + a + ' and 1 to ' + b + ', are spun and the two numbers are added. In how many ways can you get a sum of <b>' + S + '</b>?'), prs.length, 'Make a grid. Count the cells where the two numbers add up to ' + S + '.', 'The pairs are ' + prs.join(', ') + '. That is ' + prs.length + ' ways.');
+  },
+  function bestSum(l) {
+    const n = l === 0 ? 6 : pick([4, 5, 6, 8]), kind = l === 0 ? 'sum' : pick(['sum', 'sum', 'difference']);
+    if (kind === 'sum') { const right = n + 1; return ch(p('Two fair dice (or spinners), both numbered 1 to ' + n + ', are thrown and the numbers are added. Which sum is the <b>most likely</b>?'), String(right), [right - 1, right + 1, right - 2, 2, 2 * n].filter(x => x !== right && x >= 2 && x <= 2 * n).slice(0, 3).map(String), 'Make a grid and count how often every sum occurs.', 'The sum ' + right + ' occurs ' + n + ' times in the grid, more than any other sum.', { keys: [] }); }
+    return ch(p('Two spinners, both numbered 1 to ' + n + ', are spun. You subtract the smaller number from the larger one. Which difference is the <b>least likely</b>?'), String(n - 1), [0, 1, 2, n - 2].filter(x => x !== n - 1).slice(0, 3).map(String), 'Make a grid and count how often every difference occurs.', 'The difference ' + (n - 1) + ' only occurs with (1, ' + n + ') and (' + n + ', 1): 2 times. Every other difference occurs more often.', { keys: [] });
+  },
+  function gridCount(l) {
+    const a = l === 0 ? 6 : pick([6, 8]), b = a, e = gridEvent(a, b, l), rows = []; let t = 0;
+    for (let i = 1; i <= a; i++) { let c = 0; for (let j = 1; j <= b; j++) if (e[1](i, j)) c++; rows.push(c); t += c; }
+    if (t === 0 || t === a * b) return G['4.1'][3](l);
+    return nu(p('Two ' + (a === 6 ? 'dice' : 'spinners numbered 1 to ' + a) + ' are thrown and you make a grid of all ' + a * b + ' outcomes. In how many cells of the grid is <b>' + e[0] + '</b>?'), t, 'Make the grid. Go through it row by row and count the cells that fit.', 'Count per row (first number 1, 2, 3, ...): ' + rows.join(' + ') + ' = ' + t + ' cells.');
+  },
+  function coinWays(l) {
+    const n = l === 0 ? 3 : l === 1 ? 4 : 5, atl = l === 2 && Math.random() < .5, k = atl ? ri(2, 3) : ri(1, n - 1), seq = []; for (let m = 0; m < (1 << n); m++) { let s = ''; for (let i = 0; i < n; i++) s += (m >> i) & 1 ? 'H' : 'T'; seq.push(s); }
+    const heads = s => (s.match(/H/g) || []).length, cnt = c => seq.filter(s => c(heads(s))).length;
+    if (!atl) { const L = seq.filter(s => heads(s) === k); return nu(p('A coin is flipped <b>' + n + '</b> times. In how many different ways can you get exactly <b>' + k + '</b> head' + (k > 1 ? 's' : '') + '?'), L.length, 'Draw a tree diagram or list the possible orders, for example HHT, HTH, THH.', 'The ways are ' + L.join(', ') + '. That is ' + L.length + ' ways.'); }
+    const parts = []; for (let h = k; h <= n; h++) parts.push(cnt(x => x === h)); const tot = parts.reduce((a, c) => a + c, 0);
+    return nu(p('A coin is flipped <b>' + n + '</b> times. In how many different ways can you get <b>at least ' + k + '</b> heads?'), tot, 'Count the ways for exactly ' + k + ' heads, exactly ' + (k + 1) + ' heads, and so on. Then add them.', 'Exactly ' + k + ' to ' + n + ' heads: ' + parts.join(' + ') + ' = ' + tot + ' ways.');
+  },
+  function gridOrTree(l) {
+    const n = l === 0 ? pick([2, 3]) : ri(2, 4), what = n === 2 ? 'two dice' : n === 3 ? 'three coins' : 'four coins', right = n === 2 ? 'A grid or a tree diagram' : 'Only a tree diagram';
+    return ch(p('You throw ' + what + ' and want to show all outcomes. Which diagram can you use?'), right, ['A grid or a tree diagram', 'Only a tree diagram', 'Only a grid'].filter(x => x !== right), 'A grid has two directions (rows and columns). Count how many things you throw.', n === 2 ? 'With two things you can make a grid (rows and columns) or a tree diagram.' : 'With ' + n + ' things a grid is not possible (a grid only has rows and columns). Use a tree diagram.', { keys: [] });
+  }
+];
+XG['4.1'] = [
+  function threeDiceSum(l) {
+    const S = pick([4, 5, 6, 7, 15, 16, 17]), g = {}; let t = 0;
+    for (let i = 1; i <= 6; i++) for (let j = 1; j <= 6; j++) for (let k = 1; k <= 6; k++) if (i + j + k === S) { const key = [i, j, k].sort().join(' + '); g[key] = (g[key] || 0) + 1; t++; }
+    return nu(p('Three dice are thrown and the numbers are added. In how many ways can you get a sum of <b>' + S + '</b>?'), t, 'Find all combinations of three numbers with that sum, then count in how many orders each combination can be thrown.', Object.keys(g).map(k => k + ': ' + g[k] + ' way' + (g[k] > 1 ? 's' : '')).join('; ') + '. Total: ' + Object.values(g).join(' + ') + ' = ' + t + '.');
+  },
+  function atMostHeads(l) {
+    const n = pick([6, 7]), k = 2, parts = range(0, k).map(h => Cn(n, h)), t = parts.reduce((a, c) => a + c, 0);
+    return nu(p('A coin is flipped <b>' + n + '</b> times. In how many different ways do you get <b>at most ' + k + '</b> heads?'), t, 'At most 2 heads means 0, 1 or 2 heads. Count each case (for 1 head: the head can be at ' + n + ' different places).', '0 heads: 1 way. 1 head: ' + n + ' ways. 2 heads: ' + Cn(n, 2) + ' ways (' + n + ' · ' + (n - 1) + ' ÷ 2). Total: ' + parts.join(' + ') + ' = ' + t + '.');
+  }
+];
+
+/* ======================= 4.2 Counting by multiplying ======================= */
+const CTX = [
+  ['A restaurant offers {0} starters, {1} main courses and {2} desserts. You choose one of each.', 'dinners', ['starters', 'main courses', 'desserts']],
+  ['A shop sells {0} types of shirt, {1} types of trousers and {2} types of shoes. You choose one of each.', 'outfits', ['shirts', 'trousers', 'shoes']],
+  ['An ice cream stand has {0} flavours, {1} types of cone and {2} toppings. You choose one of each.', 'ice creams', ['flavours', 'cones', 'toppings']],
+  ['A new bike can be ordered in {0} colours, with {1} types of saddle and {2} types of bell.', 'different bikes', ['colours', 'saddles', 'bells']]
+];
+G['4.2'] = [
+  function choiceCount(l) {
+    const c = pick(CTX), k = l === 0 ? 2 : 3, v = range(0, k - 1).map(() => LR(l, 2, 7));
+    let text = c[0]; if (k === 2) text = text.replace(/, and \{2\}.*$/, '').replace(/ and \{2\} [a-z ]+\./, '.').replace(/,? and \{2\}[^.]*\./, '.');
+    if (k === 2) { text = text.replace(/\{2\}[^.]*\./, '.'); }
+    text = text.replace('{0}', v[0]).replace('{1}', v[1]).replace('{2}', v[2]).replace(/ and \./, '.').replace(/, \./, '.');
+    const tot = v.reduce((a, b) => a * b, 1);
+    return nu(p(text + ' How many different ' + c[1] + ' can you make?'), tot, 'Multiply the number of choices for each part.', times(v) + ' = ' + tot + ' ' + c[1] + '.');
+  },
+  function codeCount(l) {
+    const t = l === 0 ? pick(['digits3', 'digits4']) : l === 1 ? pick(['letters', 'first', 'digits4']) : pick(['diffDigits', 'diffLetters', 'first']);
+    if (t === 'digits3' || t === 'digits4') { const d = t === 'digits3' ? 3 : 4; return nu(p('A lock has a code of <b>' + d + '</b> digits. Each digit can be 0, 1, 2, ..., 9. How many different codes are possible?'), Math.pow(10, d), 'For every digit there are 10 choices. Multiply.', times(Array(d).fill(10)) + ' = ' + thou(Math.pow(10, d)) + '.'); }
+    if (t === 'letters') { const L = 2, D = ri(2, 3), tot = Math.pow(26, L) * Math.pow(10, D); return nu(p('A code consists of <b>' + L + ' letters</b> (A to Z) followed by <b>' + D + ' digits</b> (0 to 9). Letters and digits may be repeated. How many codes are possible?'), tot, 'Multiply the number of choices for every place: 26 for a letter, 10 for a digit.', times(Array(L).fill(26).concat(Array(D).fill(10))) + ' = ' + thou(tot) + '.'); }
+    if (t === 'first') { const d = ri(4, 5), tot = 9 * Math.pow(10, d - 1); return nu(p('A pin code has <b>' + d + '</b> digits and the <b>first digit cannot be 0</b>. How many pin codes are possible?'), tot, 'The first digit has fewer choices than the other digits.', times([9].concat(Array(d - 1).fill(10))) + ' = ' + thou(tot) + '.'); }
+    if (t === 'diffDigits') { const d = ri(3, 4), fs = []; for (let i = 0; i < d; i++) fs.push(10 - i); const tot = fs.reduce((a, b) => a * b, 1); return nu(p('A code has <b>' + d + '</b> digits and <b>all digits are different</b>. How many codes are possible?'), tot, 'After you use a digit, you cannot use it again. So every next place has one choice fewer.', times(fs) + ' = ' + thou(tot) + '.'); }
+    const d = 3, fs = [26, 25, 24], tot = 26 * 25 * 24; return nu(p('A code has <b>3 different letters</b> from A to Z. How many codes are possible?'), tot, 'After you use a letter, you cannot use it again.', times(fs) + ' = ' + thou(tot) + '.');
+  },
+  function arrangeCount(l) {
+    const t = l === 0 ? pick(['row3', 'row4']) : l === 1 ? pick(['podium5', 'row4', 'podium6']) : pick(['row5', 'podium7', 'trio12']);
+    const V = { row3: [3, 3, 'In how many different orders can <b>3</b> people stand in a row?'], row4: [4, 4, 'In how many different orders can <b>4</b> people stand in a row?'], row5: [5, 5, 'In how many different orders can <b>5</b> friends sit on <b>5</b> chairs in a row?'],
+      podium5: [5, 3, 'Five runners take part in a race. In how many ways can <b>gold, silver and bronze</b> be awarded?'], podium6: [6, 3, 'Six runners take part in a race. In how many ways can <b>gold, silver and bronze</b> be awarded?'], podium7: [7, 3, 'Seven swimmers are in a final. In how many ways can <b>gold, silver and bronze</b> be awarded?'], trio12: [12, 3, 'A club has 12 members. They choose a <b>chair, a secretary and a treasurer</b> (three different people). In how many ways can this be done?'] }[t];
+    const fs = []; for (let i = 0; i < V[1]; i++) fs.push(V[0] - i); const tot = fs.reduce((a, b) => a * b, 1);
+    return nu(p(V[2]), tot, 'The first place has ' + V[0] + ' choices. After that, every next place has one choice fewer.', times(fs) + ' = ' + tot + '.');
+  },
+  function numbersFromDigits(l) {
+    const set = pick([[1, 2, 3, 4], [2, 3, 4, 5], [1, 3, 4, 6], [1, 2, 3, 4, 5], [2, 3, 5, 6, 7]]), n = set.length, kind = l === 0 ? pick(['rep', 'norep']) : l === 1 ? pick(['norep', 'even', 'big']) : pick(['evenNorep', 'oddNorep', 'bigNorep']);
+    const ev = set.filter(x => x % 2 === 0).length, od = n - ev; let cnt = 0, text, st;
+    const all = []; set.forEach(a => set.forEach(b => set.forEach(c => all.push([a, b, c]))));
+    const dist = t => t[0] !== t[1] && t[0] !== t[2] && t[1] !== t[2];
+    if (kind === 'rep') { cnt = all.length; text = 'How many <b>3-digit numbers</b> can you make with the digits ' + set.join(', ') + '? A digit may be used more than once.'; st = times([n, n, n]) + ' = ' + cnt + '.'; }
+    else if (kind === 'norep') { cnt = all.filter(dist).length; text = 'How many <b>3-digit numbers</b> can you make with the digits ' + set.join(', ') + ', if every digit may be used <b>only once</b>?'; st = times([n, n - 1, n - 2]) + ' = ' + cnt + '.'; }
+    else if (kind === 'even') { cnt = all.filter(t => t[2] % 2 === 0).length; text = 'How many <b>even 3-digit numbers</b> can you make with the digits ' + set.join(', ') + '? A digit may be used more than once.'; st = 'The last digit must be even (' + ev + ' choices): ' + times([n, n, ev]) + ' = ' + cnt + '.'; }
+    else if (kind === 'big') { const lim = set[1]; const g = set.filter(x => x > lim).length; cnt = all.filter(t => t[0] > lim).length; text = 'How many <b>3-digit numbers bigger than ' + lim + '00</b> can you make with the digits ' + set.join(', ') + '? A digit may be used more than once.'; st = 'The first digit must be bigger than ' + lim + ' (' + g + ' choices): ' + times([g, n, n]) + ' = ' + cnt + '.'; }
+    else if (kind === 'evenNorep') { cnt = all.filter(t => dist(t) && t[2] % 2 === 0).length; text = 'How many <b>even 3-digit numbers</b> can you make with the digits ' + set.join(', ') + ', if every digit may be used <b>only once</b>?'; st = 'Choose the last digit first (' + ev + ' even choices), then the others: ' + times([ev, n - 1, n - 2]) + ' = ' + cnt + '.'; }
+    else if (kind === 'oddNorep') { cnt = all.filter(t => dist(t) && t[2] % 2 === 1).length; text = 'How many <b>odd 3-digit numbers</b> can you make with the digits ' + set.join(', ') + ', if every digit may be used <b>only once</b>?'; st = 'Choose the last digit first (' + od + ' odd choices), then the others: ' + times([od, n - 1, n - 2]) + ' = ' + cnt + '.'; }
+    else { const lim = set[1], g = set.filter(x => x > lim).length; cnt = all.filter(t => dist(t) && t[0] > lim).length; text = 'How many <b>3-digit numbers bigger than ' + lim + '00</b> can you make with the digits ' + set.join(', ') + ', if every digit may be used <b>only once</b>?'; st = 'The first digit must be bigger than ' + lim + ' (' + g + ' choices): ' + times([g, n - 1, n - 2]) + ' = ' + cnt + '.'; }
+    if (cnt === 0) return G['4.2'][3](l);
+    return nu(p(text), cnt, 'Think about every place of the number. Count the choices for each place, then multiply. Start with the place that has a restriction.', st);
+  },
+  function vennRead(l) {
+    const A = ri(3, 12), B = ri(3, 12), AB = ri(1, 6), O = ri(2, 9), names = pick([['Football', 'Hockey'], ['Dutch', 'French'], ['Tea', 'Coffee'], ['Cats', 'Dogs']]), k = pick(['inA', 'only', 'union', 'total']);
+    const fig = vennSVG(A, AB, B, O, names[0], names[1]), who = 'This Venn diagram shows how many of the students in a class like ' + names[0].toLowerCase() + ' and ' + names[1].toLowerCase() + '. The number outside the circles is the number who like neither.';
+    const q = { inA: ['How many students like ' + names[0].toLowerCase() + ' (including those who like both)?', A + AB, 'Add the part that is only ' + names[0].toLowerCase() + ' and the overlap.', A + ' + ' + AB + ' = ' + (A + AB) + '.'],
+      only: ['How many students like <b>only</b> ' + names[1].toLowerCase() + '?', B, 'Look at the part of the ' + names[1] + ' circle that is not in the overlap.', 'The number in that part is ' + B + '.'],
+      union: ['How many students like <b>at least one</b> of the two?', A + AB + B, 'Add the three numbers inside the circles. Do not add the number outside.', A + ' + ' + AB + ' + ' + B + ' = ' + (A + AB + B) + '.'],
+      total: ['How many students are there in the class?', A + AB + B + O, 'Add all four numbers in the diagram.', A + ' + ' + AB + ' + ' + B + ' + ' + O + ' = ' + (A + AB + B + O) + '.'] }[k];
+    return nu(p(who) + fig + p(q[0]), q[1], q[2], q[3]);
+  },
+  function vennCalc(l) {
+    const AB = ri(2, 6), A = ri(AB + 2, AB + 12), B = ri(AB + 2, AB + 12), U = A + B - AB, O = ri(2, 9), N = U + O, nm = pick([['football', 'hockey'], ['Dutch', 'French'], ['tea', 'coffee']]), kind = pick(['neither', 'onlyA', 'both']);
+    if (kind === 'neither') return nu(p('In a class of <b>' + N + '</b> students, ' + A + ' like ' + nm[0] + ', ' + B + ' like ' + nm[1] + ' and ' + AB + ' like both. How many students like <b>neither</b>?'), O, 'The students who like both are counted twice if you add ' + A + ' and ' + B + '. Take them away once.', 'At least one: ' + A + ' + ' + B + ' − ' + AB + ' = ' + U + '. Neither: ' + N + ' − ' + U + ' = ' + O + '.');
+    if (kind === 'onlyA') return nu(p('In a class, ' + A + ' students like ' + nm[0] + ', ' + B + ' like ' + nm[1] + ' and ' + AB + ' like both. How many students like <b>only ' + nm[0] + '</b>?'), A - AB, 'Those who like both are inside the ' + nm[0] + ' group. Take them out.', A + ' − ' + AB + ' = ' + (A - AB) + '.');
+    return nu(p('In a class of <b>' + N + '</b> students, ' + A + ' like ' + nm[0] + ' and ' + B + ' like ' + nm[1] + '. ' + O + ' students like neither. How many like <b>both</b>?'), AB, 'First find how many like at least one. Then compare ' + A + ' + ' + B + ' with that number.', 'At least one: ' + N + ' − ' + O + ' = ' + U + '. Both: ' + A + ' + ' + B + ' − ' + U + ' = ' + AB + '.');
+  }
+];
+XG['4.2'] = [
+  function atLeastOneTail(l) {
+    const n = pick([5, 6, 7, 8]), t = Math.pow(2, n) - 1;
+    return nu(p('A coin is flipped <b>' + n + '</b> times. In how many ways do you get <b>at least one tail</b>?'), t, 'It is easier to count the opposite: the ways with <b>no</b> tails.', 'All outcomes: 2<sup>' + n + '</sup> = ' + Math.pow(2, n) + '. Only one has no tails (all heads): ' + Math.pow(2, n) + ' − 1 = ' + t + '.');
+  },
+  function bigPassword(l) {
+    const L = pick([5, 6]), v = pick([['letters and digits (not case-sensitive)', 36], ['capital letters and digits', 36], ['lowercase and capital letters', 52]]);
+    return ex(p('A password has <b>' + L + '</b> characters. Each character is one of the ' + v[1] + ' possible symbols (' + v[0] + '). How many passwords are possible? Type a calculation or a number.'), v[1] + '^' + L, null, 'Every character has ' + v[1] + ' choices, and there are ' + L + ' characters.', v[1] + '<sup>' + L + '</sup> = ' + thou(Math.pow(v[1], L)) + '.', { ansText: v[1] + '^' + L + ' = ' + thou(Math.pow(v[1], L)), keys: ['^', '·', '(', ')'] });
+  },
+  function oddFirstDifferent(l) {
+    const d = ri(4, 5); let t = 0; const lim = Math.pow(10, d);
+    for (let x = 0; x < lim; x++) { const s = String(x).padStart(d, '0'); if (+s[0] % 2 === 1 && new Set(s).size === d) t++; }
+    const fs = [5]; for (let i = 1; i < d; i++) fs.push(10 - i);
+    return nu(p('A code has <b>' + d + '</b> digits. The <b>first digit is odd</b> and <b>all digits are different</b>. How many codes are possible?'), t, 'Start with the place that has a restriction: the first digit (5 odd digits). Then every next place has one digit fewer to choose from.', times(fs) + ' = ' + thou(t) + '.');
+  },
+  function committee(l) {
+    const n = ri(18, 30); return nu(p('From a class of <b>' + n + '</b> students, the teacher chooses a <b>captain</b>, a <b>vice-captain</b> and a <b>treasurer</b> (all different students). In how many ways can this be done?'), n * (n - 1) * (n - 2), 'The captain has ' + n + ' choices. After that there are fewer students left.', times([n, n - 1, n - 2]) + ' = ' + thou(n * (n - 1) * (n - 2)) + '.');
+  }
+];
+
+/* ======================= 4.3 Probability ======================= */
+const PROBS = [[1, 2], [1, 4], [3, 4], [1, 5], [2, 5], [3, 5], [4, 5], [1, 10], [3, 10], [7, 10], [1, 8], [3, 8], [5, 8], [7, 8], [9, 20], [7, 20], [13, 20], [3, 25], [11, 25], [7, 40], [13, 50], [3, 16]];
+G['4.3'] = [
+  function convertProb(l) {
+    const [n, d] = PL(l, PROBS), v = n / d, kind = pick(['f2p', 'p2f', 'd2f', 'f2d', 'in2p']);
+    if (kind === 'f2p') return nu(p('Write ' + fr(n, d) + ' as a <b>percentage</b>. (Type only the number, without %.)'), v * 100, 'Divide the top by the bottom to get a decimal. Then multiply by 100.', n + ' ÷ ' + d + ' = ' + dec(v) + ', so ' + dec(v) + ' · 100 = ' + dec(v * 100) + '%.', { tol: 1e-9, ansText: dec(v * 100) + '%' });
+    if (kind === 'p2f') return frq(p('Write <b>' + dec(v * 100) + '%</b> as a fraction in lowest terms.'), n, d, 'A percentage is a fraction out of 100. Then cancel.', dec(v * 100) + '% = ' + fr(dec(v * 100), 100) + ' = ' + fl(n, d) + '.');
+    if (kind === 'd2f') return frq(p('Write <b>' + dec(v) + '</b> as a fraction in lowest terms.'), n, d, 'Write the decimal as a fraction with 10, 100 or 1000 at the bottom. Then cancel.', dec(v) + ' = ' + fr(Math.round(v * 1000), 1000) + ' = ' + fl(n, d) + '.');
+    if (kind === 'f2d') return nu(p('Write ' + fr(n, d) + ' as a <b>decimal</b>.'), v, 'Divide the top by the bottom.', n + ' ÷ ' + d + ' = ' + dec(v) + '.', { ansText: dec(v) });
+    const k = pick([2, 5, 10]); return nu(p('The chance of rain is <b>' + n + ' in ' + d + '</b>. What is this as a <b>percentage</b>? (Type only the number, without %.)'), v * 100, 'Write it as a fraction first.', n + ' in ' + d + ' = ' + fr(n, d) + ' = ' + dec(v) + ', so ' + dec(v) + ' · 100 = ' + dec(v * 100) + '%.', { tol: 1e-9, ansText: dec(v * 100) + '%' });
+  },
+  function probCheck(l) {
+    const valid = shuffle(['0', '1', '0.5', '3/4', '25%', '100%', '0.02', '7/8', '0.9', '1/3']).slice(0, 3), bad = pick(['1.2', '3/2', '125%', '−0.1', '9/8', '150%', '−1/4', '2.5']);
+    return ch(p('Which of these <b>cannot</b> be a probability?'), bad, valid, 'A probability is never smaller than 0 (impossible) and never bigger than 1 (certain). 100% = 1.', bad + ' is ' + (/^[−-]/.test(bad) ? 'smaller than 0' : 'bigger than 1 (100%)') + ', so it cannot be a probability.', { keys: [] });
+  },
+  function diceProb(l) {
+    const n = l === 0 ? 6 : pick([8, 10, 12]), ev = {
+      0: [['even', x => x % 2 === 0], ['greater than 4', x => x > 4], ['a 6', x => x === n], ['not a 6', x => x !== n], ['at most 2', x => x <= 2]],
+      1: [['a prime number', x => isPr(x)], ['a multiple of 3', x => x % 3 === 0], ['less than ' + Math.floor(n / 2), x => x < Math.floor(n / 2)], ['odd and bigger than 3', x => x % 2 === 1 && x > 3]],
+      2: [['a multiple of 3 or a multiple of 4', x => x % 3 === 0 || x % 4 === 0], ['a square number', x => isSq(x)], ['a prime number or a multiple of 5', x => isPr(x) || x % 5 === 0], ['neither a prime number nor even', x => !isPr(x) && x % 2 === 1]]
+    }[Math.min(l, 2)];
+    const N = l === 2 ? pick([12, 20]) : n; const e = pick(ev); const fav = range(1, N).filter(e[1]);
+    if (fav.length === 0 || fav.length === N) return G['4.3'][2](l);
+    return frq(p('A fair die with <b>' + N + '</b> faces (numbered 1 to ' + N + ') is thrown. What is the probability that the number is <b>' + e[0] + '</b>?'), fav.length, N, 'Probability = number of favourable outcomes ÷ number of possible outcomes. List the favourable numbers.', 'Favourable: ' + fav.join(', ') + ' (' + fav.length + ' outcomes). P = ' + fr(fav.length, N) + (fav.length / N === 1 ? '' : (gcd(fav.length, N) > 1 ? ' = ' + fl(fav.length, N) : '')) + '.');
+  },
+  function bagProb(l) {
+    const cols = l === 0 ? [['red', ri(2, 6)], ['blue', ri(2, 6)]] : [['red', ri(2, 7)], ['blue', ri(2, 7)], ['green', ri(1, 6)]], N = cols.reduce((a, c) => a + c[1], 0), list = cols.map(c => c[1] + ' ' + c[0]).join(', ').replace(/, ([^,]*)$/, ' and $1');
+    const ev = l === 0 ? pick([[0], [1]].map(x => ({ t: 'a ' + cols[x[0]][0] + ' marble', c: cols[x[0]][1] }))) : pick([{ t: 'a ' + cols[0][0] + ' marble', c: cols[0][1] }, { t: '<b>not</b> a ' + cols[0][0] + ' marble', c: N - cols[0][1] }, { t: 'a ' + cols[0][0] + ' or a ' + cols[1][0] + ' marble', c: cols[0][1] + cols[1][1] }, { t: 'a marble that is <b>neither</b> ' + cols[0][0] + ' <b>nor</b> ' + cols[1][0], c: N - cols[0][1] - cols[1][1] }]);
+    return frq(p('A bag contains ' + list + ' marbles (' + N + ' in total). You take one marble without looking. What is the probability that it is ' + ev.t + '?'), ev.c, N, 'Probability = number of favourable marbles ÷ total number of marbles.', 'Favourable: ' + ev.c + ' of ' + N + '. P = ' + fr(ev.c, N) + (gcd(ev.c, N) > 1 ? ' = ' + fl(ev.c, N) : '') + '.');
+  },
+  function cardProb(l) {
+    const all = [['an ace', 4], ['a heart', 13], ['a red card', 26], ['a queen', 4], ['the ace of spades', 1], ['a red king', 2], ['a picture card (jack, queen or king)', 12], ['a king or a queen', 8], ['<b>not</b> a heart', 39], ['a heart or an ace', 16], ['a black card that is a 10', 2], ['a card between 2 and 5 (including 2 and 5)', 16]], e = PL(l, all);
+    return frq(p('A standard deck has 52 cards: four suits (hearts and diamonds are red; spades and clubs are black), and every suit has an ace, 2 to 10, a jack, a queen and a king. You draw one card at random. What is the probability of drawing <b>' + e[0] + '</b>?'), e[1], 52, 'Count how many cards fit, then divide by 52.', 'Favourable: ' + e[1] + ' cards. P = ' + fr(e[1], 52) + (gcd(e[1], 52) > 1 ? ' = ' + fl(e[1], 52) : '') + '.');
+  },
+  function gridProb(l) {
+    const a = 6, e = gridEvent(a, a, l === 2 ? 2 : l); let c = 0; for (let i = 1; i <= a; i++) for (let j = 1; j <= a; j++) if (e[1](i, j)) c++;
+    if (c === 0 || c === 36) return G['4.3'][5](l);
+    return frq(p('Two dice are thrown. What is the probability that <b>' + e[0] + '</b>?'), c, 36, 'Make a grid with all 36 outcomes. Count the favourable cells, then divide by 36.', 'Favourable cells: ' + c + ' of 36. P = ' + fr(c, 36) + (gcd(c, 36) > 1 ? ' = ' + fl(c, 36) : '') + '.');
+  },
+  function relFreq(l) {
+    const N = PL(l, [20, 25, 40, 50, 100, 200, 250, 500]), k = ri(Math.ceil(N * .1), Math.floor(N * .9)), what = pick([['A drawing pin is dropped', 'lands point up'], ['A basketball player takes free throws and scores', 'scores'], ['A bus is checked and arrives', 'on time']]), pc = l > 0 && Math.random() < .5;
+    const t1 = { 'A drawing pin is dropped': 'A drawing pin is dropped ' + N + ' times. It lands point up ' + k + ' times.', 'A basketball player takes free throws and scores': 'A basketball player takes ' + N + ' free throws and scores ' + k + ' times.', 'A bus is checked and arrives': 'A bus is checked on ' + N + ' days. It arrives on time on ' + k + ' of those days.' }[what[0]];
+    return nu(p(t1 + ' What is the <b>relative frequency</b> of the successful result, as a ' + (pc ? '<b>percentage</b>? (Type only the number, without %.)' : '<b>decimal</b>?')), pc ? k / N * 100 : k / N, 'Relative frequency = number of times it happened ÷ total number of tries.', k + ' ÷ ' + N + ' = ' + dec(k / N) + (pc ? ', so ' + dec(k / N) + ' · 100 = ' + dec(k / N * 100) + '%.' : '.'), { tol: 1e-9, ansText: pc ? dec(k / N * 100) + '%' : dec(k / N) });
+  },
+  function expectedCount(l) {
+    const t = pick([[1, 6, 'a six when you throw a die', 'throws'], [1, 4, 'a heart when you draw a card from a deck of 4 suits (each with equal numbers)', 'draws'], [2, 5, 'the red area on a spinner', 'spins'], [3, 10, 'rain on a day in this area', 'days'], [1, 2, 'heads', 'flips'], [1, 5, 'a faulty product', 'products']]);
+    const mult = PL(l, [6, 10, 12, 20, 25, 30, 50, 60]), N = t[1] * mult, ans = t[0] * mult, pcs = l > 0 && Math.random() < .5, pT = pcs ? dec(t[0] / t[1] * 100) + '%' : fr(t[0], t[1]);
+    return nu(p('The probability of ' + t[2] + ' is ' + pT + '. About how many times do you expect this in <b>' + N + '</b> ' + t[3] + '?'), ans, 'Expected number = probability × number of tries.', pT.indexOf('%') >= 0 ? dec(t[0] / t[1]) + ' · ' + N + ' = ' + ans + '.' : t[0] + '/' + t[1] + ' · ' + N + ' = ' + ans + '.');
+  },
+  function lawLarge(l) {
+    const right = pick(['The more often you repeat the experiment, the closer the relative frequency usually gets to the real probability.', 'In 1000 throws of a coin the relative frequency of heads is usually closer to 0.5 than in 10 throws.', 'After 5 tails in a row, the probability of heads on the next flip is still 0.5.']), wrong = shuffle(['After 5 tails in a row, heads becomes more likely on the next flip.', 'With 10 flips of a fair coin you always get exactly 5 heads.', 'A fair die that has not shown a six in 20 throws must be unfair.', 'The relative frequency of 10 tries is always equal to the real probability.', 'If a probability is 1/6, then in 60 throws you get exactly 10 sixes.']).slice(0, 2);
+    return ch(p('Which statement is <b>true</b>?'), right, wrong, 'Think about what happens in a long series of experiments, and whether earlier results change the next one.', right + ' This is the law of large numbers: the more tries, the closer the relative frequency to the real probability. Earlier results do not change the next one.', { keys: [] });
+  },
+  function areaProb(l) {
+    const k = l === 0 ? 'sq' : l === 1 ? 'circ' : pick(['ring', 'ring']);
+    if (k === 'sq') { const a = pick([10, 20, 12, 15]), b = pick([2, 4, 5, 6, 3, 6, 8].filter(x => x < a)), n = b * b, d = a * a; return frq(p('A dart lands at random on a square board with side <b>' + a + ' cm</b>. In the middle is a shaded square with side <b>' + b + ' cm</b>. What is the probability that the dart lands in the shaded square?') + targetSVG('sq', a, b), n, d, 'Probability = area of the shaded part ÷ area of the whole board.', 'Shaded: ' + b + ' · ' + b + ' = ' + n + ' cm². Board: ' + a + ' · ' + a + ' = ' + d + ' cm². P = ' + fr(n, d) + (gcd(n, d) > 1 ? ' = ' + fl(n, d) : '') + '.'); }
+    if (k === 'circ') { const R = pick([4, 6, 8, 10, 12]), r = pick([2, 3, 4, 5, 6].filter(x => x < R)), n = r * r, d = R * R; return frq(p('A dart lands at random on a circular board with radius <b>R = ' + R + '</b>. In the middle is a shaded circle with radius <b>r = ' + r + '</b>. What is the probability that the dart lands in the shaded circle? (The π cancels.)') + targetSVG('circ', R, r), n, d, 'Probability = area of the shaded circle ÷ area of the board. The area of a circle is π · radius².', 'Shaded: π · ' + r + '² = ' + n + 'π. Board: π · ' + R + '² = ' + d + 'π. P = ' + fr(n + 'π', d + 'π') + ' = ' + fr(n, d) + (gcd(n, d) > 1 ? ' = ' + fl(n, d) : '') + '.'); }
+    const R = pick([6, 8, 10, 12]), r = pick([2, 3, 4, 5, 6].filter(x => x < R)), n = R * R - r * r, d = R * R; return frq(p('A dart lands at random on a circular board with radius <b>R = ' + R + '</b>. The middle circle (radius <b>r = ' + r + '</b>) is shaded. What is the probability that the dart lands <b>outside</b> the shaded circle?') + targetSVG('circ', R, r), n, d, 'Find the area of the whole board and the area outside the shaded circle. π cancels.', 'Outside: π · ' + R + '² − π · ' + r + '² = ' + d + 'π − ' + (r * r) + 'π = ' + n + 'π. P = ' + fr(n, d) + (gcd(n, d) > 1 ? ' = ' + fl(n, d) : '') + '.', { needStep: true });
+  }
+];
+XG['4.3'] = [
+  function pinAllDifferent(l) {
+    const d = pick([3, 4]), tot = Math.pow(10, d); let fs = []; for (let i = 0; i < d; i++) fs.push(10 - i); const fav = fs.reduce((a, b) => a * b, 1);
+    return frq(p('A pin code has <b>' + d + '</b> digits (each 0–9, chosen at random). What is the probability that <b>all digits are different</b>?'), fav, tot, 'Count the codes with different digits and divide by the number of all codes.', 'All codes: ' + thou(tot) + '. Different digits: ' + times(fs) + ' = ' + thou(fav) + '. P = ' + fr(thou(fav), thou(tot)) + ' = ' + fl(fav, tot) + '.', { needStep: true });
+  },
+  function spinnersPrime(l) {
+    const a = pick([4, 5, 6, 8]), b = pick([6, 8, 10]); let c = 0; for (let i = 1; i <= a; i++) for (let j = 1; j <= b; j++) if (isPr(i + j)) c++;
+    return frq(p('Two spinners, numbered 1 to ' + a + ' and 1 to ' + b + ', are spun and the numbers are added. What is the probability that the sum is a <b>prime number</b>?'), c, a * b, 'Make a grid of all ' + a * b + ' outcomes and count the sums 2, 3, 5, 7, 11, ... in it.', 'Favourable cells: ' + c + ' of ' + a * b + '. P = ' + fr(c, a * b) + (gcd(c, a * b) > 1 ? ' = ' + fl(c, a * b) : '') + '.');
+  },
+  function ringTarget(l) {
+    const R = pick([10, 12, 15, 20]), r1 = pick([2, 4, 5]), r2 = pick([6, 8, 9].filter(x => x < R)), n = r2 * r2 - r1 * r1, d = R * R;
+    return frq(p('A dart lands at random on a circular board with radius <b>' + R + '</b>. There are two circles inside, with radii <b>' + r1 + '</b> and <b>' + r2 + '</b>. What is the probability that the dart lands in the ring <b>between</b> the two inner circles?') + targetSVG('circ', R, r2, r1), n, d, 'Ring area = bigger circle − smaller circle. Probability = ring area ÷ board area.', 'Ring: π · ' + r2 + '² − π · ' + r1 + '² = ' + (r2 * r2) + 'π − ' + (r1 * r1) + 'π = ' + n + 'π. Board: ' + d + 'π. P = ' + fr(n, d) + (gcd(n, d) > 1 ? ' = ' + fl(n, d) : '') + '.', { needStep: true });
+  }
+];
+
+/* ======================= 4.4 Tree diagrams (repeated events) ======================= */
+const CONTEXTS = [['a basketball player makes a free throw', 'throws', 'scores', 'misses'], ['a football player scores a penalty', 'penalties', 'scores', 'misses'], ['an archer hits the target', 'shots', 'hits', 'misses'], ['a train is on time', 'days', 'on time', 'late']];
+const PF = [[1, 2], [1, 3], [2, 3], [1, 4], [3, 4], [1, 5], [2, 5], [3, 5], [4, 5], [1, 6], [5, 6]];
+const PD = [0.5, 0.6, 0.7, 0.8, 0.9, 0.3, 0.2, 0.4, 0.35, 0.65, 0.85];
+function pw(a, b, k) { return [Math.pow(a, k), Math.pow(b, k)]; }
+G['4.4'] = [
+  function bothSuccess(l) {
+    const c = pick(CONTEXTS), n = l === 2 ? 3 : 2, useF = l < 2 ? Math.random() < .5 : Math.random() < .4, word = n === 2 ? 'twice' : 'three times';
+    if (useF) { const [a, b] = PL(l, PF.slice(0, 9)), num = Math.pow(a, n), den = Math.pow(b, n);
+      let fig = ''; if (l === 0) fig = treeSVG({ stages: [['S', 'F'], ['S', 'F']], edge: (st, path, bi) => bi === 0 ? a + '/' + b : (b - a) + '/' + b, leaf: path => path.join(''), leafW: 90 });
+      return frq(p('The probability that ' + c[0] + ' is <b>' + fr(a, b) + '</b>. This is tried <b>' + n + ' times</b>, independently. What is the probability that it ' + c[2] + ' every time?') + (fig ? p('(S = ' + c[2] + ', F = ' + c[3] + '.)') + fig : ''), num, den, 'The tries do not influence each other. Multiply the probabilities along the branch.', 'P = ' + times(Array(n).fill(a + '/' + b)) + ' = ' + fr(num, den) + (gcd(num, den) > 1 ? ' = ' + fl(num, den) : '') + '.', { needStep: true }); }
+    const pr = pick(PD.slice(0, 7)), v = Math.pow(pr, n);
+    return nu(p('The probability that ' + c[0] + ' is <b>' + dec(pr) + '</b>. This is tried <b>' + n + ' times</b>, independently. What is the probability that it ' + c[2] + ' every time? (Give a decimal.)'), Math.round(v * 1e6) / 1e6, 'The tries do not influence each other. Multiply the probabilities along the branch.', 'P = ' + times(Array(n).fill(dec(pr))) + ' = ' + dec(v) + '.', { needStep: true, tol: 1e-6, ansText: dec(v) });
+  },
+  function twoDifferent(l) {
+    const c = pick([['A traffic light on the way to school is green with probability', 'and a second light is green with probability', 'green', 'not green'], ['Machine A makes a good product with probability', 'and machine B with probability', 'good', 'faulty']]), pa = pick([0.6, 0.7, 0.8, 0.9, 0.5]), pb = pick([0.4, 0.5, 0.6, 0.7, 0.8].filter(x => x !== pa)), kind = l === 0 ? 'both' : pick(['both', 'none', 'exactly one']);
+    const fig = l === 0 ? treeSVG({ stages: [['1', '0'], ['1', '0']], edge: (st, path, bi) => dec(bi === 0 ? (st === 0 ? pa : pb) : 1 - (st === 0 ? pa : pb)), leaf: path => path.join(''), leafW: 90 }) + p('(1 = ' + c[2] + ', 0 = ' + c[3] + '.)') : '';
+    const ans = kind === 'both' ? pa * pb : kind === 'none' ? (1 - pa) * (1 - pb) : pa * (1 - pb) + (1 - pa) * pb;
+    const st = kind === 'both' ? 'P = ' + dec(pa) + ' · ' + dec(pb) + ' = ' + dec(ans) + '.' : kind === 'none' ? 'P = ' + dec(1 - pa) + ' · ' + dec(1 - pb) + ' = ' + dec(ans) + '.' : 'P = ' + dec(pa) + ' · ' + dec(1 - pb) + ' + ' + dec(1 - pa) + ' · ' + dec(pb) + ' = ' + dec(pa * (1 - pb)) + ' + ' + dec((1 - pa) * pb) + ' = ' + dec(ans) + '.';
+    return nu(p(c[0] + ' ' + dec(pa) + ' ' + c[1] + ' ' + dec(pb) + '. They are independent. What is the probability that ' + (kind === 'both' ? '<b>both</b> are ' + c[2] : kind === 'none' ? '<b>neither</b> is ' + c[2] : '<b>exactly one</b> is ' + c[2]) + '?') + fig, Math.round(ans * 1e6) / 1e6, kind === 'exactly one' ? 'There are two branches: first yes then no, or first no then yes. Calculate both and add.' : 'Multiply the probabilities along the branch.', st, { needStep: true, tol: 1e-6, ansText: dec(ans) });
+  },
+  function diceTree(l) {
+    const k = l === 0 ? pick(['two6', 'no6']) : l === 1 ? pick(['no6', 'one6', 'sameAgain']) : pick(['atLeast6', 'one6', 'low']);
+    if (k === 'two6') return frq(p('A die is thrown twice. What is the probability of throwing a <b>six both times</b>?'), 1, 36, 'The throws are independent. Multiply the probabilities.', 'P = ' + fr(1, 6) + ' · ' + fr(1, 6) + ' = ' + fr(1, 36) + '.', { needStep: true });
+    if (k === 'no6') return frq(p('A die is thrown twice. What is the probability that you throw <b>no six at all</b>?'), 25, 36, 'No six on the first throw (5 out of 6) and no six on the second throw.', 'P = ' + fr(5, 6) + ' · ' + fr(5, 6) + ' = ' + fr(25, 36) + '.', { needStep: true });
+    if (k === 'one6') return frq(p('A die is thrown twice. What is the probability of throwing <b>exactly one six</b>?'), 10, 36, 'Two branches: six then no six, or no six then six. Calculate both and add.', 'P = ' + fr(1, 6) + ' · ' + fr(5, 6) + ' + ' + fr(5, 6) + ' · ' + fr(1, 6) + ' = ' + fr(5, 36) + ' + ' + fr(5, 36) + ' = ' + fr(10, 36) + ' = ' + fl(10, 36) + '.', { needStep: true });
+    if (k === 'sameAgain') return frq(p('A die is thrown twice. What is the probability that <b>both numbers are less than 3</b>?'), 1, 9, 'The probability of a number less than 3 (1 or 2) is 2 out of 6 for every throw.', 'P = ' + fr(2, 6) + ' · ' + fr(2, 6) + ' = ' + fr(4, 36) + ' = ' + fl(4, 36) + '.', { needStep: true });
+    if (k === 'atLeast6') { const n = ri(2, 3), num = Math.pow(6, n) - Math.pow(5, n), den = Math.pow(6, n); return frq(p('A die is thrown <b>' + n + '</b> times. What is the probability of throwing <b>at least one six</b>?'), num, den, 'It is easier to calculate the opposite: no six at all. Then do 1 minus that.', 'P(no six) = ' + times(Array(n).fill(fr(5, 6))) + ' = ' + fr(Math.pow(5, n), den) + '. P(at least one six) = 1 − ' + fr(Math.pow(5, n), den) + ' = ' + fl(num, den) + '.', { needStep: true }); }
+    return frq(p('A die is thrown twice. What is the probability that the <b>sum</b> is <b>at least 11</b>?'), 3, 36, 'Which pairs give 11 or 12? You can multiply the probabilities of every pair (1/6 · 1/6).', 'Pairs: (5, 6), (6, 5), (6, 6): 3 · ' + fr(1, 36) + ' = ' + fr(3, 36) + ' = ' + fl(3, 36) + '.', { needStep: true });
+  },
+  function coinTree(l) {
+    const n = l === 0 ? 3 : pick([3, 4, 5]), kind = l === 0 ? pick(['exact', 'same']) : pick(['exact', 'atLeast1', 'same']), tot = Math.pow(2, n);
+    if (kind === 'exact') { const k = ri(1, n - 1), num = Cn(n, k); return frq(p('A coin is flipped <b>' + n + '</b> times. What is the probability of <b>exactly ' + k + ' head' + (k > 1 ? 's' : '') + '</b>?'), num, tot, 'Every sequence of ' + n + ' flips has probability ' + '(1/2)^' + n + '. Count how many sequences have exactly ' + k + ' head' + (k > 1 ? 's' : '') + '.', 'Sequences with exactly ' + k + ' head' + (k > 1 ? 's' : '') + ': ' + num + '. Each has probability ' + fr(1, tot) + '. P = ' + num + ' · ' + fr(1, tot) + ' = ' + fr(num, tot) + (gcd(num, tot) > 1 ? ' = ' + fl(num, tot) : '') + '.', { needStep: true }); }
+    if (kind === 'same') return frq(p('A coin is flipped <b>' + n + '</b> times. What is the probability that <b>all results are the same</b> (all heads or all tails)?'), 2, tot, 'Both "all heads" and "all tails" have probability (1/2)^' + n + '. Add them.', 'P = 2 · ' + fr(1, tot) + ' = ' + fr(2, tot) + ' = ' + fl(2, tot) + '.', { needStep: true });
+    return frq(p('A coin is flipped <b>' + n + '</b> times. What is the probability of <b>at least one head</b>?'), tot - 1, tot, 'Use the opposite: no heads at all (all tails). Then do 1 minus that.', 'P(no head) = ' + fr(1, tot) + '. P(at least one head) = 1 − ' + fr(1, tot) + ' = ' + fr(tot - 1, tot) + '.', { needStep: true });
+  },
+  function atLeastOne(l) {
+    const c = pick(CONTEXTS), n = l === 0 ? 2 : l === 1 ? pick([2, 3]) : pick([3, 4]), [a, b] = pick(PF.slice(0, 7)), num = Math.pow(b, n) - Math.pow(b - a, n), den = Math.pow(b, n);
+    return frq(p('The probability that ' + c[0] + ' is <b>' + fr(a, b) + '</b>. This is tried <b>' + n + ' times</b>, independently. What is the probability that it ' + c[2] + ' <b>at least once</b>?'), num, den, 'Use the opposite: it never happens. Then do 1 minus that probability.', 'P(never) = ' + times(Array(n).fill(fr(b - a, b))) + ' = ' + fr(Math.pow(b - a, n), den) + '. P(at least once) = 1 − ' + fr(Math.pow(b - a, n), den) + ' = ' + fl(num, den) + '.', { needStep: true });
+  },
+  function binomTree(l) {
+    const n = l < 2 ? 3 : 4, k = l === 0 ? pick([0, n]) : l === 1 ? pick([1, 2]) : 2, useF = l === 2 ? Math.random() < .6 : Math.random() < .35;
+    const lab = ['no hits', 'one hit', 'two hits', 'three hits', 'four hits'][k], coef = Cn(n, k);
+    if (useF) { const [a, b] = pick([[1, 4], [1, 3], [2, 3], [3, 4], [1, 5]]), q = b - a, num = coef * Math.pow(a, k) * Math.pow(q, n - k), den = Math.pow(b, n);
+      return frq(p('An archer hits the target with probability <b>' + fr(a, b) + '</b> per shot. He shoots <b>' + n + '</b> times (independent shots). What is the probability of <b>exactly ' + k + ' hit' + (k === 1 ? '' : 's') + '</b>?'), num, den, 'Count the branches with ' + k + ' hit' + (k === 1 ? '' : 's') + ' (' + coef + ' branch' + (coef > 1 ? 'es' : '') + '). Every branch has the same probability. Multiply and add.', coef + ' branch' + (coef > 1 ? 'es' : '') + ', each with probability ' + (k ? times(Array(k).fill(a + '/' + b)) : '') + (k && n - k ? ' · ' : '') + (n - k ? times(Array(n - k).fill(q + '/' + b)) : '') + '. P = ' + (coef > 1 ? coef + ' · ' : '') + fr(Math.pow(a, k) * Math.pow(q, n - k), den) + ' = ' + fl(num, den) + '.', { needStep: true }); }
+    const pr = pick([0.5, 0.6, 0.7, 0.8, 0.9, 0.3, 0.4]), v = coef * Math.pow(pr, k) * Math.pow(1 - pr, n - k), vv = Math.round(v * 1e6) / 1e6;
+    return nu(p('A basketball player scores a free throw with probability <b>' + dec(pr) + '</b>. She throws <b>' + n + '</b> times (independent throws). What is the probability of <b>exactly ' + k + ' hit' + (k === 1 ? '' : 's') + '</b>? (Give a decimal.)'), vv, 'Count the branches with ' + k + ' hit' + (k === 1 ? '' : 's') + ' (' + coef + ' branch' + (coef > 1 ? 'es' : '') + '). Every branch has the same probability. Multiply and add.', coef + ' branch' + (coef > 1 ? 'es' : '') + ': P = ' + coef + ' · ' + dec(pr) + '<sup>' + k + '</sup> · ' + dec(1 - pr) + '<sup>' + (n - k) + '</sup> = ' + dec(vv) + '.', { needStep: true, tol: 1e-6, ansText: dec(vv) });
+  },
+  function independence(l) {
+    const t = pick([['A fair coin shows tails 6 times in a row. What is the probability of heads on the <b>next</b> flip?', '1/2', ['more than 1/2', 'less than 1/2'], 'Every flip is independent of the earlier flips. The coin has no memory.'], ['A fair die shows no six in 12 throws. What is the probability of a six on the <b>next</b> throw?', '1/6', ['more than 1/6', 'less than 1/6'], 'Every throw is independent of the earlier throws.'], ['A spinner is red with probability 1/4. It was red three times in a row. What is the probability of red on the <b>next</b> spin?', '1/4', ['more than 1/4', 'less than 1/4'], 'Every spin is independent of the earlier spins.']]);
+    return ch(p(t[0]), t[1], t[2], 'Do earlier results influence the next one?', t[3] + ' So the probability stays ' + t[1] + '.', { keys: [] });
+  },
+  function readTree(l) {
+    const pa = pick(l === 0 ? [[1, 2], [1, 3], [2, 3]] : [[1, 4], [3, 4], [2, 5], [3, 5], [1, 6], [5, 6]]), pb = pick([[1, 2], [1, 3], [2, 3], [1, 4], [3, 4]]), k = pick(['AB', 'AA', 'BB', 'BA']);
+    const stage = [['R', 'B']];
+    const e1 = bi => bi === 0 ? pa[0] + '/' + pa[1] : (pa[1] - pa[0]) + '/' + pa[1], e2 = bi => bi === 0 ? pb[0] + '/' + pb[1] : (pb[1] - pb[0]) + '/' + pb[1];
+    const fig = treeSVG({ stages: [['R', 'B'], ['R', 'B']], edge: (st, path, bi) => st === 0 ? e1(bi) : e2(bi), leaf: path => path.join(''), leafW: 100 });
+    const i1 = k[0] === 'A' ? 0 : 1, i2 = k[1] === 'A' ? 0 : 1, n1 = i1 === 0 ? pa[0] : pa[1] - pa[0], n2 = i2 === 0 ? pb[0] : pb[1] - pb[0], num = n1 * n2, den = pa[1] * pb[1], w = ['R', 'B'];
+    return frq(p('The tree diagram shows two independent spins: first spinner 1, then spinner 2. Each spin lands on R (red) or B (blue). What is the probability of <b>' + w[i1] + ' on the first spin and ' + w[i2] + ' on the second spin</b>?') + fig, num, den, 'Follow the branch for ' + w[i1] + w[i2] + ' and multiply the two probabilities on it.', 'P = ' + fr(n1, pa[1]) + ' · ' + fr(n2, pb[1]) + ' = ' + fr(num, den) + (gcd(num, den) > 1 ? ' = ' + fl(num, den) : '') + '.', { needStep: true });
+  }
+];
+XG['4.4'] = [
+  function sameColourTwice(l) {
+    const set = pick([[[1, 2], [1, 3], [1, 6]], [[1, 2], [1, 4], [1, 4]], [[1, 3], [1, 3], [1, 3]], [[1, 2], [3, 10], [1, 5]], [[2, 5], [2, 5], [1, 5]]]), cols = ['red', 'blue', 'green'];
+    const dn = set.reduce((a, s) => a * s[1] / gcd(a, s[1]), 1) ** 2, num = set.reduce((a, s) => a + Math.pow(s[0] * (Math.sqrt(dn) / s[1]), 2), 0);
+    return frq(p('A spinner lands on red with probability ' + fr(set[0][0], set[0][1]) + ', on blue with probability ' + fr(set[1][0], set[1][1]) + ' and on green with probability ' + fr(set[2][0], set[2][1]) + '. It is spun twice. What is the probability that it lands on the <b>same colour twice</b>?'), Math.round(num), dn, 'A tree diagram has 9 branches. Three of them have the same colour twice. Calculate each and add.', 'P = ' + set.map(s => '(' + s[0] + '/' + s[1] + ')<sup>2</sup>').join(' + ') + ' = ' + fl(Math.round(num), dn) + '.', { needStep: true });
+  },
+  function atLeastTwoOfThree(l) {
+    const pr = pick([0.8, 0.7, 0.9, 0.6]), v = 3 * pr * pr * (1 - pr) + Math.pow(pr, 3), vv = Math.round(v * 1e6) / 1e6;
+    return nu(p('A student answers each of <b>3</b> quiz questions correctly with probability <b>' + dec(pr) + '</b> (independently). What is the probability that she answers <b>at least 2</b> correctly? (Give a decimal.)'), vv, 'At least 2 means exactly 2 or exactly 3. Calculate both and add.', 'Exactly 2: 3 · ' + dec(pr) + '² · ' + dec(1 - pr) + ' = ' + dec(Math.round(3 * pr * pr * (1 - pr) * 1e6) / 1e6) + '. Exactly 3: ' + dec(pr) + '³ = ' + dec(Math.round(pr * pr * pr * 1e6) / 1e6) + '. Total: ' + dec(vv) + '.', { needStep: true, tol: 1e-6, ansText: dec(vv) });
+  },
+  function firstSuccess(l) {
+    const t = pick([[1, 6, 'a six', 'throw'], [1, 4, 'a heart', 'draw (with the card put back each time)'], [1, 2, 'heads', 'flip']]), k = ri(3, 4), q = t[1] - t[0], num = Math.pow(q, k - 1) * t[0], den = Math.pow(t[1], k);
+    return frq(p('You keep going until you get ' + t[2] + '. Each ' + t[3] + ' has probability ' + fr(t[0], t[1]) + ' (independent). What is the probability that you get it <b>for the first time on try number ' + k + '</b>?'), num, den, 'The first ' + (k - 1) + ' tries must <b>not</b> succeed. Then try ' + k + ' succeeds.', 'P = ' + times(Array(k - 1).fill(fr(q, t[1])).concat([fr(t[0], t[1])])) + ' = ' + fr(num, den) + (gcd(num, den) > 1 ? ' = ' + fl(num, den) : '') + '.', { needStep: true });
+  }
+];
+
+/* ======================= 4.5 Without replacement ======================= */
+const ITEMS = [['marbles', 'marble', 'a bag'], ['sweets', 'sweet', 'a tin'], ['socks', 'sock', 'a drawer'], ['balls', 'ball', 'a box']];
+function bagText(it, cols) { const tot = cols.reduce((a, c) => a + c[1], 0); return it[2].charAt(0).toUpperCase() + it[2].slice(1) + ' contains ' + cols.map(c => c[1] + ' ' + c[0]).join(', ').replace(/, ([^,]*)$/, ' and $1') + ' ' + it[0] + ' (' + tot + ' in total).'; }
+G['4.5'] = [
+  function twoDrawsSame(l) {
+    const it = pick(ITEMS), r = LR(l, 3, 9), b = LR(l, 2, 8), n = r + b, num = r * (r - 1), den = n * (n - 1);
+    return frq(p(bagText(it, [['red', r], ['blue', b]]) + ' You take <b>two</b> ' + it[0] + ' without putting the first back. What is the probability that <b>both are red</b>?'), num, den, 'After the first ' + it[1] + ' is taken, there is one ' + it[1] + ' fewer, and one red fewer too.', 'P = ' + fr(r, n) + ' · ' + fr(r - 1, n - 1) + ' = ' + fr(num, den) + (gcd(num, den) > 1 ? ' = ' + fl(num, den) : '') + '.', { needStep: true });
+  },
+  function twoDrawsDifferent(l) {
+    const it = pick(ITEMS), r = LR(l, 3, 8), b = LR(l, 3, 8), n = r + b, num = 2 * r * b, den = n * (n - 1);
+    return frq(p(bagText(it, [['red', r], ['blue', b]]) + ' You take <b>two</b> ' + it[0] + ' without putting the first back. What is the probability that you get <b>one red and one blue</b> (in any order)?'), num, den, 'Two branches: red then blue, or blue then red. Calculate both and add.', 'P = ' + fr(r, n) + ' · ' + fr(b, n - 1) + ' + ' + fr(b, n) + ' · ' + fr(r, n - 1) + ' = ' + fr(r * b, den) + ' + ' + fr(r * b, den) + ' = ' + fr(num, den) + (gcd(num, den) > 1 ? ' = ' + fl(num, den) : '') + '.', { needStep: true });
+  },
+  function cardsTwo(l) {
+    const t = pick([['two aces', 4, 3], ['two hearts', 13, 12], ['two kings', 4, 3], ['two red cards', 26, 25], ['two picture cards (jack, queen or king)', 12, 11], ['two spades', 13, 12]]);
+    const num = t[1] * t[2], den = 52 * 51;
+    return frq(p('You draw <b>two cards</b> from a standard deck of 52 cards, without putting the first back. What is the probability of drawing <b>' + t[0] + '</b>?'), num, den, 'After the first card, there are 51 cards left, and one fewer of the kind you want.', 'P = ' + fr(t[1], 52) + ' · ' + fr(t[2], 51) + ' = ' + fr(num, den) + (gcd(num, den) > 1 ? ' = ' + fl(num, den) : '') + '.', { needStep: true });
+  },
+  function atLeastOneWithout(l) {
+    const it = pick(ITEMS), r = LR(l, 3, 8), b = LR(l, 3, 8), n = r + b, num = n * (n - 1) - b * (b - 1), den = n * (n - 1);
+    return frq(p(bagText(it, [['red', r], ['blue', b]]) + ' You take <b>two</b> ' + it[0] + ' without putting the first back. What is the probability that <b>at least one is red</b>?'), num, den, 'Use the opposite: both are blue. Then do 1 minus that probability.', 'P(both blue) = ' + fr(b, n) + ' · ' + fr(b - 1, n - 1) + ' = ' + fr(b * (b - 1), den) + '. P(at least one red) = 1 − ' + fr(b * (b - 1), den) + ' = ' + fl(num, den) + '.', { needStep: true });
+  },
+  function lotTickets(l) {
+    const n = pick([20, 25, 30, 40, 50]), pz = ri(3, Math.floor(n / 4)), num = n * (n - 1) - (n - pz) * (n - pz - 1), den = n * (n - 1);
+    return frq(p('A lottery has <b>' + n + '</b> tickets, of which <b>' + pz + '</b> win a prize. You buy <b>2</b> tickets. What is the probability that you win <b>at least one prize</b>? (A ticket cannot be drawn twice.)'), num, den, 'Use the opposite: no prize with both tickets. After the first ticket, one non-winning ticket fewer is left.', 'P(no prize) = ' + fr(n - pz, n) + ' · ' + fr(n - pz - 1, n - 1) + ' = ' + fr((n - pz) * (n - pz - 1), den) + '. P(at least one prize) = 1 − ' + fr((n - pz) * (n - pz - 1), den) + ' = ' + fl(num, den) + '.', { needStep: true });
+  },
+  function secondDraw(l) {
+    const r = ri(3, 6), b = ri(3, 6), n = r + b, first = pick(['red', 'blue']), repl = l === 0 ? Math.random() < .4 : Math.random() < .25, want = pick(['red', 'blue']);
+    const right = repl ? 'The probability stays the same' : (first === want ? 'The probability gets smaller' : 'The probability gets bigger');
+    return ch(p('A bag contains ' + r + ' red and ' + b + ' blue marbles. You take a marble: it is <b>' + first + '</b>. ' + (repl ? 'You put it <b>back</b>.' : 'You do <b>not</b> put it back.') + ' How does the probability of a <b>' + want + '</b> marble on the second draw compare to the first draw?'), right, ['The probability stays the same', 'The probability gets smaller', 'The probability gets bigger'].filter(x => x !== right), 'Count how many marbles of that colour and how many marbles in total are in the bag for the second draw.', repl ? 'The bag is the same as before, so the probability stays the same.' : 'There is one marble fewer in the bag' + (first === want ? ', and one ' + want + ' fewer, so the fraction gets smaller.' : ', but the number of ' + want + ' marbles stays the same, so the fraction gets bigger.'), { keys: [] });
+  },
+  function readTreeDep(l) {
+    const r = ri(3, 7), b = ri(2, 6), n = r + b, k = pick(['RB', 'BR', 'RR', 'BB']), c = { R: r, B: b };
+    const e = (st, path, bi) => { const col = bi === 0 ? 'R' : 'B'; const rem = st === 0 ? { R: r, B: b } : { R: r - (path[0] === 'R' ? 1 : 0), B: b - (path[0] === 'B' ? 1 : 0) }; return rem[col] + '/' + (st === 0 ? n : n - 1); };
+    const fig = treeSVG({ stages: [['R', 'B'], ['R', 'B']], edge: e, leaf: path => path.join(''), leafW: 100 });
+    const a1 = c[k[0]], a2 = c[k[1]] - (k[0] === k[1] ? 1 : 0), num = a1 * a2, den = n * (n - 1);
+    return frq(p(bagText(['marbles', 'marble', 'a bag'], [['red (R)', r], ['blue (B)', b]]) + ' Two marbles are taken one after the other, <b>without</b> putting the first back. The tree diagram shows the probabilities. What is the probability of <b>' + (k[0] === 'R' ? 'red' : 'blue') + ' first and then ' + (k[1] === 'R' ? 'red' : 'blue') + '</b>?') + fig, num, den, 'Follow the branch ' + k + ' and multiply the two probabilities on it.', 'P = ' + fr(a1, n) + ' · ' + fr(a2, n - 1) + ' = ' + fr(num, den) + (gcd(num, den) > 1 ? ' = ' + fl(num, den) : '') + '.', { needStep: true });
+  }
+];
+XG['4.5'] = [
+  function threeSame(l) {
+    const it = pick(ITEMS), r = ri(4, 7), b = ri(3, 6), n = r + b, num = r * (r - 1) * (r - 2) + b * (b - 1) * (b - 2), den = n * (n - 1) * (n - 2);
+    return frq(p(bagText(it, [['red', r], ['blue', b]]) + ' You take <b>three</b> ' + it[0] + ' without putting them back. What is the probability that <b>all three have the same colour</b>?'), num, den, 'Two branches: three red, or three blue. Calculate both and add.', 'P(RRR) = ' + fr(r, n) + ' · ' + fr(r - 1, n - 1) + ' · ' + fr(r - 2, n - 2) + ' = ' + fr(r * (r - 1) * (r - 2), den) + '. P(BBB) = ' + fr(b * (b - 1) * (b - 2), den) + '. Total: ' + fl(num, den) + '.', { needStep: true });
+  },
+  function exactlyOneOfThree(l) {
+    const it = pick(ITEMS), r = ri(3, 6), b = ri(4, 7), n = r + b, num = 3 * r * b * (b - 1), den = n * (n - 1) * (n - 2);
+    return frq(p(bagText(it, [['red', r], ['blue', b]]) + ' You take <b>three</b> ' + it[0] + ' without putting them back. What is the probability that <b>exactly one is red</b>?'), num, den, 'There are three branches (the red one is first, second or third). Every branch has the same probability.', 'P = 3 · ' + fr(r, n) + ' · ' + fr(b, n - 1) + ' · ' + fr(b - 1, n - 2) + ' = ' + fr(num, den) + (gcd(num, den) > 1 ? ' = ' + fl(num, den) : '') + '.', { needStep: true });
+  },
+  function groupAtLeastOne(l) {
+    const m = ri(6, 10), g = ri(5, 9), n = m + g, num = n * (n - 1) * (n - 2) - m * (m - 1) * (m - 2), den = n * (n - 1) * (n - 2);
+    return frq(p('A group has <b>' + m + ' boys</b> and <b>' + g + ' girls</b>. The teacher chooses <b>3</b> students at random. What is the probability that <b>at least one is a girl</b>?'), num, den, 'Use the opposite: all three are boys. Then do 1 minus that probability.', 'P(three boys) = ' + fr(m, n) + ' · ' + fr(m - 1, n - 1) + ' · ' + fr(m - 2, n - 2) + ' = ' + fr(m * (m - 1) * (m - 2), den) + '. P(at least one girl) = 1 − ' + fr(m * (m - 1) * (m - 2), den) + ' = ' + fl(num, den) + '.', { needStep: true });
+  }
+];
+
+const SECTIONS = [
+  { id: '4.1', title: '4.1 Grids and tree diagrams', sub: 'Counting outcomes with a grid or a tree' },
+  { id: '4.2', title: '4.2 Counting by multiplying', sub: 'Choices, codes, orders, Venn diagrams' },
+  { id: '4.3', title: '4.3 Probability', sub: 'Fractions, percentages, relative frequency, area' },
+  { id: '4.4', title: '4.4 Tree diagrams', sub: 'Repeated events, "at least one"' },
+  { id: '4.5', title: '4.5 Without replacement', sub: 'Dependent events and trees' }
+];
+const GOALS = [
+  ['4.1', 'I can count all outcomes with a grid or a tree diagram', ['gridSize', 'sumWays', 'bestSum', 'gridCount', 'coinWays', 'gridOrTree'], 'A grid has two directions. For three or more steps, use a tree diagram.'],
+  ['4.2', 'I can count the number of possibilities by multiplying', ['choiceCount', 'codeCount', 'arrangeCount', 'numbersFromDigits'], 'Multiply the number of choices for every step. Start with the step that has a restriction.'],
+  ['4.2', 'I can use a Venn diagram', ['vennRead', 'vennCalc']],
+  ['4.3', 'I can write a probability as a fraction, a decimal and a percentage', ['convertProb', 'probCheck'], 'A probability is between 0 and 1.'],
+  ['4.3', 'I can calculate the probability of a simple event', ['diceProb', 'bagProb', 'cardProb', 'gridProb', 'areaProb'], 'Probability = favourable outcomes ÷ possible outcomes.'],
+  ['4.3', 'I can use relative frequency and the law of large numbers', ['relFreq', 'expectedCount', 'lawLarge']],
+  ['4.4', 'I can use a tree diagram for repeated events', ['bothSuccess', 'twoDifferent', 'diceTree', 'coinTree', 'readTree'], 'Multiply along a branch. Add the branches that fit.'],
+  ['4.4', 'I can calculate "at least one" and "exactly k" probabilities', ['atLeastOne', 'binomTree', 'independence'], '"At least one" = 1 − P(none).'],
+  ['4.5', 'I can calculate probabilities when you do not put things back', ['twoDrawsSame', 'twoDrawsDifferent', 'cardsTwo', 'readTreeDep', 'secondDraw'], 'Every next draw has one item fewer.'],
+  ['4.5', 'I can use the opposite to find "at least one" without replacement', ['atLeastOneWithout', 'lotTickets']]
+];
+return { key: 'nx-2ht-ch4-v1', SECTIONS, LESSONS: [], G, XG, defaultMode: 'para', GOALS };
+
+})(NX, {"cls": "2HT"});
+window.Ch3 = NX.engine(__def); window.Ch3.GOALS = __def.GOALS;
+</script>
+<script>
+(function(){
+'use strict';
+const E=window.Ch3,$=s=>document.querySelector(s);
+const LV=['Mild','Medium','Spicy','Extra spicy'],GOAL=10;let mix=false;
+const hasLessons=Array.isArray(E.LESSONS)&&E.LESSONS.length>0;
+const KEY=E.KEY||'nx-page';
+const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const plain=h=>String(h).replace(/<svg[\s\S]*?<\/svg>/g,' [figure] ').replace(/<span class="nu">/g,'(').replace(/<\/span><span class="de">/g,')/(').replace(/<sup[^>]*>/g,'^').replace(/<[^>]+>/g,'').replace(/&nbsp;/g,' ').replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/\s+/g,' ').trim();
+const items=()=>hasLessons&&st.mode==='lesson'?E.LESSONS:E.SECTIONS;
+const todayISO=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
+const latestLesson=()=>{const t=todayISO();let L=E.LESSONS[0];E.LESSONS.forEach(x=>{if(x.date&&x.date<=t&&!x.rev&&x.id!=='L10')L=x});return L.id};
+function defaultFor(mode){return mode==='lesson'&&hasLessons?latestLesson():E.SECTIONS[0].id}
+function setMode(m){if(st.mode===m)return;st.secs[st.mode]=st.sec;st.mode=m;st.sec=st.secs[m]||defaultFor(m);test=null;mix=false;free=null;focus=null;save();next(true)}
+let st={mode:E.defaultMode||'lesson',secs:{},done:{},stat:{},best:{},tests:[],sec:'',prog:{},lvl:{},res:{},log:[],badges:{},bestRow:0,goalsAll:false};
+try{const r=JSON.parse(localStorage.getItem(KEY)||'null');if(r&&r.prog)st=Object.assign(st,r)}catch(e){}
+if(!hasLessons)st.mode='para';
+if(!st.modeSet&&st.prog&&Object.keys(st.prog).length&&hasLessons)st.mode='para';
+['secs','done','stat','best','res','badges'].forEach(k=>{st[k]=st[k]||{}});st.tests=st.tests||[];st.log=st.log||[];st.prog=st.prog||{};st.lvl=st.lvl||{};
+if(!st.sec||!items().some(x=>x.id===st.sec))st.sec=defaultFor(st.mode);
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify({mode:st.mode,modeSet:1,secs:st.secs,sec:st.sec,prog:st.prog,lvl:st.lvl,done:st.done,stat:st.stat,best:st.best,tests:st.tests,res:st.res,log:st.log,badges:st.badges,bestRow:st.bestRow,goalsAll:st.goalsAll,auto:st.auto}))}catch(e){}};
+let protoAngle=null;let cur=null,tries=0,done=false,streak=0,wrongRun=0,recent=[],clicked=[],choiceSel=null,hintUsed=false,attempts=[],stepLines=[],row=0;
+let test=null;      // {qs,i,score,log}
+let free=null;      // free practice level (0..3) or null = adaptive
+let focus=null;     // {ids:[goal ids], i}
+
+/* ---------- learning goals ---------- */
+const GL=[],gOfGen={};
+(function buildGoals(){
+  const lists=[];[E.G||{},E.XG||{}].forEach((T,xi)=>Object.keys(T).forEach(sec=>T[sec].forEach(f=>lists.push([sec,f.name,xi===1]))));
+  const present=new Set(lists.map(x=>x[1]));
+  (E.GOALS||[]).forEach((g,i)=>{const gens=g[2].filter(n=>present.has(n));if(!gens.length)return;const o={id:'g'+GL.length,sec:g[0],title:g[1],gens,warn:g[3]||''};GL.push(o);gens.forEach(n=>{if(!(n in gOfGen))gOfGen[n]=o})});
+  const secTitle={};E.SECTIONS.forEach(s=>secTitle[s.id]=s.title.replace(/^[\d.]+\s*/,''));
+  const ch={};
+  lists.forEach(([sec,name])=>{if(name in gOfGen)return;let o=ch[sec];if(!o){o=ch[sec]={id:'g'+GL.length,sec,title:'I can solve harder and mixed questions about '+(secTitle[sec]||sec).toLowerCase(),gens:[],warn:'',challenge:true};GL.push(o)}o.gens.push(name);gOfGen[name]=o});
+})();
+const goalById=id=>GL.find(g=>g.id===id);
+const genName=q=>{if(!q)return null;if(typeof q.gen!=='number')return q.gen;const g=q.gen>=100?(E.XG[q.sec]||[])[q.gen-100]:(E.G[q.sec]||[])[q.gen];return g?g.name:null};
+const goalOfQ=q=>q&&gOfGen[genName(q)]||null;
+function itemGens(it){const s=new Set();if(it.gens){it.gens.concat(it.xg||[]).forEach(e=>s.add(e[1]))}else{(E.G[it.id]||[]).concat(E.XG[it.id]||[]).forEach(f=>s.add(f.name))}return s}
+function goalsForItem(id){const it=items().find(x=>x.id===id)||E.SECTIONS.find(x=>x.id===id);if(!it)return GL;const gs=itemGens(it);return GL.filter(g=>g.gens.some(n=>gs.has(n)))}
+/* mastery: last six results, weights like the chapter 1 page */
+const STAT={mastered:['Mastered','#16803c','#e6f6ec'],almost:['Almost mastered','#2f7d32','#eef7e4'],way:['On the way','#8a5a00','#fff4d6'],attention:['Needs attention','#b25a00','#ffe9d1'],extra:['Extra practice','#b3261e','#fdecea'],none:['Not enough practice yet','#5b6b7a','#eef2f6']};
+function goalScore(g){const r=st.res[g.id]||[];const w=r.slice(-6);const n=w.length;return{n:r.length,pct:n?Math.round(100*w.reduce((a,b)=>a+b,0)/n):null,key:r.length<3?'none':(function(p){return p>=80?'mastered':p>=70?'almost':p>=55?'way':p>=40?'attention':'extra'})(Math.round(100*w.reduce((a,b)=>a+b,0)/n))}}
+function record(q,w){const g=goalOfQ(q);if(!g)return;const r=st.res[g.id]=st.res[g.id]||[];r.push(w);if(r.length>30)r.splice(0,r.length-30)}
+
+/* ---------- badges ---------- */
+const BADGES=[['first','First try!','Answer a question correctly on your first try.'],['row5','5 in a row','Answer 5 questions in a row correctly on the first try.'],['row10','10 in a row','Answer 10 questions in a row correctly on the first try.'],['up','Level up','Reach the next level.'],['spicy','Spicy!','Reach the Spicy level in any section.'],['mm','Master Mix','Unlock a Master Mix.'],['goal','Objective mastered','Get the status Mastered on a learning objective.'],['test','Test ready','Score at least 20 out of 24 in a test preparation.']];
+function award(id){if(st.badges[id])return '';st.badges[id]=todayISO();const b=BADGES.find(x=>x[0]===id);return ' <b>🏅 New badge: '+b[1]+'!</b>'}
+
+/* ---------- navigation ---------- */
+function renderNav(){
+  const n=$('#nav');n.innerHTML='';
+  if(hasLessons){const tg=document.createElement('div');tg.className='seg';tg.innerHTML='<button type="button" class="'+(st.mode==='lesson'?'on':'')+'" data-m="lesson">By lesson</button><button type="button" class="'+(st.mode==='para'?'on':'')+'" data-m="para">By paragraph</button>';
+    tg.querySelectorAll('button').forEach(b=>b.onclick=()=>setMode(b.dataset.m));n.appendChild(tg)}
+  const t0=todayISO(),lat=hasLessons&&st.mode==='lesson'?latestLesson():'';
+  const inMain=!test&&!view;
+  items().forEach(s=>{
+    const b=document.createElement('button');b.className='sec';b.setAttribute('aria-current',String(inMain&&!mix&&st.sec===s.id));
+    const p=Math.min(GOAL,st.prog[s.id]||0);
+    b.innerHTML='<div class="t">'+s.title+'</div><div class="s">'+s.sub+(st.mode==='lesson'&&s.date?(s.date>t0?' · coming up':s.id===lat?' · latest lesson':''):'')+'</div><div class="bar" aria-hidden="true"><i style="width:'+p*100/GOAL+'%"></i></div>';
+    b.onclick=()=>{test=null;view=null;mix=false;free=null;focus=null;st.sec=s.id;save();next(true)};n.appendChild(b);
+    if(st.done[s.id]){const m=document.createElement('button');m.className='sec mm';m.setAttribute('aria-current',String(inMain&&mix&&st.sec===s.id));m.textContent='★ Master Mix';m.onclick=()=>{test=null;view=null;mix=true;free=null;focus=null;st.sec=s.id;save();next(true)};n.appendChild(m)}
+  });
+  const t=document.createElement('button');t.className='sec';t.setAttribute('aria-current',String(!!test));
+  t.innerHTML='<div class="t">Test preparation</div><div class="s">24 mixed questions, no hints</div>';
+  t.onclick=startTest;n.appendChild(t);
+}
+let view=null;
+function lvl(){return st.lvl[st.sec]||0}
+function curLevel(){return mix?'mix':free!==null?free:lvl()}
+function fingerprint(q){return String(q.html||'').replace(/<svg[\s\S]*?<\/svg>/g,'')+'|'+JSON.stringify(q.ans)}
+function findGen(name){for(const T of [E.G||{},E.XG||{}])for(const sec of Object.keys(T)){const f=T[sec].find(x=>x.name===name);if(f)return [f,sec,T===E.XG]}return null}
+function makeFromGoal(g,level){
+  for(let t=0;t<40;t++){
+    const name=g.gens[Math.floor(Math.random()*g.gens.length)],hit=findGen(name);if(!hit)continue;
+    const [f,sec,isX]=hit;let q;try{q=f(Math.min(level,2))}catch(e){continue}
+    q.gen=name;q.sec=sec;q.lvl=level;q.mix=false;q.fp=fingerprint(q);
+    if(q.type==='choice'&&q.opts&&q.opts.length<=2&&level>0&&t<30)continue;
+    if(recent.some(r=>r.f===q.fp))continue;return q;
+  }
+  return E.make(st.sec,level,recent);
+}
+let autoT=null;
+function next(reset){
+  clearTimeout(autoT);view=null;
+  if(reset){streak=0;wrongRun=0;recent=[]}
+  if(focus){const g=goalById(focus.ids[focus.i%focus.ids.length]);focus.i++;const sec=g.sec;cur=makeFromGoal(g,st.lvl[sec]||0)}
+  else cur=E.make(st.sec,curLevel(),recent);
+  if(window.__force)for(let i=0;i<500&&String(cur.gen).replace(/^X/,'')!==window.__force;i++)cur=E.make(st.sec,curLevel(),recent);
+  recent.push({g:cur.gen,f:cur.fp});recent=recent.slice(-12);tries=0;done=false;clicked=[];choiceSel=null;protoAngle=null;hintUsed=false;attempts=[];stepLines=[];renderQ();renderNav();
+}
+
+/* ---------- steps: which questions need working ---------- */
+const NOSTEP=new Set('missingExp multDiv rootEq volPrism volPyramid volCone volHemisphere cylinderNet surfCuboid primeFact nthRootCalc findNumber centroidRatio zToMidpoint decimalToFraction subInt missingNumber divInt missingFactor toMixed toImproper likeAdd equivFrac fractionOf fracDivInt riverShare missingFraction areaVolume maxIntersect maxIntersect5 axisDist substitute readLineY valueAt squareArea findK context graphK symmetryLine findKInv inverseContext axisFromPoints yIntercept exactTrig lcmTwo hcfTwo'.split(' '));
+const ADDMULTI=new Set('divideTerms nthRootFraction rootOfFraction calcRoots nthMix minusBracket binomMul threeFactors powerSpecial simplifyBinom numFracAdd numFracMulDiv numberAndFraction intDivFraction longProduct quotientPower chainBrackets differenceOfSquares2 sumDiff threeFracs binomialDen rootsFractionSum nthRootPow substitute addUnlike quotientRoots difference gauss howManyTerms productRule evenSum sumBetween sumRationalise aspectRatio twoFactors areaFactor mulSci timesBigger commonFactorCount coneInCylinder frustum identity tanFromSinCos missingAngle thirdAngle bisectAngle bisectedFull reflex isosceles angleFromTwo isoscelesAngle slopeToAngle rectDiagAngle cubeAngle cuboidDiag pyramidAngle angleOfElevation'.split(' '));
+const EXPRSTEP=new Set('divideTerms nthRootFraction rootOfFraction calcRoots minusBracket binomMul threeFactors powerSpecial simplifyBinom numFracAdd numFracMulDiv numberAndFraction intDivFraction longProduct quotientPower chainBrackets differenceOfSquares2 sumDiff threeFracs binomialDen rootsFractionSum sumRationalise quotientRoots mulSci timesBigger commonFactorCount simplifyRoot likeRadicals simplifySum mixedRoot rationaliseSimplify threeRoots bigRoot addSci distance surfCylinder surfCone divideRoots pythRoot addSimplify simplifyByPrimes rootOfFractionSimp exactRatios mixedLike addUnlike landUse mixedUnlike pyramid mulFrac fracOrder fracDivOrder threeMixed remainingTrip fracChain tenPower'.split(' '));
+const DISC=new Set('identity tanFromSinCos sideKnownHyp angleInverse isoscelesBase twoArms howManyOn'.split(' '));
+const NODISC=new Set('primeOrNot readPoint gradientIntercept abc vertex table frontView sideView cubeNet pickSkew'.split(' '));
+const DIVSTEP=new Set('bisectAngle'.split(' '));   /* a typed a/b is a division step here, not a fraction answer */
+const eqN=q=>(String(q.steps||'').replace(/<svg[\s\S]*?<\/svg>/g,'').replace(/<[^>]+>/g,'').match(/=/g)||[]).length;
+const canType=q=>q.type==='num'||(q.type==='expr'&&!!E.check);
+function stepMode(q){
+  if(!q||q.noStep)return '';
+  const gn=String(genName(q)||'').replace(/^X/,'');
+  const st_=String(q.steps||'');
+  if(!(q.needStep||eqN(q)>=2||ADDMULTI.has(gn)))return '';
+  if(canType(q)){
+    if(test)return 'note';
+    if(q.needStep)return E.parse?'enforce':'note';
+    if(q.type==='expr'&&!EXPRSTEP.has(gn))return '';
+    if(NOSTEP.has(gn))return '';
+    if(DISC.has(gn)||/\b(sin|cos|tan)\b|sin⁻|cos⁻|tan⁻/.test(st_.replace(/<[^>]+>/g,'')))return 'note';
+    return E.parse?'enforce':'note';   /* pages on the older engine cannot parse typed working, so they only show the note */
+  }
+  return NODISC.has(gn)?'':'note';
+}
+const STEPNOTE='<p class="stepnote"><b>Steps count.</b> Showing your steps is part of a correct answer. '+'This page can only check the final answer of this question, so write your working on paper too (in a test you always must).</p>';
+function qHTML(q){
+  let h='<div class="q">'+q.html+'</div>'+(stepMode(q)==='note'?STEPNOTE:'')+'<div id="stp" class="stp"></div><div class="ans" id="ans">';
+  if(q.type==='num')h+='<label class="sr" for="in0">Your answer</label><input type="text" id="in0" inputmode="text" autocomplete="off" placeholder="your answer">';
+  else if(q.type==='expr')h+='<label class="sr" for="in0">Your answer</label><input type="text" id="in0" inputmode="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="type your answer"><div class="kp" id="kp">'+(q.keys||['√','³√','⁴√','^','/','·','(',')','π']).map(k=>'<button type="button" data-k="'+k+'">'+k+'</button>').join('')+'<button type="button" data-k="⌫" aria-label="delete">⌫</button></div><div class="pv" id="pv" aria-live="polite"></div>';
+  else if(q.type==='point')h+='<label class="sr" for="in0">Your answer</label><input type="text" id="in0" autocomplete="off" placeholder="(x, y)">';
+  else if(q.type==='multi')q.fields.forEach((f,i)=>{h+='<label for="in'+i+'">'+f+'</label><input type="text" id="in'+i+'" autocomplete="off">'});
+  else if(q.type==='choice'){h+='<div class="choices">'+q.opts.map((o,i)=>'<button type="button" class="choice" data-i="'+i+'" aria-pressed="false">'+o+'</button>').join('')+'</div>'}
+  h+='</div>';return h;
+}
+/* ---------- learning-goals panel ---------- */
+function goalsPanel(q){
+  if(!GL.length)return '';
+  const cg=goalOfQ(q),all=st.goalsAll,list=goalsForItem(st.sec);
+  const shown=all?list:(cg?[cg]:[]);
+  const li=g=>{const sc=goalScore(g),S=STAT[sc.key];return '<li'+(cg&&g.id===cg.id?' class="cur" aria-current="step"':'')+'><span class="sd" style="background:'+S[1]+'" title="'+S[0]+'"></span><span class="gt">'+esc(g.title)+'</span></li>'};
+  return '<div class="goals"><div class="gh"><b>Key learning goals</b><span class="gb"><button type="button" class="lk" id="gtoggle" aria-expanded="'+all+'">'+(all?'Show current goal only':'Show all learning goals')+'</button>'+(cg&&!test?'<button type="button" class="lk" id="gexplain">Explain this goal</button>':'')+'</span></div><ul>'+shown.map(li).join('')+'</ul><div id="gcard"></div></div>';
+}
+function modeBar(){
+  if(mix||test)return '';
+  const a=free===null&&!focus;
+  let h='<div class="pmbar"><span class="pml">Practice:</span><button type="button" class="pm'+(a?' on':'')+'" data-f="a">Adaptive</button><span class="pml">Free practice:</span>'+LV.map((l,i)=>'<button type="button" class="pm l'+i+(free===i?' on':'')+'" data-f="'+i+'">'+l+'</button>').join('')+'</div>';
+  if(free!==null)h+='<div class="pmnote"><b>Free practice: '+LV[free]+'.</b> These questions do not count towards reaching the next level. <button type="button" class="btn alt sm" id="back2a">← Back to adaptive</button></div>';
+  if(focus){const g=goalById(focus.ids[(focus.i-1+focus.ids.length)%focus.ids.length]);h+='<div class="pmnote"><b>Focused practice</b> on your weakest objectives'+(g?': '+esc(g.title):'')+'. These questions do not count towards the next level. <button type="button" class="btn alt sm" id="back2a">← Back to adaptive</button></div>'}
+  return h;
+}
+function renderQ(){
+  const m=$('#main'),q=cur;
+  const lvLabel=free!==null?'Free practice · '+LV[q.lvl]:LV[q.lvl];
+  m.innerHTML='<div class="top">'+(q.mix?'<span class="badge lm">Master Mix</span> ':'')+'<span class="badge l'+q.lvl+'">'+lvLabel+'</span><span class="streak">'+(free!==null||focus?'Free practice':'In a row: '+[0,1,2].map(i=>'<span class="dot'+(i<streak?' on':'')+'"></span>').join('')+' &nbsp; Done: '+Math.min(GOAL,st.prog[st.sec]||0)+'/'+GOAL)+'</span></div>'+modeBar()+goalsPanel(q)+
+   qHTML(q)+'<div class="btns"><button class="btn" id="chk">Check</button><button class="btn alt" id="hnt">Hint</button><button class="btn alt" id="sol" style="display:none">Show solution</button><button class="btn alt" id="nxt" style="display:none">Next question</button></div><label class="autoc"><input type="checkbox" id="autoc"'+(st.auto===false?'':' checked')+'> Go to the next question automatically after a correct answer</label><div class="fb" id="fb"></div><div id="hist"></div>'+logPanel();
+  wire();wireChrome();
+  const f=$('#in0');if(f)f.focus();
+}
+function logPanel(){
+  if(!st.log.length)return '';
+  return '<details class="hl"><summary>My recent answers ('+Math.min(st.log.length,15)+')</summary><ul>'+st.log.slice(-15).reverse().map(l=>'<li><span class="'+(l.ok?'ok':'no')+'">'+(l.ok?'✓':'✗')+'</span> <span class="lq">'+esc(l.t)+'</span> → <b>'+esc(l.a)+'</b></li>').join('')+'</ul></details>';
+}
+function wireChrome(){
+  document.querySelectorAll('.pmbar .pm').forEach(b=>b.onclick=()=>{const f=b.dataset.f;free=f==='a'?null:+f;focus=null;mix=false;next(true)});
+  const b2=$('#back2a');if(b2)b2.onclick=()=>{free=null;focus=null;next(true)};
+  const gt=$('#gtoggle');if(gt)gt.onclick=()=>{st.goalsAll=!st.goalsAll;save();const g=document.querySelector('.goals');const tmp=document.createElement('div');tmp.innerHTML=goalsPanel(cur);g.replaceWith(tmp.firstChild);wireChrome()};
+  const ge=$('#gexplain');if(ge)ge.onclick=()=>{const c=$('#gcard');if(c.innerHTML){c.innerHTML='';ge.textContent='Explain this goal';return}ge.textContent='Hide explanation';c.innerHTML=helpCard(goalOfQ(cur))};
+}
+const ENTER={num:'Type a number. A comma or a point both work for decimals.',expr:'Type your answer in the box. Use the buttons under the box for √, higher roots (³√ is the cube root; you can also type 3V27), powers (^) and fractions (/). Use brackets in the bottom of a fraction: 5/(2x). The line “Your answer reads” shows what I understood.',choice:'Click the answer you think is right, then press Check.',point:'Type the coordinates like (2, 3).',multi:'Fill in every box.',click:'Click on the picture, then press Check.',proto:'Click on the protractor scale, then press Check.'};
+const WARN={root:'Simplify completely: no square factor may stay under the root.',mono:'Write the answer as simply as possible: one number, then each letter with one exponent.',poly:'Collect like terms and write everything out without brackets.',lowest:'Cancel the fraction as far as possible.',primes:'Write only prime numbers, in increasing order, with exponents.',sci:'In scientific notation the first number is at least 1 and less than 10.'};
+function helpCard(g){
+  if(!g)return '';
+  let q=null;for(const n of g.gens){const hit=findGen(n);if(!hit)continue;try{q=hit[0](0);q.gen=n;break}catch(e){}}
+  if(!q)return '<div class="hc"><p>No explanation available yet.</p></div>';
+  const how=q.hint?String(q.hint):'Read the question carefully and work step by step.';
+  const form=q.form&&WARN[q.form]?WARN[q.form]:'';
+  const warn=g.warn||form;
+  return '<div class="hc"><h4>'+esc(g.title)+'</h4><div class="hr"><b>What to do</b><p>'+how+'</p></div><div class="hr"><b>Example</b><div class="ex">'+q.html+'<p class="exa"><b>Answer: '+E.answerText(q)+'</b></p></div></div><div class="hr"><b>Steps</b><div>'+(q.steps||'')+'</div></div><div class="hr"><b>What to enter</b><p>'+(ENTER[q.type]||'Enter your answer.')+'</p></div>'+(warn?'<div class="hr warn"><b>Watch out</b><p>'+warn+'</p></div>':'')+'</div>';
+}
+/* ---------- question wiring ---------- */
+function wire(){
+  wireProto();$('#chk').onclick=check;$('#hnt').onclick=hint;$('#sol').onclick=showSolution;$('#nxt').onclick=()=>{if(Date.now()-finT<400)return;test?testNext():next(false)};{const ac=$('#autoc');if(ac)ac.onchange=()=>{st.auto=ac.checked;if(!ac.checked)clearTimeout(autoT);save()}}
+  document.querySelectorAll('.choice').forEach(b=>b.onclick=()=>{if(done)return;choiceSel=+b.dataset.i;document.querySelectorAll('.choice').forEach(x=>x.setAttribute('aria-pressed',String(x===b)))});
+  document.querySelectorAll('#ans input').forEach(i=>i.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();check()}}));
+  wireExpr();wireGrid();
+}
+function wireGrid(){
+  const sv=document.querySelector('svg.grid[data-click]');
+  if(sv)sv.addEventListener('click',ev=>{
+    if(done)return;const r=sv.getBoundingClientRect(),W=+sv.dataset.w,u=+sv.dataset.u,pad=+sv.dataset.pad;
+    const px=(ev.clientX-r.left)*W/r.width,py=(ev.clientY-r.top)*W/r.width;
+    const x=Math.round((px-pad)/u)+ +sv.dataset.xmin,y=+sv.dataset.ymax-Math.round((py-pad)/u);
+    const k=clicked.findIndex(p=>p[0]===x&&p[1]===y);if(k>=0)clicked.splice(k,1);else clicked.push([x,y]);drawMarks(sv);
+  });
+}
+function wireExpr(){
+  const kp=document.getElementById('kp');if(!kp)return;const inp=$('#in0'),pv=$('#pv');
+  const upd=()=>{const v=inp.value.trim();if(!v){pv.innerHTML='';return}let h=null;try{h=E.M(v,cur.noVars?{noVars:true}:{})}catch(e){}pv.innerHTML=h&&E.parse&&(()=>{try{E.parse(v,cur.noVars?{noVars:true}:{});return true}catch(e){return false}})()?'<span class="pl">Your answer reads:</span> '+h:'<span class="pl">I cannot read that yet. Check your brackets and symbols.</span>'};
+  inp.addEventListener('input',upd);
+  kp.querySelectorAll('button').forEach(b=>b.onclick=()=>{if(done)return;const k=b.dataset.k,s=inp.selectionStart,e=inp.selectionEnd,v=inp.value;
+    if(k==='⌫'){if(s!==e){inp.value=v.slice(0,s)+v.slice(e);inp.setSelectionRange(s,s)}else if(s>0){inp.value=v.slice(0,s-1)+v.slice(s);inp.setSelectionRange(s-1,s-1)}}
+    else{inp.value=v.slice(0,s)+k+v.slice(e);const n=s+k.length;inp.setSelectionRange(n,n)}
+    inp.focus();upd()});
+}
+function drawMarks(sv){
+  const u=+sv.dataset.u,pad=+sv.dataset.pad,xmin=+sv.dataset.xmin,ymax=+sv.dataset.ymax;
+  sv.querySelector('.marks').innerHTML=clicked.map(p=>{const cx=pad+(p[0]-xmin)*u,cy=pad+(ymax-p[1])*u;return sv.dataset.cell?'<rect x="'+(cx-u/2+1)+'" y="'+(cy-u/2+1)+'" width="'+(u-2)+'" height="'+(u-2)+'" fill="#f4a58a" stroke="#d1471f" stroke-width="2"/>':'<circle cx="'+cx+'" cy="'+cy+'" r="6" fill="#d1471f" stroke="#fff" stroke-width="1.5"/>'}).join('');
+}
+function userAns(q){
+  if(q.type==='proto')return protoAngle;
+  if(q.type==='num'||q.type==='point'||q.type==='expr')return $('#in0').value;
+  if(q.type==='multi')return q.fields.map((_,i)=>$('#in'+i).value);
+  if(q.type==='choice')return choiceSel;
+  return clicked;
+}
+function ansText(q,u){
+  if(q.type==='choice')return u===null?'':plain(q.opts[u]);
+  if(q.type==='multi')return u.join(' and ');
+  if(q.type==='click')return u.map(p=>'('+p[0]+', '+p[1]+')').join(' ');
+  if(q.type==='proto')return u+'°';
+  return String(u);
+}
+function fb(cls,t){const b=$('#fb');b.className='fb show '+cls;b.innerHTML=t}
+function hint(){if(cur.hint){hintUsed=true;fb('hint','<b class="h">Hint</b>'+cur.hint)}}
+function empty(q,u){if(q.type==='proto')return u===null;if(q.type==='num'||q.type==='point'||q.type==='expr')return !String(u).trim();if(q.type==='multi')return u.some(v=>!String(v).trim());if(q.type==='choice')return u===null;return u.length===0}
+function logAnswer(q,u,ok){
+  const a=ansText(q,u);attempts.push({a,ok});
+  st.log.push({t:plain(q.html).slice(0,90),a:a.slice(0,60),ok,d:todayISO()});if(st.log.length>40)st.log.splice(0,st.log.length-40);
+  const h=$('#hist');if(h)h.innerHTML='<div class="at">Your answers on this question: '+attempts.map(x=>'<span class="'+(x.ok?'ok':'no')+'">'+(x.ok?'✓':'✗')+' '+esc(x.a)+'</span>').join(' ')+'</div>';
+}
+const chk=(q,u)=>E.check?E.check(q,u):{ok:E.grade(q,u)};
+function fmtStep(t){let h=null;if(/\//.test(t)||(cur&&cur.type==='expr'&&/[\^√]/.test(t))){try{h=E.M(t,{noVars:cur&&cur.type!=='expr'})}catch(e){}}else h=esc(t).replace(/\*|·/g,'×').replace(/-/g,'−');return h||esc(t)}
+function drawSteps(fin){const d=$('#stp');if(!d)return;d.innerHTML=stepLines.map(t=>'<div class="stl"><span class="ci open" aria-label="correct step">○</span><span class="sv">'+fmtStep(t)+' <span class="eq">=</span></span></div>').join('')+(fin?'<div class="stl fin"><span class="ci full" aria-label="correct final answer">✓</span><span class="sv">'+fmtStep(fin)+'<div class="fnote">Completely correct! This is the correct final answer.</div></span></div>':'')}
+function stepEq(q,pt){
+  if(q.type==='num'){if(q.tol&&E.evalNum){try{return Math.abs(E.evalNum(pt)-q.ans)<=q.tol}catch(e){return false}}try{E.parse(pt,{noVars:true})}catch(e){return false}return E.check({type:'expr',ans:String(q.ans),form:'any',noVars:true},pt).ok}
+  return E.check({type:'expr',ans:q.ans,form:'any'},pt).ok}
+function check(){
+  if(done)return;const q=cur;let u=userAns(q);
+  if(empty(q,u)){fb('hint','Fill in your answer first.');return}
+  if((q.type==='num'||(q.type==='expr'&&E.check&&!/=/.test(String(q.ans))))&&typeof u==='string'&&u.indexOf('=')>0&&E.parse){
+    const raw=u.split('=').map(x=>x.trim()).filter(Boolean);
+    /* numeric answers: ignore a bare label such as "∠R", "<R", "R" or "angle R", and a trailing ° (so 360-76-86-111=∠R=87° counts) */
+    const parts=q.type==='num'?raw.filter(x=>!/^(?:∠|<|angle\s*)?[A-Za-z]{1,4}°?$/i.test(x)).map(x=>x.replace(/°$/,'').trim()):raw;
+    if(raw.length>=2&&parts.length>=1){const fin=parts[parts.length-1],pre=parts.slice(0,-1);
+      let okPre=false;try{okPre=pre.every(pt=>stepEq(q,pt))}catch(e){}
+      if(okPre&&chk(q,fin).ok){if(!test)stepLines.push(...pre);u=fin;const i0=$('#in0');if(i0)i0.value=fin}}}
+  if(test){return testCheck(q,u)}
+  const sm=stepMode(q);
+  const slashCalc=q.type==='num'&&DIVSTEP.has(String(genName(q)||'').replace(/^X/,''))&&/^\s*\d+(?:[.,]\d+)?\s*\/\s*\d+(?:[.,]\d+)?\s*$/.test(String(u));
+  if(sm==='enforce'&&q.type==='num'&&!stepLines.length&&!isNaN(E.parseNum(u))&&!slashCalc){fb('hint','<b class="h">Show your working first.</b>Showing your steps is part of a correct answer. Type the first calculation you do (for example <i>(4+5)*9</i> or <i>9*9</i>), then work towards the final answer.');return}
+  let calcWrong=false;
+  if(q.type==='num'&&(isNaN(E.parseNum(u))||slashCalc)&&E.parse){let calc=false;try{E.parse(String(u),{noVars:true});calc=true}catch(e){}
+    if(calc){let rr;if(q.tol&&E.evalNum){let vv=NaN;try{vv=E.evalNum(u)}catch(e){}rr={ok:Math.abs(vv-q.ans)<=q.tol}}else rr=E.check({type:'expr',ans:String(q.ans),form:'any',noVars:true},u);
+      if(rr.ok){fb('hint','<b class="h">✓ That calculation is right.</b>Now work it out and type the <b>final number</b> as your answer.');stepLines.push(String(u).trim());drawSteps();const i0=$('#in0');i0.value='';i0.focus();const pv=$('#pv');if(pv)pv.innerHTML='';return}calcWrong=true}}
+  if(q.type==='expr'&&E.check){const r0=E.check(q,u);
+    if(r0.ok){if(sm==='enforce'&&!stepLines.length){fb('hint','<b class="h">Show your working first.</b>Showing your steps is part of a correct answer. Type an in-between step first (for example before you simplify or add things up), then type your final answer.');return}}
+    else if(r0.why==='form'&&stepLines.length<4){stepLines.push(String(u).trim());drawSteps();fb('hint','<b class="h">✓ Good step.</b>That has the right value, but it is not finished yet. Now work it out and type the final answer'+(r0.msg?' ('+esc(r0.msg)+')':'')+'.');const i0=$('#in0');i0.value='';i0.focus();const pv=$('#pv');if(pv)pv.innerHTML='';return}}
+  const R_=chk(q,u),ok=R_.ok;tries++;
+  logAnswer(q,u,ok);
+  const S=st.stat[st.sec]=st.stat[st.sec]||{n:0,ok:0};
+  const counts=free===null&&!focus;
+  if(ok){
+    done=true;if(counts)st.prog[st.sec]=(st.prog[st.sec]||0)+1;S.n++;if(tries===1)S.ok++;
+    const w=hintUsed?0.5:tries===1?1:0.75;record(q,w);
+    let up='';
+    if(tries===1&&!hintUsed){row++;streak+=counts?1:0;wrongRun=0;if(row>st.bestRow)st.bestRow=row;up+=award('first');if(row>=5)up+=award('row5');if(row>=10)up+=award('row10')}else if(tries>1){row=0;if(counts)streak=0}
+    if(counts&&!mix&&streak>=3){streak=0;
+      if(lvl()<3){st.lvl[st.sec]=lvl()+1;st.best[st.sec]=Math.max(st.best[st.sec]||0,lvl());up+=' <b>Level up: '+LV[lvl()]+'!</b>'+(lvl()===3?' These are challenge questions.':'')+award('up');if(lvl()>=2)up+=award('spicy')}
+      else if(!st.done[st.sec]){st.done[st.sec]=true;up+=' <b>Extra spicy completed! ★ Master Mix is now unlocked for this section (see the menu).</b>'+award('mm')}}
+    const g=goalOfQ(q);if(g&&goalScore(g).key==='mastered')up+=award('goal');
+    if(stepLines.length&&(q.type==='num'||q.type==='expr'))drawSteps(String(u).trim());save();fb('ok','<b class="h">Correct!'+(tries>1?' (second try)':'')+'</b>'+q.steps+up);finish();
+    if(st.auto!==false){clearTimeout(autoT);autoT=setTimeout(()=>{if(done&&cur===q&&!test&&!view)next(false)},1000)}
+  }else if(tries===1){
+    row=0;if(counts)streak=0;
+    $('#sol').style.display='';
+    fb('no','<b class="h">Not yet. Try again.</b>'+(R_.why==='form'?(R_.msg||'That has the right value, but it is not in the form asked for.')+' ':calcWrong?'That calculation does not give the right answer. ':R_.why==='parse'?'I could not read that answer. ':'')+(q.hint?q.hint:''));
+  }else{
+    done=true;row=0;wrongRun+=counts?1:0;S.n++;record(q,0);let dn='';
+    if(counts&&!mix&&wrongRun>=2&&lvl()>0){st.lvl[st.sec]=lvl()-1;wrongRun=0;dn=' <i>Next questions will be a bit easier.</i>'}
+    save();fb('no','<b class="h">The answer is: '+E.answerText(q)+'</b>'+q.steps+dn);finish();
+  }
+}
+function showSolution(){
+  if(done||test)return;const q=cur;done=true;row=0;if(free===null&&!focus)streak=0;
+  const S=st.stat[st.sec]=st.stat[st.sec]||{n:0,ok:0};S.n++;record(q,0);
+  attempts.push({a:'(solution shown)',ok:false});
+  save();fb('no','<b class="h">Solution — the answer is: '+E.answerText(q)+'</b>'+q.steps+'<p><i>This question does not count as correct. Try the next one.</i></p>');finish();
+}
+function wireProto(){
+  const sv=document.querySelector('svg.proto[data-proto]');if(!sv)return;
+  sv.addEventListener('click',ev=>{if(done)return;
+    const r=sv.getBoundingClientRect(),W=+sv.dataset.w,H=+sv.dataset.h,cx=+sv.dataset.cx,cy=+sv.dataset.cy,R=+sv.dataset.r;
+    const px=(ev.clientX-r.left)*W/r.width,py=(ev.clientY-r.top)*H/r.height;
+    let a=Math.atan2(cy-py,px-cx)*180/Math.PI;if(py>cy)a=px>=cx?0:180;a=Math.max(0,Math.min(180,Math.round(a)));protoAngle=a;
+    const t=a*Math.PI/180,x2=cx+(R+22)*Math.cos(t),y2=cy-(R+22)*Math.sin(t),xd=cx+R*Math.cos(t),yd=cy-R*Math.sin(t);
+    sv.querySelector('.pm').innerHTML='<line x1="'+cx+'" y1="'+cy+'" x2="'+x2+'" y2="'+y2+'" stroke="#223" stroke-width="3" stroke-linecap="round"/><circle cx="'+xd+'" cy="'+yd+'" r="6" fill="#d1471f" stroke="#fff" stroke-width="1.5"/>';
+  });
+}
+function revealQ(q){
+  if(q.type==='proto'){const sv=document.querySelector('svg.proto');if(!sv||sv.querySelector('.rev'))return;const cx=+190,cy=188,R=160,t=q.target*Math.PI/180;
+    sv.insertAdjacentHTML('beforeend','<g class="rev"><line x1="'+cx+'" y1="'+cy+'" x2="'+(cx+(R+22)*Math.cos(t))+'" y2="'+(cy-(R+22)*Math.sin(t))+'" stroke="#16803c" stroke-width="3" stroke-dasharray="7 4"/><circle cx="'+(cx+R*Math.cos(t))+'" cy="'+(cy-R*Math.sin(t))+'" r="5.5" fill="#16803c" stroke="#fff" stroke-width="1.5"/></g>');return}
+  if(q.type!=='click')return;const sv=document.querySelector('svg.grid[data-click]');if(!sv||sv.querySelector('.rev'))return;
+  const u=+sv.dataset.u,pad=+sv.dataset.pad,xmin=+sv.dataset.xmin,ymax=+sv.dataset.ymax,X=x=>pad+(x-xmin)*u,Y=y=>pad+(ymax-y)*u;
+  const R=q.reveal||{segs:[],pts:q.targets};let h='';
+  (R.segs||[]).forEach(g=>{h+='<line x1="'+X(g.a[0])+'" y1="'+Y(g.a[1])+'" x2="'+X(g.b[0])+'" y2="'+Y(g.b[1])+'" stroke="#16803c" stroke-width="2.2" stroke-dasharray="6 4" opacity=".75"/>'});
+  (R.pts||[]).forEach(p=>{h+=sv.dataset.cell?'<rect x="'+(X(p[0])-u/2+1)+'" y="'+(Y(p[1])-u/2+1)+'" width="'+(u-2)+'" height="'+(u-2)+'" fill="#9be0b3" stroke="#16803c" stroke-width="2" opacity=".85"/>':'<circle cx="'+X(p[0])+'" cy="'+Y(p[1])+'" r="5" fill="#16803c" stroke="#fff" stroke-width="1.5"/>'});
+  sv.querySelector('.marks').insertAdjacentHTML('beforebegin','<g class="rev">'+h+'</g>');
+}
+let finT=0;function finish(){finT=Date.now();revealQ(cur);$('#chk').disabled=true;$('#hnt').disabled=true;$('#sol').style.display='none';$('#nxt').style.display='';$('#nxt').focus();document.querySelectorAll('.choice').forEach(b=>b.disabled=true);document.querySelectorAll('#ans input').forEach(i=>i.disabled=true);document.querySelectorAll('#kp button').forEach(i=>i.disabled=true);renderNavSoft();const lp=document.querySelector('details.hl');if(lp){const o=lp.open;lp.outerHTML=logPanel();const n=document.querySelector('details.hl');if(n)n.open=o}}
+function renderNavSoft(){if(items().some(s=>st.done[s.id]&&!document.querySelector('#nav .mm')))renderNav();const bars=document.querySelectorAll('#nav .bar i');items().forEach((s,i)=>{if(bars[i])bars[i].style.width=Math.min(GOAL,st.prog[s.id]||0)*100/GOAL+'%'});const sd=document.querySelectorAll('.goals .sd');}
+
+/* ---------- test preparation ---------- */
+function startTest(){view=null;free=null;focus=null;test={qs:E.makeTest(),i:0,score:0,log:[]};renderNav();testShow()}
+function testShow(){
+  const q=cur=test.qs[test.i];done=false;clicked=[];choiceSel=null;protoAngle=null;hintUsed=false;
+  $('#main').innerHTML='<div class="top"><span class="badge l1">Test preparation</span><span class="streak">Question '+(test.i+1)+' of '+test.qs.length+'</span></div>'+qHTML(q)+
+   '<div class="btns"><button class="btn" id="chk">Check</button><button class="btn alt" id="nxt" style="display:none">'+(test.i===test.qs.length-1?'See my result':'Next question')+'</button></div><div class="fb" id="fb"></div>';
+  wireProto();$('#chk').onclick=check;$('#nxt').onclick=testNext;
+  const tmp=document.createElement('button');tmp.id='hnt';tmp.style.display='none';$('.btns').appendChild(tmp);
+  document.querySelectorAll('.choice').forEach(b=>b.onclick=()=>{if(done)return;choiceSel=+b.dataset.i;document.querySelectorAll('.choice').forEach(x=>x.setAttribute('aria-pressed',String(x===b)))});
+  document.querySelectorAll('#ans input').forEach(i=>i.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();check()}}));
+  wireExpr();wireGrid();
+  const f=$('#in0');if(f)f.focus();
+}
+function testCheck(q,u){
+  done=true;const ok=E.grade(q,u);if(ok)test.score++;revealQ(q);record(q,ok?1:0);
+  test.log.push({q,ok,u});
+  fb(ok?'ok':'no',ok?'<b class="h">Correct</b>':'<b class="h">Not correct. The answer is: '+E.answerText(q)+'</b>'+q.steps);
+  $('#chk').disabled=true;document.querySelectorAll('.choice').forEach(b=>b.disabled=true);document.querySelectorAll('#ans input').forEach(i=>i.disabled=true);document.querySelectorAll('#kp button').forEach(i=>i.disabled=true);
+  $('#nxt').style.display='';$('#nxt').focus();
+}
+function testNext(){
+  test.i++;if(test.i<test.qs.length)return testShow();
+  const n=test.qs.length,g=Math.round((test.score/n*9+1)*10)/10;
+  const wrong=test.log.filter(x=>!x.ok);st.tests.push({d:new Date().toISOString().slice(0,10),s:test.score,n:n});st.tests=st.tests.slice(-20);
+  const bd=test.score>=20?award('test'):'';save();
+  $('#main').innerHTML='<div class="res"><h2>Your result</h2><div class="grade">'+test.score+' / '+n+'</div><p>That is a '+String(g).replace('.',',')+' on a scale of 1 to 10 (a rough guide only).'+bd+'</p>'+
+   (wrong.length?'<h3>Look at these again</h3>'+wrong.map(x=>{const gg=goalOfQ(x.q);return '<div class="rev"><div>'+x.q.html+'</div><div><b>Answer: '+E.answerText(x.q)+'</b></div><div class="st">'+x.q.steps+'</div>'+(gg?'<div class="st"><i>Learning goal: '+esc(gg.title)+'</i></div>':'')+'</div>'}).join(''):'<p><b>Everything correct. Great work!</b></p>')+
+   '<div class="btns"><button class="btn" id="again">Try a new test</button></div></div>';
+  $('#again').onclick=startTest;
+}
+
+/* ---------- progress overview ---------- */
+function overall(){let n=0,s=0;GL.forEach(g=>{const w=(st.res[g.id]||[]).slice(-6);w.forEach(x=>{n++;s+=x})});return{n,pct:n?Math.round(100*s/n):null}}
+function statusChip(key){const S=STAT[key];return '<span class="stc" style="background:'+S[2]+';color:'+S[1]+';border-color:'+S[1]+'">'+S[0]+'</span>'}
+function showProgress(){
+  test=null;view='progress';renderNav();
+  const rows=items().map(s=>{
+    const cur_=st.lvl[s.id]||0,best=Math.max(st.best[s.id]||0,cur_),d=!!st.done[s.id],S=st.stat[s.id]||{n:0,ok:0};
+    const chips=LV.map((l,i)=>'<span class="chip '+(d||i<best?'ach':i===cur_&&(S.n>0||cur_>0)?'act':'')+'">'+l+'</span>').join('');
+    const gs=goalsForItem(s.id),sc=gs.map(goalScore).filter(x=>x.pct!==null);
+    return '<tr><td><b>'+s.title+'</b></td><td>'+chips+'</td><td>'+(S.n||0)+'</td><td>'+(d?'★ unlocked':'not yet')+'</td></tr>';
+  }).join('');
+  const O=overall(),mastered=GL.filter(g=>goalScore(g).key==='mastered').length;
+  const bySec={};GL.forEach(g=>{(bySec[g.sec]=bySec[g.sec]||[]).push(g)});
+  const goalRows=Object.keys(bySec).map(sec=>{const s=E.SECTIONS.find(x=>x.id===sec);return '<tr class="gsec"><td colspan="3"><b>'+(s?s.title:sec)+'</b></td></tr>'+bySec[sec].map(g=>{const sc=goalScore(g);return '<tr><td>'+esc(g.title)+'</td><td>'+statusChip(sc.key)+'</td><td class="num">'+(sc.pct===null?'–':sc.pct+'%')+' <span class="mut">('+sc.n+')</span></td></tr>'}).join('')}).join('');
+  const weak=weakGoals();
+  const T=st.tests.length?'<h3>Test preparation results</h3><table><tr><th>Date</th><th>Score</th></tr>'+st.tests.slice().reverse().map(t=>'<tr><td>'+t.d+'</td><td>'+t.s+' / '+t.n+'</td></tr>').join('')+'</table>':'<p>You have not done a test preparation yet.</p>';
+  const bad=BADGES.map(b=>'<span class="bdg'+(st.badges[b[0]]?' got':'')+'" title="'+esc(b[2])+'">'+(st.badges[b[0]]?'🏅 ':'🔒 ')+b[1]+'</span>').join('');
+  $('#main').innerHTML='<div class="pg"><h2>My progress'+(hasLessons?' ('+(st.mode==='lesson'?'by lesson':'by paragraph')+')':'')+'</h2>'+
+    '<div class="cards"><div class="card2"><b>'+O.n+'</b><span>answers counted (last 6 per objective)</span></div><div class="card2"><b>'+(O.pct===null?'–':O.pct+'%')+'</b><span>recent score</span></div><div class="card2"><b>'+mastered+' / '+GL.length+'</b><span>objectives mastered</span></div></div>'+
+    '<p class="mut">Recent score: for every learning objective only your <b>last six answers</b> count. Correct on the first try = 100%, first try with a hint = 50%, correct on the second try = 75%, not correct or solution shown = 0%.</p>'+
+    '<h3>Levels</h3><p>Green = level reached. Blue = the level you are working on. Reach Extra spicy and answer 3 in a row correctly to unlock the Master Mix.</p><table><tr><th>'+(st.mode==='lesson'&&hasLessons?'Lesson':'Section')+'</th><th>Levels</th><th>Questions</th><th>Master Mix</th></tr>'+rows+'</table>'+
+    '<h3>Results by learning objective</h3><p class="stkey">'+['mastered','almost','way','attention','extra','none'].map(statusChip).join(' ')+'</p><p class="mut">The status uses your last six answers on that objective (you need at least three answers).</p><table class="gt"><tr><th>Learning objective</th><th>Status</th><th>Score</th></tr>'+goalRows+'</table>'+
+    '<h3>Continue practising</h3>'+(weak.length?'<p>Your weakest objectives right now: '+weak.slice(0,3).map(g=>'<b>'+esc(g.title)+'</b>').join('; ')+'.</p>':'<p>Answer some more questions first, then I can point out what to practise.</p>')+
+    '<div class="btns"><button class="btn" id="fprac">Practise my weakest objectives online</button><button class="btn alt" id="wsheet">Printable practice worksheet</button></div>'+
+    '<h3>Badges</h3><p>'+bad+'</p>'+T+
+    '<h3>My data</h3><p class="mut">Your progress is stored on this device only (in this browser). Make a backup if you want to continue on another device.</p><div class="btns"><button class="btn alt" id="rep">Progress report (PDF)</button><button class="btn alt" id="bk">Download backup</button><label class="btn alt filebtn" for="rs">Restore backup<input type="file" id="rs" accept=".json,application/json" hidden></label><button class="btn alt danger" id="rst">Start again</button></div><div id="datamsg" class="mut"></div>'+
+    '<div class="btns"><button class="btn" id="back">Back to practice</button></div></div>';
+  $('#back').onclick=()=>next(true);$('#fprac').onclick=startFocus;$('#wsheet').onclick=showWorksheet;$('#rep').onclick=showReport;$('#bk').onclick=backup;$('#rst').onclick=startAgain;$('#rs').onchange=restore;
+}
+function weakGoals(){return GL.filter(g=>{const s=goalScore(g);return s.pct!==null&&s.n>=3&&s.key!=='mastered'}).sort((a,b)=>goalScore(a).pct-goalScore(b).pct)}
+function weakOrAny(k){let w=weakGoals();if(w.length<k){const att=GL.filter(g=>!w.includes(g)).sort((a,b)=>{const A=goalScore(a),B=goalScore(b);return (A.pct===null?101:A.pct)-(B.pct===null?101:B.pct)});w=w.concat(att)}return w.slice(0,k)}
+function startFocus(){const w=weakOrAny(4);if(!w.length)return;free=null;mix=false;focus={ids:w.map(g=>g.id),i:0};next(true)}
+function showWorksheet(){
+  view='ws';renderNav();const gs=weakOrAny(4);const qs=[];
+  gs.forEach(g=>{let k=0,guard=0;while(k<3&&guard++<30){const q=makeFromGoal(g,st.lvl[g.sec]||0);if(['num','expr','choice','point'].includes(q.type)&&!qs.some(x=>x.fp===q.fp)){qs.push(q);k++}}});
+  const t0=todayISO();
+  const qh=qs.map((q,i)=>'<div class="wq"><div class="wn">'+(i+1)+'</div><div class="wb">'+q.html+(q.type==='choice'?'<ol type="a" class="wo">'+q.opts.map(o=>'<li>'+o+'</li>').join('')+'</ol>':'<div class="wl">Answer: ________________________</div>')+'</div></div>').join('');
+  const ah=qs.map((q,i)=>'<div class="wa"><b>'+(i+1)+'.</b> '+(q.type==='choice'?String.fromCharCode(97+q.ans)+') ':'')+'<b>'+E.answerText(q)+'</b><div class="st">'+q.steps+'</div></div>').join('');
+  $('#main').innerHTML='<div class="pg ws"><div class="btns noprint"><button class="btn" id="wp">Print / save as PDF</button><button class="btn alt" id="wb">Back to my progress</button></div><h2>Practice worksheet · '+esc(document.querySelector('header h1').textContent)+'</h2><p class="mut">Name: ______________________ &nbsp; Date: '+t0+'</p><p class="mut">Objectives: '+gs.map(g=>esc(g.title)).join(' · ')+'</p>'+qh+'<div class="pbreak"></div><h2>Answers</h2>'+ah+'</div>';
+  $('#wp').onclick=()=>{document.body.classList.add('printing');window.print();setTimeout(()=>document.body.classList.remove('printing'),500)};$('#wb').onclick=showProgress;
+}
+function showReport(){
+  view='report';renderNav();const O=overall();
+  const bySec={};GL.forEach(g=>{(bySec[g.sec]=bySec[g.sec]||[]).push(g)});
+  const gr=Object.keys(bySec).map(sec=>{const s=E.SECTIONS.find(x=>x.id===sec);return '<tr class="gsec"><td colspan="3"><b>'+(s?s.title:sec)+'</b></td></tr>'+bySec[sec].map(g=>{const sc=goalScore(g);return '<tr><td>'+esc(g.title)+'</td><td>'+STAT[sc.key][0]+'</td><td>'+(sc.pct===null?'–':sc.pct+'%')+' ('+sc.n+')</td></tr>'}).join('')}).join('');
+  $('#main').innerHTML='<div class="pg ws"><div class="btns noprint"><button class="btn" id="wp">Print / save as PDF</button><button class="btn alt" id="wb">Back to my progress</button></div><h2>Progress report · '+esc(document.querySelector('header h1').textContent)+'</h2><p>Name: <input type="text" id="rn" class="rname" placeholder="your name"> &nbsp; Date: '+todayISO()+'</p><p><b>Recent score:</b> '+(O.pct===null?'–':O.pct+'%')+' over '+O.n+' counted answers. <b>Objectives mastered:</b> '+GL.filter(g=>goalScore(g).key==='mastered').length+' of '+GL.length+'.</p><table class="gt"><tr><th>Learning objective</th><th>Status</th><th>Score (answers)</th></tr>'+gr+'</table>'+(st.tests.length?'<h3>Test preparation</h3><p>'+st.tests.slice(-5).map(t=>t.d+': '+t.s+'/'+t.n).join(' · ')+'</p>':'')+'<p class="mut">Score = average of the last six answers per objective (first try 100%, with hint 50%, second try 75%, wrong 0%).</p></div>';
+  $('#wp').onclick=()=>{const n=$('#rn');if(n){n.setAttribute('value',n.value)}document.body.classList.add('printing');window.print();setTimeout(()=>document.body.classList.remove('printing'),500)};$('#wb').onclick=showProgress;
+}
+function backup(){
+  const data={page:KEY,saved:new Date().toISOString(),state:JSON.parse(localStorage.getItem(KEY)||'{}')};
+  const blob=new Blob([JSON.stringify(data)],{type:'application/json'}),a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);a.download=KEY+'-backup-'+todayISO()+'.json';document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},500);
+  const m=$('#datamsg');if(m)m.textContent='Backup downloaded.';
+}
+function restore(ev){
+  const f=ev.target.files&&ev.target.files[0];if(!f)return;const r=new FileReader();
+  r.onload=()=>{try{const d=JSON.parse(r.result);if(!d||d.page!==KEY||!d.state||!d.state.prog)throw new Error('wrong file');
+    if(!confirm('Replace the progress on this device with the backup?'))return;localStorage.setItem(KEY,JSON.stringify(d.state));location.reload()}catch(e){const m=$('#datamsg');if(m)m.textContent='That file is not a backup of this page.'}};
+  r.readAsText(f);
+}
+function startAgain(){
+  if(!confirm('Delete all your progress on this page and start again?'))return;
+  st={mode:st.mode,secs:{},done:{},stat:{},best:{},tests:[],sec:st.sec,prog:{},lvl:{},res:{},log:[],badges:{},bestRow:0,goalsAll:st.goalsAll,auto:st.auto};mix=false;free=null;focus=null;save();test=null;renderNav();next(true);
+}
+document.getElementById('pbtn').onclick=showProgress;
+window.__dbg=()=>cur;window.__next=()=>next(false);renderNav();next(true);
+})();
+
+</script>
+</body>
+</html>

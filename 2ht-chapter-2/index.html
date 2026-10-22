@@ -88,7 +88,7 @@ svg.fig{max-width:430px;width:100%;height:auto;display:block;margin:6px 0 10px}
 </style>
 </head>
 <body>
-<header><div class="topnav" role="navigation" aria-label="Site navigation"><a class="nb" href="../">Home</a><a class="nb" href="../2ht-chapter-1/">Chapter 1</a><a class="nb cur" href="../2ht-chapter-2/" aria-current="page">Chapter 2</a><a class="nb" href="../2ht-chapter-3/">Chapter 3</a></div><div class="hd"><h1>2HT · Chapter 2 · Solid geometry</h1><p>Practise as long as you like. The questions adapt to you: Mild, Medium, Spicy and Extra spicy.</p></div><button class="pbtn" id="pbtn" type="button">My progress</button></header>
+<header><div class="topnav" role="navigation" aria-label="Site navigation"><a class="nb" href="../">Home</a><a class="nb" href="../2ht-chapter-1/">Chapter 1</a><a class="nb cur" href="../2ht-chapter-2/" aria-current="page">Chapter 2</a><a class="nb" href="../2ht-chapter-3/">Chapter 3</a><a class="nb" href="../2ht-chapter-4/">Chapter 4</a></div><div class="hd"><h1>2HT · Chapter 2 · Solid geometry</h1><p>Practise as long as you like. The questions adapt to you: Mild, Medium, Spicy and Extra spicy.</p></div><button class="pbtn" id="pbtn" type="button">My progress</button></header>
 <div class="wrap">
   <nav id="nav" aria-label="Topics"></nav>
   <main id="main" aria-live="polite"></main>
@@ -321,6 +321,11 @@ function formCheck(form, ast, q) {            // returns null if ok else message
     let n = ast; if (n.t !== 'mul') return 'Write it as a number between 1 and 10 times a power of 10.';
     const a = lit(n.a), p = n.b; if (a === null || Math.abs(a) < 1 || Math.abs(a) >= 10) return 'The first number must be at least 1 and less than 10.';
     if (p.t !== 'pow' || lit(p.a) !== 10 || lit(p.b) === null || !isInt(lit(p.b))) return 'Write it as a · 10^n.'; return null;
+  }
+  if (form === 'frac') {       // one fraction a/b in lowest terms (or a whole number)
+    if (ast.t === 'n' || (ast.t === 'neg' && ast.a.t === 'n')) return isInt(lit(ast)) ? null : 'Write your answer as a fraction, like 5/33.';
+    if (ast.t === 'div') { const a = lit(ast.a), b = lit(ast.b); if (a === null || b === null || !isInt(a) || !isInt(b)) return 'Write your answer as one fraction of two whole numbers, like 5/33.'; if (gcd(a, b) > 1) return 'Not fully simplified: the top and bottom still have a common factor.'; if (Math.abs(b) === 1) return 'Write a whole number without the 1 below it.'; return null; }
+    return 'Write your answer as one fraction, like 5/33.';
   }
   if (form === 'powfrac') { if (ast.t !== 'pow') return 'Write it as a single power, like (2/5)^3.'; const e = lit(ast.b); if (e === null || !isInt(e) || ast.a.t !== 'div') return 'Write it as a power of a fraction, like (2/5)^3.'; return null; }
   if (form === 'power') {
