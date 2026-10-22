@@ -919,6 +919,128 @@ if (P.cls === '3VT') {
     ['7.4', 'I can use altitudes and medians', ['altitudeFromArea', 'centroidSplit', 'vertexFromCentroid', 'whichLine'], 'The centroid divides a median 2 : 1.'],
     ['7.5', 'I can find the centre of an inscribed or circumscribed circle', ['whichCentre', 'rightCircumcentre', 'circumRadius'], 'Right-angled triangle: the centre is the midpoint of the hypotenuse.']);
 }
+/* ======================= 1HVT chapter 7: triangles, quadrilaterals, angle reasons, F- and Z-angles, area ======================= */
+if (P.cls === '1HVT') {
+  const ORIG = G['7.1'].slice();
+  const safe = f => { const g = function (l) { const sv = G['7.1']; G['7.1'] = ORIG; try { return f(l); } finally { G['7.1'] = sv; } }; Object.defineProperty(g, 'name', { value: f.name }); return g; };
+  const byN = n => safe(ORIG.find(f => f.name === n));
+  const HS = c => ' Type your calculation first, for example ' + c + '.';
+  const half = n => Number.isInteger(n) ? String(n) : String(n).replace('.5', '½');
+  const T1 = [
+    byN('triSum'),
+    byN('isoTri'),
+    function isIsosceles(l) {
+      const n = pick(LET); let a, b, c, iso = Math.random() < .55;
+      if (iso) { const base = ri(25, 75); const pos = ri(0, 2); const arr = [base, base, 180 - 2 * base]; [a, b, c] = pos === 0 ? arr : pos === 1 ? [arr[0], arr[2], arr[1]] : [arr[2], arr[0], arr[1]]; }
+      else { do { a = ri(25, 100); b = ri(25, 100); c = 180 - a - b; } while (c < 20 || a === b || b === c || a === c); }
+      const apex = iso ? (a === b ? n[2] : a === c ? n[1] : n[0]) : null, right = iso ? 'yes, the apex is ' + A_(apex) : 'no';
+      const opts = ['no'].concat(n.split('').map(v => 'yes, the apex is ' + A_(v)));
+      return ch(p('In triangle ' + n + ', ' + A_(n[0]) + ' = ' + deg(a) + ' and ' + A_(n[1]) + ' = ' + deg(b) + '. Is the triangle isosceles?'), right, opts.filter(o => o !== right), 'First calculate the third angle. A triangle with two equal angles is isosceles. The apex is the angle that is different.', A_(n[2]) + ' = 180° − ' + deg(a) + ' − ' + deg(b) + ' = ' + deg(c) + ' (sum of the angles in a triangle)<br>' + (iso ? 'Two angles are equal, so the triangle is isosceles. The apex is ' + A_(apex) + '.' : 'All angles are different, so the triangle is not isosceles.'));
+    },
+    function triFacts(l) {
+      const S = [['An equilateral triangle has three lines of symmetry.', 'true'], ['Every angle of an equilateral triangle is 60°.', 'true'], ['The base angles of an isosceles triangle are equal.', 'true'], ['A triangle can have two right angles.', 'false'], ['An equilateral triangle is also isosceles.', 'true'], ['An isosceles triangle always has three equal angles.', 'false'], ['A right-angled triangle can also be isosceles.', 'true'], ['A triangle can have an angle of 90° and an angle of 100°.', 'false'], ['An isosceles triangle has exactly one line of symmetry (if it is not equilateral).', 'true'], ['The angles of a triangle add up to 360°.', 'false']];
+      const s = pick(S);
+      return ch(p('True or false?') + p('<i>' + s[0] + '</i>'), s[1], [s[1] === 'true' ? 'false' : 'true'], 'Think of the angle sum (180°) and the properties of isosceles and equilateral triangles.', s[1] === 'true' ? 'This is true.' : 'This is false.');
+    }
+  ];
+  const QF = [['all angles are 90°', ['rectangle', 'square']], ['all four sides are equal', ['rhombus', 'square']], ['both pairs of opposite sides are parallel', ['parallelogram', 'rectangle', 'rhombus', 'square']], ['exactly one pair of parallel sides is enough', ['trapezium']], ['the diagonals are perpendicular', ['rhombus', 'square', 'kite']], ['two pairs of equal adjacent sides', ['kite', 'rhombus', 'square']]];
+  const T2 = [
+    byN('quadAngles'),
+    function quadSum(l) {
+      let a, b, c; do { a = ri(40, 150); b = ri(40, 150); c = ri(40, 150); } while (360 - a - b - c < 25 || 360 - a - b - c > (l === 2 ? 280 : 170));
+      const d = 360 - a - b - c, n = pick(['ABCD', 'EFGH', 'KLMN', 'PQRS']);
+      return angQ(p('In quadrilateral ' + n + ', ' + A_(n[0]) + ' = ' + deg(a) + ', ' + A_(n[1]) + ' = ' + deg(b) + ' and ' + A_(n[2]) + ' = ' + deg(c) + '. Calculate ' + A_(n[3]) + '.'), d, 'The angles of a quadrilateral add up to 360°.' + HS('360 − ' + a + ' − ' + b + ' − ' + c), A_(n[3]) + ' = 360° − ' + deg(a) + ' − ' + deg(b) + ' − ' + deg(c) + ' = ' + deg(d) + ' (sum of the angles in a quadrilateral)', true);
+    },
+    function quadProperty(l) {
+      const q = pick(QF), names = ['trapezium', 'parallelogram', 'rectangle', 'rhombus', 'square', 'kite'], right = pick(q[1]);
+      const wr = shuffle(names.filter(n => !q[1].includes(n))).slice(0, 3);
+      return ch(p('Which quadrilateral has this property: <b>' + q[0] + '</b>?'), right, wr, 'Think of the definitions: a rhombus has four equal sides, a rectangle four right angles, a parallelogram two pairs of parallel sides, a kite two pairs of equal adjacent sides.', 'The ' + q[1].join(', the ') + ' ' + (q[1].length > 1 ? 'all have' : 'has') + ' this property. So the answer is ' + right + '.');
+    },
+    function polygonSum(l) {
+      const n = l === 0 ? ri(5, 6) : ri(5, 12), nm = { 5: 'pentagon', 6: 'hexagon', 7: 'heptagon', 8: 'octagon' }[n] || 'polygon with ' + n + ' angles';
+      return nu(p('You can divide a ' + nm + ' into triangles from one vertex. Calculate the sum of its angles.'), (n - 2) * 180, 'A polygon with ' + n + ' angles can be divided into ' + (n - 2) + ' triangles. Each triangle has 180°.' + HS((n - 2) + ' · 180'), 'number of triangles = ' + n + ' − 2 = ' + (n - 2) + '<br>sum of the angles = ' + (n - 2) + ' · 180° = ' + (n - 2) * 180 + '°', { needStep: true, ansText: deg((n - 2) * 180) });
+    }
+  ];
+  const T3 = [
+    byN('straightVert'),
+    function bisector(l) {
+      const nm = pick(['A', 'B', 'K', 'P']), whole = 2 * ri(15, 75), k = ri(0, 2);
+      if (k === 0) return angQ(p('Line ' + nm + 'D is the angle bisector of ' + A_(nm) + '. ' + A_(nm) + ' = ' + deg(whole) + '. Calculate ' + A_(nm) + '<sub>1</sub>.'), whole / 2, 'An angle bisector divides an angle into two equal angles.' + HS(whole + ' : 2'), A_(nm) + '<sub>1</sub> = ' + A_(nm) + '<sub>2</sub> = ' + deg(whole) + ' : 2 = ' + deg(whole / 2) + ' (equal angles)', true);
+      if (k === 1) return angQ(p('Line ' + nm + 'D is the angle bisector of ' + A_(nm) + '. ' + A_(nm) + '<sub>1</sub> = ' + deg(whole / 2) + '. Calculate ' + A_(nm) + '.'), whole, 'An angle bisector divides an angle into two equal angles.' + HS(whole / 2 + ' + ' + whole / 2), A_(nm) + '<sub>2</sub> = ' + A_(nm) + '<sub>1</sub> = ' + deg(whole / 2) + ' (equal angles)<br>' + A_(nm) + ' = ' + deg(whole / 2) + ' + ' + deg(whole / 2) + ' = ' + deg(whole), true);
+      let a, c; do { a = ri(25, 80); c = ri(25, 80); } while (a + c > 150 || (180 - a - c) % 2);
+      const b = 180 - a - c;
+      return angQ(p('In triangle ABC, ' + A_('A') + ' = ' + deg(a) + ' and ' + A_('C') + ' = ' + deg(c) + '. BD is the angle bisector of ' + A_('B') + '. Calculate ' + A_('B') + '<sub>1</sub>.') + triFig('ABC', a, b, [deg(a), '', deg(c)]), b / 2, 'First calculate ' + A_('B') + '. Then halve it.' + HS('(180 − ' + a + ' − ' + c + ') : 2'), A_('B') + ' = 180° − ' + deg(a) + ' − ' + deg(c) + ' = ' + deg(b) + ' (sum of the angles in a triangle)<br>' + A_('B') + '<sub>1</sub> = ' + A_('B') + '<sub>2</sub> = ' + deg(b) + ' : 2 = ' + deg(b / 2) + ' (equal angles)', true);
+    },
+    function crossing(l) {
+      const s1 = ri(25, 155), j = ri(2, 4), ans = j === 3 ? s1 : 180 - s1;
+      const show = { A1: deg(s1) }; show['A' + j] = '?';
+      const fig = parFig(s1 <= 90 ? s1 : 180 - s1, null);
+      const st = j === 3 ? A_('S') + '<sub>3</sub> = ' + A_('S') + '<sub>1</sub> = ' + deg(s1) + ' (vertically opposite angles)' : A_('S') + '<sub>' + j + '</sub> = 180° − ' + deg(s1) + ' = ' + deg(ans) + ' (straight angle)';
+      return angQ(p('Two lines cross at point S and make four angles: ' + A_('S') + '<sub>1</sub>, ' + A_('S') + '<sub>2</sub>, ' + A_('S') + '<sub>3</sub> and ' + A_('S') + '<sub>4</sub> (in this order, going around). ' + A_('S') + '<sub>1</sub> = ' + deg(s1) + '. Calculate ' + A_('S') + '<sub>' + j + '</sub>.'), ans, 'Neighbouring angles make a straight angle (180°). Opposite angles are vertically opposite angles: they are equal.' + (j === 3 ? '' : HS('180 − ' + s1)), st, j !== 3);
+    },
+    function reasonName(l) {
+      const R = [['∠S<sub>1</sub> = ∠S<sub>3</sub>, where S<sub>1</sub> and S<sub>3</sub> are opposite angles of two crossing lines.', 'vertically opposite angles'], ['∠A<sub>1</sub> + ∠A<sub>2</sub> = 180°, where the two angles lie next to each other on a line.', 'straight angle'], ['∠A + ∠B + ∠C = 180° in triangle ABC.', 'sum of the angles in a triangle'], ['∠B<sub>1</sub> = ∠B<sub>2</sub>, because BD divides ∠B into two equal parts.', 'equal angles (angle bisector)'], ['∠B = ∠C in triangle ABC with AB = AC.', 'isosceles triangle']];
+      const r = pick(R);
+      return ch(p('Which reason belongs to this step?') + p(r[0]), r[1], R.map(x => x[1]).filter(x => x !== r[1]).slice(0, 3), 'Every step in a calculation with angles needs a reason in brackets.', 'The reason is: (' + r[1] + ').');
+    }
+  ];
+  const T4 = [ORIG.find(f => f.name === 'parallel'), ORIG.find(f => f.name === 'angleName'), XG['7.1'][0],
+    function parallelQuad(l) {
+      const a = ri(50, 130), nm = pick(['parallelogram', 'trapezium']);
+      if (nm === 'parallelogram') return angQ(p('ABCD is a parallelogram, so AB ∥ DC and AD ∥ BC. ' + A_('A') + ' = ' + deg(a) + '. Calculate ' + A_('B') + '.'), 180 - a, 'Extend side AB beyond B. The angle outside at B is a corresponding angle (F-angle) of ∠A. Then use a straight angle.' + HS('180 − ' + a), 'Angle outside at B = ' + A_('A') + ' = ' + deg(a) + ' (corresponding angles, AD ∥ BC)<br>' + A_('B') + ' = 180° − ' + deg(a) + ' = ' + deg(180 - a) + ' (straight angle)', true);
+      return angQ(p('ABCD is a trapezium with AB ∥ DC. ' + A_('D') + ' = ' + deg(a) + '. Calculate ' + A_('A') + '.'), 180 - a, 'Extend side DA beyond A. The angle outside at A is an alternate angle (Z-angle) of ∠D. Then use a straight angle.' + HS('180 − ' + a), 'Angle outside at A = ' + A_('D') + ' = ' + deg(a) + ' (alternate angles, AB ∥ DC)<br>' + A_('A') + ' = 180° − ' + deg(a) + ' = ' + deg(180 - a) + ' (straight angle)', true);
+    }
+  ];
+  Object.defineProperty(T4[2], 'name', { value: 'parallelTriangle' });
+  const paraFig = (b, h, s, labs) => flatFig({ A: [0, 0], B: [b, 0], C: [b + s, h], D: [s, h], E: [s, 0] }, { poly: ['A', 'B', 'C', 'D'], dash: [['D', 'E']], right: [['E', 'B', 'D']], sides: [['A', 'B', labs[0]], ['D', 'E', labs[1], -14]], noLabel: ['E'], W: 260, H: 160 });
+  const T5 = [
+    function areaParallelogram(l) {
+      const b = l === 0 ? ri(3, 15) : ri(4, 20) + (l === 2 ? .5 : 0), h = ri(2, 12), A = rd(b * h, 2);
+      return nu(p('Parallelogram ABCD has base AB = ' + half(b) + ' and height ' + h + '. Calculate the area.') + paraFig(b, h, Math.min(h * .6, b * .4), [String(b), String(h)]), A, 'area of a parallelogram = base × height.', 'area = ' + b + ' × ' + h + ' = ' + A, { needStep: true });
+    },
+    function heightFromArea(l) {
+      const b = ri(4, 16), h = l === 0 ? ri(2, 12) : ri(2, 12) + pick([0, .5, .2]), A = rd(b * h, 2);
+      return nu(p('A parallelogram has area ' + A + ' cm² and base ' + b + ' cm. Calculate the height.'), rd(h, 2), 'area = base × height, so height = area : base.', 'area = base × height<br>' + A + ' = ' + b + ' × height<br>height = ' + A + ' : ' + b + ' = ' + rd(h, 2) + ' cm', { needStep: true });
+    },
+    function areaKite(l) {
+      const d1 = ri(3, 16), d2 = ri(2, 14) * (l === 0 ? 2 : 1), kite = Math.random() < .5, A = rd(d1 * d2 / 2, 2), nm = kite ? 'kite' : 'rhombus';
+      const P_ = kite ? { K: [0, 0], L: [d1 * .35, d2 / 2], M: [d1, 0], N: [d1 * .35, -d2 / 2] } : { K: [0, 0], L: [d1 / 2, d2 / 2], M: [d1, 0], N: [d1 / 2, -d2 / 2] };
+      const fig = flatFig(P_, { poly: ['K', 'L', 'M', 'N'], dash: [['K', 'M'], ['L', 'N']], W: 240, H: 170 });
+      return nu(p('In ' + nm + ' KLMN the diagonals are KM = ' + d1 + ' and LN = ' + d2 + '. Calculate the area.') + fig, A, 'area of a rhombus or kite = ½ × diagonal 1 × diagonal 2.', 'area = ½ × ' + d1 + ' × ' + d2 + ' = ' + A, { needStep: true });
+    },
+    function areaTrapezium(l) {
+      const a = ri(4, 14), c = ri(2, a - 1), h = ri(2, 10) + (l === 2 ? .5 : 0), A = rd((a + c) * h / 2, 3), off = (a - c) * .3;
+      const fig = flatFig({ A: [0, 0], B: [a, 0], C: [off + c, h], D: [off, h], E: [off, 0] }, { poly: ['A', 'B', 'C', 'D'], dash: [['D', 'E']], right: [['E', 'B', 'D']], sides: [['A', 'B', String(a)], ['D', 'C', String(c)], ['D', 'E', String(h), -14]], noLabel: ['E'], W: 260, H: 160 });
+      return nu(p('ABCD is a trapezium with AB ∥ DC. AB = ' + a + ', DC = ' + c + ' and the height is ' + h + '. Calculate the area.') + fig, A, 'area of a trapezium = ½ × (sum of the parallel sides) × height.', 'area = ½ × (' + a + ' + ' + c + ') × ' + h + ' = ½ × ' + (a + c) + ' × ' + h + ' = ' + A, { needStep: true });
+    },
+    function otherHeight(l) {
+      let a, b, h1, A, h2; do { a = ri(5, 14); b = ri(4, a); h1 = ri(2, b - 1); A = a * h1; h2 = rd(A / b, 2); } while (h2 >= a || !Number.isInteger(h2 * 10));
+      return nu(p('Parallelogram PQRS has PQ = ' + a + ', QR = ' + b + ' and the height on side PQ is ' + h1 + '. Calculate the height on side QR.'), h2, 'First calculate the area with base PQ. The area is the same with base QR.', 'area = ' + a + ' × ' + h1 + ' = ' + A + '<br>' + b + ' × height = ' + A + '<br>height = ' + A + ' : ' + b + ' = ' + h2, { needStep: true });
+    }
+  ];
+  const XT5 = [
+    function wallArea(l) {
+      const w = ri(5, 9), h1 = ri(1, 3) + .5, top = ri(3, w - 1), h2 = ri(1, 3), h3 = ri(1, 2);
+      const r = w * h1, t = (w + top) * h2 / 2, tr = top * h3 / 2, A = rd(r + t + tr, 3);
+      return nu(p('A wall is made of a rectangle of ' + w + ' m by ' + h1 + ' m. On top is a trapezium with parallel sides ' + w + ' m and ' + top + ' m and height ' + h2 + ' m. On top of that is a triangle with base ' + top + ' m and height ' + h3 + ' m. Calculate the area of the wall in m².'), A, 'Calculate the three areas separately and add them.', 'rectangle: ' + w + ' × ' + h1 + ' = ' + rd(r, 3) + '<br>trapezium: ½ × (' + w + ' + ' + top + ') × ' + h2 + ' = ' + rd(t, 3) + '<br>triangle: ½ × ' + top + ' × ' + h3 + ' = ' + rd(tr, 3) + '<br>total = ' + rd(r, 3) + ' + ' + rd(t, 3) + ' + ' + rd(tr, 3) + ' = ' + A + ' m²', { needStep: true });
+    }
+  ];
+  G['7.1'] = T1; G['7.2'] = T2; G['7.3'] = T3; G['7.4'] = T4; G['7.5'] = T5;
+  XG['7.1'] = []; XG['7.2'] = []; XG['7.3'] = []; XG['7.4'] = []; XG['7.5'] = XT5;
+  SECTIONS.splice(0, SECTIONS.length,
+    { id: '7.1', title: '7.1 Triangles', sub: 'Sum of the angles, isosceles and equilateral triangles' },
+    { id: '7.2', title: '7.2 Quadrilaterals', sub: 'Sum of the angles, special quadrilaterals, polygons' },
+    { id: '7.3', title: '7.3 Reasoning with angles', sub: 'Angle bisector, vertically opposite angles, straight angle' },
+    { id: '7.4', title: '7.4 Parallel lines', sub: 'Corresponding (F) and alternate (Z) angles' },
+    { id: '7.5', title: '7.5 Area', sub: 'Parallelogram, rhombus, kite, trapezium' });
+  GOALS.splice(0, GOALS.length,
+    ['7.1', 'I can calculate angles in a triangle', ['triSum', 'isoTri', 'isIsosceles', 'triFacts'], 'The angles of a triangle add up to 180°.'],
+    ['7.2', 'I can calculate angles in quadrilaterals and polygons', ['quadAngles', 'quadSum', 'polygonSum'], 'The angles of a quadrilateral add up to 360°.'],
+    ['7.2', 'I know the special quadrilaterals', ['quadProperty'], 'Square, rectangle, rhombus, parallelogram, kite, trapezium.'],
+    ['7.3', 'I can reason with angles and give the reason', ['straightVert', 'bisector', 'crossing', 'reasonName'], 'Write the reason after every step.'],
+    ['7.4', 'I can use corresponding (F) and alternate (Z) angles', ['parallel', 'angleName', 'parallelTriangle', 'parallelQuad'], 'With parallel lines: F-angles and Z-angles are equal.'],
+    ['7.5', 'I can calculate the area of a parallelogram, rhombus, kite and trapezium', ['areaParallelogram', 'heightFromArea', 'areaKite', 'areaTrapezium', 'otherHeight'], 'Trapezium: ½ × (a + b) × height.']);
+}
 return { key: 'nx-' + P.cls.toLowerCase() + '-ch7-v1', SECTIONS, LESSONS: [], G, XG, defaultMode: 'para', GOALS };
 
 })(NX, {"cls": "2VT"});
