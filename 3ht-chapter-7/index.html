@@ -88,7 +88,7 @@ svg.fig{max-width:430px;width:100%;height:auto;display:block;margin:6px 0 10px}
 </style>
 </head>
 <body>
-<header><div class="topnav" role="navigation" aria-label="Site navigation"><a class="nb" href="../">Home</a><a class="nb" href="../3ht-chapter-1/">Chapter 1</a><a class="nb" href="../3ht-chapter-2/">Chapter 2</a><a class="nb" href="../3ht-chapter-3/">Chapter 3</a><a class="nb" href="../3ht-chapter-4/">Chapter 4</a><a class="nb" href="../3ht-chapter-5/">Chapter 5</a><a class="nb" href="../3ht-chapter-6/">Chapter 6</a><a class="nb cur" href="../3ht-chapter-7/" aria-current="page">Chapter 7</a></div><div class="hd"><h1>3HT · Chapter 7 · Exponential growth</h1><p>Practise as long as you like. The questions adapt to you: Mild, Medium, Spicy and Extra spicy.</p></div><button class="pbtn" id="pbtn" type="button">My progress</button></header>
+<header><div class="topnav" role="navigation" aria-label="Site navigation"><a class="nb" href="../">Home</a><a class="nb" href="../3ht-chapter-1/">Chapter 1</a><a class="nb" href="../3ht-chapter-2/">Chapter 2</a><a class="nb" href="../3ht-chapter-3/">Chapter 3</a><a class="nb" href="../3ht-chapter-4/">Chapter 4</a><a class="nb" href="../3ht-chapter-5/">Chapter 5</a><a class="nb" href="../3ht-chapter-6/">Chapter 6</a><a class="nb cur" href="../3ht-chapter-7/" aria-current="page">Chapter 7</a><a class="nb" href="../3ht-chapter-8/">Chapter 8</a></div><div class="hd"><h1>3HT · Chapter 7 · Exponential growth</h1><p>Practise as long as you like. The questions adapt to you: Mild, Medium, Spicy and Extra spicy.</p></div><button class="pbtn" id="pbtn" type="button">My progress</button></header>
 <div class="wrap">
   <nav id="nav" aria-label="Topics"></nav>
   <main id="main" aria-live="polite"></main>
@@ -517,7 +517,7 @@ const rd = (x, d) => { d = d === undefined ? 6 : d; return Math.round(x * Math.p
 const neg = n => (n < 0 ? '−' : '') + String(rd(Math.abs(n)));
 const X = v => '<i>' + (v || 'x') + '</i>';
 const ap = (x, d) => (rd(x, d) === rd(x) ? ' = ' : ' ≈ ') + neg(rd(x, d));
-const sp = n => { const s = String(n), m = s.split('.'); m[0] = m[0].replace(/\B(?=(\d{3})+(?!\d))/g, ' '); return m.join('.'); };
+const sp = n => { const s = String(n), m = s.split('.'); m[0] = m[0].replace(/\B(?=(\d{3})+(?!\d))/g, '\u202f'); return m.join('.'); };
 const pw = (b, e) => b + '<sup>' + e + '</sup>';
 const mult = pc => rd((100 + pc) / 100);
 const multTxt = pc => '(100 ' + (pc < 0 ? '− ' + Math.abs(pc) : '+ ' + pc) + ') / 100 = ' + rd(100 + pc) + ' / 100 = ' + mult(pc);
@@ -564,7 +564,7 @@ G['7.1'] = [
   },
   function repeated(l) {
     const p1 = pick([10, 20, 30, 40, 15, 25]) * (Math.random() < .5 ? -1 : 1), p2 = pick([10, 20, 5, 8, 50, 15]) * (Math.random() < .6 ? 1 : -1), m = mult(p1) * mult(p2), pc = rd(m * 100 - 100, 2);
-    return nr(p('A price first ' + (p1 > 0 ? 'goes up' : 'goes down') + ' by ' + Math.abs(p1) + '% and then ' + (p2 > 0 ? 'goes up' : 'goes down') + ' by ' + Math.abs(p2) + '%. What is the total percentage change? <small>(A decrease is negative.)</small>'), pc, 2, 'Multiply the two multipliers. You cannot just add the percentages.', p(mult(p1) + ' · ' + mult(p2) + ' = ' + rd(m, 4)) + p(rd(m, 4) + ' · 100% − 100% = ' + pc + '%'), { needStep: true });
+    return nr(p('A price first ' + (p1 > 0 ? 'goes up' : 'goes down') + ' by ' + Math.abs(p1) + '% and then ' + (p2 > 0 ? 'goes up' : 'goes down') + ' by ' + Math.abs(p2) + '%. What is the total percentage change? <small>(A decrease is negative.)</small>'), pc, 2, 'Multiply the two multipliers. You cannot just add the percentages.', p(mult(p1) + ' · ' + mult(p2) + ' = ' + rd(m, 4)) + p(rd(m, 4) + ' · 100% − 100% = ' + neg(pc) + '%'), { needStep: true });
   }
 ];
 XG['7.1'] = [

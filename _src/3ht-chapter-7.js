@@ -9,7 +9,7 @@ const rd = (x, d) => { d = d === undefined ? 6 : d; return Math.round(x * Math.p
 const neg = n => (n < 0 ? '−' : '') + String(rd(Math.abs(n)));
 const X = v => '<i>' + (v || 'x') + '</i>';
 const ap = (x, d) => (rd(x, d) === rd(x) ? ' = ' : ' ≈ ') + neg(rd(x, d));
-const sp = n => { const s = String(n), m = s.split('.'); m[0] = m[0].replace(/\B(?=(\d{3})+(?!\d))/g, ' '); return m.join('.'); };
+const sp = n => { const s = String(n), m = s.split('.'); m[0] = m[0].replace(/\B(?=(\d{3})+(?!\d))/g, '\u202f'); return m.join('.'); };
 const pw = (b, e) => b + '<sup>' + e + '</sup>';
 const mult = pc => rd((100 + pc) / 100);
 const multTxt = pc => '(100 ' + (pc < 0 ? '− ' + Math.abs(pc) : '+ ' + pc) + ') / 100 = ' + rd(100 + pc) + ' / 100 = ' + mult(pc);
@@ -56,7 +56,7 @@ G['7.1'] = [
   },
   function repeated(l) {
     const p1 = pick([10, 20, 30, 40, 15, 25]) * (Math.random() < .5 ? -1 : 1), p2 = pick([10, 20, 5, 8, 50, 15]) * (Math.random() < .6 ? 1 : -1), m = mult(p1) * mult(p2), pc = rd(m * 100 - 100, 2);
-    return nr(p('A price first ' + (p1 > 0 ? 'goes up' : 'goes down') + ' by ' + Math.abs(p1) + '% and then ' + (p2 > 0 ? 'goes up' : 'goes down') + ' by ' + Math.abs(p2) + '%. What is the total percentage change? <small>(A decrease is negative.)</small>'), pc, 2, 'Multiply the two multipliers. You cannot just add the percentages.', p(mult(p1) + ' · ' + mult(p2) + ' = ' + rd(m, 4)) + p(rd(m, 4) + ' · 100% − 100% = ' + pc + '%'), { needStep: true });
+    return nr(p('A price first ' + (p1 > 0 ? 'goes up' : 'goes down') + ' by ' + Math.abs(p1) + '% and then ' + (p2 > 0 ? 'goes up' : 'goes down') + ' by ' + Math.abs(p2) + '%. What is the total percentage change? <small>(A decrease is negative.)</small>'), pc, 2, 'Multiply the two multipliers. You cannot just add the percentages.', p(mult(p1) + ' · ' + mult(p2) + ' = ' + rd(m, 4)) + p(rd(m, 4) + ' · 100% − 100% = ' + neg(pc) + '%'), { needStep: true });
   }
 ];
 XG['7.1'] = [
