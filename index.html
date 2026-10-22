@@ -7,77 +7,102 @@
 <style>
 :root{--bg:#f4f7fa;--card:#fff;--ink:#17222d;--mut:#5b6b7a;--line:#d5dee7;--brand:#1b5fa8;--brand2:#e8f1fb}
 *{box-sizing:border-box}
-body{margin:0;font-family:Calibri,"Segoe UI",system-ui,sans-serif;background:var(--bg);color:var(--ink);font-size:18px;line-height:1.45}
-header{background:var(--brand);color:#fff;padding:18px 20px}
-header h1{margin:0;font-size:28px}header p{margin:4px 0 0;opacity:.92}
-main{max-width:860px;margin:22px auto;padding:0 16px 40px}
-h2{font-size:22px;margin:26px 0 10px}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}
-a.card{display:block;background:var(--card);border:2px solid var(--line);border-radius:14px;padding:16px 18px;text-decoration:none;color:inherit}
+body{margin:0;font-family:Calibri,"Segoe UI",system-ui,sans-serif;background:var(--bg);color:var(--ink);font-size:17px;line-height:1.35}
+header{background:var(--brand);color:#fff;padding:12px 20px;display:flex;align-items:baseline;gap:16px;flex-wrap:wrap}
+header h1{margin:0;font-size:24px}header p{margin:0;opacity:.9;font-size:15px}
+main{max-width:980px;margin:0 auto;padding:16px 16px 10px}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.tabs span{align-self:center;color:var(--mut);font-size:15px;margin-right:4px}
+.tab{font:inherit;font-weight:700;font-size:18px;padding:8px 18px;border-radius:999px;border:2px solid var(--line);background:var(--card);color:var(--brand);cursor:pointer}
+.tab:hover{border-color:var(--brand)}
+.tab[aria-pressed="true"]{background:var(--brand);border-color:var(--brand);color:#fff}
+.cls{display:none;grid-template-columns:repeat(4,1fr);gap:10px}
+.cls.on{display:grid}
+a.card{display:flex;flex-direction:column;background:var(--card);border:2px solid var(--line);border-radius:12px;padding:10px 12px;text-decoration:none;color:inherit;min-height:112px}
 a.card:hover,a.card:focus-visible{border-color:var(--brand);background:var(--brand2);outline:none}
-a.card b{display:block;font-size:20px;color:var(--brand)}
-a.card span{color:var(--mut);font-size:16px}
-.note{color:var(--mut);font-size:15px;margin-top:30px}
+a.card i{font-style:normal;font-size:13px;font-weight:700;color:var(--mut);text-transform:uppercase;letter-spacing:.04em}
+a.card i::before{content:"Chapter "}
+a.card b{font-size:18px;color:var(--brand);margin:1px 0 3px}
+a.card span{color:var(--mut);font-size:14px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.note{color:var(--mut);font-size:13px;text-align:center;margin:12px 0 0}
+@media (max-width:760px){.cls{grid-template-columns:repeat(2,1fr)}a.card{min-height:0}a.card span{display:none}header p{display:none}.tab{padding:6px 14px;font-size:16px}}
 </style>
 </head>
 <body>
-<header><h1>Maths practice</h1><p>Choose your class and chapter. Practise as often as you like. The questions get harder when you do well.</p></header>
+<header><h1>Maths practice</h1><p>Choose your class, then a chapter. The questions get harder when you do well.</p></header>
 <main>
-<h2>1HVT</h2>
-<div class="grid">
-<a class="card" href="1hvt-chapter-1/"><b>Chapter 1</b><span>Numbers: negative numbers, fractions, powers, order of operations</span></a>
-<a class="card" href="1hvt-chapter-2/"><b>Chapter 2</b><span>Plane figures: lines, angles, triangles, circles, reflecting</span></a>
-<a class="card" href="1hvt-chapter-3/"><b>Chapter 3</b><span>Relations: coordinates, formulas, tables and graphs</span></a>
-<a class="card" href="1hvt-chapter-4/"><b>Chapter 4</b><span>Processing data: frequency tables, the mean, ratios, percentages, graphs and charts</span></a>
-<a class="card" href="1hvt-chapter-5/"><b>Chapter 5</b><span>Geometric calculations: units, speed, perimeter and area, triangles, circles, volume</span></a>
-<a class="card" href="1hvt-chapter-6/"><b>Chapter 6</b><span>Equations: linear formulas, the balance method, gradient and formula of a line, intersections</span></a>
-<a class="card" href="1hvt-chapter-7/"><b>Chapter 7</b><span>Geometric reasoning: angles in triangles and quadrilaterals, angle reasons, F- and Z-angles, area</span></a>
-<a class="card" href="1hvt-chapter-8/"><b>Chapter 8</b><span>Algebra: substituting, like terms, expanding brackets, factorising, special products</span></a>
+<div class="tabs" role="group" aria-label="Class"><span>Class:</span>
+<button type="button" class="tab" data-c="c-1hvt">1HVT</button>
+<button type="button" class="tab" data-c="c-2ht">2HT</button>
+<button type="button" class="tab" data-c="c-2vt">2VT</button>
+<button type="button" class="tab" data-c="c-3ht">3HT</button>
+<button type="button" class="tab" data-c="c-3vt">3VT</button>
 </div>
-<h2>2VT</h2>
-<div class="grid">
-<a class="card" href="2vt-chapter-1/"><b>Chapter 1</b><span>Numbers: factors, powers, roots, scientific notation</span></a>
-<a class="card" href="2vt-chapter-2/"><b>Chapter 2</b><span>Solid geometry: volume, lines in space, views, nets</span></a>
-<a class="card" href="2vt-chapter-3/"><b>Chapter 3</b><span>Relationships: linear formulas, direct and inverse proportion, parabolas, vertex form</span></a>
-<a class="card" href="2vt-chapter-4/"><b>Chapter 4</b><span>Probability: counting outcomes, tree diagrams, chance, without replacement</span></a>
-<a class="card" href="2vt-chapter-5/"><b>Chapter 5</b><span>Pythagoras' theorem: calculating sides, auxiliary lines, in space, right-angled or not</span></a>
-<a class="card" href="2vt-chapter-6/"><b>Chapter 6</b><span>Equations and inequalities: balance method, inequalities, x² = c, factorising, the quadratic formula</span></a>
-<a class="card" href="2vt-chapter-7/"><b>Chapter 7</b><span>Geometric reasoning: angles and reasons, F- and Z-angles, scale factor, area and volume, similar triangles</span></a>
-<a class="card" href="2vt-chapter-8/"><b>Chapter 8</b><span>Algebra: rules of powers, negative exponents, expanding brackets, roots with letters, completing the square</span></a>
-</div>
-<h2>2HT</h2>
-<div class="grid">
-<a class="card" href="2ht-chapter-1/"><b>Chapter 1</b><span>Numbers: factors, powers, roots, scientific notation</span></a>
-<a class="card" href="2ht-chapter-2/"><b>Chapter 2</b><span>Solid geometry: volume, lines in space, views, nets</span></a>
-<a class="card" href="2ht-chapter-3/"><b>Chapter 3</b><span>Relationships: linear, proportional and quadratic</span></a>
-<a class="card" href="2ht-chapter-4/"><b>Chapter 4</b><span>Probability: counting outcomes, tree diagrams, chance, without replacement</span></a>
-<a class="card" href="2ht-chapter-5/"><b>Chapter 5</b><span>Pythagoras' theorem: calculating sides, auxiliary lines, in space, right-angled or not</span></a>
-<a class="card" href="2ht-chapter-6/"><b>Chapter 6</b><span>Equations and inequalities: balance method, inequalities, x² = c, factorising</span></a>
-<a class="card" href="2ht-chapter-7/"><b>Chapter 7</b><span>Geometric reasoning: angles and reasons, F- and Z-angles, scale factor, area and volume, similar triangles</span></a>
-<a class="card" href="2ht-chapter-8/"><b>Chapter 8</b><span>Algebra: powers and like terms, rules of powers, expanding brackets, special products</span></a>
-</div>
-<h2>3HT</h2>
-<div class="grid">
-<a class="card" href="3ht-chapter-1/"><b>Chapter 1</b><span>Numbers and variables: roots, powers, brackets, fractions</span></a>
-<a class="card" href="3ht-chapter-2/"><b>Chapter 2</b><span>Geometric reasoning: similarity, bisectors, altitudes, medians</span></a>
-<a class="card" href="3ht-chapter-3/"><b>Chapter 3</b><span>Relations: lines, parabolas, proportions, square roots, transformations, periodic graphs</span></a>
-<a class="card" href="3ht-chapter-4/"><b>Chapter 4</b><span>Statistics: frequency tables, diagrams, grouped data, mean, median, mode, boxplots</span></a>
-<a class="card" href="3ht-chapter-5/"><b>Chapter 5</b><span>Equations and inequalities: linear, quadratic, the quadratic formula, quadratic inequalities, higher powers</span></a>
-<a class="card" href="3ht-chapter-6/"><b>Chapter 6</b><span>Trigonometry: Pythagoras, special triangles, sin, cos and tan, slopes and angles of inclination</span></a>
-<a class="card" href="3ht-chapter-7/"><b>Chapter 7</b><span>Exponential growth: multipliers, growth factors, formulas, graphs, exponential equations</span></a>
-<a class="card" href="3ht-chapter-8/"><b>Chapter 8</b><span>Rate of change, counting, functions and f(x) notation</span></a>
-</div>
-<h2>3VT</h2>
-<div class="grid">
-<a class="card" href="3vt-chapter-1/"><b>Chapter 1</b><span>Numbers: sequences, primes, real numbers, roots, LCM and HCF</span></a>
-<a class="card" href="3vt-chapter-2/"><b>Chapter 2</b><span>Trigonometry: sin, cos, tan, slopes and solids</span></a>
-<a class="card" href="3vt-chapter-3/"><b>Chapter 3</b><span>Functions: linear, quadratic, power, root and rational functions, transformations, symmetry</span></a>
-<a class="card" href="3vt-chapter-4/"><b>Chapter 4</b><span>Statistics: frequency tables, diagrams, grouped data, mean, median, mode, boxplots</span></a>
-<a class="card" href="3vt-chapter-5/"><b>Chapter 5</b><span>Equations and inequalities: systems, quadratic, root and fractional equations</span></a>
-<a class="card" href="3vt-chapter-6/"><b>Chapter 6</b><span>Exponential growth: multipliers, growth factor, formulas, graphs, equations</span></a>
-<a class="card" href="3vt-chapter-7/"><b>Chapter 7</b><span>Geometric reasoning: angles, similar and congruent triangles, bisectors, medians, circles</span></a>
-</div>
+<section class="cls" id="c-1hvt" aria-label="1HVT">
+<a class="card" href="1hvt-chapter-1/" title="Numbers: negative numbers, fractions, powers, order of operations"><i>1</i><b>Numbers</b><span>negative numbers, fractions, powers, order of operations</span></a>
+<a class="card" href="1hvt-chapter-2/" title="Plane figures: lines, angles, triangles, circles, reflecting"><i>2</i><b>Plane figures</b><span>lines, angles, triangles, circles, reflecting</span></a>
+<a class="card" href="1hvt-chapter-3/" title="Relations: coordinates, formulas, tables and graphs"><i>3</i><b>Relations</b><span>coordinates, formulas, tables and graphs</span></a>
+<a class="card" href="1hvt-chapter-4/" title="Processing data: frequency tables, the mean, ratios, percentages, graphs and charts"><i>4</i><b>Processing data</b><span>frequency tables, the mean, ratios, percentages, graphs and charts</span></a>
+<a class="card" href="1hvt-chapter-5/" title="Geometric calculations: units, speed, perimeter and area, triangles, circles, volume"><i>5</i><b>Geometric calculations</b><span>units, speed, perimeter and area, triangles, circles, volume</span></a>
+<a class="card" href="1hvt-chapter-6/" title="Equations: linear formulas, the balance method, gradient and formula of a line, intersections"><i>6</i><b>Equations</b><span>linear formulas, the balance method, gradient and formula of a line, intersections</span></a>
+<a class="card" href="1hvt-chapter-7/" title="Geometric reasoning: angles in triangles and quadrilaterals, angle reasons, F- and Z-angles, area"><i>7</i><b>Geometric reasoning</b><span>angles in triangles and quadrilaterals, angle reasons, F- and Z-angles, area</span></a>
+<a class="card" href="1hvt-chapter-8/" title="Algebra: substituting, like terms, expanding brackets, factorising, special products"><i>8</i><b>Algebra</b><span>substituting, like terms, expanding brackets, factorising, special products</span></a>
+</section>
+<section class="cls" id="c-2ht" aria-label="2HT">
+<a class="card" href="2ht-chapter-1/" title="Numbers: factors, powers, roots, scientific notation"><i>1</i><b>Numbers</b><span>factors, powers, roots, scientific notation</span></a>
+<a class="card" href="2ht-chapter-2/" title="Solid geometry: volume, lines in space, views, nets"><i>2</i><b>Solid geometry</b><span>volume, lines in space, views, nets</span></a>
+<a class="card" href="2ht-chapter-3/" title="Relationships: linear, proportional and quadratic"><i>3</i><b>Relationships</b><span>linear, proportional and quadratic</span></a>
+<a class="card" href="2ht-chapter-4/" title="Probability: counting outcomes, tree diagrams, chance, without replacement"><i>4</i><b>Probability</b><span>counting outcomes, tree diagrams, chance, without replacement</span></a>
+<a class="card" href="2ht-chapter-5/" title="Pythagoras' theorem: calculating sides, auxiliary lines, in space, right-angled or not"><i>5</i><b>Pythagoras' theorem</b><span>calculating sides, auxiliary lines, in space, right-angled or not</span></a>
+<a class="card" href="2ht-chapter-6/" title="Equations and inequalities: balance method, inequalities, x² = c, factorising"><i>6</i><b>Equations and inequalities</b><span>balance method, inequalities, x² = c, factorising</span></a>
+<a class="card" href="2ht-chapter-7/" title="Geometric reasoning: angles and reasons, F- and Z-angles, scale factor, area and volume, similar triangles"><i>7</i><b>Geometric reasoning</b><span>angles and reasons, F- and Z-angles, scale factor, area and volume, similar triangles</span></a>
+<a class="card" href="2ht-chapter-8/" title="Algebra: powers and like terms, rules of powers, expanding brackets, special products"><i>8</i><b>Algebra</b><span>powers and like terms, rules of powers, expanding brackets, special products</span></a>
+</section>
+<section class="cls" id="c-2vt" aria-label="2VT">
+<a class="card" href="2vt-chapter-1/" title="Numbers: factors, powers, roots, scientific notation"><i>1</i><b>Numbers</b><span>factors, powers, roots, scientific notation</span></a>
+<a class="card" href="2vt-chapter-2/" title="Solid geometry: volume, lines in space, views, nets"><i>2</i><b>Solid geometry</b><span>volume, lines in space, views, nets</span></a>
+<a class="card" href="2vt-chapter-3/" title="Relationships: linear formulas, direct and inverse proportion, parabolas, vertex form"><i>3</i><b>Relationships</b><span>linear formulas, direct and inverse proportion, parabolas, vertex form</span></a>
+<a class="card" href="2vt-chapter-4/" title="Probability: counting outcomes, tree diagrams, chance, without replacement"><i>4</i><b>Probability</b><span>counting outcomes, tree diagrams, chance, without replacement</span></a>
+<a class="card" href="2vt-chapter-5/" title="Pythagoras' theorem: calculating sides, auxiliary lines, in space, right-angled or not"><i>5</i><b>Pythagoras' theorem</b><span>calculating sides, auxiliary lines, in space, right-angled or not</span></a>
+<a class="card" href="2vt-chapter-6/" title="Equations and inequalities: balance method, inequalities, x² = c, factorising, the quadratic formula"><i>6</i><b>Equations and inequalities</b><span>balance method, inequalities, x² = c, factorising, the quadratic formula</span></a>
+<a class="card" href="2vt-chapter-7/" title="Geometric reasoning: angles and reasons, F- and Z-angles, scale factor, area and volume, similar triangles"><i>7</i><b>Geometric reasoning</b><span>angles and reasons, F- and Z-angles, scale factor, area and volume, similar triangles</span></a>
+<a class="card" href="2vt-chapter-8/" title="Algebra: rules of powers, negative exponents, expanding brackets, roots with letters, completing the square"><i>8</i><b>Algebra</b><span>rules of powers, negative exponents, expanding brackets, roots with letters, completing the square</span></a>
+</section>
+<section class="cls" id="c-3ht" aria-label="3HT">
+<a class="card" href="3ht-chapter-1/" title="Numbers and variables: roots, powers, brackets, fractions"><i>1</i><b>Numbers and variables</b><span>roots, powers, brackets, fractions</span></a>
+<a class="card" href="3ht-chapter-2/" title="Geometric reasoning: similarity, bisectors, altitudes, medians"><i>2</i><b>Geometric reasoning</b><span>similarity, bisectors, altitudes, medians</span></a>
+<a class="card" href="3ht-chapter-3/" title="Relations: lines, parabolas, proportions, square roots, transformations, periodic graphs"><i>3</i><b>Relations</b><span>lines, parabolas, proportions, square roots, transformations, periodic graphs</span></a>
+<a class="card" href="3ht-chapter-4/" title="Statistics: frequency tables, diagrams, grouped data, mean, median, mode, boxplots"><i>4</i><b>Statistics</b><span>frequency tables, diagrams, grouped data, mean, median, mode, boxplots</span></a>
+<a class="card" href="3ht-chapter-5/" title="Equations and inequalities: linear, quadratic, the quadratic formula, quadratic inequalities, higher powers"><i>5</i><b>Equations and inequalities</b><span>linear, quadratic, the quadratic formula, quadratic inequalities, higher powers</span></a>
+<a class="card" href="3ht-chapter-6/" title="Trigonometry: Pythagoras, special triangles, sin, cos and tan, slopes and angles of inclination"><i>6</i><b>Trigonometry</b><span>Pythagoras, special triangles, sin, cos and tan, slopes and angles of inclination</span></a>
+<a class="card" href="3ht-chapter-7/" title="Exponential growth: multipliers, growth factors, formulas, graphs, exponential equations"><i>7</i><b>Exponential growth</b><span>multipliers, growth factors, formulas, graphs, exponential equations</span></a>
+<a class="card" href="3ht-chapter-8/" title="Rate of change, counting, functions and f(x) notation"><i>8</i><b>Rate of change, counting, functions and f(x) notation</b><span></span></a>
+</section>
+<section class="cls" id="c-3vt" aria-label="3VT">
+<a class="card" href="3vt-chapter-1/" title="Numbers: sequences, primes, real numbers, roots, LCM and HCF"><i>1</i><b>Numbers</b><span>sequences, primes, real numbers, roots, LCM and HCF</span></a>
+<a class="card" href="3vt-chapter-2/" title="Trigonometry: sin, cos, tan, slopes and solids"><i>2</i><b>Trigonometry</b><span>sin, cos, tan, slopes and solids</span></a>
+<a class="card" href="3vt-chapter-3/" title="Functions: linear, quadratic, power, root and rational functions, transformations, symmetry"><i>3</i><b>Functions</b><span>linear, quadratic, power, root and rational functions, transformations, symmetry</span></a>
+<a class="card" href="3vt-chapter-4/" title="Statistics: frequency tables, diagrams, grouped data, mean, median, mode, boxplots"><i>4</i><b>Statistics</b><span>frequency tables, diagrams, grouped data, mean, median, mode, boxplots</span></a>
+<a class="card" href="3vt-chapter-5/" title="Equations and inequalities: systems, quadratic, root and fractional equations"><i>5</i><b>Equations and inequalities</b><span>systems, quadratic, root and fractional equations</span></a>
+<a class="card" href="3vt-chapter-6/" title="Exponential growth: multipliers, growth factor, formulas, graphs, equations"><i>6</i><b>Exponential growth</b><span>multipliers, growth factor, formulas, graphs, equations</span></a>
+<a class="card" href="3vt-chapter-7/" title="Geometric reasoning: angles, similar and congruent triangles, bisectors, medians, circles"><i>7</i><b>Geometric reasoning</b><span>angles, similar and congruent triangles, bisectors, medians, circles</span></a>
+</section>
 <p class="note">Your progress is saved in this browser on this device. Nothing is sent anywhere.</p>
 </main>
+<script>
+(function () {
+  var tabs = document.querySelectorAll('.tab'), key = 'mp-home-class';
+  function show(id) {
+    if (!document.getElementById(id)) id = tabs[0].getAttribute('data-c');
+    tabs.forEach(function (t) { t.setAttribute('aria-pressed', t.getAttribute('data-c') === id ? 'true' : 'false'); });
+    document.querySelectorAll('.cls').forEach(function (s) { s.classList.toggle('on', s.id === id); });
+    try { localStorage.setItem(key, id); } catch (e) {}
+  }
+  tabs.forEach(function (t) { t.addEventListener('click', function () { show(t.getAttribute('data-c')); history.replaceState(null, '', '#' + t.getAttribute('data-c').slice(2)); }); });
+  var start = location.hash ? 'c-' + location.hash.slice(1).toLowerCase() : null;
+  if (!start) { try { start = localStorage.getItem(key); } catch (e) {} }
+  show(start || tabs[0].getAttribute('data-c'));
+})();
+</script>
 </body>
 </html>

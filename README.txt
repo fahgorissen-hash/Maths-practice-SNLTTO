@@ -10,7 +10,7 @@ Commit trailers to use: Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com
 - One self-contained index.html per chapter: <class>-chapter-N/index.html (e.g. 2ht-chapter-4). No server needed.
 - Each page = head/CSS/nav + script1 (NX core engine: tokenizer, parser, grading, formCheck, gridSVG) + script2 (chapter content) + script3 (shared UI).
 - Only the nav/title/h1 and script2 differ between pages. Template page for new builds: 2ht-chapter-2/index.html.
-- Home page: /index.html has per-class card grids. NEW CHAPTERS STILL NEED A CARD THERE (2ht-chapter-4 is not on it yet).
+- Home page: /index.html shows class buttons; each class is a <section class="cls" id="c-<class>"> of cards like <a class="card" href="2ht-chapter-4/" title="Title: topics"><i>4</i><b>Title</b><span>topics</span></a>. Every new chapter needs a card in its class section. Fits one screen (4 columns, 2 on phones); #2ht in the URL opens that class.
 - Student progress is stored in localStorage, key nx-<cls>-chN-vX.
 
 2. BUILD TOOLING (in _src/)
