@@ -88,15 +88,421 @@ svg.fig{max-width:430px;width:100%;height:auto;display:block;margin:6px 0 10px}
 </style>
 </head>
 <body>
-<header><div class="topnav" role="navigation" aria-label="Site navigation"><a class="nb" href="../">Home</a><a class="nb" href="../2ht-chapter-1/">Chapter 1</a><a class="nb" href="../2ht-chapter-2/">Chapter 2</a><a class="nb cur" href="../2ht-chapter-3/" aria-current="page">Chapter 3</a><a class="nb" href="../2ht-chapter-4/">Chapter 4</a><a class="nb" href="../2ht-chapter-5/">Chapter 5</a><a class="nb" href="../2ht-chapter-6/">Chapter 6</a><a class="nb" href="../2ht-chapter-7/">Chapter 7</a><a class="nb" href="../2ht-chapter-8/">Chapter 8</a></div><div class="hd"><h1>Chapter 3 &middot; Relationships</h1><p>Practise as long as you like. The questions adapt to you: Mild, Medium, Spicy and Extra spicy.</p></div><button class="pbtn" id="pbtn" type="button">My progress</button></header>
+<header><div class="topnav" role="navigation" aria-label="Site navigation"><a class="nb" href="../">Home</a><a class="nb" href="../2ht-chapter-1/">Chapter 1</a><a class="nb" href="../2ht-chapter-2/">Chapter 2</a><a class="nb cur" href="../2ht-chapter-3/" aria-current="page">Chapter 3</a><a class="nb" href="../2ht-chapter-4/">Chapter 4</a><a class="nb" href="../2ht-chapter-5/">Chapter 5</a><a class="nb" href="../2ht-chapter-6/">Chapter 6</a><a class="nb" href="../2ht-chapter-7/">Chapter 7</a><a class="nb" href="../2ht-chapter-8/">Chapter 8</a></div><div class="hd"><h1>2HT · Chapter 3 · Relationships</h1><p>Practise as long as you like. The questions adapt to you: Mild, Medium, Spicy and Extra spicy.</p></div><button class="pbtn" id="pbtn" type="button">My progress</button></header>
 <div class="wrap">
   <nav id="nav" aria-label="Topics"></nav>
   <main id="main" aria-live="polite"></main>
 </div>
 <script>
-/* Chapter 3 Relations - question engine (no DOM). Works in browser and in node. */
+/* NX core: shared helpers, expression parser/grader, renderer, engine builder. No DOM. */
 (function (root) {
-  'use strict';
+'use strict';
+const ri = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
+const pick = arr => arr[Math.floor(Math.random() * arr.length)];
+const shuffle = arr => { const a = arr.slice(); for (let i = a.length - 1; i > 0; i--) { const j = ri(0, i); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const nz = (a, b) => { let v = 0; while (v === 0) v = ri(a, b); return v; };
+const f = n => (n < 0 ? '−' : '') + (Math.round(Math.abs(n) * 1e6) / 1e6);
+const gcd = (a, b) => { a = Math.abs(a); b = Math.abs(b); while (b) { [a, b] = [b, a % b]; } return a; };
+const lcm = (a, b) => a / gcd(a, b) * b;
+const isPrime = n => { if (n < 2) return false; for (let i = 2; i * i <= n; i++) if (n % i === 0) return false; return true; };
+const primeFactors = n => { const r = []; for (let p = 2; p * p <= n; p++) while (n % p === 0) { r.push(p); n /= p; } if (n > 1) r.push(n); return r; };
+const squarefree = n => { for (let p = 2; p * p <= n; p++) if (n % (p * p) === 0) return false; return true; };
+const sqrtSplit = n => { let o = 1, r = n; for (let p = 2; p * p <= r; p++) while (r % (p * p) === 0) { o *= p; r /= p * p; } return [o, r]; };  // n = o^2 * r
+const SUP = '⁰¹²³⁴⁵⁶⁷⁸⁹';
+
+/* ================= tokenizer / parser ================= */
+function tokenize(src, o) {
+  o = o || {};
+  let s = String(src).replace(/[−–—]/g, '-').replace(/ /g, ' ');
+  s = s.replace(/(^|[^\d.,])(-?)(\d+)[ ]+(\d+)[ ]*\/[ ]*(\d+)/g, (m, pre, sg, w, n, d) => pre + (sg ? '-' : '') + '(' + w + '+' + n + '/' + d + ')');   // mixed number 2 1/3
+  s = s.replace(/sqrt/gi, '√').replace(/(?<![a-zA-Z])pi(?![a-zA-Z])/gi, 'π');
+  s = s.replace(/([⁰¹²³⁴⁵⁶⁷⁸⁹]+)√/g, (m, d) => '\u0001' + d.split('').map(c => SUP.indexOf(c)).join('') + ';');
+  s = s.replace(/(\d+)\s*V/g, (m, d) => '\u0001' + d + ';');   // 3V27 = cube root of 27
+  s = s.replace(/∛/g, '\u00013;').replace(/∜/g, '\u00014;');
+  s = s.replace(/[⁰¹²³⁴⁻⁵⁶⁷⁸⁹]+/g, m => '^(' + m.split('').map(c => c === '⁻' ? '-' : SUP.indexOf(c)).join('') + ')');
+  const t = []; let i = 0;
+  while (i < s.length) {
+    const c = s[i];
+    if (/\s/.test(c)) { i++; continue; }
+    if (c === '\u0001') { const j = s.indexOf(';', i); t.push({ k: 'sqrt', n: +s.slice(i + 1, j) }); i = j + 1; continue; }
+    if (c === '√') { t.push({ k: 'sqrt', n: 2 }); i++; continue; }
+    let m;
+    if ((m = /^\d+(?:[.,]\d+)?|^[.,]\d+/.exec(s.slice(i)))) { t.push({ k: 'num', v: parseFloat(m[0].replace(',', '.')), s: m[0].replace(',', '.') }); i += m[0].length; continue; }
+    if (c === 'π') { t.push({ k: 'pi' }); i++; continue; }
+    if (/[×·⋅*]/.test(c)) { t.push({ k: 'op', v: '*' }); i++; continue; }
+    if (/[x]/i.test(c) && o.noVars) { t.push({ k: 'op', v: '*' }); i++; continue; }
+    if (/[a-zA-Z]/.test(c)) { if (o.noVars) throw new Error('var'); t.push({ k: 'var', n: c }); i++; continue; }
+    if (c === '÷' || c === ':') { t.push({ k: 'op', v: '÷' }); i++; continue; }
+    if ('+-/^()'.indexOf(c) >= 0) { t.push({ k: 'op', v: c }); i++; continue; }
+    if (c === '[') { t.push({ k: 'op', v: '(' }); i++; continue; }
+    if (c === ']') { t.push({ k: 'op', v: ')' }); i++; continue; }
+    throw new Error('char ' + c);
+  }
+  return t;
+}
+function parse(src, o) {
+  const T = tokenize(src, o); let p = 0;
+  const peek = () => T[p], isOp = v => T[p] && T[p].k === 'op' && T[p].v === v;
+  const startsFactor = () => { const k = T[p]; return k && (k.k === 'num' || k.k === 'var' || k.k === 'pi' || k.k === 'sqrt' || (k.k === 'op' && k.v === '(')); };
+  function expr() {
+    let a = term();
+    while (isOp('+') || isOp('-')) { const op = T[p++].v; const b = term(); a = { t: op === '+' ? 'add' : 'sub', a, b }; }
+    return a;
+  }
+  function term() {
+    let a = unary();
+    for (;;) {
+      if (isOp('*')) { p++; a = { t: 'mul', a, b: unary() }; }
+      else if (isOp('/')) { p++; a = { t: 'div', a, b: unary() }; }
+      else if (isOp('÷')) { p++; a = { t: 'div', a, b: unary(), inl: true }; }
+      else if (startsFactor()) { a = { t: 'mul', a, b: unary(), imp: true }; }
+      else break;
+    }
+    return a;
+  }
+  function unary() {
+    if (isOp('-')) { p++; return { t: 'neg', a: unary() }; }
+    if (isOp('+')) { p++; return unary(); }
+    return power();
+  }
+  function power() {
+    const a = atom();
+    if (isOp('^')) { p++; let sgn = 1; if (isOp('-')) { p++; sgn = -1; } else if (isOp('+')) p++; let b = power(); if (sgn < 0) b = { t: 'neg', a: b }; return { t: 'pow', a, b }; }
+    return a;
+  }
+  function atom() {
+    const k = T[p]; if (!k) throw new Error('end');
+    if (k.k === 'num') { p++; return { t: 'n', v: k.v, s: k.s }; }
+    if (k.k === 'var') { p++; return { t: 'v', n: k.n }; }
+    if (k.k === 'pi') { p++; return { t: 'pi' }; }
+    if (k.k === 'sqrt') {
+      p++; let neg = false;
+      if (isOp('-')) { p++; neg = true; }
+      let r; const q = T[p];
+      if (isOp('(')) r = atom();
+      else if (q && q.k === 'num') { p++; r = { t: 'n', v: q.v, s: q.s }; }
+      else if (q && q.k === 'var') { p++; r = { t: 'v', n: q.n }; }
+      else if (q && q.k === 'pi') { p++; r = { t: 'pi' }; }
+      else throw new Error('sqrt');
+      if (neg) r = { t: 'neg', a: r };
+      return { t: 'sqrt', a: r, k: k.n };
+    }
+    if (isOp('(')) { p++; const e = expr(); if (!isOp(')')) throw new Error('paren'); p++; e.par = true; return e; }
+    throw new Error('atom');
+  }
+  const e = expr(); if (p < T.length) throw new Error('trailing'); return e;
+}
+function evalAst(n, env) {
+  switch (n.t) {
+    case 'n': return n.v; case 'v': { if (!(n.n in env)) env[n.n] = 0.6 + Math.random() * 2.2; return env[n.n]; }
+    case 'pi': return Math.PI; case 'neg': return -evalAst(n.a, env);
+    case 'add': return evalAst(n.a, env) + evalAst(n.b, env); case 'sub': return evalAst(n.a, env) - evalAst(n.b, env);
+    case 'mul': return evalAst(n.a, env) * evalAst(n.b, env); case 'div': return evalAst(n.a, env) / evalAst(n.b, env);
+    case 'pow': return Math.pow(evalAst(n.a, env), evalAst(n.b, env));
+    case 'sqrt': { const x = evalAst(n.a, env); if (n.k % 2 === 1) return (x < 0 ? -1 : 1) * Math.pow(Math.abs(x), 1 / n.k); return x < 0 ? NaN : Math.pow(x, 1 / n.k); }
+  }
+  return NaN;
+}
+function numEq(a, b) {                       // asts equivalent? (random numeric test)
+  for (let i = 0; i < 6; i++) {
+    const env = {}; const x = evalAst(a, env), y = evalAst(b, env);  // vars filled lazily, shared env
+    const y2 = evalAst(b, env);
+    if (!isFinite(x) || !isFinite(y2)) { if (i < 5) continue; return false; }
+    if (Math.abs(x - y2) > 1e-7 * Math.max(1, Math.abs(x), Math.abs(y2))) return false;
+  }
+  return true;
+}
+const isInt = v => Math.abs(v - Math.round(v)) < 1e-9;
+const lit = n => n.t === 'n' ? n.v : (n.t === 'neg' && n.a.t === 'n' ? -n.a.v : null);
+
+/* ----- polynomials: Map(key -> coef) ; key = 'a1b2' sorted ----- */
+const PK = m => Object.keys(m).sort().map(v => v + m[v]).join('');
+const Poly = {
+  c: v => (v === 0 ? {} : { '': v }),
+  v: n => ({ [n + '1']: 1 }),
+  add(a, b, s) { const r = Object.assign({}, a); for (const k in b) { r[k] = (r[k] || 0) + (s || 1) * b[k]; if (Math.abs(r[k]) < 1e-12) delete r[k]; } return r; },
+  mulm(k1, k2) { const m = {}; const re = /([^\d])(\d+)/g; let x; [k1, k2].forEach(k => { re.lastIndex = 0; while ((x = re.exec(k))) m[x[1]] = (m[x[1]] || 0) + +x[2]; }); return PK(m); },
+  mul(a, b) { const r = {}; for (const k1 in a) for (const k2 in b) { const k = Poly.mulm(k1, k2); r[k] = (r[k] || 0) + a[k1] * b[k2]; if (Math.abs(r[k]) < 1e-12) delete r[k]; } return r; },
+  pow(a, n) { let r = Poly.c(1); for (let i = 0; i < n; i++) r = Poly.mul(r, a); return r; },
+  isConst: a => Object.keys(a).every(k => k === ''),
+  cval: a => a[''] || 0
+};
+function toRF(n) {                           // rational function {N,D} or null
+  switch (n.t) {
+    case 'n': return { N: Poly.c(n.v), D: Poly.c(1) };
+    case 'v': return { N: Poly.v(n.n), D: Poly.c(1) };
+    case 'pi': return { N: Poly.v('π'), D: Poly.c(1) };
+    case 'neg': { const a = toRF(n.a); return a && { N: Poly.mul(a.N, Poly.c(-1)), D: a.D }; }
+    case 'add': case 'sub': { const a = toRF(n.a), b = toRF(n.b); if (!a || !b) return null; return { N: Poly.add(Poly.mul(a.N, b.D), Poly.mul(b.N, a.D), n.t === 'add' ? 1 : -1), D: Poly.mul(a.D, b.D) }; }
+    case 'mul': { const a = toRF(n.a), b = toRF(n.b); return a && b && { N: Poly.mul(a.N, b.N), D: Poly.mul(a.D, b.D) }; }
+    case 'div': { const a = toRF(n.a), b = toRF(n.b); if (!a || !b || !Object.keys(b.N).length) return null; return { N: Poly.mul(a.N, b.D), D: Poly.mul(a.D, b.N) }; }
+    case 'pow': { const e = lit(n.b); if (e === null || !isInt(e) || Math.abs(e) > 12) return null; const a = toRF(n.a); if (!a) return null; if (e >= 0) return { N: Poly.pow(a.N, e), D: Poly.pow(a.D, e) }; if (!Object.keys(a.N).length) return null; return { N: Poly.pow(a.D, -e), D: Poly.pow(a.N, -e) }; }
+  }
+  return null;
+}
+/* ----- structural analysis ----- */
+function flat(n, s, out) {
+  if (n.t === 'add') { flat(n.a, s, out); flat(n.b, s, out); }
+  else if (n.t === 'sub') { flat(n.a, s, out); flat(n.b, -s, out); }
+  else if (n.t === 'neg') flat(n.a, -s, out);
+  else out.push({ s, n });
+  return out;
+}
+function monoTerm(n, allowNegExp) {           // {c, vars} or null
+  switch (n.t) {
+    case 'n': return { c: n.v, vars: {} };
+    case 'pi': return { c: 1, vars: { 'π': 1 } };
+    case 'v': return { c: 1, vars: { [n.n]: 1 } };
+    case 'neg': { const a = monoTerm(n.a, allowNegExp); return a && { c: -a.c, vars: a.vars }; }
+    case 'mul': { const a = monoTerm(n.a, allowNegExp), b = monoTerm(n.b, allowNegExp); if (!a || !b) return null; const vars = Object.assign({}, a.vars); for (const k in b.vars) { if (k in vars) return null; vars[k] = b.vars[k]; } return { c: a.c * b.c, vars }; }
+    case 'div': { const a = monoTerm(n.a, allowNegExp), b = monoTerm(n.b, allowNegExp); if (!a || !b || Object.keys(b.vars).length || b.c === 0) return null; return { c: a.c / b.c, vars: a.vars }; }
+    case 'pow': { const e = lit(n.b); if (e === null || !isInt(e)) return null; if (e < 0 && !allowNegExp) return null; if (n.a.t === 'v') return { c: 1, vars: { [n.a.n]: e } }; if (n.a.t === 'pi') return { c: 1, vars: { 'π': e } }; return null; }
+  }
+  return null;
+}
+const hasBrackets = (n) => { if (n.par && n.t !== 'n' && !(n.t === 'neg' && n.a.t === 'n') && !(n.t === 'div' && n.a.t === 'n' && n.b.t === 'n')) return true; for (const k of ['a', 'b']) if (n[k] && hasBrackets(n[k])) return true; return false; };
+function sigOf(vars) { return Object.keys(vars).sort().map(k => k + vars[k]).join(''); }
+
+function formCheck(form, ast, q) {            // returns null if ok else message
+  if (!form || form === 'any') return null;
+  if (form === 'mono') {
+    const t = flat(ast, 1, []); if (t.length !== 1) return 'Write your answer as a single term.';
+    if (!monoTerm(t[0].n, q && q.negExp)) return 'Not fully simplified yet: write it as one number times each letter to a single power.'; return null;
+  }
+  if (form === 'poly') {
+    const t = flat(ast, 1, []); const seen = {};
+    for (const x of t) { const m = monoTerm(x.n); if (!m) return 'Not finished yet: expand the brackets and write every term as a number times letters.'; const s = sigOf(m.vars); if (seen[s]) return 'Not finished yet: add the like terms.'; seen[s] = 1; if (m.c === 0) return 'Remove the terms that are 0.'; }
+    return null;
+  }
+  if (form === 'lowest') {
+    const rf = toRF(ast); if (!rf) return 'I cannot read that as a fraction.';
+    const D = rf.D, N = rf.N; if (Object.keys(D).length !== 1) return 'Write one fraction with a single term in the denominator.';
+    const dk = Object.keys(D)[0]; let dc = D[dk]; if (!isInt(dc)) return null;
+    const cs = Object.keys(N).map(k => N[k]); if (!cs.length) return null;
+    if (cs.some(c => !isInt(c))) { return null; }
+    let g = Math.abs(dc); cs.forEach(c => { g = gcd(g, c); }); if (g > 1) return 'Not fully simplified: the numbers still have a common factor.';
+    const vs = (dk.match(/[^\d]/g) || []);
+    for (const v of vs) { if (Object.keys(N).every(k => k.indexOf(v) >= 0)) return 'Not fully simplified: you can still cancel the letter ' + v + '.'; }
+    // the user must not leave nested fractions / brackets-free requirement: ok
+    return null;
+  }
+  if (form === 'root') {
+    const terms = flat(ast, 1, []); const rads = {};
+    function rootTerm(n) {            // {c, r} or null
+      switch (n.t) {
+        case 'n': return { c: n.v, r: 1 };
+        case 'neg': { const a = rootTerm(n.a); return a && { c: -a.c, r: a.r }; }
+        case 'sqrt': { if (n.k !== 2) return null; const v = lit(n.a); if (v === null || !isInt(v) || v <= 1) return null; if (!squarefree(v)) return { bad: 'sq' }; return { c: 1, r: v }; }
+        case 'mul': { const a = rootTerm(n.a), b = rootTerm(n.b); if (!a || !b || a.bad || b.bad) return a && a.bad ? a : b && b.bad ? b : null; if (a.r > 1 && b.r > 1) return { bad: 'two' }; return { c: a.c * b.c, r: a.r * b.r }; }
+        case 'div': { const a = rootTerm(n.a), b = rootTerm(n.b); if (!a || !b) return null; if (a.bad) return a; if (b.bad) return b; if (b.r > 1) return { bad: 'den' }; if (isInt(a.c) && isInt(b.c) && gcd(a.c, b.c) > 1) return { bad: 'cancel' }; return { c: a.c / b.c, r: a.r }; }
+      }
+      return null;
+    }
+    for (const x of terms) {
+      const r = rootTerm(x.n); if (!r) return 'Not in the simplest form: write each term as a number times √ of a whole number.';
+      if (r.bad === 'sq') return 'Not fully simplified: there is still a square factor under the root.';
+      if (r.bad === 'two') return 'Not fully simplified: combine the roots into one.';
+      if (r.bad === 'den') return 'There is still a root in the denominator.';
+      if (r.bad === 'cancel') return 'Not fully simplified: the fraction can still be cancelled.';
+      if (rads[r.r]) return 'Not finished: add the like radicals.'; rads[r.r] = 1;
+    }
+    return null;
+  }
+  if (form === 'primes') {
+    let bad = null;
+    (function walk(n, inPow) {
+      if (n.t === 'n') { if (!isInt(n.v) || !isPrime(n.v)) bad = 'Every factor must be a prime number.'; }
+      else if (n.t === 'mul') { walk(n.a); walk(n.b); }
+      else if (n.t === 'pow') { walk(n.a); if (n.b.t !== 'n') bad = 'Use whole-number exponents.'; }
+      else bad = 'Write only prime numbers multiplied together, like 2^3 · 5.';
+    })(ast); return bad;
+  }
+  if (form === 'sci') {
+    let n = ast; if (n.t !== 'mul') return 'Write it as a number between 1 and 10 times a power of 10.';
+    const a = lit(n.a), p = n.b; if (a === null || Math.abs(a) < 1 || Math.abs(a) >= 10) return 'The first number must be at least 1 and less than 10.';
+    if (p.t !== 'pow' || lit(p.a) !== 10 || lit(p.b) === null || !isInt(lit(p.b))) return 'Write it as a · 10^n.'; return null;
+  }
+  if (form === 'frac') {       // one fraction a/b in lowest terms (or a whole number)
+    if (ast.t === 'n' || (ast.t === 'neg' && ast.a.t === 'n')) return isInt(lit(ast)) ? null : 'Write your answer as a fraction, like 5/33.';
+    if (ast.t === 'div') { const a = lit(ast.a), b = lit(ast.b); if (a === null || b === null || !isInt(a) || !isInt(b)) return 'Write your answer as one fraction of two whole numbers, like 5/33.'; if (gcd(a, b) > 1) return 'Not fully simplified: the top and bottom still have a common factor.'; if (Math.abs(b) === 1) return 'Write a whole number without the 1 below it.'; return null; }
+    return 'Write your answer as one fraction, like 5/33.';
+  }
+  if (form === 'powfrac') { if (ast.t !== 'pow') return 'Write it as a single power, like (2/5)^3.'; const e = lit(ast.b); if (e === null || !isInt(e) || ast.a.t !== 'div') return 'Write it as a power of a fraction, like (2/5)^3.'; return null; }
+  if (form === 'power') {
+    if (ast.t !== 'pow') return 'Write it as a single power.'; const b = lit(ast.a), e = lit(ast.b);
+    if (b === null || e === null || !isInt(e)) return 'Write it as a single power.'; if (q && q.base !== undefined && b !== q.base) return 'Use the base ' + q.base + '.'; return null;
+  }
+  return null;
+}
+function gradeExpr(q, u) {
+  let ua, ea; const o = q.noVars ? { noVars: true } : {};
+  try { ua = parse(u, o); } catch (e) { return { ok: false, why: 'parse' }; }
+  ea = parse(q.ans, o);
+  if (!numEq(ea, ua)) return { ok: false, why: 'value' };
+  if (q.form === 'mixed') { const t = String(u).replace(/[−–—]/g, '-').trim(); const mm = /^-?\d+[ ]+(\d+)[ ]*\/[ ]*(\d+)$/.exec(t); const isI = /^-?\d+$/.test(t); const pf_ = /^-?(\d+)[ ]*\/[ ]*(\d+)$/.exec(t); if (!isI && pf_ && !mm) { const n1 = +pf_[1], d1 = +pf_[2]; if (n1 >= d1) return { ok: false, why: 'form', msg: 'Write it as a mixed number: a whole number, a space and a fraction, like 2 1/3.' }; if (gcd(n1, d1) > 1) return { ok: false, why: 'form', msg: 'Not fully simplified: the fraction can still be simplified.' }; return { ok: true }; } if (!isI) { if (!mm) return { ok: false, why: 'form', msg: 'Write it as a mixed number: a whole number, a space and a fraction, like 2 1/3.' }; const nn = +mm[1], dd = +mm[2]; if (nn >= dd) return { ok: false, why: 'form', msg: 'The fraction part must be smaller than 1.' }; if (gcd(nn, dd) > 1) return { ok: false, why: 'form', msg: 'Not fully simplified: the fraction part can still be simplified.' }; } return { ok: true }; }
+  if (q.form === 'improper') { if (/\d[ ]+\d+[ ]*\/[ ]*\d/.test(String(u).trim())) return { ok: false, why: 'form', msg: 'Write it as one fraction (no whole number in front), like 7/4.' }; const m2 = formCheck('lowest', ua, q); if (m2) return { ok: false, why: 'form', msg: m2 }; return { ok: true }; }
+  const m = formCheck(q.form, ua, q); if (m) return { ok: false, why: 'form', msg: m };
+  if (q.needPi && !/π|pi/i.test(String(u))) return { ok: false, why: 'form', msg: 'Give the exact answer, with π.' };
+  return { ok: true };
+}
+
+/* ================= rendering ================= */
+function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;'); }
+function R(src, o) {
+  let ast; try { ast = parse(src, o); } catch (e) { return null; }
+  function P(n, strip) {
+    const w = (n.par && !strip) ? x => '(' + x + ')' : x => x;
+    switch (n.t) {
+      case 'n': return w(esc(n.s !== undefined ? String(n.s).replace('.', ',') : n.v));
+      case 'v': return '<i>' + n.n + '</i>';
+      case 'pi': return 'π';
+      case 'neg': return w('−' + P(n.a));
+      case 'add': return w(P(n.a) + ' + ' + P(n.b));
+      case 'sub': return w(P(n.a) + ' − ' + P(n.b));
+      case 'mul': return w(n.imp ? P(n.a) + P(n.b) : P(n.a) + ' · ' + P(n.b));
+      case 'div': return n.inl ? w(P(n.a) + ' ÷ ' + P(n.b)) : w('<span class="fr"><span class="nu">' + P(n.a, true) + '</span><span class="de">' + P(n.b, true) + '</span></span>');
+      case 'pow': return w(P(n.a) + '<sup>' + P(n.b, true) + '</sup>');
+      case 'sqrt': return w('<span class="rt' + (n.k > 2 ? ' rn' : '') + '">' + (n.k > 2 ? '<sup class="ix">' + n.k + '</sup>' : '') + '<span class="sq"></span><span class="ov">' + P(n.a, true) + '</span></span>');
+    }
+    return '';
+  }
+  return '<span class="mx">' + P(ast) + '</span>';
+}
+const M = (s, o) => R(s, o) || esc(s);                       // render math
+const fr = (a, b) => '<span class="mx"><span class="fr"><span class="nu">' + a + '</span><span class="de">' + b + '</span></span></span>';
+const mixed = (w, n, d) => '<span class="mx">' + w + fr(n, d) + '</span>';
+const tbl = (rows) => '<table class="tbl">' + rows.map(r => '<tr>' + r.map((c, i) => (i === 0 ? '<th>' : '<td>') + c + (i === 0 ? '</th>' : '</td>')).join('') + '</tr>').join('') + '</table>';
+
+/* ---- number formatting for answers ---- */
+function fmtNum(n) { if (isInt(n)) return f(Math.round(n)); return f(Math.round(n * 1e4) / 1e4).replace('.', ','); }
+function ratText(n, d) { const g = gcd(n, d); n /= g; d /= g; if (d < 0) { n = -n; d = -d; } return d === 1 ? String(n) : n + '/' + d; }
+
+/* ================= grading ================= */
+function parseNum(s) {
+  if (s === null || s === undefined) return NaN;
+  s = String(s).replace(/[−–—]/g, '-').replace(/\s*(?:°|degrees?)\s*$/i, '').replace(/\s+/g, '').replace(',', '.');
+  const fr_ = s.match(/^([+-]?\d+\.?\d*)\/([+-]?\d+\.?\d*)$/);
+  if (fr_ && parseFloat(fr_[2]) !== 0) return parseFloat(fr_[1]) / parseFloat(fr_[2]);
+  if (!/^[+-]?(\d+\.?\d*|\.\d+)$/.test(s)) return NaN;
+  return parseFloat(s);
+}
+function parsePoint(s) {
+  s = String(s || '').replace(/[−–—]/g, '-').replace(/\s+/g, '').replace(/^\(|\)$/g, '');
+  const m = s.split(/[;,]/); if (m.length === 2 && /^[+-]?\d+(\.\d+)?$/.test(m[0]) && /^[+-]?\d+(\.\d+)?$/.test(m[1])) return [parseFloat(m[0]), parseFloat(m[1])];
+  return null;
+}
+function check(q, u) {                      // -> {ok, why?, msg?}
+  if (typeof q.grade === 'function') { let ok = false; try { ok = !!q.grade(u); } catch (e) { } return { ok }; }   // own grading (e.g. protractor questions)
+  if (q.type === 'num') { const n = parseNum(u); if (isNaN(n)) return { ok: false, why: 'parse' }; return { ok: Math.abs(n - q.ans) <= (q.tol || 1e-9) }; }
+  if (q.type === 'multi') { const ok = Array.isArray(u) && u.length === q.ans.length && u.every((v, i) => { const n = parseNum(v); return !isNaN(n) && Math.abs(n - q.ans[i]) <= (q.tol || 1e-9); }); return { ok }; }
+  if (q.type === 'point') { const p = parsePoint(u); return { ok: !!p && Math.abs(p[0] - q.ans[0]) < 1e-9 && Math.abs(p[1] - q.ans[1]) < 1e-9 }; }
+  if (q.type === 'choice') return { ok: Number(u) === q.ans };
+  if (q.type === 'expr') return gradeExpr(q, u);
+  if (q.type === 'click') { const got = Array.isArray(u) ? u : []; if (q.valid) { let ok = false; try { ok = !!q.valid(got); } catch (e) { } return { ok }; } const k = p => p[0] + ',' + p[1]; return { ok: got.map(k).sort().join('|') === (q.ans || []).map(k).sort().join('|') }; }
+  return { ok: false };
+}
+const grade = (q, u) => check(q, u).ok;
+function answerText(q) {
+  if (q.ansText) return q.ansText;
+  if (q.type === 'num') return fmtNum(q.ans);
+  if (q.type === 'multi') return q.ans.map(fmtNum).join(' and ');
+  if (q.type === 'point') return '(' + f(q.ans[0]) + ', ' + f(q.ans[1]) + ')';
+  if (q.type === 'choice') return q.opts[q.ans];
+  if (q.type === 'expr') return M(q.ans, q.noVars ? { noVars: true } : {});
+  if (q.type === 'click') return (q.ans || []).map(p => '(' + f(p[0]) + ', ' + f(p[1]) + ')').join(' and ');
+  return '';
+}
+
+/* ================= engine builder ================= */
+function engine(def) {
+  const { SECTIONS, LESSONS, G, XG } = def;
+  const fnOf = (list, sec, name) => (list[sec] || []).find(x => x.name === name);
+  function makeOne(key, lvl) {
+    const mixq = lvl === 'mix'; if (mixq) lvl = pick([0, 1, 1, 2, 2, 3, 3]);
+    const lesson = LESSONS.find(x => x.id === key);
+    let gens, xgs;
+    if (lesson) { gens = lesson.gens.map(e => [e[1], fnOf(G, e[0], e[1])]).filter(e => e[1]); xgs = (lesson.xg || []).map(e => [e[1], fnOf(XG, e[0], e[1])]).filter(e => e[1]); }
+    else { gens = (G[key] || []).map(x => [x.name, x]); xgs = (XG[key] || []).map(x => [x.name, x]); }
+    let q, e;
+    if (lvl === 3 && xgs.length && Math.random() < 0.7) { e = pick(xgs); q = e[1](2); }
+    else { e = pick(gens); q = e[1](Math.min(lvl, 2)); }
+    q.gen = e[0]; q.sec = key; q.lvl = lvl; q.mix = mixq; return q;
+  }
+  const fingerprint = q => String(q.html || '').replace(/<svg[\s\S]*?<\/svg>/g, '') + '|' + JSON.stringify(q.ans);
+  function make(key, lvl, recent) {
+    recent = Array.isArray(recent) ? recent : [];
+    const fps = recent.map(r => r.f), gens = recent.slice(-3).map(r => r.g);
+    let q;
+    for (let t = 0; t < 60; t++) {
+      try { q = makeOne(key, lvl); } catch (e) { if (t > 50) throw e; continue; }
+      q.fp = fingerprint(q);
+      if (fps.includes(q.fp)) continue;
+      if (q.type === 'choice' && q.opts && q.opts.length <= 2 && typeof q.lvl === 'number' && q.lvl > 0 && t < 55) continue;
+      if (t < 30 && gens.includes(q.gen)) continue;
+      break;
+    }
+    return q;
+  }
+  function makeTest() {
+    const n = SECTIONS.length, N = 24;
+    const lv = shuffle([0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2]);
+    const secs = []; for (let i = 0; i < N; i++) secs.push(SECTIONS[i % n].id);
+    const seen = []; return shuffle(secs).map((s, i) => { const q = make(s, lv[i], seen); seen.push({ g: null, f: q.fp }); q.hint = null; return q; });
+  }
+  return { KEY: def.key, SECTIONS, LESSONS, G, XG, make, makeTest, grade, check, answerText, evalNum: s => evalAst(parse(String(s), { noVars: true }), {}), parseNum, parsePoint, f, M, parse, defaultMode: def.defaultMode || 'lesson' };
+}
+
+/* ---------- click grid (shared) ---------- */
+let _gid = 0;
+function clipLine(p, d, xmin, xmax, ymin, ymax) {   // line through p with direction d, clipped to the rectangle
+  let t0 = -1e9, t1 = 1e9;
+  for (const [pp, dd, lo, hi] of [[p[0], d[0], xmin, xmax], [p[1], d[1], ymin, ymax]]) {
+    if (Math.abs(dd) < 1e-12) { if (pp < lo || pp > hi) return null; continue; }
+    let a = (lo - pp) / dd, b = (hi - pp) / dd; if (a > b) [a, b] = [b, a]; t0 = Math.max(t0, a); t1 = Math.min(t1, b);
+  }
+  if (t0 > t1) return null; return { a: [p[0] + d[0] * t0, p[1] + d[1] * t0], b: [p[0] + d[0] * t1, p[1] + d[1] * t1] };
+}
+function gridSVG(o) {
+  const u = o.u || 26, pad = 24, xmin = o.xmin, xmax = o.xmax, ymin = o.ymin, ymax = o.ymax, cells = !!o.cells;
+  const w = (xmax - xmin + (cells ? 1 : 0)) * u + 2 * pad, h = (ymax - ymin + (cells ? 1 : 0)) * u + 2 * pad;
+  const off = cells ? u / 2 : 0;
+  const X = x => pad + off + (x - xmin) * u, Y = y => pad + off + (ymax - y) * u;
+  const id = 'g' + (++_gid);
+  let s = '<svg class="grid" viewBox="0 0 ' + w + ' ' + h + '" role="img" aria-label="grid"' + (o.click ? ' data-click="1"' : '') + ' data-xmin="' + xmin + '" data-ymax="' + ymax + '" data-u="' + u + '" data-pad="' + (pad + off) + '" data-w="' + w + '"' + (cells ? ' data-cell="1"' : '') + '>';
+  s += '<defs><clipPath id="' + id + '"><rect x="' + (X(xmin) - off) + '" y="' + (Y(ymax) - off) + '" width="' + (w - 2 * pad) + '" height="' + (h - 2 * pad) + '"/></clipPath></defs>';
+  s += '<rect x="0" y="0" width="' + w + '" height="' + h + '" fill="#fff"/>';
+  if (cells) {
+    for (let x = xmin; x <= xmax + 1; x++) s += '<line x1="' + (X(x) - u / 2) + '" y1="' + pad + '" x2="' + (X(x) - u / 2) + '" y2="' + (h - pad) + '" stroke="#b9c6d3" stroke-width="1"/>';
+    for (let y = ymin; y <= ymax + 1; y++) s += '<line x1="' + pad + '" y1="' + (Y(y) + u / 2) + '" x2="' + (w - pad) + '" y2="' + (Y(y) + u / 2) + '" stroke="#b9c6d3" stroke-width="1"/>';
+    (o.fill || []).forEach(p => { s += '<rect x="' + (X(p[0]) - u / 2 + 1) + '" y="' + (Y(p[1]) - u / 2 + 1) + '" width="' + (u - 2) + '" height="' + (u - 2) + '" fill="#9cc3ea" stroke="#345" stroke-width="1.2"/>'; });
+  } else {
+    for (let x = xmin; x <= xmax; x++) s += '<line x1="' + X(x) + '" y1="' + Y(ymin) + '" x2="' + X(x) + '" y2="' + Y(ymax) + '" stroke="#dbe3ea" stroke-width="1"/>';
+    for (let y = ymin; y <= ymax; y++) s += '<line x1="' + X(xmin) + '" y1="' + Y(y) + '" x2="' + X(xmax) + '" y2="' + Y(y) + '" stroke="#dbe3ea" stroke-width="1"/>';
+    if (!o.noAxes) {
+      s += '<line x1="' + X(xmin) + '" y1="' + Y(0) + '" x2="' + X(xmax) + '" y2="' + Y(0) + '" stroke="#334" stroke-width="1.6"/>';
+      s += '<line x1="' + X(0) + '" y1="' + Y(ymin) + '" x2="' + X(0) + '" y2="' + Y(ymax) + '" stroke="#334" stroke-width="1.6"/>';
+      const stx = xmax - xmin > 12 ? 2 : 1, sty = ymax - ymin > 12 ? 2 : 1;
+      for (let x = xmin; x <= xmax; x++) if (x !== 0 && x % stx === 0) s += '<text x="' + X(x) + '" y="' + (Y(0) + 14) + '" font-size="10" text-anchor="middle" fill="#556">' + f(x) + '</text>';
+      for (let y = ymin; y <= ymax; y++) if (y !== 0 && y % sty === 0) s += '<text x="' + (X(0) - 5) + '" y="' + (Y(y) + 3.5) + '" font-size="10" text-anchor="end" fill="#556">' + f(y) + '</text>';
+    }
+  }
+  (o.polys || []).forEach(g => { s += '<polygon points="' + g.pts.map(p => X(p[0]) + ',' + Y(p[1])).join(' ') + '" fill="' + (g.fill || 'rgba(27,95,168,.12)') + '" stroke="' + (g.stroke || '#1b5fa8') + '" stroke-width="2.2" clip-path="url(#' + id + ')"/>'; });
+  (o.segs || []).forEach(g => { s += '<line x1="' + X(g.a[0]) + '" y1="' + Y(g.a[1]) + '" x2="' + X(g.b[0]) + '" y2="' + Y(g.b[1]) + '" stroke="' + (g.color || '#1b5fa8') + '" stroke-width="' + (g.w || 2.4) + '"' + (g.dash ? ' stroke-dasharray="6 4"' : '') + ' stroke-linecap="round" clip-path="url(#' + id + ')"/>'; });
+  (o.pts || []).forEach(p => {
+    s += '<circle cx="' + X(p.x) + '" cy="' + Y(p.y) + '" r="4.6" fill="' + (p.color || '#1b5fa8') + '" stroke="#fff" stroke-width="1.2"/>';
+    if (p.label) s += '<text x="' + (X(p.x) + 7) + '" y="' + (Y(p.y) - 7) + '" font-size="13" font-weight="700" fill="#123">' + p.label + '</text>';
+  });
+  return s + '<g class="marks"></g></svg>';
+}
+const U = { gridSVG, clipLine, ri, pick, shuffle, nz, f, gcd, lcm, isPrime, primeFactors, squarefree, sqrtSplit, parse, evalAst, numEq, R, M, fr, mixed, tbl, fmtNum, ratText, formCheck, gradeExpr, toRF, flat, monoTerm, Poly, engine, esc, parseNum };
+if (typeof module !== 'undefined' && module.exports) module.exports = U; else root.NX = U;
+})(typeof window !== 'undefined' ? window : globalThis);
+
+</script>
+<script>
+/* 2HT Chapter 3: relationships.  */
+const __def = (function (NX, P) {
+/* 2ht-chapter-3: moved from the older engine to NX on 2026-10-22. Generators unchanged; only the engine around them changed. */
   const ri = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
   const pick = arr => arr[Math.floor(Math.random() * arr.length)];
   const shuffle = arr => { const a = arr.slice(); for (let i = a.length - 1; i > 0; i--) { const j = ri(0, i); [a[i], a[j]] = [a[j], a[i]]; } return a; };
@@ -534,81 +940,40 @@ svg.fig{max-width:430px;width:100%;height:auto;display:block;margin:6px 0 10px}
     { id: '3.4', title: '3.4 Vertex form and inverse', sub: 'y = a(x \u2212 p)\u00b2 + q and y = k / x' }
   ];
 
-  function makeOne(sec, lvl, avoid) {
-    const mix = lvl === 'mix'; if (mix) lvl = pick([0, 1, 1, 2, 2, 3, 3]);
-    const X = XG[sec] || [], list = G[sec]; let q, i, tries = 0;
-    if (lvl === 3 && X.length && Math.random() < 0.7) {
-      do { i = ri(0, X.length - 1); tries++; } while (100 + i === avoid && tries < 10);
-      q = X[i](2); q.gen = 100 + i;
-    } else {
-      do { i = ri(0, list.length - 1); tries++; } while (i === avoid && tries < 10);
-      q = list[i](Math.min(lvl, 2)); q.gen = i;
+  /* ---------- NX glue ---------- */
+  const __gradeOld = (q, u) => {   // grading of the older engine for the question types NX does not know
+    if (q.type === 'proto') return typeof u === 'number' && Math.abs(u - q.target) <= q.tol;
+    if (q.type === 'click' && q.rel && q.through) {
+      if (!Array.isArray(u) || u.length !== 1) return false;
+      const v = [u[0][0] - q.through[0], u[0][1] - q.through[1]]; if (!v[0] && !v[1]) return false;
+      return q.rel === 'perp' ? v[0] * q.dir[0] + v[1] * q.dir[1] === 0 : v[0] * q.dir[1] - v[1] * q.dir[0] === 0;
     }
-    q.sec = sec; q.lvl = lvl; q.mix = mix; return q;
-  }
-  const fingerprint = q => String(q.html || '').replace(/<svg[\s\S]*?<\/svg>/g, '') + '|' + JSON.stringify(q.correct);
-  /* make(): like makeOne, but never repeats a question text from the last 12, nor a generator from the last 3 (when there is a choice) */
-  function make(key, lvl, recent) {
-    recent = Array.isArray(recent) ? recent : [];
-    const fps = recent.map(r => r.f), gens = recent.slice(-3).map(r => r.g);
-    let q;
-    for (let t = 0; t < 40; t++) {
-      q = makeOne(key, lvl, null);
-      q.fp = fingerprint(q);
-      if (fps.includes(q.fp)) continue;
-      if (q.type === 'choice' && q.opts && q.opts.length <= 2 && typeof q.lvl === 'number' && q.lvl > 0 && t < 35) continue;
-      if (t < 25 && gens.includes(q.gen)) continue;
-      break;
-    }
-    return q;
-  }
-  function makeTest() {
-    const lv = shuffle([0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2]);
-    const secs = []; for (let i = 0; i < 24; i++) secs.push(SECTIONS[i % 4].id);
-    const seen = []; const qs = shuffle(secs).map((s, i) => { const q = make(s, lv[i], seen); seen.push({ g: null, f: q.fp }); q.hint = null; return q; });
-    return qs;
-  }
-
-  /* ---------- grading ---------- */
-  function parseNum(s) {
-    if (s === null || s === undefined) return NaN;
-    s = String(s).replace(/[−–—]/g, '-').replace(/\s*(?:°|degrees?)\s*$/i, '').replace(/\s+/g, '').replace(',', '.');
-    const fr = s.match(/^([+-]?\d+\.?\d*)\/(\d+\.?\d*)$/);
-    if (fr && parseFloat(fr[2]) !== 0) return parseFloat(fr[1]) / parseFloat(fr[2]);
-    if (!/^[+-]?(\d+\.?\d*|\.\d+)$/.test(s)) return NaN;
-    return parseFloat(s);
-  }
-  function parsePoint(s) {
-    s = String(s || '').replace(/[−–—]/g, '-').replace(/\s+/g, '').replace(/^\(|\)$/g, '');
-    const m = s.split(/[;,]/); if (m.length === 2 && /^[+-]?\d+(\.\d+)?$/.test(m[0]) && /^[+-]?\d+(\.\d+)?$/.test(m[1])) return [parseFloat(m[0]), parseFloat(m[1])];
-    const d = s.match(/^([+-]?\d+(?:\.\d+)?);([+-]?\d+(?:\.\d+)?)$/); return d ? [parseFloat(d[1]), parseFloat(d[2])] : null;
-  }
-  function grade(q, u) {
-    if (q.type === 'num') { const n = parseNum(u); return !isNaN(n) && Math.abs(n - q.ans) < 1e-9; }
-    if (q.type === 'multi') return Array.isArray(u) && u.length === q.ans.length && u.every((v, i) => { const n = parseNum(v); return !isNaN(n) && Math.abs(n - q.ans[i]) < 1e-9; });
-    if (q.type === 'point') { const p = parsePoint(u); return !!p && p[0] === q.ans[0] && p[1] === q.ans[1]; }
-    if (q.type === 'choice') return Number(u) === q.ans;
-    if (q.type === 'click') {
-      const got = (u || []).map(p => p[0] + ',' + p[1]).sort().join('|'), want = q.targets.map(p => p[0] + ',' + p[1]).sort().join('|');
-      return got === want;
+    if (q.type === 'click' && q.rel) {
+      if (!Array.isArray(u) || u.length !== 2) return false;
+      const v = [u[1][0] - u[0][0], u[1][1] - u[0][1]]; if (!v[0] && !v[1]) return false;
+      const d = q.dir;
+      if (q.rel === 'perp') return v[0] * d[0] + v[1] * d[1] === 0;
+      const onM = (u[0][0] - q.base[0]) * d[1] - (u[0][1] - q.base[1]) * d[0] === 0;
+      return v[0] * d[1] - v[1] * d[0] === 0 && !onM;
     }
     return false;
-  }
-  function answerText(q) {
-    if (q.type === 'num') return f(q.ans);
-    if (q.type === 'multi') return q.ans.map(f).join(' and ');
-    if (q.type === 'point') return pt(q.ans[0], q.ans[1]);
-    if (q.type === 'choice') return q.opts[q.ans];
-    if (q.type === 'click') return q.targets.map(p => pt(p[0], p[1])).join(' and ');
-    return '';
-  }
+  };
+  const __noStep = new Set(['xIntercept', 'missingCoord', 'solveX', 'solveNeg', 'whereCrossesX', 'timeFor', 'breakEven']);   // equations: the working is solving, not one calculation
+  const __conv = (q, name) => {
+    if (!q) return q;
+    if (__noStep.has(name) && q.type === 'num') q.noStep = true;
+    if (q.type === 'proto') { q.grade = u => __gradeOld(q, u); q.ansText = 'the green arm on the protractor'; }
+    else if (q.type === 'click' && q.rel) { q.grade = u => __gradeOld(q, u); q.ansText = 'see the green point' + ((q.targets || []).length > 1 ? 's' : '') + ' on the grid'; }
+    else if (q.type === 'click' && q.targets && !q.ans) { q.ans = q.targets; q.ansText = q.targets.map(p => '(' + String(p[0]).replace('-', '−') + ', ' + String(p[1]).replace('-', '−') + ')').join(' and '); }
+    return q;
+  };
+  const __wrap = L => { for (const k in L) L[k] = L[k].map(fn => { const g = l => __conv(fn(l), fn.name); Object.defineProperty(g, 'name', { value: fn.name }); return g; }); };
+  __wrap(G); __wrap(XG);
+  const GOALS = [["3.1", "I can find the gradient and y-intercept of a line", ["gradientIntercept", "direction", "gradientTwoPoints", "formulaFromGraph", "tableLinear", "formulaFromPoints", "bFromGradientPoint"], "y = mx + b: m is the gradient, b the y-intercept."], ["3.1", "I can work with parallel lines and intercepts", ["parallel", "xIntercept", "missingCoord"]], ["3.2", "I can recognise and use direct proportion", ["isDirect", "findK", "valueFromPair", "whichDirect", "context", "graphK", "factor", "recipe", "halfK"]], ["3.3", "I can work with quadratic formulas and parabolas", ["abc", "opening", "vertexPoint", "symmetryLine", "yAxisCross", "valueAt", "xIntercepts", "maxHeight", "otherRoot", "axisFromPoints"]], ["3.4", "I can use the vertex form of a parabola", ["vertexForm", "findA", "yIntercept"]], ["3.4", "I can recognise and use inverse proportion", ["isInverse", "findKInv", "inverseValue", "inverseContext", "factorInv", "whichType", "inverseSolveX"]]];
+  return { key: 'ch3-2ht-relationships-v1', SECTIONS, LESSONS: [], G, XG, defaultMode: 'para', GOALS };
 
-  const API = { SECTIONS, G, XG, make, makeTest, grade, answerText, parseNum, parsePoint, f };
-  if (typeof module !== 'undefined' && module.exports) module.exports = API; else root.Ch3 = API;
-})(typeof window !== 'undefined' ? window : globalThis);
-
-
-window.Ch3.KEY="ch3-2ht-relationships-v1";window.Ch3.GOALS=[["3.1", "I can find the gradient and y-intercept of a line", ["gradientIntercept", "direction", "gradientTwoPoints", "formulaFromGraph", "tableLinear", "formulaFromPoints", "bFromGradientPoint"], "y = mx + b: m is the gradient, b the y-intercept."], ["3.1", "I can work with parallel lines and intercepts", ["parallel", "xIntercept", "missingCoord"]], ["3.2", "I can recognise and use direct proportion", ["isDirect", "findK", "valueFromPair", "whichDirect", "context", "graphK", "factor", "recipe", "halfK"]], ["3.3", "I can work with quadratic formulas and parabolas", ["abc", "opening", "vertexPoint", "symmetryLine", "yAxisCross", "valueAt", "xIntercepts", "maxHeight", "otherRoot", "axisFromPoints"]], ["3.4", "I can use the vertex form of a parabola", ["vertexForm", "findA", "yIntercept"]], ["3.4", "I can recognise and use inverse proportion", ["isInverse", "findKInv", "inverseValue", "inverseContext", "factorInv", "whichType", "inverseSolveX"]]];
+})(NX, {"cls": "2HT"});
+window.Ch3 = NX.engine(__def); window.Ch3.GOALS = __def.GOALS;
 </script>
 <script>
 (function(){
