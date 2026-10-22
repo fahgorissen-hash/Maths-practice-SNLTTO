@@ -115,7 +115,7 @@ function tokenize(src, o) {
   o = o || {};
   let s = String(src).replace(/[−–—]/g, '-').replace(/ /g, ' ');
   s = s.replace(/(^|[^\d.,])(-?)(\d+)[ ]+(\d+)[ ]*\/[ ]*(\d+)/g, (m, pre, sg, w, n, d) => pre + (sg ? '-' : '') + '(' + w + '+' + n + '/' + d + ')');   // mixed number 2 1/3
-  s = s.replace(/sqrt/gi, '√').replace(/(?<![a-zA-Z])pi(?![a-zA-Z])/gi, 'π');
+  s = s.replace(/sqrt/gi, '√').replace(/(?<![a-zA-Z])pi(?![a-zA-Z])/gi, 'π').replace(/°/g, '');
   s = s.replace(/([⁰¹²³⁴⁵⁶⁷⁸⁹]+)√/g, (m, d) => '\u0001' + d.split('').map(c => SUP.indexOf(c)).join('') + ';');
   s = s.replace(/(\d+)\s*V/g, (m, d) => '\u0001' + d + ';');   // 3V27 = cube root of 27
   s = s.replace(/∛/g, '\u00013;').replace(/∜/g, '\u00014;');
@@ -129,6 +129,7 @@ function tokenize(src, o) {
     let m;
     if ((m = /^\d+(?:[.,]\d+)?|^[.,]\d+/.exec(s.slice(i)))) { t.push({ k: 'num', v: parseFloat(m[0].replace(',', '.')), s: m[0].replace(',', '.') }); i += m[0].length; continue; }
     if (c === 'π') { t.push({ k: 'pi' }); i++; continue; }
+    if ((m = /^(?:(sin|cos|tan)\s*\^\s*\(?\s*-\s*1\s*\)?|(?:arc|a)(sin|cos|tan)|(sin|cos|tan))/i.exec(s.slice(i)))) { t.push({ k: 'fn', n: (m[1] || m[2] ? 'a' : '') + (m[1] || m[2] || m[3]).toLowerCase() }); i += m[0].length; continue; }   // trig in degrees; sin^-1 = inverse
     if (/[×·⋅*]/.test(c)) { t.push({ k: 'op', v: '*' }); i++; continue; }
     if (/[x]/i.test(c) && o.noVars) { t.push({ k: 'op', v: '*' }); i++; continue; }
     if (/[a-zA-Z]/.test(c)) { if (o.noVars) throw new Error('var'); t.push({ k: 'var', n: c }); i++; continue; }
@@ -143,7 +144,7 @@ function tokenize(src, o) {
 function parse(src, o) {
   const T = tokenize(src, o); let p = 0;
   const peek = () => T[p], isOp = v => T[p] && T[p].k === 'op' && T[p].v === v;
-  const startsFactor = () => { const k = T[p]; return k && (k.k === 'num' || k.k === 'var' || k.k === 'pi' || k.k === 'sqrt' || (k.k === 'op' && k.v === '(')); };
+  const startsFactor = () => { const k = T[p]; return k && (k.k === 'num' || k.k === 'var' || k.k === 'pi' || k.k === 'sqrt' || k.k === 'fn' || (k.k === 'op' && k.v === '(')); };
   function expr() {
     let a = term();
     while (isOp('+') || isOp('-')) { const op = T[p++].v; const b = term(); a = { t: op === '+' ? 'add' : 'sub', a, b }; }
@@ -187,6 +188,7 @@ function parse(src, o) {
       if (neg) r = { t: 'neg', a: r };
       return { t: 'sqrt', a: r, k: k.n };
     }
+    if (k.k === 'fn') { p++; return { t: 'fn', n: k.n, a: power() }; }
     if (isOp('(')) { p++; const e = expr(); if (!isOp(')')) throw new Error('paren'); p++; e.par = true; return e; }
     throw new Error('atom');
   }
@@ -200,6 +202,7 @@ function evalAst(n, env) {
     case 'mul': return evalAst(n.a, env) * evalAst(n.b, env); case 'div': return evalAst(n.a, env) / evalAst(n.b, env);
     case 'pow': return Math.pow(evalAst(n.a, env), evalAst(n.b, env));
     case 'sqrt': { const x = evalAst(n.a, env); if (n.k % 2 === 1) return (x < 0 ? -1 : 1) * Math.pow(Math.abs(x), 1 / n.k); return x < 0 ? NaN : Math.pow(x, 1 / n.k); }
+    case 'fn': { const x = evalAst(n.a, env), D = Math.PI / 180; return n.n === 'sin' ? Math.sin(x * D) : n.n === 'cos' ? Math.cos(x * D) : n.n === 'tan' ? Math.tan(x * D) : n.n === 'asin' ? Math.asin(x) / D : n.n === 'acos' ? Math.acos(x) / D : Math.atan(x) / D; }
   }
   return NaN;
 }
@@ -363,6 +366,7 @@ function R(src, o) {
       case 'div': return n.inl ? w(P(n.a) + ' ÷ ' + P(n.b)) : w('<span class="fr"><span class="nu">' + P(n.a, true) + '</span><span class="de">' + P(n.b, true) + '</span></span>');
       case 'pow': return w(P(n.a) + '<sup>' + P(n.b, true) + '</sup>');
       case 'sqrt': return w('<span class="rt' + (n.k > 2 ? ' rn' : '') + '">' + (n.k > 2 ? '<sup class="ix">' + n.k + '</sup>' : '') + '<span class="sq"></span><span class="ov">' + P(n.a, true) + '</span></span>');
+      case 'fn': return w((n.n[0] === 'a' ? n.n.slice(1) + '<sup>−1</sup>' : n.n) + '(' + P(n.a, true) + (n.n[0] === 'a' ? ')' : '°)'));
     }
     return '';
   }
@@ -874,6 +878,118 @@ const GOALS = [
   ['6.5', 'I can use the discriminant to find the number of solutions', ['readABC', 'discriminant', 'numSolutions'], 'D > 0: two solutions, D = 0: one, D < 0: none.'],
   ['6.5', 'I can solve a quadratic equation with the quadratic formula', ['abcExact', 'abcRounded', 'abcRearrange'], 'x = (−b ± √D) / 2a']
 ] : []);
+/* ======================= 1HVT chapter 6: linear formulas, balance method, gradient, simplifying, intersections ======================= */
+if (P.cls === '1HVT') {
+  const OG = G['6.1'].slice(), OX = XG['6.1'].slice();
+  const safe = f => { const g = function (l) { const sv = G['6.1'], sx = XG['6.1']; G['6.1'] = OG; XG['6.1'] = OX; try { return f(l); } finally { G['6.1'] = sv; XG['6.1'] = sx; } }; Object.defineProperty(g, 'name', { value: f.name }); return g; };
+  const byN = n => safe(OG.concat(OX).find(f => f.name === n));
+  const par = n => n < 0 ? '(' + neg(n) + ')' : String(n);
+  const hv = x => Number.isInteger(x) ? neg(x) : (x < 0 ? '−' : '') + (Math.floor(Math.abs(x)) || '') + '½';   // −1½
+  const linH = (m, b) => { let s = m === 0 ? '' : (m === 1 ? '' : m === -1 ? '−' : hv(m)) + X(); if (b !== 0 || m === 0) s += s ? (b < 0 ? ' − ' + Math.abs(b) : ' + ' + b) : neg(b); return s; };
+  const fA = (m, b, v) => (m === 0 ? '' : m + '*' + (v || 'x')) + (b === 0 ? (m === 0 ? '0' : '') : '+(' + b + ')');
+  const yEq = (m, b) => X('y') + ' = ' + linH(m, b);
+  const E1 = [
+    function gradIntercept(l) {
+      const m = l === 0 ? nz(-6, 6) : pick([-3, -2, -1, 0, 1, 2, 4, 5, -0.5, 1.5]), b = ri(-12, 12), askM = Math.random() < .5;
+      const f_ = l === 2 && b !== 0 && m !== 0 ? X('y') + ' = ' + neg(b) + (m < 0 ? ' − ' : ' + ') + (Math.abs(m) === 1 ? '' : hv(Math.abs(m))) + X() : yEq(m, b);
+      return nu(p('Line ' + X('k') + ': ' + f_ + '. What is the ' + (askM ? 'gradient' : X('y') + '-intercept') + '?'), askM ? m : b, 'In ' + X('y') + ' = ' + X('m') + X() + ' + ' + X('b') + ', ' + X('m') + ' is the gradient (the number in front of ' + X() + ') and ' + X('b') + ' is the ' + X('y') + '-intercept (the number on its own).', p('Write it as ' + yEq(m, b) + '.') + p(askM ? 'The gradient is ' + hv(m) + '.' : 'The ' + X('y') + '-intercept is ' + neg(b) + '.'), { noStep: true });
+    },
+    function tableValue(l) {
+      const m = l === 0 ? ri(1, 6) : nz(-6, 6), b = ri(-10, 10), x = l === 0 ? ri(0, 6) : ri(-5, 8), y = m * x + b;
+      return nu(p('Line ' + X('k') + ': ' + yEq(m, b) + '. Calculate ' + X('y') + ' for ' + X() + ' = ' + neg(x) + '.'), y, 'Replace ' + X() + ' by ' + par(x) + '. Multiply first, then add.', X('y') + ' = ' + neg(m) + ' · ' + par(x) + (b < 0 ? ' − ' + -b : ' + ' + b) + ' = ' + neg(m * x) + (b < 0 ? ' − ' + -b : ' + ' + b) + ' = ' + neg(y));
+    },
+    function formulaFromTable(l) {
+      const m = l === 0 ? ri(1, 5) : nz(-6, 6), b = ri(-9, 12), x0 = l === 2 ? ri(1, 3) : 0, xs = [0, 1, 2, 3, 4].map(i => x0 + i), ys = xs.map(x => m * x + b);
+      const right = yEq(m, b), wr = [yEq(b, m), yEq(m, b + m), yEq(-m, b), yEq(m, ys[0])].filter(w => w !== right);
+      return ch(p('Which formula belongs to this table?') + '<table class="tbl"><tr><th>' + X() + '</th>' + xs.map(x => '<td>' + x + '</td>').join('') + '</tr><tr><th>' + X('y') + '</th>' + ys.map(y => '<td>' + neg(y) + '</td>').join('') + '</tr></table>', right, wr, 'When ' + X() + ' goes up by 1, how much does ' + X('y') + ' change? That is the gradient. The ' + X('y') + '-intercept is ' + X('y') + ' for ' + X() + ' = 0.', p('When ' + X() + ' goes up by 1, ' + X('y') + ' changes by ' + neg(m) + ', so ' + X('m') + ' = ' + neg(m) + '.') + p((x0 === 0 ? 'For ' + X() + ' = 0, ' + X('y') + ' = ' + neg(b) : 'Go back to ' + X() + ' = 0: ' + neg(ys[0]) + ' − ' + x0 + ' · ' + par(m) + ' = ' + neg(b)) + ', so ' + X('b') + ' = ' + neg(b) + '.') + p('The formula is ' + right + '.'));
+    },
+    function upDown(l) {
+      const m = pick([-4, -2, -1, -0.5, 0, 0.5, 1, 3]), b = ri(-8, 8), right = m > 0 ? 'increasing' : m < 0 ? 'decreasing' : 'horizontal';
+      return ch(p('Is the line ' + yEq(m, b) + ' increasing, decreasing or horizontal?'), right, ['increasing', 'decreasing', 'horizontal', 'vertical'].filter(o => o !== right), 'Look at the gradient: positive means increasing, negative means decreasing, 0 means horizontal.', 'The gradient is ' + hv(m) + (m > 0 ? ', positive: the line is increasing.' : m < 0 ? ', negative: the line is decreasing.' : ': the line is horizontal.'));
+    }
+  ];
+  const E2 = [
+    byN('oneStep'),
+    function solveFromY(l) {
+      const m = l === 0 ? ri(2, 6) : nz(-6, 6), b = ri(-12, 12), x = ri(-6, 9), y = m * x + b;
+      const s = solveLin(m, b, 0, y);
+      return solQ(p('Line ' + X('k') + ': ' + yEq(m, b) + '. For which ' + X() + ' is ' + X('y') + ' = ' + neg(y) + '?'), s.n, s.d, 'x', 'Set up the equation ' + lin(m, b) + ' = ' + neg(y) + ' and solve it with the balance method.', bal(s.rows));
+    },
+    function bracketOne(l) {
+      const a = ri(2, 6), h = nz(-9, 9), c = l === 0 ? 0 : nz(-15, 15), x = ri(-8, 8), rhs = a * (x + h) + c;
+      const first = a + '(' + lin(1, h) + ')' + (c === 0 ? '' : c < 0 ? ' − ' + -c : ' + ' + c) + ' = ' + neg(rhs);
+      const s = solveLin(a, a * h + c, 0, rhs);
+      return solQ(p('Solve: ' + first), s.n, s.d, 'x', 'First remove the brackets: multiply ' + a + ' by both terms inside. Then use the balance method.', bal([[first, 'remove brackets']].concat(s.rows)));
+    },
+    function stairs(l) {
+      const r = ri(15, 19), lo = 57, hi = 63, ask = pick(['min', 'max']), g = ask === 'min' ? lo - 2 * r : hi - 2 * r;
+      return nu(p('Blondel’s formula: a staircase is easy to climb when 2 · rise + going is between 57 and 63 cm. The rise is ' + r + ' cm. What is the ' + (ask === 'min' ? 'smallest' : 'largest') + ' possible going (in cm)?'), g, 'Solve 2 · ' + r + ' + going = ' + (ask === 'min' ? lo : hi) + '.', bal([['2 · ' + r + ' + going = ' + (ask === 'min' ? lo : hi), ''], [2 * r + ' + going = ' + (ask === 'min' ? lo : hi), '− ' + 2 * r], ['going = ' + g]]), { noStep: true });
+    }
+  ];
+  const E3 = [
+    function gradTwoPoints(l) {
+      let x1, y1, x2, y2, m; do { x1 = ri(-6, 4); x2 = x1 + ri(1, 6); y1 = ri(-8, 8); m = l === 0 ? nz(-3, 3) : pick([-3, -2, -1, -0.5, 0.5, 1.5, 2, 3, 0]); y2 = y1 + m * (x2 - x1); } while (!Number.isInteger(y2));
+      return nu(p('A line passes through the points (' + neg(x1) + ', ' + neg(y1) + ') and (' + neg(x2) + ', ' + neg(y2) + '). Calculate the gradient.'), m, 'gradient = rise / run = (difference in ' + X('y') + ') / (difference in ' + X() + ').', X('m') + ' = (' + neg(y2) + ' − ' + par(y1) + ') / (' + neg(x2) + ' − ' + par(x1) + ') = ' + neg(y2 - y1) + ' / ' + (x2 - x1) + ' = ' + neg(m), { needStep: true });
+    },
+    function lineTwoPoints(l) {
+      let x1, y1, x2, y2, m, b; do { x1 = ri(-5, 4); x2 = x1 + ri(1, 5); m = l === 0 ? nz(-3, 3) : pick([-3, -2, -1, 1, 2, 3, 4, -0.5, 0.5]); b = ri(-9, 9); y1 = m * x1 + b; y2 = m * x2 + b; } while (!Number.isInteger(y1) || !Number.isInteger(y2));
+      const q = ex(p('Line ' + X('k') + ' passes through (' + neg(x1) + ', ' + neg(y1) + ') and (' + neg(x2) + ', ' + neg(y2) + '). Give the formula of ' + X('k') + '. <small>Type only the right side, for example 2x − 3.</small>'), fA(m, b), 'poly', 'First calculate the gradient ' + X('m') + '. Then substitute one point in ' + X('y') + ' = ' + X('m') + X() + ' + ' + X('b') + ' to find ' + X('b') + '.', p(X('m') + ' = (' + neg(y2) + ' − ' + par(y1) + ') / (' + neg(x2) + ' − ' + par(x1) + ') = ' + neg(y2 - y1) + ' / ' + (x2 - x1) + ' = ' + hv(m)) + p(X('y') + ' = ' + linH(m, 0) + ' + ' + X('b') + ' through (' + neg(x1) + ', ' + neg(y1) + '): ' + neg(y1) + ' = ' + hv(m) + ' · ' + par(x1) + ' + ' + X('b')) + p(neg(y1) + ' = ' + neg(m * x1) + ' + ' + X('b') + ', so ' + X('b') + ' = ' + neg(b)) + p('The formula is ' + yEq(m, b) + '.'), { keys: ['(', ')', '/'], ansText: yEq(m, b) });
+      return q;
+    },
+    function gradFromGraph(l) {
+      const run = pick([1, 2, 2, 3]), rise = nz(-4, 4), m = rise / run, b = ri(-4, 4);
+      if (!Number.isInteger(m * 2) || Math.abs(m) > 3) return E3[2](l);
+      const c = NX.clipLine([0, b], [1, m], -7, 7, -7, 7), fig = '<div style="max-width:280px">' + NX.gridSVG({ xmin: -7, xmax: 7, ymin: -7, ymax: 7, u: 16, segs: c ? [{ a: c.a, b: c.b, color: '#d1471f' }] : [] }) + '</div>';
+      return nu(p('Read the gradient of this line. <small>Look for two points of the line on grid points.</small>') + fig, m, 'Go from one grid point on the line to the next. gradient = steps up (or down) / steps to the right.', 'From (0, ' + neg(b) + ') to (' + run + ', ' + neg(b + rise) + '): ' + (rise > 0 ? 'up ' + rise : 'down ' + -rise) + ' and ' + run + ' to the right.<br>gradient = ' + neg(rise) + ' / ' + run + ' = ' + neg(m), { needStep: true });
+    },
+    function onLine(l) {
+      const m = nz(-5, 5), b = ri(-9, 9), x = ri(-5, 6), on = Math.random() < .5, y = m * x + b + (on ? 0 : pick([-2, -1, 1, 3]));
+      return ch(p('Does the point (' + neg(x) + ', ' + neg(y) + ') lie on the line ' + yEq(m, b) + '?'), on ? 'yes' : 'no', [on ? 'no' : 'yes'], 'Substitute ' + X() + ' = ' + neg(x) + ' and compare the result with ' + neg(y) + '.', X('y') + ' = ' + neg(m) + ' · ' + par(x) + (b < 0 ? ' − ' + -b : ' + ' + b) + ' = ' + neg(m * x + b) + (on ? '. This is ' + neg(y) + ': yes.' : ', not ' + neg(y) + ': no.'));
+    }
+  ];
+  const E4 = [
+    function collect(l) {
+      const v = pick(['a', 'b', 'x', 'p']), a1 = ri(1, 9), a2 = l === 0 ? ri(1, 6) : nz(-9, 9), c1 = nz(-9, 9), c2 = nz(-9, 9);
+      if (a1 + a2 === 0) return E4[0](l);
+      const s = lin(a1, c1, v) + (a2 < 0 ? ' − ' : ' + ') + (Math.abs(a2) === 1 ? '' : Math.abs(a2)) + X(v) + (c2 < 0 ? ' − ' + -c2 : ' + ' + c2), r = lin(a1 + a2, c1 + c2, v);
+      return ex(p('Simplify: ' + s + '. <small>Type the answer, for example 5' + v + ' + 2.</small>'), fA(a1 + a2, c1 + c2, v), 'poly', 'Add the terms with ' + X(v) + ' and add the numbers.', s + ' = ' + lin(a1, 0, v) + (a2 < 0 ? ' − ' : ' + ') + (Math.abs(a2) === 1 ? '' : Math.abs(a2)) + X(v) + (c1 < 0 ? ' − ' + -c1 : ' + ' + c1) + (c2 < 0 ? ' − ' + -c2 : ' + ' + c2) + ' = ' + r, { keys: ['(', ')'] });
+    },
+    byN('bothSides'), byN('brackets'), byN('withFractions'), byN('lcmFractions'),
+    function collectSolve(l) {
+      const a1 = ri(2, 8), a2 = nz(-5, 5), c1 = nz(-9, 9), c2 = nz(-9, 9), x = ri(-6, 8); if (a1 + a2 === 0) return E4[5](l);
+      const rhs = (a1 + a2) * x + c1 + c2, L = lin(a1, c1) + (a2 < 0 ? ' − ' : ' + ') + (Math.abs(a2) === 1 ? '' : Math.abs(a2)) + X() + (c2 < 0 ? ' − ' + -c2 : ' + ' + c2);
+      const s = solveLin(a1 + a2, c1 + c2, 0, rhs);
+      return solQ(p('Solve: ' + L + ' = ' + neg(rhs)), s.n, s.d, 'x', 'First simplify the left side: add the ' + X() + '-terms and add the numbers.', bal([[L + ' = ' + neg(rhs), 'simplify']].concat(s.rows)));
+    }
+  ];
+  const E5 = [
+    byN('intersect'), byN('rectangleEq'),
+    function checkSol(l) {
+      let a, b, c, d; do { a = nz(-6, 8); c = nz(-6, 8); b = ri(-12, 12); d = ri(-12, 12); } while (a === c || (d - b) % (a - c) !== 0);
+      const x = (d - b) / (a - c), ok = Math.random() < .5, t = ok ? x : x + pick([-2, -1, 1, 2]);
+      const L = a * t + b, R = c * t + d;
+      return ch(p('Is ' + X() + ' = ' + neg(t) + ' a solution of ' + lin(a, b) + ' = ' + lin(c, d) + '?'), ok ? 'yes' : 'no', [ok ? 'no' : 'yes'], 'Substitute ' + X() + ' = ' + neg(t) + ' on both sides. A solution makes both sides equal.', 'left: ' + neg(a) + ' · ' + par(t) + (b < 0 ? ' − ' + -b : ' + ' + b) + ' = ' + neg(L) + '<br>right: ' + neg(c) + ' · ' + par(t) + (d < 0 ? ' − ' + -d : ' + ' + d) + ' = ' + neg(R) + '<br>' + (ok ? 'Both sides are equal: yes.' : 'The sides are not equal: no.'));
+    },
+    function patternEq(l) {
+      const k = ri(2, 6), s0 = ri(1, 6), n = ri(8, 40), tot = k * n + s0;
+      return nu(p('In a pattern, figure ' + X('f') + ' has ' + X('d') + ' = ' + k + X('f') + ' + ' + s0 + ' dots. Which figure has ' + tot + ' dots?'), n, 'Solve ' + k + X('f') + ' + ' + s0 + ' = ' + tot + ' with the balance method.', bal([[k + X('f') + ' + ' + s0 + ' = ' + tot, '− ' + s0], [k + X('f') + ' = ' + (tot - s0), ': ' + k], [X('f') + ' = ' + n]]), { noStep: true });
+    }
+  ];
+  G['6.1'] = E1; G['6.2'] = E2; G['6.3'] = E3; G['6.4'] = E4; G['6.5'] = E5;
+  XG['6.1'] = []; XG['6.2'] = []; XG['6.3'] = []; XG['6.4'] = [byN('fracBothSides')]; XG['6.5'] = [byN('costCompare')];
+  SECTIONS.splice(0, SECTIONS.length,
+    { id: '6.1', title: '6.1 Linear formulas', sub: 'Gradient, y-intercept, tables' },
+    { id: '6.2', title: '6.2 The balance method', sub: 'Solving equations, brackets' },
+    { id: '6.3', title: '6.3 Gradient and formula of a line', sub: 'Gradient from two points or a graph, the formula' },
+    { id: '6.4', title: '6.4 Simplifying and solving', sub: 'Like terms, x on both sides, fractions' },
+    { id: '6.5', title: '6.5 Equations and graphs', sub: 'Intersections, checking a solution, word problems' });
+  GOALS.splice(0, GOALS.length,
+    ['6.1', 'I can read the gradient and y-intercept of a linear formula', ['gradIntercept', 'tableValue', 'formulaFromTable', 'upDown'], 'y = mx + b: m is the gradient, b the y-intercept.'],
+    ['6.2', 'I can solve an equation with the balance method', ['oneStep', 'solveFromY', 'bracketOne', 'stairs'], 'Do the same on both sides.'],
+    ['6.3', 'I can find the gradient and the formula of a line', ['gradTwoPoints', 'lineTwoPoints', 'gradFromGraph', 'onLine'], 'gradient = rise / run'],
+    ['6.4', 'I can simplify and solve equations with x on both sides or fractions', ['collect', 'bothSides', 'brackets', 'withFractions', 'lcmFractions', 'collectSolve'], 'Multiply by the LCM to get rid of fractions.'],
+    ['6.5', 'I can solve problems with equations and graphs', ['intersect', 'rectangleEq', 'checkSol', 'patternEq'], 'Make the formulas equal.']);
+}
 return { key: 'nx-' + P.cls.toLowerCase() + '-ch6-v1', SECTIONS, LESSONS: [], G, XG, defaultMode: 'para', GOALS };
 
 })(NX, {"cls": "2VT"});
