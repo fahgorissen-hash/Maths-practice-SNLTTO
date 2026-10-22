@@ -220,4 +220,22 @@ const GOALS = [
   ['7.4', 'I can read and compare exponential graphs', ['growthOrDecay', 'startValue', 'readGraph', 'whichGraph', 'tableFromFormula'], 'g > 1: growth, 0 < g < 1: decay.'],
   ['7.5', 'I can solve exponential equations', ['exactPower', 'withFactor', 'trialRound', 'doublingTime', 'whenBelow'], 'Divide first, then find the exponent.']
 ];
-return { key: 'nx-3ht-ch7-v1', SECTIONS, LESSONS: [], G, XG, defaultMode: 'para', GOALS };
+/* ======================= 3VT: this is chapter 6, plus fractional exponents and the geometric mean ======================= */
+if (P.cls === '3VT') {
+  G['7.2'].push(function geometricMean(l) {
+    const pcs = Array.from({ length: l === 0 ? 2 : 3 }, () => pick([-12, -8, -5, -3, 2, 4, 6, 8, 10, 15, 20])), gs = pcs.map(mult), prod = gs.reduce((a, b) => a * b, 1), n = gs.length, g = Math.pow(prod, 1 / n), pc = rd(g * 100 - 100, 2);
+    return nr(p('The profit of a company changes by ' + pcs.map(c => (c > 0 ? '+' : '−') + Math.abs(c) + '%').join(' and then ') + ' (one change per year). Calculate the average yearly percentage change. <small>(Round to 2 decimals.)</small>'), g * 100 - 100, 2, 'Use the geometric mean of the growth factors: the ' + (n === 2 ? 'square' : 'cube') + ' root of their product.', p('Growth factors: ' + gs.join(', ')) + p('Average growth factor = ' + (n === 2 ? '√' : '∛') + '(' + gs.join(' · ') + ')' + ap(g, 4)) + p('Percentage change ≈ ' + rd(g, 4) + ' · 100% − 100%' + ap(g * 100 - 100, 2) + '%'), { needStep: true });
+  });
+  G['7.3'].push(function fracExponent(l) {
+    const T = l === 0 ? [[4, 2], [9, 2], [25, 2], [8, 3], [27, 3], [16, 4], [100, 2], [32, 5]] : [[64, 3], [81, 4], [125, 3], [0.01, 2], [1000, 3], [64, 6], [0.008, 3], [243, 5]];
+    const [b, n] = pick(T), r = rd(Math.pow(b, 1 / n)), m = l === 2 ? pick([1, 2, 3]) : 1, v = rd(Math.pow(r, m));
+    return nu(p('Calculate without a calculator: ' + pw(b, m === 1 ? '1/' + n : m + '/' + n) + '.'), v, pw('a', '1/' + X('n')) + ' is the ' + X('n') + '-th root of ' + X('a') + '.', p(pw(r, n) + ' = ' + b + ', so ' + pw(b, '1/' + n) + ' = ' + (n === 2 ? '√' : pw('', n) + '√') + b + ' = ' + r) + (m === 1 ? '' : p(pw(b, m + '/' + n) + ' = ' + pw('(' + pw(b, '1/' + n) + ')', m) + ' = ' + pw(r, m) + ' = ' + v)), { noStep: true });
+  });
+  const ren = id => id.replace(/^7\./, '6.');
+  [G, XG].forEach(O => Object.keys(O).forEach(k => { O[ren(k)] = O[k]; }));
+  SECTIONS.forEach(S => { S.id = ren(S.id); S.title = ren(S.title); });
+  SECTIONS[1].sub += ', geometric mean'; SECTIONS[2].sub += ', fractional exponents';
+  GOALS.forEach(g => { g[0] = ren(g[0]); });
+  GOALS[1][2].push('geometricMean'); GOALS[2][2].push('fracExponent');
+}
+return { key: 'nx-' + P.cls.toLowerCase() + '-ch' + (P.cls === '3VT' ? 6 : 7) + '-v1', SECTIONS, LESSONS: [], G, XG, defaultMode: 'para', GOALS };
