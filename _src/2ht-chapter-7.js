@@ -311,4 +311,104 @@ const GOALS = [
   ['7.4', 'I can find corresponding sides and angles of similar figures', ['corrSide', 'ratioCheck', 'missingAngle', 'polySide'], 'Corresponding vertices are in the same order.'],
   ['7.5', 'I can show that triangles are similar and calculate sides', ['nested', 'hourglass', 'shadow', 'whySimilar', 'nestedPart'], 'Look for F-angles, Z-angles, vertically opposite angles or a shared angle.']
 ];
+/* ======================= 3VT chapter 7: reasoning, congruence, bisectors, altitudes, medians, circles ======================= */
+if (P.cls === '3VT') {
+  const N_ = n => (n < 0 ? '−' : '') + Math.abs(n), Pa = n => n < 0 ? '(' + N_(n) + ')' : String(n);
+  const P2 = (x, y) => '(' + N_(x) + ', ' + N_(y) + ')';
+  const ptQ = (html, x, y, hint, steps) => ({ type: 'point', ans: [x, y], html: html + p('<small>Type a point like (3, −2).</small>'), hint, steps, noStep: true });
+  const V1 = [
+    function exteriorAngle(l) {
+      let a, b; do { a = ri(25, 85); b = ri(25, 85); } while (a + b >= 160);
+      const n = pick(LET), ext = a + b;
+      return angQ(p('In triangle ' + n + ', ' + A_(n[0]) + ' = ' + deg(a) + ' and ' + A_(n[1]) + ' = ' + deg(b) + '. Side ' + n[1] + n[2] + ' is extended beyond ' + n[2] + '. Calculate the exterior angle at ' + n[2] + '.' + HINT_STEP), ext, 'The exterior angle of a triangle equals the sum of the two opposite interior angles.', p(A_(n[2]) + ' = 180 − ' + a + ' − ' + b + ' = ' + (180 - ext) + '° (sum of the angles in a triangle)') + p('exterior angle = 180 − ' + (180 - ext) + ' = ' + ext + '° (straight angle)') + p('Check: ' + a + ' + ' + b + ' = ' + ext + '.'), true);
+    },
+    function defOrTheorem(l) {
+      const D = [['A rhombus is a quadrilateral with four sides of equal length.', 'definition'], ['A straight angle is 180°.', 'definition'], ['An isosceles triangle has two sides of equal length.', 'definition'], ['An angle bisector divides an angle into two equal angles.', 'definition'], ['A median joins a vertex to the midpoint of the opposite side.', 'definition'],
+        ['The sum of the angles in a triangle is 180°.', 'theorem'], ['Vertically opposite angles are equal.', 'theorem'], ['The diagonals of a rhombus are perpendicular.', 'theorem'], ['The exterior angle of a triangle equals the sum of the two opposite interior angles.', 'theorem'], ['The three medians of a triangle meet in one point.', 'theorem']];
+      const d = pick(D);
+      return ch(p('Is this a definition or a theorem?') + p('<i>' + d[0] + '</i>'), d[1], ['definition', 'theorem', 'conjecture'].filter(o => o !== d[1]), 'A definition describes what a word means. A theorem is a statement that has been proved.', d[1] === 'definition' ? 'This tells you what the word means: a definition.' : 'This is a property that is proved from definitions: a theorem.');
+    }
+  ];
+  const V2 = [
+    function whichPostulate(l) {
+      const n = pick([['ABC', 'DEF'], ['KLM', 'PQR']]), [a, b] = n, k = pick([2, 3, 1.5, 0.5]);
+      const C = [
+        ['aa', A_(a[0]) + ' = ' + A_(b[0]) + ' and ' + A_(a[1]) + ' = ' + A_(b[1])],
+        ['sss', b[0] + b[1] + ' = ' + k + ' · ' + a[0] + a[1] + ', ' + b[1] + b[2] + ' = ' + k + ' · ' + a[1] + a[2] + ' and ' + b[0] + b[2] + ' = ' + k + ' · ' + a[0] + a[2]],
+        ['sas', b[0] + b[1] + ' = ' + k + ' · ' + a[0] + a[1] + ', ' + A_(a[1]) + ' = ' + A_(b[1]) + ' and ' + b[1] + b[2] + ' = ' + k + ' · ' + a[1] + a[2]],
+        ['ssr', A_(a[2]) + ' = ' + A_(b[2]) + ' = 90°, ' + b[0] + b[1] + ' = ' + k + ' · ' + a[0] + a[1] + ' and ' + b[1] + b[2] + ' = ' + k + ' · ' + a[1] + a[2]]
+      ], c = pick(C);
+      return ch(p('For triangles ' + a + ' and ' + b + ' you know: ' + c[1] + '. Which similarity postulate shows that Δ' + a + ' ∼ Δ' + b + '?'), c[0], ['aa', 'sss', 'sas', 'ssr', 'ssa'].filter(o => o !== c[0]).slice(0, 3), 'aa: two angles. sss: three sides with the same factor. sas: two sides and the angle between them. ssr: right angle, hypotenuse and another side.', { aa: 'Two pairs of equal angles: aa.', sss: 'All three sides are multiplied by ' + k + ': sss.', sas: 'Two sides with factor ' + k + ' and the angle between them is equal: sas.', ssr: 'A right angle, the hypotenuse and one other side with factor ' + k + ': ssr.' }[c[0]]);
+    },
+    function congruentFactor(l) {
+      const k = pick([1, 1, 2, 0.5, 3]), right = k === 1 ? 'congruent (and similar)' : 'similar, not congruent';
+      return ch(p('Two triangles are similar with scale factor ' + k + '. Are they congruent?'), right, ['congruent (and similar)', 'similar, not congruent', 'neither'].filter(o => o !== right), 'Congruent figures are similar with scale factor 1.', k === 1 ? 'Scale factor 1: the triangles are exactly the same size, so congruent.' : 'Scale factor ' + k + ' is not 1: one triangle is bigger, so not congruent.');
+    }
+  ];
+  const V3 = [
+    function whichLocus(l) {
+      const C = [['all points at the same distance from A and B', 'the perpendicular bisector of AB'], ['all points at the same distance from the two arms of angle A', 'the bisector of angle A'], ['the line through the midpoint of AB, perpendicular to AB', 'the perpendicular bisector of AB'], ['the line that divides angle A into two equal angles', 'the bisector of angle A']], c = pick(C);
+      return ch(p('What do you get: ' + c[0] + '?'), c[1], ['the perpendicular bisector of AB', 'the bisector of angle A', 'the median from A', 'the altitude from A'].filter(o => o !== c[1]), 'Perpendicular bisector: equal distance to two points. Angle bisector: equal distance to two lines.', 'This is ' + c[1] + '.');
+    },
+    function midpoint(l) {
+      let x1, y1, x2, y2; do { x1 = ri(-8, 8); y1 = ri(-8, 8); x2 = ri(-8, 8); y2 = ri(-8, 8); } while ((x1 === x2 && y1 === y2) || (l < 2 && ((x1 + x2) % 2 || (y1 + y2) % 2)));
+      const mx = (x1 + x2) / 2, my = (y1 + y2) / 2;
+      return ptQ(p('The perpendicular bisector of AB passes through the midpoint of AB. Calculate this midpoint for A' + P2(x1, y1) + ' and B' + P2(x2, y2) + '.'), mx, my, 'Midpoint: the average of the ' + X_('x') + '-coordinates and the average of the ' + X_('y') + '-coordinates.', p('(' + N_(x1) + ' + ' + Pa(x2) + ') / 2 = ' + N_(mx) + ' and (' + N_(y1) + ' + ' + Pa(y2) + ') / 2 = ' + N_(my)) + p('The midpoint is ' + P2(mx, my) + '.'));
+    },
+    function bisectorsMeet(l) {
+      let a, b; do { a = 2 * ri(15, 50); b = 2 * ri(15, 50); } while (a + b >= 170);
+      const S = 180 - a / 2 - b / 2;
+      return angQ(p('In triangle ABC, ' + A_('A') + ' = ' + deg(a) + ' and ' + A_('B') + ' = ' + deg(b) + '. The bisectors of angle A and angle B meet at S. Calculate ' + A_('ASB') + '.' + HINT_STEP), S, 'The bisector halves the angle. Then use the sum of the angles in triangle ABS.', p(A_('BAS') + ' = ' + a + ' : 2 = ' + a / 2 + '° (angle bisector)') + p(A_('ABS') + ' = ' + b + ' : 2 = ' + b / 2 + '° (angle bisector)') + p(A_('ASB') + ' = 180 − ' + a / 2 + ' − ' + b / 2 + ' = ' + S + '° (sum of the angles in a triangle)'), true);
+    }
+  ];
+  const X_ = v => '<i>' + v + '</i>';
+  const V4 = [
+    function altitudeFromArea(l) {
+      const base = pick([4, 5, 6, 8, 10, 12, 13]), h = pick([3, 4, 4.8, 6, 7.5, 9, 2.5]), area = rd(base * h / 2, 4), side = pick([5, 6, 8, 10, 15, 16]), h2 = rd(2 * area / side, 2);
+      return nu(p('Triangle ABC has base AB = ' + base + ' and altitude CC′ = ' + h + '. Side BC = ' + side + '. Calculate the altitude AA′ from A to BC. <small>(Round to 2 decimals if needed.)</small>'), h2, 'The area is the same whichever side you use as the base: area = ½ · base · altitude.', p('area = ½ · ' + base + ' · ' + h + ' = ' + area) + p('½ · ' + side + ' · AA′ = ' + area) + p('AA′ = ' + rd(2 * area, 4) + ' : ' + side + (rd(2 * area / side, 2) === rd(2 * area / side, 6) ? ' = ' : ' ≈ ') + h2), { tol: .006, needStep: true });
+    },
+    function centroidSplit(l) {
+      const m = 3 * pick([2, 3, 4, 5, 7, 2.5, 1.5]), part = pick(['AZ', 'ZD']), v = part === 'AZ' ? m * 2 / 3 : m / 3;
+      return nu(p('In triangle ABC, AD is a median with length ' + m + '. Z is the centroid (where the medians meet). Calculate ' + part + '.'), rd(v, 4), 'The centroid divides each median in the ratio 2 : 1 (the longer part is at the vertex).', p('AZ : ZD = 2 : 1, so AZ = ⅔ · ' + m + ' = ' + rd(m * 2 / 3, 4) + ' and ZD = ⅓ · ' + m + ' = ' + rd(m / 3, 4)) + p(part + ' = ' + rd(v, 4)), { noStep: true });
+    },
+    function vertexFromCentroid(l) {
+      let K, L, Mv; do { K = [ri(-6, 6), ri(-6, 6)]; L = [ri(-6, 6), ri(-6, 6)]; Mv = [ri(-6, 8), ri(-6, 8)]; } while ((K[0] + L[0]) % 2 || (K[1] + L[1]) % 2 || (K[0] + L[0] + Mv[0]) % 3 || (K[1] + L[1] + Mv[1]) % 3 || (K[0] === L[0] && K[1] === L[1]));
+      const Pm = [(K[0] + L[0]) / 2, (K[1] + L[1]) / 2], Z = [(K[0] + L[0] + Mv[0]) / 3, (K[1] + L[1] + Mv[1]) / 3];
+      return ptQ(p('Triangle KLM has K' + P2(K[0], K[1]) + ' and L' + P2(L[0], L[1]) + '. Its centroid is Z' + P2(Z[0], Z[1]) + '. Calculate the coordinates of M.'), Mv[0], Mv[1], 'P is the midpoint of KL. M lies on line PZ with ZM = 2 · PZ.', p('Midpoint of KL: P' + P2(Pm[0], Pm[1]) + '.') + p('From P to Z: ' + (Z[0] - Pm[0] >= 0 ? '+' : '') + N_(Z[0] - Pm[0]) + ' in the ' + X_('x') + '-direction and ' + (Z[1] - Pm[1] >= 0 ? '+' : '') + N_(Z[1] - Pm[1]) + ' in the ' + X_('y') + '-direction.') + p('From Z to M is twice as far: M' + P2(Mv[0], Mv[1]) + '.'));
+    },
+    function whichLine(l) {
+      const C = [['a line segment from a vertex to the midpoint of the opposite side', 'median'], ['a line segment from a vertex perpendicular to the opposite side', 'altitude'], ['a line through the midpoint of a side, perpendicular to that side', 'perpendicular bisector'], ['a line that divides an angle of the triangle into two equal angles', 'angle bisector']], c = pick(C);
+      return ch(p('What is the name of ' + c[0] + '?'), c[1], ['median', 'altitude', 'perpendicular bisector', 'angle bisector'].filter(o => o !== c[1]), 'Median: to the midpoint. Altitude: perpendicular, from a vertex.', 'This is the ' + c[1] + '.');
+    }
+  ];
+  const V5 = [
+    function whichCentre(l) {
+      const c = pick([['inscribed circle', 'the three angle bisectors'], ['circumscribed circle', 'the three perpendicular bisectors']]);
+      return ch(p('The centre of the ' + c[0] + ' of a triangle is the point of intersection of …'), c[1], ['the three angle bisectors', 'the three perpendicular bisectors', 'the three medians', 'the three altitudes'].filter(o => o !== c[1]), 'Inscribed circle: same distance to the three sides. Circumscribed circle: same distance to the three vertices.', 'The ' + c[0] + ': ' + c[1] + '.');
+    },
+    function rightCircumcentre(l) {
+      let x1, y1, x2, y2; do { x1 = ri(-6, 4); y1 = ri(-6, 4); x2 = x1 + 2 * ri(1, 5) * pick([1, -1]); y2 = y1 + 2 * ri(1, 5) * pick([1, -1]); } while (false);
+      return ptQ(p('Triangle ABC has A' + P2(x1, y1) + ', B' + P2(x2, y1) + ' and C' + P2(x1, y2) + '. The angle at A is 90°. Calculate the centre of the circumscribed circle.'), (x2 + x1) / 2, (y1 + y2) / 2, 'In a right-angled triangle the centre of the circumscribed circle is the midpoint of the hypotenuse.', p('The hypotenuse is BC.') + p('Midpoint of BC: ((' + N_(x2) + ' + ' + Pa(x1) + ') / 2, (' + N_(y1) + ' + ' + Pa(y2) + ') / 2) = ' + P2((x1 + x2) / 2, (y1 + y2) / 2)));
+    },
+    function circumRadius(l) {
+      const a = ri(2, 12), b = ri(2, 12), r = Math.hypot(a, b) / 2, rr = rd(r, 2);
+      return nu(p('A right-angled triangle has legs of ' + a + ' cm and ' + b + ' cm. Calculate the radius of its circumscribed circle. <small>(Round to 2 decimals.)</small>'), rr, 'The hypotenuse is a diameter of the circumscribed circle. Use Pythagoras.', p('hypotenuse = √(' + a + '² + ' + b + '²) = √' + (a * a + b * b) + (Number.isInteger(2 * r) ? ' = ' : ' ≈ ') + rd(2 * r, 2)) + p('radius = hypotenuse : 2' + (rd(r, 2) === rd(r, 6) ? ' = ' : ' ≈ ') + rr + ' cm'), { tol: .006, needStep: true });
+    }
+  ];
+  const G1 = G['7.1'].concat(V1), G2 = V2.concat(G['7.5']), X1 = XG['7.1'], X2 = XG['7.5'];
+  G['7.1'] = G1; G['7.2'] = G2; G['7.3'] = V3; G['7.4'] = V4; G['7.5'] = V5;
+  XG['7.1'] = X1; XG['7.2'] = X2; XG['7.3'] = []; XG['7.4'] = []; XG['7.5'] = [];
+  SECTIONS.splice(0, SECTIONS.length,
+    { id: '7.1', title: '7.1 Reasoning with angles', sub: 'Definitions, theorems, angles in triangles and parallel lines' },
+    { id: '7.2', title: '7.2 Similar and congruent triangles', sub: 'aa, sss, sas, ssr, calculating sides' },
+    { id: '7.3', title: '7.3 Bisectors', sub: 'Angle bisector, perpendicular bisector' },
+    { id: '7.4', title: '7.4 Altitudes and medians', sub: 'Altitude, area, median, centroid' },
+    { id: '7.5', title: '7.5 Inscribed and circumscribed circles', sub: 'Centres and radius' });
+  GOALS.splice(0, GOALS.length,
+    ['7.1', 'I can reason with angles and give the reason', ['triSum', 'isoTri', 'quadAngles', 'straightVert', 'parallel', 'angleName', 'exteriorAngle', 'defOrTheorem'], 'Write the reason after every step.'],
+    ['7.2', 'I can show that triangles are similar or congruent', ['whichPostulate', 'congruentFactor', 'nested', 'hourglass', 'shadow', 'whySimilar', 'nestedPart'], 'aa, sss, sas, ssr. Congruent: scale factor 1.'],
+    ['7.3', 'I can use angle bisectors and perpendicular bisectors', ['whichLocus', 'midpoint', 'bisectorsMeet'], 'Perpendicular bisector: same distance to two points.'],
+    ['7.4', 'I can use altitudes and medians', ['altitudeFromArea', 'centroidSplit', 'vertexFromCentroid', 'whichLine'], 'The centroid divides a median 2 : 1.'],
+    ['7.5', 'I can find the centre of an inscribed or circumscribed circle', ['whichCentre', 'rightCircumcentre', 'circumRadius'], 'Right-angled triangle: the centre is the midpoint of the hypotenuse.']);
+}
 return { key: 'nx-' + P.cls.toLowerCase() + '-ch7-v1', SECTIONS, LESSONS: [], G, XG, defaultMode: 'para', GOALS };

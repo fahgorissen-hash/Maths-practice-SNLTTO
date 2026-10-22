@@ -1,0 +1,1332 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>3VT Chapter 7 Geometric reasoning - practice</title>
+<style>
+:root{--bg:#f4f7fa;--card:#fff;--ink:#17222d;--mut:#5b6b7a;--line:#d5dee7;--brand:#1b5fa8;--brand2:#e8f1fb;--ok:#16803c;--okbg:#e6f6ec;--bad:#b3261e;--badbg:#fdecea;--warn:#8a5a00;--warnbg:#fff4d6}
+*{box-sizing:border-box}
+body{margin:0;font-family:Calibri,"Segoe UI",system-ui,sans-serif;background:var(--bg);color:var(--ink);font-size:18px;line-height:1.45}
+header{background:var(--brand);color:#fff;padding:14px 20px}
+header h1{margin:0;font-size:24px}header p{margin:2px 0 0;opacity:.9;font-size:15px}
+.wrap{display:grid;grid-template-columns:290px 1fr;gap:18px;max-width:1150px;margin:18px auto;padding:0 14px}
+nav{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px;align-self:start}
+nav button.sec{display:block;width:100%;text-align:left;background:none;border:2px solid transparent;border-radius:10px;padding:9px 11px;margin:3px 0;font:inherit;cursor:pointer;color:inherit}
+nav button.sec:hover{background:var(--brand2)}
+nav button.sec[aria-current=true]{background:var(--brand2);border-color:var(--brand)}
+nav .t{font-weight:700}nav .s{font-size:14px;color:var(--mut)}
+.bar{height:7px;background:#e3eaf1;border-radius:5px;margin-top:5px;overflow:hidden}.bar i{display:block;height:100%;background:var(--ok);width:0}
+.reset{margin:8px 4px 2px;font-size:14px;color:var(--mut);background:none;border:0;text-decoration:underline;cursor:pointer;font-family:inherit}
+main{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px 22px;min-height:420px}
+.top{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:8px}
+.badge{padding:3px 12px;border-radius:99px;font-weight:700;font-size:15px}
+.l0{background:#dff3e5;color:#0f6a31}.l1{background:#fff0c9;color:#7a5200}.l2{background:#fde0d9;color:#a3341b}.l3{background:#f3d9f5;color:#6b1f78}.lm{background:#e3def7;color:#40318a}
+header{display:flex;align-items:center;gap:14px;flex-wrap:wrap}header .hd{flex:1;min-width:240px}.pbtn{font:inherit;font-weight:700;background:#fff;color:var(--brand);border:0;border-radius:10px;padding:8px 16px;cursor:pointer;font-size:16px}
+nav button.mm{margin-left:14px;width:calc(100% - 14px);background:#f1edfb;border-color:#cbbdf0;font-weight:700;color:#40318a;font-size:16px}
+.pg h2{margin-top:0}.pg table{border-collapse:collapse;width:100%;font-size:16px;margin:8px 0 14px}.pg th,.pg td{border-bottom:1px solid var(--line);padding:8px 6px;text-align:left;vertical-align:middle}.pg th{color:var(--mut);font-size:14px}.chip{display:inline-block;padding:2px 9px;border-radius:99px;font-size:13px;font-weight:700;margin:1px 2px 1px 0;border:2px solid #cfd8e0;color:#8795a3;background:#fff}.chip.ach{background:var(--okbg);border-color:#8fd1a8;color:var(--ok)}.chip.act{border-color:var(--brand);color:var(--brand);background:var(--brand2)}
+nav .seg{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin:2px 0 8px}nav .seg button{font:inherit;font-size:15px;font-weight:700;padding:7px 4px;border-radius:9px;border:2px solid var(--brand);background:#fff;color:var(--brand);cursor:pointer}nav .seg button.on{background:var(--brand);color:#fff}
+@media print{header .pbtn,.topnav,nav,.btns{display:none!important}.wrap{display:block}main{border:0}}
+.streak{margin-left:auto;color:var(--mut);font-size:15px}
+.dot{display:inline-block;width:11px;height:11px;border-radius:50%;background:#d6dee6;margin-left:4px}.dot.on{background:var(--ok)}
+.q p{margin:.4em 0 .6em;font-size:20px}
+.tbl{border-collapse:collapse;margin:8px 0 12px;font-size:19px}.tbl th,.tbl td{border:1px solid #9fb0bf;padding:5px 13px;text-align:center;min-width:44px}.tbl th{background:var(--brand2)}
+svg.grid{width:100%;max-width:470px;height:auto;border:1px solid var(--line);border-radius:8px;display:block;margin:6px 0 10px;touch-action:manipulation}
+svg.grid[data-click]{cursor:crosshair}
+.ans{margin:8px 0}
+.ans label{display:block;font-size:16px;color:var(--mut);margin-top:6px}
+.ans input[type=text]{font:inherit;font-size:20px;padding:7px 11px;border:2px solid #9fb0bf;border-radius:9px;width:210px}
+.ans input:focus{outline:3px solid #9cc4ee;border-color:var(--brand)}
+.choices{display:grid;gap:8px;max-width:520px}
+.choice{display:block;text-align:left;font:inherit;font-size:19px;padding:10px 14px;border:2px solid #9fb0bf;border-radius:10px;background:#fff;cursor:pointer}
+.choice:hover{border-color:var(--brand)}.choice[aria-pressed=true]{background:var(--brand2);border-color:var(--brand)}
+.btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+.btn{font:inherit;font-weight:700;padding:9px 20px;border-radius:10px;border:2px solid var(--brand);background:var(--brand);color:#fff;cursor:pointer;font-size:18px}
+.btn.alt{background:#fff;color:var(--brand)}.btn:disabled{opacity:.45;cursor:default}
+.fb{margin-top:14px;padding:11px 14px;border-radius:10px;display:none}
+.fb.show{display:block}.fb.ok{background:var(--okbg);border:1px solid #8fd1a8}.fb.no{background:var(--badbg);border:1px solid #eba8a3}.fb.hint{background:var(--warnbg);border:1px solid #e6c874}
+.fb b.h{display:block;margin-bottom:2px}
+.res h2{margin-top:0}.grade{font-size:44px;font-weight:700;color:var(--brand)}
+.rev{border-top:1px solid var(--line);padding:10px 0;font-size:17px}.rev .st{color:var(--mut)}
+@media(max-width:760px){.wrap{grid-template-columns:1fr}nav{display:grid;grid-template-columns:1fr 1fr;gap:4px}nav .reset{grid-column:1/-1}}
+.sr{position:absolute;left:-9999px}
+
+.mx{font-size:1.06em;white-space:nowrap}
+.mx i{font-family:"Cambria Math","Times New Roman",serif;font-style:italic}
+.fr{display:inline-flex;flex-direction:column;vertical-align:middle;text-align:center;margin:0 3px;line-height:1.2}
+.fr .nu{border-bottom:1.6px solid currentColor;padding:0 4px 1px}.fr .de{padding:1px 4px 0}
+.rt{display:inline-block;position:relative;white-space:nowrap;line-height:1.1;padding-left:.72em;margin-right:.08em}.rt.rn{margin-left:.4em}
+.rt .ov{display:inline-block;padding:.14em 3px 0 0;border-top:1.6px solid currentColor}
+.rt .sq{position:absolute;left:0;top:0;bottom:-.12em;width:.72em;background:currentColor;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 20' preserveAspectRatio='none'%3E%3Cpath d='M0.6 11.2 L2.4 10 L4.8 18.6 L9.6 0.8' fill='none' stroke='black' stroke-width='1.7' stroke-linejoin='miter' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E") center/100% 100% no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 20' preserveAspectRatio='none'%3E%3Cpath d='M0.6 11.2 L2.4 10 L4.8 18.6 L9.6 0.8' fill='none' stroke='black' stroke-width='1.7' stroke-linejoin='miter' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E") center/100% 100% no-repeat}
+.rt .ix{position:absolute;left:-.42em;top:.12em;font-size:.62em;line-height:1}
+.q sup{font-size:.7em;line-height:0}
+.mx i{padding-right:.09em}.mx sup{font-style:normal;margin-left:.05em;font-size:.7em;line-height:0}
+.kp{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 2px}.kp button{font:inherit;font-size:19px;min-width:42px;padding:5px 10px;border:2px solid #9fb0bf;border-radius:9px;background:#f7fafc;cursor:pointer}.kp button:hover{border-color:var(--brand);background:var(--brand2)}
+.pv{min-height:34px;margin:6px 0 0;font-size:20px;color:#223}.pv .pl{font-size:14px;color:var(--mut);margin-right:6px}
+.ans input[type=text].wide{width:min(520px,100%)}
+.ans input#in0{width:min(420px,100%)}
+.fb .mx{font-size:1.05em}
+.lead{color:var(--mut);font-size:15px;margin:2px 0 0}
+svg.fig{max-width:430px;width:100%;height:auto;display:block;margin:6px 0 10px}
+.topnav{flex-basis:100%;display:flex;gap:8px;align-items:center;flex-wrap:wrap}.topnav .nb,.topnav summary{font:inherit;font-size:14px;font-weight:700;background:rgba(255,255,255,.18);color:#fff;border:1px solid rgba(255,255,255,.5);border-radius:10px;padding:5px 12px;cursor:pointer;text-decoration:none;list-style:none}.topnav .nb:hover,.topnav summary:hover{background:rgba(255,255,255,.3)}.topnav summary::-webkit-details-marker{display:none}.topnav details{position:relative}.topnav .menu{position:absolute;z-index:50;top:110%;left:0;background:#fff;border-radius:10px;box-shadow:0 4px 16px rgba(0,0,0,.25);padding:6px;min-width:260px;display:flex;flex-direction:column}.topnav .menu a{color:var(--brand);text-decoration:none;padding:7px 10px;border-radius:8px;font-size:15px}.topnav .menu a:hover{background:#eef2f7}.topnav .menu a.cur{font-weight:800;background:#e3ecf7}
+.topnav .nb.cur{background:#fff;color:var(--brand);border-color:#fff}
+.goals{background:#f3f8fd;border:1px solid var(--line);border-radius:12px;padding:8px 14px;margin:8px 0 12px}.goals .gh{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;align-items:center}.goals .gb{display:flex;gap:12px;flex-wrap:wrap}.lk{font:inherit;font-size:15px;background:none;border:0;color:var(--brand);text-decoration:underline;cursor:pointer;padding:2px 0}.goals ul{list-style:none;margin:6px 0 2px;padding:0}.goals li{display:flex;gap:9px;align-items:flex-start;padding:4px 6px;border-radius:8px;font-size:16px}.goals li.cur{background:#fff;border:1px solid var(--brand);font-weight:700}.goals .sd{flex:0 0 11px;height:11px;border-radius:50%;margin-top:7px}
+.hc{background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px 14px;margin:8px 0}.hc h4{margin:0 0 6px;font-size:18px}.hc .hr{margin:8px 0;font-size:16px}.hc .hr p{margin:2px 0}.hc .ex{background:#f7fafc;border-radius:8px;padding:2px 12px}.hc .ex .exa{margin:2px 0 8px}.hc .warn{background:var(--warnbg);border-radius:8px;padding:4px 10px}
+.pmbar{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:2px 0 8px}.pml{font-size:14px;color:var(--mut);margin-left:4px}.pm{font:inherit;font-size:14px;font-weight:700;padding:3px 11px;border-radius:99px;border:2px solid #9fb0bf;background:#fff;color:var(--ink);cursor:pointer}.pm.on{background:var(--brand);border-color:var(--brand);color:#fff}.pm.l0.on{background:#0f6a31;border-color:#0f6a31}.pm.l1.on{background:#9a6a00;border-color:#9a6a00}.pm.l2.on{background:#a3341b;border-color:#a3341b}.pm.l3.on{background:#6b1f78;border-color:#6b1f78}
+.pmnote{background:#eef4fb;border:1px solid #b9d0ea;border-radius:10px;padding:6px 12px;margin:0 0 10px;font-size:16px}.btn.sm{font-size:14px;padding:3px 12px;margin-left:8px}
+.hl{margin-top:16px;font-size:15px}.hl summary{cursor:pointer;color:var(--mut)}.hl ul{margin:6px 0;padding-left:0;list-style:none}.hl li{padding:2px 0;border-bottom:1px solid #eef2f6}.hl .ok{color:var(--ok);font-weight:700}.hl .no{color:var(--bad);font-weight:700}.hl .lq{color:var(--mut)}
+.at{margin-top:8px;font-size:15px;color:var(--mut)}.at .ok{color:var(--ok);font-weight:700;margin-right:8px}.at .no{color:var(--bad);font-weight:700;margin-right:8px}
+.cards{display:flex;gap:12px;flex-wrap:wrap;margin:6px 0}.card2{flex:1;min-width:150px;border:1px solid var(--line);border-radius:12px;padding:10px 14px;background:#f7fafc}.card2 b{display:block;font-size:28px;color:var(--brand)}.card2 span{font-size:14px;color:var(--mut)}
+.stc{display:inline-block;border:1px solid;border-radius:99px;padding:1px 10px;font-size:14px;font-weight:700;white-space:nowrap}.stkey{display:flex;gap:6px;flex-wrap:wrap}.gt .gsec td{background:#eef4fb}.gt td.num{white-space:nowrap}.mut{color:var(--mut);font-size:15px}
+.bdg{display:inline-block;margin:3px 6px 3px 0;padding:3px 12px;border-radius:99px;border:1px solid var(--line);color:#8a98a6;background:#f4f7fa;font-size:15px}.bdg.got{background:#fff4d6;color:#7a5200;border-color:#e6c874;font-weight:700}
+.filebtn{display:inline-block;cursor:pointer}.btn.danger{color:var(--bad);border-color:var(--bad)}.rname{font:inherit;font-size:18px;padding:3px 8px;border:1px solid #9fb0bf;border-radius:8px}
+.ws .wq{display:flex;gap:12px;padding:10px 0;border-bottom:1px solid var(--line);break-inside:avoid}.ws .wn{font-weight:700;color:var(--brand);min-width:26px}.ws .wl{margin-top:10px;color:var(--mut)}.ws .wo{margin:4px 0}.ws .wa{padding:6px 0;border-bottom:1px solid #eef2f6;font-size:16px}.pbreak{page-break-before:always;break-before:page}
+@media print{body.printing header,body.printing nav,body.printing .noprint,body.printing .goals{display:none!important}body.printing .wrap{display:block;margin:0;padding:0}body.printing main{border:0;padding:0}body{background:#fff}}
+.autoc{display:block;margin:.6rem 0 0;font-size:.9rem;color:var(--mut,#556)}.autoc input{margin-right:.4rem}
+.stp .stl{font-size:1.15rem;margin:.35rem 0;color:var(--ink,inherit)}.stp .eq{margin-left:.15rem;font-weight:700}
+.stp .stl{display:flex;gap:.6rem;align-items:flex-start}.ci{flex:none;width:1.5rem;height:1.5rem;border-radius:50%;border:2px solid #22a050;color:#22a050;display:inline-flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:700;line-height:1;margin-top:.1rem}.ci.open{color:transparent}.ci.full{background:#22a050;color:#fff}.fnote{font-size:.85rem;color:#16803c;margin-top:.1rem}.stepnote{margin:.5rem 0;padding:.45rem .7rem;border-left:4px solid #b7791f;background:#fff7e6;border-radius:6px;font-size:.92rem;color:#5a3d00}@media (prefers-color-scheme:dark){.stepnote{background:#3a2d12;color:#f3d9a4}}
+</style>
+</head>
+<body>
+<header><div class="topnav" role="navigation" aria-label="Site navigation"><a class="nb" href="../">Home</a><a class="nb" href="../3vt-chapter-1/">Chapter 1</a><a class="nb" href="../3vt-chapter-2/">Chapter 2</a><a class="nb" href="../3vt-chapter-3/">Chapter 3</a><a class="nb" href="../3vt-chapter-4/">Chapter 4</a><a class="nb" href="../3vt-chapter-5/">Chapter 5</a><a class="nb" href="../3vt-chapter-6/">Chapter 6</a><a class="nb cur" href="../3vt-chapter-7/" aria-current="page">Chapter 7</a></div><div class="hd"><h1>3VT · Chapter 7 · Geometric reasoning</h1><p>Practise as long as you like. The questions adapt to you: Mild, Medium, Spicy and Extra spicy.</p></div><button class="pbtn" id="pbtn" type="button">My progress</button></header>
+<div class="wrap">
+  <nav id="nav" aria-label="Topics"></nav>
+  <main id="main" aria-live="polite"></main>
+</div>
+<script>
+/* NX core: shared helpers, expression parser/grader, renderer, engine builder. No DOM. */
+(function (root) {
+'use strict';
+const ri = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
+const pick = arr => arr[Math.floor(Math.random() * arr.length)];
+const shuffle = arr => { const a = arr.slice(); for (let i = a.length - 1; i > 0; i--) { const j = ri(0, i); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const nz = (a, b) => { let v = 0; while (v === 0) v = ri(a, b); return v; };
+const f = n => (n < 0 ? '−' : '') + (Math.round(Math.abs(n) * 1e6) / 1e6);
+const gcd = (a, b) => { a = Math.abs(a); b = Math.abs(b); while (b) { [a, b] = [b, a % b]; } return a; };
+const lcm = (a, b) => a / gcd(a, b) * b;
+const isPrime = n => { if (n < 2) return false; for (let i = 2; i * i <= n; i++) if (n % i === 0) return false; return true; };
+const primeFactors = n => { const r = []; for (let p = 2; p * p <= n; p++) while (n % p === 0) { r.push(p); n /= p; } if (n > 1) r.push(n); return r; };
+const squarefree = n => { for (let p = 2; p * p <= n; p++) if (n % (p * p) === 0) return false; return true; };
+const sqrtSplit = n => { let o = 1, r = n; for (let p = 2; p * p <= r; p++) while (r % (p * p) === 0) { o *= p; r /= p * p; } return [o, r]; };  // n = o^2 * r
+const SUP = '⁰¹²³⁴⁵⁶⁷⁸⁹';
+
+/* ================= tokenizer / parser ================= */
+function tokenize(src, o) {
+  o = o || {};
+  let s = String(src).replace(/[−–—]/g, '-').replace(/ /g, ' ');
+  s = s.replace(/(^|[^\d.,])(-?)(\d+)[ ]+(\d+)[ ]*\/[ ]*(\d+)/g, (m, pre, sg, w, n, d) => pre + (sg ? '-' : '') + '(' + w + '+' + n + '/' + d + ')');   // mixed number 2 1/3
+  s = s.replace(/sqrt/gi, '√').replace(/(?<![a-zA-Z])pi(?![a-zA-Z])/gi, 'π').replace(/°/g, '');
+  s = s.replace(/([⁰¹²³⁴⁵⁶⁷⁸⁹]+)√/g, (m, d) => '\u0001' + d.split('').map(c => SUP.indexOf(c)).join('') + ';');
+  s = s.replace(/(\d+)\s*V/g, (m, d) => '\u0001' + d + ';');   // 3V27 = cube root of 27
+  s = s.replace(/∛/g, '\u00013;').replace(/∜/g, '\u00014;');
+  s = s.replace(/[⁰¹²³⁴⁻⁵⁶⁷⁸⁹]+/g, m => '^(' + m.split('').map(c => c === '⁻' ? '-' : SUP.indexOf(c)).join('') + ')');
+  const t = []; let i = 0;
+  while (i < s.length) {
+    const c = s[i];
+    if (/\s/.test(c)) { i++; continue; }
+    if (c === '\u0001') { const j = s.indexOf(';', i); t.push({ k: 'sqrt', n: +s.slice(i + 1, j) }); i = j + 1; continue; }
+    if (c === '√') { t.push({ k: 'sqrt', n: 2 }); i++; continue; }
+    let m;
+    if ((m = /^\d+(?:[.,]\d+)?|^[.,]\d+/.exec(s.slice(i)))) { t.push({ k: 'num', v: parseFloat(m[0].replace(',', '.')), s: m[0].replace(',', '.') }); i += m[0].length; continue; }
+    if (c === 'π') { t.push({ k: 'pi' }); i++; continue; }
+    if ((m = /^(?:(sin|cos|tan)\s*\^\s*\(?\s*-\s*1\s*\)?|(?:arc|a)(sin|cos|tan)|(sin|cos|tan))/i.exec(s.slice(i)))) { t.push({ k: 'fn', n: (m[1] || m[2] ? 'a' : '') + (m[1] || m[2] || m[3]).toLowerCase() }); i += m[0].length; continue; }   // trig in degrees; sin^-1 = inverse
+    if (/[×·⋅*]/.test(c)) { t.push({ k: 'op', v: '*' }); i++; continue; }
+    if (/[x]/i.test(c) && o.noVars) { t.push({ k: 'op', v: '*' }); i++; continue; }
+    if (/[a-zA-Z]/.test(c)) { if (o.noVars) throw new Error('var'); t.push({ k: 'var', n: c }); i++; continue; }
+    if (c === '÷' || c === ':') { t.push({ k: 'op', v: '÷' }); i++; continue; }
+    if ('+-/^()'.indexOf(c) >= 0) { t.push({ k: 'op', v: c }); i++; continue; }
+    if (c === '[') { t.push({ k: 'op', v: '(' }); i++; continue; }
+    if (c === ']') { t.push({ k: 'op', v: ')' }); i++; continue; }
+    throw new Error('char ' + c);
+  }
+  return t;
+}
+function parse(src, o) {
+  const T = tokenize(src, o); let p = 0;
+  const peek = () => T[p], isOp = v => T[p] && T[p].k === 'op' && T[p].v === v;
+  const startsFactor = () => { const k = T[p]; return k && (k.k === 'num' || k.k === 'var' || k.k === 'pi' || k.k === 'sqrt' || k.k === 'fn' || (k.k === 'op' && k.v === '(')); };
+  function expr() {
+    let a = term();
+    while (isOp('+') || isOp('-')) { const op = T[p++].v; const b = term(); a = { t: op === '+' ? 'add' : 'sub', a, b }; }
+    return a;
+  }
+  function term() {
+    let a = unary();
+    for (;;) {
+      if (isOp('*')) { p++; a = { t: 'mul', a, b: unary() }; }
+      else if (isOp('/')) { p++; a = { t: 'div', a, b: unary() }; }
+      else if (isOp('÷')) { p++; a = { t: 'div', a, b: unary(), inl: true }; }
+      else if (startsFactor()) { a = { t: 'mul', a, b: unary(), imp: true }; }
+      else break;
+    }
+    return a;
+  }
+  function unary() {
+    if (isOp('-')) { p++; return { t: 'neg', a: unary() }; }
+    if (isOp('+')) { p++; return unary(); }
+    return power();
+  }
+  function power() {
+    const a = atom();
+    if (isOp('^')) { p++; let sgn = 1; if (isOp('-')) { p++; sgn = -1; } else if (isOp('+')) p++; let b = power(); if (sgn < 0) b = { t: 'neg', a: b }; return { t: 'pow', a, b }; }
+    return a;
+  }
+  function atom() {
+    const k = T[p]; if (!k) throw new Error('end');
+    if (k.k === 'num') { p++; return { t: 'n', v: k.v, s: k.s }; }
+    if (k.k === 'var') { p++; return { t: 'v', n: k.n }; }
+    if (k.k === 'pi') { p++; return { t: 'pi' }; }
+    if (k.k === 'sqrt') {
+      p++; let neg = false;
+      if (isOp('-')) { p++; neg = true; }
+      let r; const q = T[p];
+      if (isOp('(')) r = atom();
+      else if (q && q.k === 'num') { p++; r = { t: 'n', v: q.v, s: q.s }; }
+      else if (q && q.k === 'var') { p++; r = { t: 'v', n: q.n }; }
+      else if (q && q.k === 'pi') { p++; r = { t: 'pi' }; }
+      else throw new Error('sqrt');
+      if (neg) r = { t: 'neg', a: r };
+      return { t: 'sqrt', a: r, k: k.n };
+    }
+    if (k.k === 'fn') { p++; return { t: 'fn', n: k.n, a: power() }; }
+    if (isOp('(')) { p++; const e = expr(); if (!isOp(')')) throw new Error('paren'); p++; e.par = true; return e; }
+    throw new Error('atom');
+  }
+  const e = expr(); if (p < T.length) throw new Error('trailing'); return e;
+}
+function evalAst(n, env) {
+  switch (n.t) {
+    case 'n': return n.v; case 'v': { if (!(n.n in env)) env[n.n] = 0.6 + Math.random() * 2.2; return env[n.n]; }
+    case 'pi': return Math.PI; case 'neg': return -evalAst(n.a, env);
+    case 'add': return evalAst(n.a, env) + evalAst(n.b, env); case 'sub': return evalAst(n.a, env) - evalAst(n.b, env);
+    case 'mul': return evalAst(n.a, env) * evalAst(n.b, env); case 'div': return evalAst(n.a, env) / evalAst(n.b, env);
+    case 'pow': return Math.pow(evalAst(n.a, env), evalAst(n.b, env));
+    case 'sqrt': { const x = evalAst(n.a, env); if (n.k % 2 === 1) return (x < 0 ? -1 : 1) * Math.pow(Math.abs(x), 1 / n.k); return x < 0 ? NaN : Math.pow(x, 1 / n.k); }
+    case 'fn': { const x = evalAst(n.a, env), D = Math.PI / 180; return n.n === 'sin' ? Math.sin(x * D) : n.n === 'cos' ? Math.cos(x * D) : n.n === 'tan' ? Math.tan(x * D) : n.n === 'asin' ? Math.asin(x) / D : n.n === 'acos' ? Math.acos(x) / D : Math.atan(x) / D; }
+  }
+  return NaN;
+}
+function numEq(a, b) {                       // asts equivalent? (random numeric test)
+  for (let i = 0; i < 6; i++) {
+    const env = {}; const x = evalAst(a, env), y = evalAst(b, env);  // vars filled lazily, shared env
+    const y2 = evalAst(b, env);
+    if (!isFinite(x) || !isFinite(y2)) { if (i < 5) continue; return false; }
+    if (Math.abs(x - y2) > 1e-7 * Math.max(1, Math.abs(x), Math.abs(y2))) return false;
+  }
+  return true;
+}
+const isInt = v => Math.abs(v - Math.round(v)) < 1e-9;
+const lit = n => n.t === 'n' ? n.v : (n.t === 'neg' && n.a.t === 'n' ? -n.a.v : null);
+
+/* ----- polynomials: Map(key -> coef) ; key = 'a1b2' sorted ----- */
+const PK = m => Object.keys(m).sort().map(v => v + m[v]).join('');
+const Poly = {
+  c: v => (v === 0 ? {} : { '': v }),
+  v: n => ({ [n + '1']: 1 }),
+  add(a, b, s) { const r = Object.assign({}, a); for (const k in b) { r[k] = (r[k] || 0) + (s || 1) * b[k]; if (Math.abs(r[k]) < 1e-12) delete r[k]; } return r; },
+  mulm(k1, k2) { const m = {}; const re = /([^\d])(\d+)/g; let x; [k1, k2].forEach(k => { re.lastIndex = 0; while ((x = re.exec(k))) m[x[1]] = (m[x[1]] || 0) + +x[2]; }); return PK(m); },
+  mul(a, b) { const r = {}; for (const k1 in a) for (const k2 in b) { const k = Poly.mulm(k1, k2); r[k] = (r[k] || 0) + a[k1] * b[k2]; if (Math.abs(r[k]) < 1e-12) delete r[k]; } return r; },
+  pow(a, n) { let r = Poly.c(1); for (let i = 0; i < n; i++) r = Poly.mul(r, a); return r; },
+  isConst: a => Object.keys(a).every(k => k === ''),
+  cval: a => a[''] || 0
+};
+function toRF(n) {                           // rational function {N,D} or null
+  switch (n.t) {
+    case 'n': return { N: Poly.c(n.v), D: Poly.c(1) };
+    case 'v': return { N: Poly.v(n.n), D: Poly.c(1) };
+    case 'pi': return { N: Poly.v('π'), D: Poly.c(1) };
+    case 'neg': { const a = toRF(n.a); return a && { N: Poly.mul(a.N, Poly.c(-1)), D: a.D }; }
+    case 'add': case 'sub': { const a = toRF(n.a), b = toRF(n.b); if (!a || !b) return null; return { N: Poly.add(Poly.mul(a.N, b.D), Poly.mul(b.N, a.D), n.t === 'add' ? 1 : -1), D: Poly.mul(a.D, b.D) }; }
+    case 'mul': { const a = toRF(n.a), b = toRF(n.b); return a && b && { N: Poly.mul(a.N, b.N), D: Poly.mul(a.D, b.D) }; }
+    case 'div': { const a = toRF(n.a), b = toRF(n.b); if (!a || !b || !Object.keys(b.N).length) return null; return { N: Poly.mul(a.N, b.D), D: Poly.mul(a.D, b.N) }; }
+    case 'pow': { const e = lit(n.b); if (e === null || !isInt(e) || Math.abs(e) > 12) return null; const a = toRF(n.a); if (!a) return null; if (e >= 0) return { N: Poly.pow(a.N, e), D: Poly.pow(a.D, e) }; if (!Object.keys(a.N).length) return null; return { N: Poly.pow(a.D, -e), D: Poly.pow(a.N, -e) }; }
+  }
+  return null;
+}
+/* ----- structural analysis ----- */
+function flat(n, s, out) {
+  if (n.t === 'add') { flat(n.a, s, out); flat(n.b, s, out); }
+  else if (n.t === 'sub') { flat(n.a, s, out); flat(n.b, -s, out); }
+  else if (n.t === 'neg') flat(n.a, -s, out);
+  else out.push({ s, n });
+  return out;
+}
+function monoTerm(n, allowNegExp) {           // {c, vars} or null
+  switch (n.t) {
+    case 'n': return { c: n.v, vars: {} };
+    case 'pi': return { c: 1, vars: { 'π': 1 } };
+    case 'v': return { c: 1, vars: { [n.n]: 1 } };
+    case 'neg': { const a = monoTerm(n.a, allowNegExp); return a && { c: -a.c, vars: a.vars }; }
+    case 'mul': { const a = monoTerm(n.a, allowNegExp), b = monoTerm(n.b, allowNegExp); if (!a || !b) return null; const vars = Object.assign({}, a.vars); for (const k in b.vars) { if (k in vars) return null; vars[k] = b.vars[k]; } return { c: a.c * b.c, vars }; }
+    case 'div': { const a = monoTerm(n.a, allowNegExp), b = monoTerm(n.b, allowNegExp); if (!a || !b || Object.keys(b.vars).length || b.c === 0) return null; return { c: a.c / b.c, vars: a.vars }; }
+    case 'pow': { const e = lit(n.b); if (e === null || !isInt(e)) return null; if (e < 0 && !allowNegExp) return null; if (n.a.t === 'v') return { c: 1, vars: { [n.a.n]: e } }; if (n.a.t === 'pi') return { c: 1, vars: { 'π': e } }; return null; }
+  }
+  return null;
+}
+const hasBrackets = (n) => { if (n.par && n.t !== 'n' && !(n.t === 'neg' && n.a.t === 'n') && !(n.t === 'div' && n.a.t === 'n' && n.b.t === 'n')) return true; for (const k of ['a', 'b']) if (n[k] && hasBrackets(n[k])) return true; return false; };
+function sigOf(vars) { return Object.keys(vars).sort().map(k => k + vars[k]).join(''); }
+
+function formCheck(form, ast, q) {            // returns null if ok else message
+  if (!form || form === 'any') return null;
+  if (form === 'mono') {
+    const t = flat(ast, 1, []); if (t.length !== 1) return 'Write your answer as a single term.';
+    if (!monoTerm(t[0].n, q && q.negExp)) return 'Not fully simplified yet: write it as one number times each letter to a single power.'; return null;
+  }
+  if (form === 'poly') {
+    const t = flat(ast, 1, []); const seen = {};
+    for (const x of t) { const m = monoTerm(x.n); if (!m) return 'Not finished yet: expand the brackets and write every term as a number times letters.'; const s = sigOf(m.vars); if (seen[s]) return 'Not finished yet: add the like terms.'; seen[s] = 1; if (m.c === 0) return 'Remove the terms that are 0.'; }
+    return null;
+  }
+  if (form === 'lowest') {
+    const rf = toRF(ast); if (!rf) return 'I cannot read that as a fraction.';
+    const D = rf.D, N = rf.N; if (Object.keys(D).length !== 1) return 'Write one fraction with a single term in the denominator.';
+    const dk = Object.keys(D)[0]; let dc = D[dk]; if (!isInt(dc)) return null;
+    const cs = Object.keys(N).map(k => N[k]); if (!cs.length) return null;
+    if (cs.some(c => !isInt(c))) { return null; }
+    let g = Math.abs(dc); cs.forEach(c => { g = gcd(g, c); }); if (g > 1) return 'Not fully simplified: the numbers still have a common factor.';
+    const vs = (dk.match(/[^\d]/g) || []);
+    for (const v of vs) { if (Object.keys(N).every(k => k.indexOf(v) >= 0)) return 'Not fully simplified: you can still cancel the letter ' + v + '.'; }
+    // the user must not leave nested fractions / brackets-free requirement: ok
+    return null;
+  }
+  if (form === 'root') {
+    const terms = flat(ast, 1, []); const rads = {};
+    function rootTerm(n) {            // {c, r} or null
+      switch (n.t) {
+        case 'n': return { c: n.v, r: 1 };
+        case 'neg': { const a = rootTerm(n.a); return a && { c: -a.c, r: a.r }; }
+        case 'sqrt': { if (n.k !== 2) return null; const v = lit(n.a); if (v === null || !isInt(v) || v <= 1) return null; if (!squarefree(v)) return { bad: 'sq' }; return { c: 1, r: v }; }
+        case 'mul': { const a = rootTerm(n.a), b = rootTerm(n.b); if (!a || !b || a.bad || b.bad) return a && a.bad ? a : b && b.bad ? b : null; if (a.r > 1 && b.r > 1) return { bad: 'two' }; return { c: a.c * b.c, r: a.r * b.r }; }
+        case 'div': { const a = rootTerm(n.a), b = rootTerm(n.b); if (!a || !b) return null; if (a.bad) return a; if (b.bad) return b; if (b.r > 1) return { bad: 'den' }; if (isInt(a.c) && isInt(b.c) && gcd(a.c, b.c) > 1) return { bad: 'cancel' }; return { c: a.c / b.c, r: a.r }; }
+      }
+      return null;
+    }
+    for (const x of terms) {
+      const r = rootTerm(x.n); if (!r) return 'Not in the simplest form: write each term as a number times √ of a whole number.';
+      if (r.bad === 'sq') return 'Not fully simplified: there is still a square factor under the root.';
+      if (r.bad === 'two') return 'Not fully simplified: combine the roots into one.';
+      if (r.bad === 'den') return 'There is still a root in the denominator.';
+      if (r.bad === 'cancel') return 'Not fully simplified: the fraction can still be cancelled.';
+      if (rads[r.r]) return 'Not finished: add the like radicals.'; rads[r.r] = 1;
+    }
+    return null;
+  }
+  if (form === 'primes') {
+    let bad = null;
+    (function walk(n, inPow) {
+      if (n.t === 'n') { if (!isInt(n.v) || !isPrime(n.v)) bad = 'Every factor must be a prime number.'; }
+      else if (n.t === 'mul') { walk(n.a); walk(n.b); }
+      else if (n.t === 'pow') { walk(n.a); if (n.b.t !== 'n') bad = 'Use whole-number exponents.'; }
+      else bad = 'Write only prime numbers multiplied together, like 2^3 · 5.';
+    })(ast); return bad;
+  }
+  if (form === 'sci') {
+    let n = ast; if (n.t !== 'mul') return 'Write it as a number between 1 and 10 times a power of 10.';
+    const a = lit(n.a), p = n.b; if (a === null || Math.abs(a) < 1 || Math.abs(a) >= 10) return 'The first number must be at least 1 and less than 10.';
+    if (p.t !== 'pow' || lit(p.a) !== 10 || lit(p.b) === null || !isInt(lit(p.b))) return 'Write it as a · 10^n.'; return null;
+  }
+  if (form === 'frac') {       // one fraction a/b in lowest terms (or a whole number)
+    if (ast.t === 'n' || (ast.t === 'neg' && ast.a.t === 'n')) return isInt(lit(ast)) ? null : 'Write your answer as a fraction, like 5/33.';
+    if (ast.t === 'div') { const a = lit(ast.a), b = lit(ast.b); if (a === null || b === null || !isInt(a) || !isInt(b)) return 'Write your answer as one fraction of two whole numbers, like 5/33.'; if (gcd(a, b) > 1) return 'Not fully simplified: the top and bottom still have a common factor.'; if (Math.abs(b) === 1) return 'Write a whole number without the 1 below it.'; return null; }
+    return 'Write your answer as one fraction, like 5/33.';
+  }
+  if (form === 'powfrac') { if (ast.t !== 'pow') return 'Write it as a single power, like (2/5)^3.'; const e = lit(ast.b); if (e === null || !isInt(e) || ast.a.t !== 'div') return 'Write it as a power of a fraction, like (2/5)^3.'; return null; }
+  if (form === 'power') {
+    if (ast.t !== 'pow') return 'Write it as a single power.'; const b = lit(ast.a), e = lit(ast.b);
+    if (b === null || e === null || !isInt(e)) return 'Write it as a single power.'; if (q && q.base !== undefined && b !== q.base) return 'Use the base ' + q.base + '.'; return null;
+  }
+  return null;
+}
+function gradeExpr(q, u) {
+  let ua, ea; const o = q.noVars ? { noVars: true } : {};
+  try { ua = parse(u, o); } catch (e) { return { ok: false, why: 'parse' }; }
+  ea = parse(q.ans, o);
+  if (!numEq(ea, ua)) return { ok: false, why: 'value' };
+  if (q.form === 'mixed') { const t = String(u).replace(/[−–—]/g, '-').trim(); const mm = /^-?\d+[ ]+(\d+)[ ]*\/[ ]*(\d+)$/.exec(t); const isI = /^-?\d+$/.test(t); const pf_ = /^-?(\d+)[ ]*\/[ ]*(\d+)$/.exec(t); if (!isI && pf_ && !mm) { const n1 = +pf_[1], d1 = +pf_[2]; if (n1 >= d1) return { ok: false, why: 'form', msg: 'Write it as a mixed number: a whole number, a space and a fraction, like 2 1/3.' }; if (gcd(n1, d1) > 1) return { ok: false, why: 'form', msg: 'Not fully simplified: the fraction can still be simplified.' }; return { ok: true }; } if (!isI) { if (!mm) return { ok: false, why: 'form', msg: 'Write it as a mixed number: a whole number, a space and a fraction, like 2 1/3.' }; const nn = +mm[1], dd = +mm[2]; if (nn >= dd) return { ok: false, why: 'form', msg: 'The fraction part must be smaller than 1.' }; if (gcd(nn, dd) > 1) return { ok: false, why: 'form', msg: 'Not fully simplified: the fraction part can still be simplified.' }; } return { ok: true }; }
+  if (q.form === 'improper') { if (/\d[ ]+\d+[ ]*\/[ ]*\d/.test(String(u).trim())) return { ok: false, why: 'form', msg: 'Write it as one fraction (no whole number in front), like 7/4.' }; const m2 = formCheck('lowest', ua, q); if (m2) return { ok: false, why: 'form', msg: m2 }; return { ok: true }; }
+  const m = formCheck(q.form, ua, q); if (m) return { ok: false, why: 'form', msg: m };
+  if (q.needPi && !/π|pi/i.test(String(u))) return { ok: false, why: 'form', msg: 'Give the exact answer, with π.' };
+  return { ok: true };
+}
+
+/* ================= rendering ================= */
+function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;'); }
+function R(src, o) {
+  let ast; try { ast = parse(src, o); } catch (e) { return null; }
+  function P(n, strip) {
+    const w = (n.par && !strip) ? x => '(' + x + ')' : x => x;
+    switch (n.t) {
+      case 'n': return w(esc(n.s !== undefined ? String(n.s).replace('.', ',') : n.v));
+      case 'v': return '<i>' + n.n + '</i>';
+      case 'pi': return 'π';
+      case 'neg': return w('−' + P(n.a));
+      case 'add': return w(P(n.a) + ' + ' + P(n.b));
+      case 'sub': return w(P(n.a) + ' − ' + P(n.b));
+      case 'mul': return w(n.imp ? P(n.a) + P(n.b) : P(n.a) + ' · ' + P(n.b));
+      case 'div': return n.inl ? w(P(n.a) + ' ÷ ' + P(n.b)) : w('<span class="fr"><span class="nu">' + P(n.a, true) + '</span><span class="de">' + P(n.b, true) + '</span></span>');
+      case 'pow': return w(P(n.a) + '<sup>' + P(n.b, true) + '</sup>');
+      case 'sqrt': return w('<span class="rt' + (n.k > 2 ? ' rn' : '') + '">' + (n.k > 2 ? '<sup class="ix">' + n.k + '</sup>' : '') + '<span class="sq"></span><span class="ov">' + P(n.a, true) + '</span></span>');
+      case 'fn': return w((n.n[0] === 'a' ? n.n.slice(1) + '<sup>−1</sup>' : n.n) + '(' + P(n.a, true) + (n.n[0] === 'a' ? ')' : '°)'));
+    }
+    return '';
+  }
+  return '<span class="mx">' + P(ast) + '</span>';
+}
+const M = (s, o) => R(s, o) || esc(s);                       // render math
+const fr = (a, b) => '<span class="mx"><span class="fr"><span class="nu">' + a + '</span><span class="de">' + b + '</span></span></span>';
+const mixed = (w, n, d) => '<span class="mx">' + w + fr(n, d) + '</span>';
+const tbl = (rows) => '<table class="tbl">' + rows.map(r => '<tr>' + r.map((c, i) => (i === 0 ? '<th>' : '<td>') + c + (i === 0 ? '</th>' : '</td>')).join('') + '</tr>').join('') + '</table>';
+
+/* ---- number formatting for answers ---- */
+function fmtNum(n) { if (isInt(n)) return f(Math.round(n)); return f(Math.round(n * 1e4) / 1e4).replace('.', ','); }
+function ratText(n, d) { const g = gcd(n, d); n /= g; d /= g; if (d < 0) { n = -n; d = -d; } return d === 1 ? String(n) : n + '/' + d; }
+
+/* ================= grading ================= */
+function parseNum(s) {
+  if (s === null || s === undefined) return NaN;
+  s = String(s).replace(/[−–—]/g, '-').replace(/\s*(?:°|degrees?)\s*$/i, '').replace(/\s+/g, '').replace(',', '.');
+  const fr_ = s.match(/^([+-]?\d+\.?\d*)\/([+-]?\d+\.?\d*)$/);
+  if (fr_ && parseFloat(fr_[2]) !== 0) return parseFloat(fr_[1]) / parseFloat(fr_[2]);
+  if (!/^[+-]?(\d+\.?\d*|\.\d+)$/.test(s)) return NaN;
+  return parseFloat(s);
+}
+function parsePoint(s) {
+  s = String(s || '').replace(/[−–—]/g, '-').replace(/\s+/g, '').replace(/^\(|\)$/g, '');
+  const m = s.split(/[;,]/); if (m.length === 2 && /^[+-]?\d+(\.\d+)?$/.test(m[0]) && /^[+-]?\d+(\.\d+)?$/.test(m[1])) return [parseFloat(m[0]), parseFloat(m[1])];
+  return null;
+}
+function check(q, u) {                      // -> {ok, why?, msg?}
+  if (typeof q.grade === 'function') { let r = false; try { r = q.grade(u); } catch (e) { } return r && typeof r === 'object' ? r : { ok: !!r }; }   // own grading (protractor questions, roots with letters): true/false or {ok, why, msg}
+  if (q.type === 'num') { const n = parseNum(u); if (isNaN(n)) return { ok: false, why: 'parse' }; return { ok: Math.abs(n - q.ans) <= (q.tol || 1e-9) }; }
+  if (q.type === 'multi') { const ok = Array.isArray(u) && u.length === q.ans.length && u.every((v, i) => { const n = parseNum(v); return !isNaN(n) && Math.abs(n - q.ans[i]) <= (q.tol || 1e-9); }); return { ok }; }
+  if (q.type === 'point') { const p = parsePoint(u); return { ok: !!p && Math.abs(p[0] - q.ans[0]) < 1e-9 && Math.abs(p[1] - q.ans[1]) < 1e-9 }; }
+  if (q.type === 'choice') return { ok: Number(u) === q.ans };
+  if (q.type === 'expr') return gradeExpr(q, u);
+  if (q.type === 'click') { const got = Array.isArray(u) ? u : []; if (q.valid) { let ok = false; try { ok = !!q.valid(got); } catch (e) { } return { ok }; } const k = p => p[0] + ',' + p[1]; return { ok: got.map(k).sort().join('|') === (q.ans || []).map(k).sort().join('|') }; }
+  return { ok: false };
+}
+const grade = (q, u) => check(q, u).ok;
+function answerText(q) {
+  if (q.ansText) return q.ansText;
+  if (q.type === 'num') return fmtNum(q.ans);
+  if (q.type === 'multi') return q.ans.map(fmtNum).join(' and ');
+  if (q.type === 'point') return '(' + f(q.ans[0]) + ', ' + f(q.ans[1]) + ')';
+  if (q.type === 'choice') return q.opts[q.ans];
+  if (q.type === 'expr') return M(q.ans, q.noVars ? { noVars: true } : {});
+  if (q.type === 'click') return (q.ans || []).map(p => '(' + f(p[0]) + ', ' + f(p[1]) + ')').join(' and ');
+  return '';
+}
+
+/* ================= engine builder ================= */
+function engine(def) {
+  const { SECTIONS, LESSONS, G, XG } = def;
+  const fnOf = (list, sec, name) => (list[sec] || []).find(x => x.name === name);
+  function makeOne(key, lvl) {
+    const mixq = lvl === 'mix'; if (mixq) lvl = pick([0, 1, 1, 2, 2, 3, 3]);
+    const lesson = LESSONS.find(x => x.id === key);
+    let gens, xgs;
+    if (lesson) { gens = lesson.gens.map(e => [e[1], fnOf(G, e[0], e[1])]).filter(e => e[1]); xgs = (lesson.xg || []).map(e => [e[1], fnOf(XG, e[0], e[1])]).filter(e => e[1]); }
+    else { gens = (G[key] || []).map(x => [x.name, x]); xgs = (XG[key] || []).map(x => [x.name, x]); }
+    let q, e;
+    if (lvl === 3 && xgs.length && Math.random() < 0.7) { e = pick(xgs); q = e[1](2); }
+    else { e = pick(gens); q = e[1](Math.min(lvl, 2)); }
+    q.gen = e[0]; q.sec = key; q.lvl = lvl; q.mix = mixq; return q;
+  }
+  const fingerprint = q => String(q.html || '').replace(/<svg[\s\S]*?<\/svg>/g, '') + '|' + JSON.stringify(q.ans);
+  function make(key, lvl, recent) {
+    recent = Array.isArray(recent) ? recent : [];
+    const fps = recent.map(r => r.f), gens = recent.slice(-3).map(r => r.g);
+    let q;
+    for (let t = 0; t < 60; t++) {
+      try { q = makeOne(key, lvl); } catch (e) { if (t > 50) throw e; continue; }
+      q.fp = fingerprint(q);
+      if (fps.includes(q.fp)) continue;
+      if (q.type === 'choice' && q.opts && q.opts.length <= 2 && typeof q.lvl === 'number' && q.lvl > 0 && t < 55) continue;
+      if (t < 30 && gens.includes(q.gen)) continue;
+      break;
+    }
+    return q;
+  }
+  function makeTest() {
+    const n = SECTIONS.length, N = 24;
+    const lv = shuffle([0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2]);
+    const secs = []; for (let i = 0; i < N; i++) secs.push(SECTIONS[i % n].id);
+    const seen = []; return shuffle(secs).map((s, i) => { const q = make(s, lv[i], seen); seen.push({ g: null, f: q.fp }); q.hint = null; return q; });
+  }
+  return { KEY: def.key, SECTIONS, LESSONS, G, XG, make, makeTest, grade, check, answerText, evalNum: s => evalAst(parse(String(s), { noVars: true }), {}), parseNum, parsePoint, f, M, parse, defaultMode: def.defaultMode || 'lesson' };
+}
+
+/* ---------- click grid (shared) ---------- */
+let _gid = 0;
+function clipLine(p, d, xmin, xmax, ymin, ymax) {   // line through p with direction d, clipped to the rectangle
+  let t0 = -1e9, t1 = 1e9;
+  for (const [pp, dd, lo, hi] of [[p[0], d[0], xmin, xmax], [p[1], d[1], ymin, ymax]]) {
+    if (Math.abs(dd) < 1e-12) { if (pp < lo || pp > hi) return null; continue; }
+    let a = (lo - pp) / dd, b = (hi - pp) / dd; if (a > b) [a, b] = [b, a]; t0 = Math.max(t0, a); t1 = Math.min(t1, b);
+  }
+  if (t0 > t1) return null; return { a: [p[0] + d[0] * t0, p[1] + d[1] * t0], b: [p[0] + d[0] * t1, p[1] + d[1] * t1] };
+}
+function gridSVG(o) {
+  const u = o.u || 26, pad = 24, xmin = o.xmin, xmax = o.xmax, ymin = o.ymin, ymax = o.ymax, cells = !!o.cells;
+  const w = (xmax - xmin + (cells ? 1 : 0)) * u + 2 * pad, h = (ymax - ymin + (cells ? 1 : 0)) * u + 2 * pad;
+  const off = cells ? u / 2 : 0;
+  const X = x => pad + off + (x - xmin) * u, Y = y => pad + off + (ymax - y) * u;
+  const id = 'g' + (++_gid);
+  let s = '<svg class="grid" viewBox="0 0 ' + w + ' ' + h + '" role="img" aria-label="grid"' + (o.click ? ' data-click="1"' : '') + ' data-xmin="' + xmin + '" data-ymax="' + ymax + '" data-u="' + u + '" data-pad="' + (pad + off) + '" data-w="' + w + '"' + (cells ? ' data-cell="1"' : '') + '>';
+  s += '<defs><clipPath id="' + id + '"><rect x="' + (X(xmin) - off) + '" y="' + (Y(ymax) - off) + '" width="' + (w - 2 * pad) + '" height="' + (h - 2 * pad) + '"/></clipPath></defs>';
+  s += '<rect x="0" y="0" width="' + w + '" height="' + h + '" fill="#fff"/>';
+  if (cells) {
+    for (let x = xmin; x <= xmax + 1; x++) s += '<line x1="' + (X(x) - u / 2) + '" y1="' + pad + '" x2="' + (X(x) - u / 2) + '" y2="' + (h - pad) + '" stroke="#b9c6d3" stroke-width="1"/>';
+    for (let y = ymin; y <= ymax + 1; y++) s += '<line x1="' + pad + '" y1="' + (Y(y) + u / 2) + '" x2="' + (w - pad) + '" y2="' + (Y(y) + u / 2) + '" stroke="#b9c6d3" stroke-width="1"/>';
+    (o.fill || []).forEach(p => { s += '<rect x="' + (X(p[0]) - u / 2 + 1) + '" y="' + (Y(p[1]) - u / 2 + 1) + '" width="' + (u - 2) + '" height="' + (u - 2) + '" fill="#9cc3ea" stroke="#345" stroke-width="1.2"/>'; });
+  } else {
+    for (let x = xmin; x <= xmax; x++) s += '<line x1="' + X(x) + '" y1="' + Y(ymin) + '" x2="' + X(x) + '" y2="' + Y(ymax) + '" stroke="#dbe3ea" stroke-width="1"/>';
+    for (let y = ymin; y <= ymax; y++) s += '<line x1="' + X(xmin) + '" y1="' + Y(y) + '" x2="' + X(xmax) + '" y2="' + Y(y) + '" stroke="#dbe3ea" stroke-width="1"/>';
+    if (!o.noAxes) {
+      s += '<line x1="' + X(xmin) + '" y1="' + Y(0) + '" x2="' + X(xmax) + '" y2="' + Y(0) + '" stroke="#334" stroke-width="1.6"/>';
+      s += '<line x1="' + X(0) + '" y1="' + Y(ymin) + '" x2="' + X(0) + '" y2="' + Y(ymax) + '" stroke="#334" stroke-width="1.6"/>';
+      const stx = xmax - xmin > 12 ? 2 : 1, sty = ymax - ymin > 12 ? 2 : 1;
+      for (let x = xmin; x <= xmax; x++) if (x !== 0 && x % stx === 0) s += '<text x="' + X(x) + '" y="' + (Y(0) + 14) + '" font-size="10" text-anchor="middle" fill="#556">' + f(x) + '</text>';
+      for (let y = ymin; y <= ymax; y++) if (y !== 0 && y % sty === 0) s += '<text x="' + (X(0) - 5) + '" y="' + (Y(y) + 3.5) + '" font-size="10" text-anchor="end" fill="#556">' + f(y) + '</text>';
+    }
+  }
+  (o.polys || []).forEach(g => { s += '<polygon points="' + g.pts.map(p => X(p[0]) + ',' + Y(p[1])).join(' ') + '" fill="' + (g.fill || 'rgba(27,95,168,.12)') + '" stroke="' + (g.stroke || '#1b5fa8') + '" stroke-width="2.2" clip-path="url(#' + id + ')"/>'; });
+  (o.segs || []).forEach(g => { s += '<line x1="' + X(g.a[0]) + '" y1="' + Y(g.a[1]) + '" x2="' + X(g.b[0]) + '" y2="' + Y(g.b[1]) + '" stroke="' + (g.color || '#1b5fa8') + '" stroke-width="' + (g.w || 2.4) + '"' + (g.dash ? ' stroke-dasharray="6 4"' : '') + ' stroke-linecap="round" clip-path="url(#' + id + ')"/>'; });
+  (o.pts || []).forEach(p => {
+    s += '<circle cx="' + X(p.x) + '" cy="' + Y(p.y) + '" r="4.6" fill="' + (p.color || '#1b5fa8') + '" stroke="#fff" stroke-width="1.2"/>';
+    if (p.label) s += '<text x="' + (X(p.x) + 7) + '" y="' + (Y(p.y) - 7) + '" font-size="13" font-weight="700" fill="#123">' + p.label + '</text>';
+  });
+  return s + '<g class="marks"></g></svg>';
+}
+const U = { gridSVG, clipLine, ri, pick, shuffle, nz, f, gcd, lcm, isPrime, primeFactors, squarefree, sqrtSplit, parse, evalAst, numEq, R, M, fr, mixed, tbl, fmtNum, ratText, formCheck, gradeExpr, toRF, flat, monoTerm, Poly, engine, esc, parseNum };
+if (typeof module !== 'undefined' && module.exports) module.exports = U; else root.NX = U;
+})(typeof window !== 'undefined' ? window : globalThis);
+
+</script>
+<script>
+/* 3VT Chapter 7: geometric reasoning.  */
+const __def = (function (NX, P) {
+const { ri, pick, shuffle, gcd, M, fr, ratText } = NX;
+const LR = (l, lo, hi) => { const s = hi - lo; if (s < 1 || l === undefined || l === 'mix') return ri(lo, hi); l = Math.min(l, 2); const a = l === 0 ? lo : l === 1 ? lo + Math.floor(s * .25) : lo + Math.floor(s * .5); const b = l === 0 ? lo + Math.max(1, Math.ceil(s * .5)) : l === 1 ? hi - Math.floor(s * .15) : hi + Math.ceil(s * .4); return ri(a, b); };
+const ch = (html, right, wrongs, hint, steps, extra) => { let o = [right]; wrongs.forEach(w => { if (!o.includes(w)) o.push(w); }); const opts = shuffle(o); return Object.assign({ type: 'choice', opts, ans: opts.indexOf(right), html, hint, steps, keys: [] }, extra || {}); };
+const nu = (html, ans, hint, steps, extra) => Object.assign({ type: 'num', html, ans, hint, steps }, extra || {});
+const p = x => '<p>' + x + '</p>';
+const G = {}, XG = {};
+
+/* ---------- helpers ---------- */
+const rd = (x, d) => Math.round(x * Math.pow(10, d) + 1e-9) / Math.pow(10, d);
+const must = (a, b) => { if (!(Math.abs(a - b) < 1e-6)) throw new Error('consistency check failed: ' + a + ' vs ' + b); };
+const A_ = s => '∠' + s;   // angle name
+const deg = n => n + '°';
+const dec = x => String(rd(x, 4));
+const LET = ['ABC', 'DEF', 'KLM', 'PQR', 'STU', 'XYZ'];
+/* angle question: the answer is a calculation (in-between step needed) or equals a given angle (no step) */
+const angQ = (html, ans, hint, steps, calc) => nu(html, ans, hint, steps, Object.assign({ ansText: deg(ans) }, calc ? { needStep: true } : { noStep: true }));
+const HINT_STEP = ' Type your calculation first, for example 180 − 36 − 119.';
+/* ratio table of two figures: names [n1, n2], rows of [side1, value1, side2, value2] */
+function ratioTable(n1, n2, cols) {
+  return '<table class="tbl"><tr><th>' + n1 + '</th>' + cols.map(c => '<td>' + c[0] + ' = ' + c[1] + '</td>').join('') + '</tr><tr><th>' + n2 + '</th>' + cols.map(c => '<td>' + c[2] + ' = ' + c[3] + '</td>').join('') + '</tr></table>';
+}
+const svg = (w, h, body) => '<svg class="fig" viewBox="0 0 ' + w + ' ' + h + '" style="width:' + w + 'px;max-width:100%" role="img" xmlns="http://www.w3.org/2000/svg">' + body + '</svg>';
+const gridBox = (o, px) => '<div style="max-width:' + px + 'px">' + NX.gridSVG(o) + '</div>';
+const lab = (s, x, y, fs, anchor, bold, col) => '<text x="' + rd(x, 1) + '" y="' + rd(y, 1) + '" font-size="' + (fs || 13) + '" text-anchor="' + (anchor || 'middle') + '"' + (bold ? ' font-weight="700"' : '') + ' fill="' + (col || '#17222d') + '" style="paint-order:stroke;stroke:#fff;stroke-width:3px">' + s + '</text>';
+/* Flat figure. P: {A:[x,y],...} (y up). o.poly: list of vertex names (outline); o.polys: extra outlines;
+   o.sides: [[U,V,label]] labels outside the figure; o.dash: [[U,V,label?]] auxiliary lines; o.right: [[V,U,W]] right-angle marks;
+   o.ticks: [[U,V]] equal-length marks; o.hl: [U,V] highlighted side */
+function flatFig(P, o) {
+  const W = o.W || 300, H = o.H || 210, pad = 40, ks = Object.keys(P);
+  const xs = ks.map(k => P[k][0]), ys = ks.map(k => P[k][1]);
+  const x0 = Math.min(...xs), x1 = Math.max(...xs), y0 = Math.min(...ys), y1 = Math.max(...ys);
+  const s = Math.min((W - 2 * pad) / Math.max(x1 - x0, 1e-6), (H - 2 * pad) / Math.max(y1 - y0, 1e-6));
+  const w = (x1 - x0) * s + 2 * pad, h = (y1 - y0) * s + 2 * pad;
+  const X = k => pad + (P[k][0] - x0) * s, Y = k => h - pad - (P[k][1] - y0) * s;
+  const cx = ks.reduce((a, k) => a + X(k), 0) / ks.length, cy = ks.reduce((a, k) => a + Y(k), 0) / ks.length;
+  let b = '';
+  [o.poly].concat(o.polys || []).filter(Boolean).forEach((pl, i) => { b += '<polygon points="' + pl.map(k => rd(X(k), 1) + ',' + rd(Y(k), 1)).join(' ') + '" fill="' + (i ? 'none' : 'rgba(27,95,168,.08)') + '" stroke="#1b5fa8" stroke-width="2.2" stroke-linejoin="round"/>'; });
+  (o.dash || []).forEach(d => { b += '<line x1="' + rd(X(d[0]), 1) + '" y1="' + rd(Y(d[0]), 1) + '" x2="' + rd(X(d[1]), 1) + '" y2="' + rd(Y(d[1]), 1) + '" stroke="#d1471f" stroke-width="1.8" stroke-dasharray="6 4"/>'; });
+  if (o.hl) b += '<line x1="' + rd(X(o.hl[0]), 1) + '" y1="' + rd(Y(o.hl[0]), 1) + '" x2="' + rd(X(o.hl[1]), 1) + '" y2="' + rd(Y(o.hl[1]), 1) + '" stroke="#d1471f" stroke-width="3.2"/>';
+  (o.right || []).forEach(r => {
+    const [V, U, Wn] = r, vx = X(V), vy = Y(V); const u = [X(U) - vx, Y(U) - vy], w_ = [X(Wn) - vx, Y(Wn) - vy]; const lu = Math.hypot(...u), lw = Math.hypot(...w_), m = 11;
+    const a = [vx + u[0] / lu * m, vy + u[1] / lu * m], c = [vx + w_[0] / lw * m, vy + w_[1] / lw * m], bb = [a[0] + w_[0] / lw * m, a[1] + w_[1] / lw * m];
+    b += '<polyline points="' + [a, bb, c].map(q => rd(q[0], 1) + ',' + rd(q[1], 1)).join(' ') + '" fill="none" stroke="#223" stroke-width="1.3"/>';
+  });
+  (o.ticks || []).forEach(t => { const mx = (X(t[0]) + X(t[1])) / 2, my = (Y(t[0]) + Y(t[1])) / 2, dx = X(t[1]) - X(t[0]), dy = Y(t[1]) - Y(t[0]), L = Math.hypot(dx, dy), nx = -dy / L * 6, ny = dx / L * 6; b += '<line x1="' + rd(mx - nx, 1) + '" y1="' + rd(my - ny, 1) + '" x2="' + rd(mx + nx, 1) + '" y2="' + rd(my + ny, 1) + '" stroke="#223" stroke-width="1.6"/>'; });
+  const outward = (mx, my, dx, dy, k) => { const L = Math.hypot(dx, dy) || 1; let nx = -dy / L, ny = dx / L; if ((mx - cx) * nx + (my - cy) * ny < 0) { nx = -nx; ny = -ny; } return [mx + nx * k, my + ny * k + 4]; };
+  (o.sides || []).forEach(sd => { if (!sd[2]) return; const mx = (X(sd[0]) + X(sd[1])) / 2, my = (Y(sd[0]) + Y(sd[1])) / 2; const q = outward(mx, my, X(sd[1]) - X(sd[0]), Y(sd[1]) - Y(sd[0]), typeof sd[3] === 'number' ? sd[3] : 15); b += lab(sd[2], q[0], q[1], 13, 'middle', true, sd[2] === '?' ? '#d1471f' : '#17222d'); });
+  (o.angles || []).forEach(an => { const dx = cx - X(an[0]), dy = cy - Y(an[0]), L = Math.hypot(dx, dy) || 1, k = an[2] || 30; b += lab(an[1], X(an[0]) + dx / L * k, Y(an[0]) + dy / L * k + 4, 12, 'middle', true, an[1].indexOf('?') >= 0 ? '#d1471f' : '#17222d'); });
+  ks.forEach(k => { if (o.noLabel && o.noLabel.includes(k)) return; const dx = X(k) - cx, dy = Y(k) - cy, L = Math.hypot(dx, dy) || 1; b += lab(k, X(k) + dx / L * 14, Y(k) + dy / L * 14 + 5, 14, 'middle', true, '#1b5fa8'); });
+  return svg(rd(w, 1), rd(h, 1), b);
+}
+
+/* triangle from its angles (degrees) at vertices n[0], n[1], n[2]; labels inside at the vertices */
+function triFig(n, a, b, labs, o) {
+  const c = 180 - a - b, R = Math.PI / 180, AB = 1, AC = Math.sin(b * R) / Math.sin(c * R);
+  const P = {}; P[n[0]] = [0, 0]; P[n[1]] = [AB, 0]; P[n[2]] = [AC * Math.cos(a * R), AC * Math.sin(a * R)];
+  return flatFig(P, Object.assign({ poly: n.split(''), angles: [[n[0], labs[0]], [n[1], labs[1]], [n[2], labs[2]]].filter(x => x[1]), W: 280, H: 190 }, o || {}));
+}
+/* two parallel lines (upper with point A, lower with point B) cut by a transversal; th = angle 1 in degrees.
+   Angles at each point: 1 upper-right, 2 upper-left, 3 lower-left, 4 lower-right */
+function parFig(th, show) {
+  const R = Math.PI / 180, W = 330, H = 230, yA = 75, yB = 165, xA = 175, dx = (yB - yA) / Math.tan(th * R), xB = xA - dx;
+  const u = [Math.cos(th * R), -Math.sin(th * R)];
+  const line = (x1, y1, x2, y2, c, w) => '<line x1="' + rd(x1, 1) + '" y1="' + rd(y1, 1) + '" x2="' + rd(x2, 1) + '" y2="' + rd(y2, 1) + '" stroke="' + c + '" stroke-width="' + w + '"/>';
+  let b = line(10, yA, W - 10, yA, '#1b5fa8', 2.2) + line(10, yB, W - 10, yB, '#1b5fa8', 2.2);
+  [yA, yB].forEach(y => { b += '<path d="M' + (W - 60) + ' ' + (y - 6) + ' l8 6 l-8 6" fill="none" stroke="#1b5fa8" stroke-width="2"/>'; });
+  b += line(xA + u[0] * 70, yA + u[1] * 70, xB - u[0] * 70, yB - u[1] * 70, '#d1471f', 2.2);
+  b += lab('k', 18, yA - 8, 13, 'start', true, '#1b5fa8') + lab('l', 18, yB - 8, 13, 'start', true, '#1b5fa8');
+  [['A', xA, yA], ['B', xB, yB]].forEach(pt => {
+    b += '<circle cx="' + rd(pt[1], 1) + '" cy="' + pt[2] + '" r="3" fill="#223"/>';
+    const dirs = [[1, 0, u[0], u[1]], [-1, 0, u[0], u[1]], [-1, 0, -u[0], -u[1]], [1, 0, -u[0], -u[1]]];
+    dirs.forEach((d, i) => { const bx = d[0] + d[2], by = d[1] + d[3], L = Math.hypot(bx, by) || 1, k = 17; const t = (show && show[pt[0] + (i + 1)]) || String(i + 1); b += lab(t, pt[1] + bx / L * k, pt[2] + by / L * k + 4, t.length > 2 ? 11 : 12, 'middle', true, t.indexOf('?') >= 0 ? '#d1471f' : '#17222d'); });
+    { const bx = pt[0] === 'A' ? u[0] - 1 : 1 - u[0], by = pt[0] === 'A' ? u[1] : -u[1], L = Math.hypot(bx, by); b += lab(pt[0], pt[1] + bx / L * 40, pt[2] + by / L * 40 + 5, 14, 'middle', true, '#1b5fa8'); }
+  });
+  return svg(W, H, b);
+}
+const PAIR = {   // relation between angle i at A and angle j at B (A on the upper line)
+  name: (i, j, sameP) => sameP ? (Math.abs(i - j) === 2 ? 'vertically opposite angles' : 'angles on a straight line') : i === j ? 'corresponding angles (F-angles)' : ((i === 3 && j === 1) || (i === 4 && j === 2) || (i === 1 && j === 3) || (i === 2 && j === 4)) ? 'alternate angles (Z-angles)' : null
+};
+const angAt = (th, i) => (i % 2 === 1) ? th : 180 - th;
+
+/* ======================= 7.1 Angles ======================= */
+G['7.1'] = [
+  function triSum(l) {
+    const n = pick(LET); let a, b; do { a = LR(l, 25, 100); b = LR(l, 25, 100); } while (a + b > 160);
+    const c = 180 - a - b, right = l === 1 && Math.random() < .5;
+    if (right) { const x = ri(20, 70); return angQ(p('In triangle ' + n + ' angle ' + n[0] + ' = 90° and ' + A_(n[1]) + ' = ' + deg(x) + '. Calculate ' + A_(n[2]) + '.') + triFig(n, 90, x, ['90°', deg(x), '?']), 90 - x, 'The angles of a triangle add up to 180°.' + HINT_STEP, A_(n[2]) + ' = 180° − 90° − ' + deg(x) + ' = ' + deg(90 - x) + ' (sum of the angles in a triangle)', true); }
+    return angQ(p('In triangle ' + n + ', ' + A_(n[0]) + ' = ' + deg(a) + ' and ' + A_(n[1]) + ' = ' + deg(b) + '. Calculate ' + A_(n[2]) + '.') + triFig(n, a, b, [deg(a), deg(b), '?']), c, 'The angles of a triangle add up to 180°.' + HINT_STEP, A_(n[2]) + ' = 180° − ' + deg(a) + ' − ' + deg(b) + ' = ' + deg(c) + ' (sum of the angles in a triangle)', true);
+  },
+  function isoTri(l) {
+    const n = pick(LET), top = 2 * ri(10, 70), base = (180 - top) / 2, askBase = Math.random() < .5;
+    const fig = triFig(n.slice(1) + n[0], base, base, askBase ? ['?', '', deg(top)] : [deg(base), '', '?'], { ticks: [[n[0], n[1]], [n[0], n[2]]] });
+    if (askBase) return angQ(p('Triangle ' + n + ' is isosceles with ' + n[0] + n[1] + ' = ' + n[0] + n[2] + '. The top angle ' + A_(n[0]) + ' = ' + deg(top) + '. Calculate ' + A_(n[1]) + '.') + fig, base, 'The two base angles are equal. Together they are 180° − ' + deg(top) + '.' + HINT_STEP.replace('180 − 36 − 119', '(180 − ' + top + ') / 2'), A_(n[1]) + ' + ' + A_(n[2]) + ' = 180° − ' + deg(top) + ' = ' + deg(180 - top) + ' (sum of the angles in a triangle)<br>' + A_(n[1]) + ' = ' + A_(n[2]) + ' = ' + deg(180 - top) + ' : 2 = ' + deg(base) + ' (isosceles triangle)', true);
+    return angQ(p('Triangle ' + n + ' is isosceles with ' + n[0] + n[1] + ' = ' + n[0] + n[2] + '. The base angle ' + A_(n[1]) + ' = ' + deg(base) + '. Calculate the top angle ' + A_(n[0]) + '.') + fig, top, 'In an isosceles triangle the base angles are equal.' + HINT_STEP.replace('180 − 36 − 119', '180 − 2 · ' + base), A_(n[2]) + ' = ' + A_(n[1]) + ' = ' + deg(base) + ' (isosceles triangle)<br>' + A_(n[0]) + ' = 180° − ' + deg(base) + ' − ' + deg(base) + ' = ' + deg(top) + ' (sum of the angles in a triangle)', true);
+  },
+  function quadAngles(l) {
+    const kind = pick(l === 0 ? ['parallelogram', 'kite'] : ['parallelogram', 'kite', 'rhombus', 'any']);
+    if (kind === 'any') { let a, b, c; do { a = ri(50, 140); b = ri(50, 140); c = ri(50, 140); } while (360 - a - b - c < 30 || 360 - a - b - c > 170);
+      const d = 360 - a - b - c; return angQ(p('In quadrilateral PQRS, ' + A_('P') + ' = ' + deg(a) + ', ' + A_('Q') + ' = ' + deg(b) + ' and ' + A_('R') + ' = ' + deg(c) + '. Calculate ' + A_('S') + '.'), d, 'The angles of a quadrilateral add up to 360°.' + HINT_STEP.replace('180 − 36 − 119', '360 − ' + a + ' − ' + b + ' − ' + c), A_('S') + ' = 360° − ' + deg(a) + ' − ' + deg(b) + ' − ' + deg(c) + ' = ' + deg(d) + ' (sum of the angles in a quadrilateral)', true); }
+    if (kind === 'kite') { const t = ri(50, 150); const s = ri(40, 130); if (360 - 2 * t - s < 20) return G['7.1'][2](l); const o = 360 - 2 * t - s;
+      return angQ(p('KLMN is a kite with KL = KN and ML = MN. ' + A_('L') + ' = ' + A_('N') + ' = ' + deg(t) + ' and ' + A_('K') + ' = ' + deg(s) + '. Calculate ' + A_('M') + '.'), o, 'In this kite ∠L = ∠N. All four angles add up to 360°.' + HINT_STEP.replace('180 − 36 − 119', '360 − ' + t + ' − ' + t + ' − ' + s), A_('M') + ' = 360° − ' + deg(t) + ' − ' + deg(t) + ' − ' + deg(s) + ' = ' + deg(o) + ' (sum of the angles in a quadrilateral)', true); }
+    const a = ri(35, 85), adj = Math.random() < .7, nm = kind === 'rhombus' ? 'Rhombus' : 'Parallelogram';
+    if (adj) return angQ(p(nm + ' PQRS has ' + A_('P') + ' = ' + deg(a) + '. Calculate ' + A_('Q') + '.'), 180 - a, 'Opposite angles are equal: ∠R = ∠P. All four add up to 360°.' + HINT_STEP.replace('180 − 36 − 119', '(360 − 2 · ' + a + ') / 2'), A_('R') + ' = ' + A_('P') + ' = ' + deg(a) + ' (' + kind + ')<br>' + A_('Q') + ' + ' + A_('S') + ' = 360° − ' + deg(a) + ' − ' + deg(a) + ' = ' + deg(360 - 2 * a) + ' (sum of the angles in a quadrilateral)<br>' + A_('Q') + ' = ' + deg(360 - 2 * a) + ' : 2 = ' + deg(180 - a) + ' (' + kind + ')', true);
+    return angQ(p(nm + ' PQRS has ' + A_('P') + ' = ' + deg(a) + '. How big is ' + A_('R') + '?'), a, 'In a ' + kind + ' the opposite angles are equal.', A_('R') + ' = ' + A_('P') + ' = ' + deg(a) + ' (opposite angles of a ' + kind + ')', false);
+  },
+  function straightVert(l) {
+    const a = ri(20, 160), kind = pick(['straight', 'vert', 'full']);
+    if (kind === 'vert') return angQ(p('Two lines cross. One of the four angles is ' + deg(a) + '. How big is the angle <b>opposite</b> to it (the vertically opposite angle)?'), a, 'Vertically opposite angles are equal.', 'Vertically opposite angles are equal, so the angle is ' + deg(a) + '.', false);
+    if (kind === 'full') { const b = ri(30, 150); if (a + b > 340) return G['7.1'][3](l); return angQ(p('Three angles around one point together make a full turn. Two of them are ' + deg(a) + ' and ' + deg(b) + '. How big is the third angle?'), 360 - a - b, 'A full turn is 360°.' + HINT_STEP.replace('180 − 36 − 119', '360 − ' + a + ' − ' + b), 'third angle = 360° − ' + deg(a) + ' − ' + deg(b) + ' = ' + deg(360 - a - b) + ' (full angle)', true); }
+    return angQ(p('Two angles lie next to each other on a straight line. One of them is ' + deg(a) + '. How big is the other one?'), 180 - a, 'Angles on a straight line add up to 180°.' + HINT_STEP.replace('180 − 36 − 119', '180 − ' + a), 'other angle = 180° − ' + deg(a) + ' = ' + deg(180 - a) + ' (straight angle)', true);
+  },
+  function parallel(l) {
+    const th = pick([40, 45, 50, 55, 58, 62, 65, 70, 72, 75]), i = ri(1, 4), j = ri(1, 4), given = angAt(th, i), ans = angAt(th, j), calc = given !== ans;
+    const show = {}; show['A' + i] = deg(given); show['B' + j] = '?';
+    let st; if (i === j) st = A_('B') + j + ' = ' + A_('A') + i + ' = ' + deg(ans) + ' (corresponding angles)';
+    else if (PAIR.name(i, j, false) && PAIR.name(i, j, false).startsWith('alternate')) st = A_('B') + j + ' = ' + A_('A') + i + ' = ' + deg(ans) + ' (alternate angles)';
+    else if (Math.abs(i - j) === 2) st = A_('B') + i + ' = ' + A_('A') + i + ' = ' + deg(given) + ' (corresponding angles)<br>' + A_('B') + j + ' = ' + A_('B') + i + ' = ' + deg(ans) + ' (vertically opposite angles)';
+    else st = A_('B') + i + ' = ' + A_('A') + i + ' = ' + deg(given) + ' (corresponding angles)<br>' + A_('B') + j + ' = 180° − ' + deg(given) + ' = ' + deg(ans) + ' (straight angle)';
+    return angQ(p('Lines ' + '<i>k</i> and <i>l</i> are parallel. ' + A_('A') + '<sub>' + i + '</sub> = ' + deg(given) + '. Calculate ' + A_('B') + '<sub>' + j + '</sub>.') + parFig(th, show), ans, 'Use corresponding angles (F), alternate angles (Z), vertically opposite angles or a straight angle (180°).' + (calc ? HINT_STEP.replace('180 − 36 − 119', '180 − ' + given) : ''), st.replace(/∠A(\d)/g, '∠A<sub>$1</sub>').replace(/∠B(\d)/g, '∠B<sub>$1</sub>'), calc);
+  },
+  function angleName(l) {
+    const th = pick([50, 60, 65, 70]), same = Math.random() < .25; let i, j, nm;
+    do { i = ri(1, 4); j = ri(1, 4); nm = PAIR.name(i, j, same); } while (!nm || (same && i === j));
+    const show = {}; show['A' + i] = 'A' + i; show[(same ? 'A' : 'B') + j] = (same ? 'A' : 'B') + j;
+    const right = nm, all = ['corresponding angles (F-angles)', 'alternate angles (Z-angles)', 'vertically opposite angles', 'angles on a straight line'];
+    return ch(p('Lines <i>k</i> and <i>l</i> are parallel. What do you call the pair ' + A_('A') + '<sub>' + i + '</sub> and ' + A_(same ? 'A' : 'B') + '<sub>' + j + '</sub>?') + parFig(th, show), right, all.filter(x => x !== right), 'F-angles: same position at both crossings. Z-angles: on opposite sides of the transversal, between the parallel lines.', 'They are ' + right + '.');
+  }
+];
+function ptFig(b, c) {   // triangle ABC with DE parallel to BC, base angles labelled
+  const R = Math.PI / 180, C = Math.sin(b * R) / Math.sin((b + c) * R), P = { B: [0, 0], C: [1, 0], A: [C * Math.cos(b * R) * 0 + 1 - C * Math.cos(c * R), C * Math.sin(c * R)] };
+  P.D = [P.A[0] + (P.B[0] - P.A[0]) * .45, P.A[1] + (P.B[1] - P.A[1]) * .45]; P.E = [P.A[0] + (P.C[0] - P.A[0]) * .45, P.A[1] + (P.C[1] - P.A[1]) * .45];
+  return flatFig(P, { poly: ['A', 'B', 'C'], polys: [['D', 'E']], angles: [['B', deg(b)], ['C', deg(c)], ['D', '?', 22]], W: 280, H: 200 });
+}
+XG['7.1'] = [
+  function parallelTriangle(l) {
+    // triangle ADE with DE parallel to BC: ∠B given, ∠C... book ex. 12
+    const b = ri(45, 80), c = ri(40, 80), a = 180 - b - c;
+    return angQ(p('In triangle ABC, DE is parallel to BC (D on AB, E on AC). ' + A_('B') + ' = ' + deg(b) + ' and ' + A_('C') + ' = ' + deg(c) + '. Calculate ' + A_('ADE') + '.') + ptFig(b, c), b, '∠ADE and ∠B are corresponding angles (F-angles).', A_('ADE') + ' = ' + A_('B') + ' = ' + deg(b) + ' (corresponding angles, DE ∥ BC)', false);
+  },
+  function isoParallel(l) {
+    const q = 2 * ri(15, 60), pr = (180 - q) / 2;
+    return angQ(p('Triangle PQR is isosceles with PQ = RQ and ' + A_('Q') + ' = ' + deg(q) + '. Line <i>m</i> through Q is parallel to PR. Calculate the angle between line <i>m</i> and side QR.'), pr, 'First the base angles of the isosceles triangle. Then use alternate angles (Z) with the parallel line.' + HINT_STEP.replace('180 − 36 − 119', '(180 − ' + q + ') / 2'), A_('P') + ' + ' + A_('R') + ' = 180° − ' + deg(q) + ' = ' + deg(180 - q) + ' (sum of the angles in a triangle)<br>' + A_('R') + ' = ' + deg(180 - q) + ' : 2 = ' + deg(pr) + ' (isosceles triangle)<br>The angle at Q = ' + A_('R') + ' = ' + deg(pr) + ' (alternate angles)', true);
+  }
+];
+
+/* ======================= 7.2 Similar figures ======================= */
+const KS = [[2, 1], [3, 1], [3, 2], [5, 2], [1, 2], [5, 4], [4, 5], [2, 5], [4, 3], [6, 5], [3, 4]];
+const kOf = l => pick(l === 0 ? [[2, 1], [3, 1], [1, 2], [4, 1]] : l === 1 ? KS.slice(0, 7) : KS);
+const kTxt = k => k[1] === 1 ? String(k[0]) : k[0] % k[1] === 0 ? String(k[0] / k[1]) : dec(k[0] / k[1]).length <= 4 ? dec(k[0] / k[1]) : fr(k[0], k[1]);
+G['7.2'] = [
+  function scaleFactor(l) {
+    const k = kOf(l), base = ri(2, 12) * k[1], img = base * k[0] / k[1], ans = k[0] / k[1], nm = pick(['a photo', 'a rectangle', 'a triangle', 'a map']);
+    const html = p('A figure is enlarged (or reduced). A side of <b>' + base + ' cm</b> becomes <b>' + img + ' cm</b>. What is the scale factor? <small>(A decimal or a fraction like 2/3.)</small>'), st = 'scale factor = ' + img + ' : ' + base + ' = ' + kTxt(k);
+    if (dec(ans).length > 5) return Object.assign({ type: 'expr', html, ans: ratText(k[0], k[1]), form: null, hint: 'scale factor = new length ÷ old length.', steps: st, keys: ['/'], noStep: true });
+    return nu(html, ans, 'scale factor = new length ÷ old length.', st, { noStep: true, ansText: kTxt(k) });
+  },
+  function missingSide(l) {
+    const k = kOf(l), n1 = pick(['ABCD', 'KLMN']), n2 = n1 === 'ABCD' ? 'PQRS' : 'WXYZ', s = [0, 1, 2, 3].map(() => ri(2, 9) * k[1]), t = s.map(x => x * k[0] / k[1]);
+    const sd = (n, i) => n[i] + n[(i + 1) % 4], known = ri(0, 3); let ask; do { ask = ri(0, 3); } while (ask === known);
+    const toBig = Math.random() < .5, f = kTxt(k);   // ask in the second figure (multiply by k) or in the first (divide by k)
+    const cols = [known, ask].map(i => [sd(n1, i), i === ask && !toBig ? '?' : dec(s[i]), sd(n2, i), i === ask && toBig ? '?' : dec(t[i])]);
+    const ans = toBig ? t[ask] : s[ask];
+    return nu(p('Quadrilaterals ' + n1 + ' and ' + n2 + ' are similar (the letters are in matching order). Calculate the side with the question mark.') + ratioTable(n1, n2, cols), rd(ans, 4), 'Find the scale factor from ' + n1 + ' to ' + n2 + ' with the pair of sides you know. Then multiply or divide.', 'scale factor = ' + sd(n2, known) + ' : ' + sd(n1, known) + ' = ' + dec(t[known]) + ' : ' + dec(s[known]) + ' = ' + f + '<br>' + (toBig ? sd(n2, ask) + ' = ' + f + ' · ' + dec(s[ask]) : sd(n1, ask) + ' = ' + dec(t[ask]) + ' : ' + f) + ' = ' + dec(ans), { noStep: true });
+  },
+  function whichTrue(l) {
+    const T = ['Similar figures have equal corresponding angles.', 'If a figure is enlarged with scale factor 1, it stays the same size.', 'A scale factor smaller than 1 makes a figure smaller.', 'All squares are similar to each other.', 'All circles are similar to each other.'];
+    const F = ['Similar figures always have the same size.', 'A scale factor is always bigger than 1.', 'All rectangles are similar to each other.', 'In similar figures all sides are equal.', 'An enlargement changes the angles of a figure.', 'All isosceles triangles are similar to each other.'];
+    const right = pick(T);
+    return ch(p('Which statement is <b>true</b>?'), right, shuffle(F).slice(0, 3), 'Similar = same shape (equal angles), but not necessarily the same size.', right);
+  },
+  function rectSimilar(l) {
+    const a = ri(2, 8), b = ri(a + 1, 12), k = kOf(l), sim = Math.random() < .5, c = a * k[0] / k[1], d = sim ? b * k[0] / k[1] : b * k[0] / k[1] + pick([1, 2, -1]);
+    if (d <= 0 || c === d) return G['7.2'][3](l);
+    const right = sim ? 'Yes, they are similar' : 'No, they are not similar';
+    return ch(p('Rectangle 1 is ' + a + ' by ' + b + ' cm. Rectangle 2 is ' + dec(c) + ' by ' + dec(d) + ' cm. Are the rectangles similar?'), right, [sim ? 'No, they are not similar' : 'Yes, they are similar', 'You cannot tell without the angles'], 'Rectangles always have 90° angles. Check if both sides are multiplied by the same factor.', 'short sides: ' + dec(c) + ' : ' + a + ' = ' + dec(c / a) + '<br>long sides: ' + dec(d) + ' : ' + b + ' = ' + dec(rd(d / b, 4)) + '<br>' + (sim ? 'The same factor, so the rectangles are similar.' : 'Not the same factor, so not similar.'));
+  }
+];
+XG['7.2'] = [
+  function twoWays(l) {
+    const a = pick([12, 16, 20]), b = pick([8, 10, 12, 15].filter(x => x < a)), L = pick([24, 28, 30, 36, 40]), k = L / a;
+    return nu(p('A photo of ' + a + ' cm by ' + b + ' cm is enlarged. The <b>long</b> side of the enlargement is ' + L + ' cm. How long is the short side of the enlargement (in cm)?'), rd(b * k, 4), 'scale factor = ' + L + ' : ' + a + '.', 'scale factor = ' + L + ' : ' + a + ' = ' + dec(k) + '<br>short side = ' + dec(k) + ' · ' + b + ' = ' + dec(b * k) + ' cm', { noStep: true });
+  }
+];
+
+/* ======================= 7.3 Area and volume ======================= */
+G['7.3'] = [
+  function areaTimes(l) {
+    const k = l === 0 ? ri(2, 5) : pick([2, 3, 4, 5, 10, 1.5, 2.5]), what = pick(['area', 'volume', 'perimeter']);
+    const ans = what === 'area' ? k * k : what === 'volume' ? k ** 3 : k;
+    return nu(p('A figure is enlarged with scale factor <b>' + k + '</b>. How many times as large does the <b>' + what + '</b> become?'), rd(ans, 4), 'Lengths (and the perimeter): × k. Area: × k². Volume: × k³.', what + ': ' + (what === 'area' ? k + '² = ' : what === 'volume' ? k + '³ = ' : '') + dec(ans) + ' times as large', { noStep: true });
+  },
+  function newArea(l) {
+    const k = l === 0 ? ri(2, 4) : pick([2, 3, 1.5, 0.5, 2.5, 4]), A = ri(3, 30) * 4, what = l === 2 ? pick(['area', 'volume']) : 'area';
+    const f = what === 'area' ? k * k : k ** 3, ans = rd(A * f, 4), u = what === 'area' ? 'cm²' : 'cm³';
+    return nu(p('A solid has a ' + (what === 'area' ? 'surface area' : 'volume') + ' of <b>' + A + ' ' + u + '</b>. It is enlarged with scale factor <b>' + k + '</b>. Calculate the new ' + (what === 'area' ? 'surface area' : 'volume') + ' (in ' + u + ').'), ans, what === 'area' ? 'Area becomes k² times as large.' : 'Volume becomes k³ times as large.', (what === 'area' ? k + '² = ' : k + '³ = ') + dec(f) + '<br>new ' + what + ' = ' + dec(f) + ' · ' + A + ' = ' + dec(ans) + ' ' + u, { needStep: true });
+  },
+  function findK(l) {
+    const k = l === 0 ? ri(2, 6) : pick([2, 3, 4, 5, 1.5, 2.5, 10]), vol = l === 2 && Math.random() < .5, f = vol ? k ** 3 : k * k;
+    return nu(p('A figure is enlarged. The ' + (vol ? 'volume' : 'area') + ' becomes <b>' + dec(f) + '</b> times as large. What is the scale factor?'), k, vol ? 'Volume factor = k³. Which number to the power 3 gives ' + dec(f) + '?' : 'Area factor = k². Take the square root.', 'k' + (vol ? '³' : '²') + ' = ' + dec(f) + ', so k = ' + (vol ? '∛' : '√') + dec(f) + ' = ' + k, { noStep: true });
+  },
+  function cubeEnlarge(l) {
+    const r = ri(2, 6), k = ri(2, 5), ask = pick(['area', 'volume']);
+    const A = 6 * r * r, V = r ** 3, ans = ask === 'area' ? A * k * k : V * k ** 3;
+    return nu(p('A cube with edges of ' + r + ' cm is enlarged with scale factor ' + k + '. Calculate the ' + (ask === 'area' ? 'surface area' : 'volume') + ' of the enlarged cube (in ' + (ask === 'area' ? 'cm²' : 'cm³') + ').'), ans, 'First the ' + (ask === 'area' ? 'surface area' : 'volume') + ' of the original cube. Then multiply by k' + (ask === 'area' ? '²' : '³') + '. (Or first enlarge the edge.)', ask === 'area' ? 'original: 6 · ' + r + ' · ' + r + ' = ' + A + ' cm²<br>new: ' + k + '² · ' + A + ' = ' + ans + ' cm²' : 'original: ' + r + ' · ' + r + ' · ' + r + ' = ' + V + ' cm³<br>new: ' + k + '³ · ' + V + ' = ' + ans + ' cm³', { needStep: true });
+  }
+];
+XG['7.3'] = [
+  function mapArea(l) {
+    const n = pick([10000, 20000, 50000, 100000]), a = ri(2, 12), real = a * n * n / 1e10;
+    return nu(p('On a map with scale 1 : ' + n.toLocaleString('en').replace(/,/g, ' ') + ', a lake has an area of <b>' + a + ' cm²</b>. What is the real area in <b>km²</b>?'), rd(real, 6), 'Lengths are ' + n + ' times as large, so areas are ' + n + '² times as large. 1 km² = 10 000 000 000 cm².', 'area factor = ' + n + '²<br>real area = ' + a + ' · ' + n + '² cm² = ' + (a * n * n).toLocaleString('en').replace(/,/g, ' ') + ' cm² = ' + dec(real) + ' km²', { noStep: true });
+  },
+  function heavier(l) {
+    const k = pick([1.5, 2, 3]), w = ri(2, 20) * 10;
+    return nu(p('Two marbles are made of the same glass. The big one has a diameter that is ' + k + ' times as large. The small marble weighs ' + w + ' g. How many grams does the big marble weigh?'), rd(w * k ** 3, 3), 'Weight goes with volume: k³.', k + '³ = ' + dec(k ** 3) + '<br>' + dec(k ** 3) + ' · ' + w + ' = ' + dec(w * k ** 3) + ' g', { needStep: true });
+  }
+];
+
+/* ======================= 7.4 Similar polygons ======================= */
+G['7.4'] = [
+  function corrSide(l) {
+    const n1 = pick(['ABC', 'DEF']), perm = shuffle([0, 1, 2]), n2 = ['K', 'L', 'M'];
+    const map = {}; perm.forEach((pp, i) => { map[n1[i]] = n2[pp]; });
+    const pairTxt = n1.split('').map(c => A_(c) + ' = ' + A_(map[c])).join(', '), i = ri(0, 2), j = (i + 1) % 3;
+    const side = n1[i] + n1[j], right = [map[n1[i]], map[n1[j]]].sort().join('');
+    const wrongs = ['KL', 'LM', 'KM'].filter(x => x !== right);
+    return ch(p('Triangles ' + n1 + ' and KLM are similar with ' + pairTxt + '. Which side of triangle KLM corresponds to side <b>' + side + '</b>?'), right, wrongs, 'Corresponding sides connect corresponding vertices.', n1[i] + ' corresponds to ' + map[n1[i]] + ' and ' + n1[j] + ' corresponds to ' + map[n1[j]] + ', so ' + side + ' corresponds to ' + right + '.');
+  },
+  function ratioCheck(l) {
+    const k = kOf(l), s = [ri(2, 9), ri(2, 9), ri(2, 9)].map(x => x * k[1]), sim = Math.random() < .55, t = s.map(x => x * k[0] / k[1]);
+    if (!sim) t[ri(0, 2)] += pick([1, 2]);
+    if (new Set(s).size < 3 && !sim) return G['7.4'][1](l);
+    const f = k[0] / k[1], right = sim ? 'Yes, scale factor ' + kTxt(k) : 'No, they are not similar';
+    return ch(p('Triangle ABC has AB = ' + dec(s[0]) + ', BC = ' + dec(s[1]) + ', CA = ' + dec(s[2]) + '. Triangle DEF has DE = ' + dec(t[0]) + ', EF = ' + dec(t[1]) + ', FD = ' + dec(t[2]) + '. Are the triangles similar (ABC to DEF)?'), right, [sim ? 'No, they are not similar' : 'Yes, scale factor ' + kTxt(k), 'Yes, scale factor ' + dec(rd(1 / f, 3)), 'Yes, scale factor ' + dec(f + 1)].filter(x => x !== right), 'Make a ratio table. Similar means: every side is multiplied by the same number.', 'DE : AB = ' + dec(rd(t[0] / s[0], 4)) + ', EF : BC = ' + dec(rd(t[1] / s[1], 4)) + ', FD : CA = ' + dec(rd(t[2] / s[2], 4)) + '<br>' + (sim ? 'All the same: it is a ratio table, so the triangles are similar with scale factor ' + kTxt(k) + '.' : 'Not all the same: not a ratio table, so not similar.'));
+  },
+  function missingAngle(l) {
+    const a = ri(60, 120), b = ri(60, 120), c = ri(60, 120), d = 360 - a - b - c;
+    if (d < 40 || d > 170) return G['7.4'][2](l);
+    return angQ(p('Quadrilateral KLMN is similar to quadrilateral PQRS (K ↔ P, L ↔ Q, M ↔ R, N ↔ S). ' + A_('K') + ' = ' + deg(a) + ', ' + A_('L') + ' = ' + deg(b) + ' and ' + A_('R') + ' = ' + deg(c) + '. Calculate ' + A_('S') + '.'), d, 'Corresponding angles are equal: ∠P = ∠K, ∠Q = ∠L, ∠M = ∠R. Then use the angle sum 360°.' + HINT_STEP.replace('180 − 36 − 119', '360 − ' + a + ' − ' + b + ' − ' + c), A_('P') + ' = ' + A_('K') + ' = ' + deg(a) + ', ' + A_('Q') + ' = ' + A_('L') + ' = ' + deg(b) + '<br>' + A_('S') + ' = 360° − ' + deg(a) + ' − ' + deg(b) + ' − ' + deg(c) + ' = ' + deg(d) + ' (sum of the angles in a quadrilateral)', true);
+  },
+  function polySide(l) {
+    const k = kOf(l), s = [ri(2, 8), ri(2, 8), ri(2, 8), ri(2, 8), ri(2, 8)].map(x => x * k[1] * 2), t = s.map(x => x * k[0] / k[1]), known = ri(0, 4); let ask; do { ask = ri(0, 4); } while (ask === known);
+    const n1 = 'ABCDE', n2 = 'PQRST', sd = (n, i) => n[i] + n[(i + 1) % 5];
+    return nu(p('Pentagons ABCDE and PQRST are similar. ' + sd(n1, known) + ' = ' + dec(s[known]) + ', ' + sd(n2, known) + ' = ' + dec(t[known]) + ' and ' + sd(n1, ask) + ' = ' + dec(s[ask]) + '. Calculate <b>' + sd(n2, ask) + '</b>.'), rd(t[ask], 4), 'scale factor = ' + sd(n2, known) + ' : ' + sd(n1, known) + '.', 'scale factor = ' + dec(t[known]) + ' : ' + dec(s[known]) + ' = ' + dec(k[0] / k[1]) + '<br>' + sd(n2, ask) + ' = ' + dec(k[0] / k[1]) + ' · ' + dec(s[ask]) + ' = ' + dec(t[ask]), { noStep: true });
+  }
+];
+
+/* ======================= 7.5 Similar triangles ======================= */
+function nestedFig(ad, ab, labs) {   // triangle ABC with D on AB, E on AC, DE parallel to BC
+  const t = ad / ab, P = { A: [0, 3], B: [-1.6, 0], C: [2.2, 0] }; P.D = [P.A[0] + (P.B[0] - P.A[0]) * t, P.A[1] + (P.B[1] - P.A[1]) * t]; P.E = [P.A[0] + (P.C[0] - P.A[0]) * t, P.A[1] + (P.C[1] - P.A[1]) * t];
+  return flatFig(P, { poly: ['A', 'B', 'C'], polys: [['D', 'E']], sides: labs, W: 280, H: 200 });
+}
+function hourFig(labs) {   // AB parallel to DE, AE and BD cross at C
+  const P = { A: [0, 3], B: [2.4, 3], C: [1.5, 1.8], D: [0.3, 0], E: [3.3, 0] };
+  P.D = [P.C[0] - (P.B[0] - P.C[0]) * 1.5, P.C[1] - (P.B[1] - P.C[1]) * 1.5]; P.E = [P.C[0] - (P.A[0] - P.C[0]) * 1.5, P.C[1] - (P.A[1] - P.C[1]) * 1.5];
+  return flatFig(P, { polys: [['A', 'B', 'C'], ['C', 'D', 'E']], sides: labs, W: 280, H: 210 });
+}
+G['7.5'] = [
+  function nested(l) {
+    const ad = ri(2, 8), db = ri(2, 8), ab = ad + db, de = ri(2, 9) * (l < 2 ? ad / gcd(ab, ad) : 1), bc = de * ab / ad;
+    if (l < 2 && !Number.isInteger(rd(bc * 100, 6))) return G['7.5'][0](l);
+    return nu(p('In triangle ABC, DE ∥ BC. AD = ' + ad + ', DB = ' + db + ' and DE = ' + dec(de) + '. Calculate <b>BC</b>' + (Number.isInteger(rd(bc * 100, 6)) ? '.' : ', rounded to 1 decimal place.')) + nestedFig(ad, ab, [['A', 'D', String(ad), 'in'], ['D', 'B', String(db)], ['D', 'E', dec(de), 'in'], ['B', 'C', '?']]), Number.isInteger(rd(bc * 100, 6)) ? rd(bc, 4) : rd(bc, 1), 'Triangles ADE and ABC are similar (F-angles). AB = AD + DB. Make a ratio table.', A_('ADE') + ' = ' + A_('B') + ' (corresponding angles) and ' + A_('A') + ' = ' + A_('A') + ' (same angle), so ΔADE ∼ ΔABC.<br>AB = ' + ad + ' + ' + db + ' = ' + ab + '<br>' + ratioTable('ΔADE', 'ΔABC', [['AD', ad, 'AB', ab], ['DE', dec(de), 'BC', '?']]) + 'scale factor = ' + ab + ' : ' + ad + (Number.isInteger(ab / ad) ? ' = ' + ab / ad : '') + '<br>BC = ' + (Number.isInteger(ab / ad) ? ab / ad : ab + '/' + ad) + ' · ' + dec(de) + ' = ' + dec(bc), Object.assign({ noStep: true }, Number.isInteger(rd(bc * 100, 6)) ? {} : { tol: .051 }));
+  },
+  function hourglass(l) {
+    const k = kOf(Math.max(l, 1)), ac = ri(2, 8) * k[1], ab = ri(2, 9) * k[1], ce = ac * k[0] / k[1], de = ab * k[0] / k[1], askDE = Math.random() < .5;
+    const labs = askDE ? [['A', 'B', String(ab)], ['A', 'C', String(ac)], ['C', 'E', dec(ce)], ['D', 'E', '?']] : [['A', 'B', String(ab)], ['A', 'C', String(ac)], ['C', 'E', '?'], ['D', 'E', dec(de)]];
+    const ans = askDE ? de : ce;
+    return nu(p('AB ∥ DE. Lines AE and BD cross at C. AB = ' + ab + ', AC = ' + ac + ' and ' + (askDE ? 'CE = ' + dec(ce) + '. Calculate <b>DE</b>.' : 'DE = ' + dec(de) + '. Calculate <b>CE</b>.')) + hourFig(labs), rd(ans, 4), 'The triangles ABC and EDC are similar: alternate angles (Z) and vertically opposite angles. Match the sides carefully.', A_('A') + ' = ' + A_('E') + ' (alternate angles) and ' + A_('ACB') + ' = ' + A_('ECD') + ' (vertically opposite), so ΔABC ∼ ΔEDC.<br>' + ratioTable('ΔABC', 'ΔEDC', [['AB', ab, 'ED', askDE ? '?' : dec(de)], ['AC', ac, 'EC', askDE ? dec(ce) : '?']]) + 'scale factor = ' + (askDE ? dec(ce) + ' : ' + ac : dec(de) + ' : ' + ab) + ' = ' + kTxt(k) + '<br>' + (askDE ? 'DE = ' + kTxt(k) + ' · ' + ab : 'CE = ' + kTxt(k) + ' · ' + ac) + ' = ' + dec(ans), { noStep: true });
+  },
+  function shadow(l) {
+    const stick = pick([1, 1.5, 2]), ss = pick([0.8, 1.2, 1.5, 2, 2.5, 3]), tsh = ri(5, 25), h = stick * tsh / ss, exact = Number.isInteger(rd(h * 10, 6));
+    return nu(p('A stick of <b>' + stick + ' m</b> casts a shadow of <b>' + ss + ' m</b>. At the same moment a tree casts a shadow of <b>' + tsh + ' m</b>. How tall is the tree' + (exact ? ' (in m)?' : ', rounded to 1 decimal place?')), exact ? rd(h, 4) : rd(h, 1), 'The sun makes the same angle at the same moment, so the two triangles are similar.', ratioTable('stick', 'tree', [['height', stick, 'height', '?'], ['shadow', ss, 'shadow', tsh]]) + 'scale factor = ' + tsh + ' : ' + ss + ' = ' + dec(rd(tsh / ss, 4)) + '<br>tree = ' + dec(rd(tsh / ss, 4)) + ' · ' + stick + (exact ? ' = ' + dec(h) : ' ≈ ' + rd(h, 1)) + ' m', Object.assign({ noStep: true }, exact ? {} : { tol: .051 }));
+  },
+  function whySimilar(l) {
+    const kind = pick(['aa', 'aa', 'sss', 'none']);
+    let html, right;
+    if (kind === 'aa') { const a = ri(30, 80), b = ri(30, 80); html = 'Triangle ABC has ' + A_('A') + ' = ' + deg(a) + ' and ' + A_('B') + ' = ' + deg(b) + '. Triangle KLM has ' + A_('K') + ' = ' + deg(a) + ' and ' + A_('M') + ' = ' + deg(180 - a - b) + '.'; right = 'Similar: two pairs of equal angles'; }
+    else if (kind === 'sss') { const s = [ri(3, 9), ri(3, 9), ri(3, 9)], k = pick([2, 3, 1.5]); html = 'Triangle ABC has sides ' + s.join(', ') + '. Triangle KLM has sides ' + s.map(x => dec(x * k)).join(', ') + '.'; right = 'Similar: the sides form a ratio table'; }
+    else { const a = ri(30, 70), b = ri(30, 70); html = 'Triangle ABC has ' + A_('A') + ' = ' + deg(a) + ' and ' + A_('B') + ' = ' + deg(b) + '. Triangle KLM has ' + A_('K') + ' = ' + deg(a) + ' and ' + A_('L') + ' = ' + deg(b + pick([5, 10])) + ' and ' + A_('M') + ' = ' + deg(180 - a - b - 5) + '.'; right = 'Not similar'; }
+    if (kind === 'none') html = html.replace(/ and ∠M = \d+°\./, '.');
+    const st = kind === 'aa' ? 'In triangle KLM: ' + A_('L') + ' = 180° − ' + html.match(/∠K = (\d+)/)[1] + '° − ' + html.match(/∠M = (\d+)/)[1] + '°, which equals ∠B. So two pairs of angles are equal: similar.' : kind === 'sss' ? 'Every side is multiplied by the same factor: it is a ratio table, so similar.' : 'The third angles are different (' + A_('C') + ' and ' + A_('M') + ' do not match), so the angles are not all equal: not similar.';
+    return ch(p(html + ' What can you say?'), right, ['Similar: two pairs of equal angles', 'Similar: the sides form a ratio table', 'Not similar'].filter(x => x !== right), 'Similar triangles: two pairs of equal angles, or all three pairs of sides in one ratio table.', st);
+  },
+  function nestedPart(l) {
+    const sm = ri(3, 8), k = pick([1.4, 1.5, 2, 2.5, 3]), sq = rd(sm * k, 4), ml = ri(4, 12), qr = rd(ml * k, 4);
+    return nu(p('In triangle SQR, line ML ∥ QR, with M on SQ and L on SR. SM = ' + sm + ', ML = ' + ml + ' and QR = ' + dec(qr) + '. Calculate <b>MQ</b>.'), rd(sq - sm, 4), 'ΔSML ∼ ΔSQR (F-angles). Use the scale factor to find SQ first, then MQ = SQ − SM.', ratioTable('ΔSML', 'ΔSQR', [['SM', sm, 'SQ', '?'], ['ML', ml, 'QR', dec(qr)]]) + 'scale factor = ' + dec(qr) + ' : ' + ml + ' = ' + dec(k) + '<br>SQ = ' + dec(k) + ' · ' + sm + ' = ' + dec(sq) + '<br>MQ = ' + dec(sq) + ' − ' + sm + ' = ' + dec(rd(sq - sm, 4)), { needStep: true });
+  }
+];
+XG['7.5'] = [
+  function similarPyth(l) {
+    const t = pick([[3, 4, 5], [6, 8, 10], [5, 12, 13], [8, 15, 17]]), k = pick([2, 3, 0.5]);
+    return nu(p('Right-angled triangles ABC and DEF are similar (A ↔ D, B ↔ E, C ↔ F, right angles at C and F). AB = ' + t[2] + ', AC = ' + t[0] + ' and DE = ' + dec(t[2] * k) + '. Calculate <b>EF</b>.'), rd(t[1] * k, 4), 'First calculate BC with Pythagoras. Then use the scale factor.', 'BC² = ' + t[2] + '² − ' + t[0] + '² = ' + (t[2] ** 2 - t[0] ** 2) + ', BC = ' + t[1] + '<br>scale factor = ' + dec(t[2] * k) + ' : ' + t[2] + ' = ' + k + '<br>EF = ' + k + ' · ' + t[1] + ' = ' + dec(t[1] * k), { noStep: true });
+  },
+  function towerShadow(l) {
+    const ab = rd(ri(150, 250) / 10, 1), db = rd(ri(40, 70) / 10, 1), ed = rd(ri(40, 60) / 10, 1), ca = ab * ed / db;
+    return nu(p('To measure a tower, Sam stands so that the top of a pole and the top of the tower are in one line from point B on the ground. Distance from B to the tower: ' + ab + ' m. From B to the pole: ' + db + ' m. The pole is ' + ed + ' m high. How high is the tower? Round to 1 decimal place.'), rd(ca, 1), 'Two similar right-angled triangles share angle B.', 'scale factor = ' + ab + ' : ' + db + ' ≈ ' + rd(ab / db, 4) + '<br>tower = ' + rd(ab / db, 4) + ' · ' + ed + ' ≈ ' + rd(ca, 1) + ' m', { noStep: true, tol: .051 });
+  }
+];
+
+const SECTIONS = [
+  { id: '7.1', title: '7.1 Angles', sub: 'Triangles, quadrilaterals, parallel lines (F and Z)' },
+  { id: '7.2', title: '7.2 Similar figures', sub: 'Enlarging and the scale factor' },
+  { id: '7.3', title: '7.3 Area and volume', sub: 'k² for area, k³ for volume' },
+  { id: '7.4', title: '7.4 Similar polygons', sub: 'Corresponding angles and sides, ratio tables' },
+  { id: '7.5', title: '7.5 Similar triangles', sub: 'Equal angles, ratio tables, parallel lines, shadows' }
+];
+const GOALS = [
+  ['7.1', 'I can calculate angles in triangles and quadrilaterals and give the reason', ['triSum', 'isoTri', 'quadAngles', 'straightVert'], 'Write the reason after every step, like (sum of the angles in a triangle).'],
+  ['7.1', 'I can use corresponding (F) and alternate (Z) angles', ['parallel', 'angleName'], 'With parallel lines: F-angles and Z-angles are equal.'],
+  ['7.2', 'I can calculate and use a scale factor', ['scaleFactor', 'missingSide', 'whichTrue', 'rectSimilar'], 'scale factor = new length ÷ old length.'],
+  ['7.3', 'I can calculate how area and volume change when you enlarge', ['areaTimes', 'newArea', 'findK', 'cubeEnlarge'], 'Area × k², volume × k³.'],
+  ['7.4', 'I can find corresponding sides and angles of similar figures', ['corrSide', 'ratioCheck', 'missingAngle', 'polySide'], 'Corresponding vertices are in the same order.'],
+  ['7.5', 'I can show that triangles are similar and calculate sides', ['nested', 'hourglass', 'shadow', 'whySimilar', 'nestedPart'], 'Look for F-angles, Z-angles, vertically opposite angles or a shared angle.']
+];
+/* ======================= 3VT chapter 7: reasoning, congruence, bisectors, altitudes, medians, circles ======================= */
+if (P.cls === '3VT') {
+  const N_ = n => (n < 0 ? '−' : '') + Math.abs(n), Pa = n => n < 0 ? '(' + N_(n) + ')' : String(n);
+  const P2 = (x, y) => '(' + N_(x) + ', ' + N_(y) + ')';
+  const ptQ = (html, x, y, hint, steps) => ({ type: 'point', ans: [x, y], html: html + p('<small>Type a point like (3, −2).</small>'), hint, steps, noStep: true });
+  const V1 = [
+    function exteriorAngle(l) {
+      let a, b; do { a = ri(25, 85); b = ri(25, 85); } while (a + b >= 160);
+      const n = pick(LET), ext = a + b;
+      return angQ(p('In triangle ' + n + ', ' + A_(n[0]) + ' = ' + deg(a) + ' and ' + A_(n[1]) + ' = ' + deg(b) + '. Side ' + n[1] + n[2] + ' is extended beyond ' + n[2] + '. Calculate the exterior angle at ' + n[2] + '.' + HINT_STEP), ext, 'The exterior angle of a triangle equals the sum of the two opposite interior angles.', p(A_(n[2]) + ' = 180 − ' + a + ' − ' + b + ' = ' + (180 - ext) + '° (sum of the angles in a triangle)') + p('exterior angle = 180 − ' + (180 - ext) + ' = ' + ext + '° (straight angle)') + p('Check: ' + a + ' + ' + b + ' = ' + ext + '.'), true);
+    },
+    function defOrTheorem(l) {
+      const D = [['A rhombus is a quadrilateral with four sides of equal length.', 'definition'], ['A straight angle is 180°.', 'definition'], ['An isosceles triangle has two sides of equal length.', 'definition'], ['An angle bisector divides an angle into two equal angles.', 'definition'], ['A median joins a vertex to the midpoint of the opposite side.', 'definition'],
+        ['The sum of the angles in a triangle is 180°.', 'theorem'], ['Vertically opposite angles are equal.', 'theorem'], ['The diagonals of a rhombus are perpendicular.', 'theorem'], ['The exterior angle of a triangle equals the sum of the two opposite interior angles.', 'theorem'], ['The three medians of a triangle meet in one point.', 'theorem']];
+      const d = pick(D);
+      return ch(p('Is this a definition or a theorem?') + p('<i>' + d[0] + '</i>'), d[1], ['definition', 'theorem', 'conjecture'].filter(o => o !== d[1]), 'A definition describes what a word means. A theorem is a statement that has been proved.', d[1] === 'definition' ? 'This tells you what the word means: a definition.' : 'This is a property that is proved from definitions: a theorem.');
+    }
+  ];
+  const V2 = [
+    function whichPostulate(l) {
+      const n = pick([['ABC', 'DEF'], ['KLM', 'PQR']]), [a, b] = n, k = pick([2, 3, 1.5, 0.5]);
+      const C = [
+        ['aa', A_(a[0]) + ' = ' + A_(b[0]) + ' and ' + A_(a[1]) + ' = ' + A_(b[1])],
+        ['sss', b[0] + b[1] + ' = ' + k + ' · ' + a[0] + a[1] + ', ' + b[1] + b[2] + ' = ' + k + ' · ' + a[1] + a[2] + ' and ' + b[0] + b[2] + ' = ' + k + ' · ' + a[0] + a[2]],
+        ['sas', b[0] + b[1] + ' = ' + k + ' · ' + a[0] + a[1] + ', ' + A_(a[1]) + ' = ' + A_(b[1]) + ' and ' + b[1] + b[2] + ' = ' + k + ' · ' + a[1] + a[2]],
+        ['ssr', A_(a[2]) + ' = ' + A_(b[2]) + ' = 90°, ' + b[0] + b[1] + ' = ' + k + ' · ' + a[0] + a[1] + ' and ' + b[1] + b[2] + ' = ' + k + ' · ' + a[1] + a[2]]
+      ], c = pick(C);
+      return ch(p('For triangles ' + a + ' and ' + b + ' you know: ' + c[1] + '. Which similarity postulate shows that Δ' + a + ' ∼ Δ' + b + '?'), c[0], ['aa', 'sss', 'sas', 'ssr', 'ssa'].filter(o => o !== c[0]).slice(0, 3), 'aa: two angles. sss: three sides with the same factor. sas: two sides and the angle between them. ssr: right angle, hypotenuse and another side.', { aa: 'Two pairs of equal angles: aa.', sss: 'All three sides are multiplied by ' + k + ': sss.', sas: 'Two sides with factor ' + k + ' and the angle between them is equal: sas.', ssr: 'A right angle, the hypotenuse and one other side with factor ' + k + ': ssr.' }[c[0]]);
+    },
+    function congruentFactor(l) {
+      const k = pick([1, 1, 2, 0.5, 3]), right = k === 1 ? 'congruent (and similar)' : 'similar, not congruent';
+      return ch(p('Two triangles are similar with scale factor ' + k + '. Are they congruent?'), right, ['congruent (and similar)', 'similar, not congruent', 'neither'].filter(o => o !== right), 'Congruent figures are similar with scale factor 1.', k === 1 ? 'Scale factor 1: the triangles are exactly the same size, so congruent.' : 'Scale factor ' + k + ' is not 1: one triangle is bigger, so not congruent.');
+    }
+  ];
+  const V3 = [
+    function whichLocus(l) {
+      const C = [['all points at the same distance from A and B', 'the perpendicular bisector of AB'], ['all points at the same distance from the two arms of angle A', 'the bisector of angle A'], ['the line through the midpoint of AB, perpendicular to AB', 'the perpendicular bisector of AB'], ['the line that divides angle A into two equal angles', 'the bisector of angle A']], c = pick(C);
+      return ch(p('What do you get: ' + c[0] + '?'), c[1], ['the perpendicular bisector of AB', 'the bisector of angle A', 'the median from A', 'the altitude from A'].filter(o => o !== c[1]), 'Perpendicular bisector: equal distance to two points. Angle bisector: equal distance to two lines.', 'This is ' + c[1] + '.');
+    },
+    function midpoint(l) {
+      let x1, y1, x2, y2; do { x1 = ri(-8, 8); y1 = ri(-8, 8); x2 = ri(-8, 8); y2 = ri(-8, 8); } while ((x1 === x2 && y1 === y2) || (l < 2 && ((x1 + x2) % 2 || (y1 + y2) % 2)));
+      const mx = (x1 + x2) / 2, my = (y1 + y2) / 2;
+      return ptQ(p('The perpendicular bisector of AB passes through the midpoint of AB. Calculate this midpoint for A' + P2(x1, y1) + ' and B' + P2(x2, y2) + '.'), mx, my, 'Midpoint: the average of the ' + X_('x') + '-coordinates and the average of the ' + X_('y') + '-coordinates.', p('(' + N_(x1) + ' + ' + Pa(x2) + ') / 2 = ' + N_(mx) + ' and (' + N_(y1) + ' + ' + Pa(y2) + ') / 2 = ' + N_(my)) + p('The midpoint is ' + P2(mx, my) + '.'));
+    },
+    function bisectorsMeet(l) {
+      let a, b; do { a = 2 * ri(15, 50); b = 2 * ri(15, 50); } while (a + b >= 170);
+      const S = 180 - a / 2 - b / 2;
+      return angQ(p('In triangle ABC, ' + A_('A') + ' = ' + deg(a) + ' and ' + A_('B') + ' = ' + deg(b) + '. The bisectors of angle A and angle B meet at S. Calculate ' + A_('ASB') + '.' + HINT_STEP), S, 'The bisector halves the angle. Then use the sum of the angles in triangle ABS.', p(A_('BAS') + ' = ' + a + ' : 2 = ' + a / 2 + '° (angle bisector)') + p(A_('ABS') + ' = ' + b + ' : 2 = ' + b / 2 + '° (angle bisector)') + p(A_('ASB') + ' = 180 − ' + a / 2 + ' − ' + b / 2 + ' = ' + S + '° (sum of the angles in a triangle)'), true);
+    }
+  ];
+  const X_ = v => '<i>' + v + '</i>';
+  const V4 = [
+    function altitudeFromArea(l) {
+      const base = pick([4, 5, 6, 8, 10, 12, 13]), h = pick([3, 4, 4.8, 6, 7.5, 9, 2.5]), area = rd(base * h / 2, 4), side = pick([5, 6, 8, 10, 15, 16]), h2 = rd(2 * area / side, 2);
+      return nu(p('Triangle ABC has base AB = ' + base + ' and altitude CC′ = ' + h + '. Side BC = ' + side + '. Calculate the altitude AA′ from A to BC. <small>(Round to 2 decimals if needed.)</small>'), h2, 'The area is the same whichever side you use as the base: area = ½ · base · altitude.', p('area = ½ · ' + base + ' · ' + h + ' = ' + area) + p('½ · ' + side + ' · AA′ = ' + area) + p('AA′ = ' + rd(2 * area, 4) + ' : ' + side + (rd(2 * area / side, 2) === rd(2 * area / side, 6) ? ' = ' : ' ≈ ') + h2), { tol: .006, needStep: true });
+    },
+    function centroidSplit(l) {
+      const m = 3 * pick([2, 3, 4, 5, 7, 2.5, 1.5]), part = pick(['AZ', 'ZD']), v = part === 'AZ' ? m * 2 / 3 : m / 3;
+      return nu(p('In triangle ABC, AD is a median with length ' + m + '. Z is the centroid (where the medians meet). Calculate ' + part + '.'), rd(v, 4), 'The centroid divides each median in the ratio 2 : 1 (the longer part is at the vertex).', p('AZ : ZD = 2 : 1, so AZ = ⅔ · ' + m + ' = ' + rd(m * 2 / 3, 4) + ' and ZD = ⅓ · ' + m + ' = ' + rd(m / 3, 4)) + p(part + ' = ' + rd(v, 4)), { noStep: true });
+    },
+    function vertexFromCentroid(l) {
+      let K, L, Mv; do { K = [ri(-6, 6), ri(-6, 6)]; L = [ri(-6, 6), ri(-6, 6)]; Mv = [ri(-6, 8), ri(-6, 8)]; } while ((K[0] + L[0]) % 2 || (K[1] + L[1]) % 2 || (K[0] + L[0] + Mv[0]) % 3 || (K[1] + L[1] + Mv[1]) % 3 || (K[0] === L[0] && K[1] === L[1]));
+      const Pm = [(K[0] + L[0]) / 2, (K[1] + L[1]) / 2], Z = [(K[0] + L[0] + Mv[0]) / 3, (K[1] + L[1] + Mv[1]) / 3];
+      return ptQ(p('Triangle KLM has K' + P2(K[0], K[1]) + ' and L' + P2(L[0], L[1]) + '. Its centroid is Z' + P2(Z[0], Z[1]) + '. Calculate the coordinates of M.'), Mv[0], Mv[1], 'P is the midpoint of KL. M lies on line PZ with ZM = 2 · PZ.', p('Midpoint of KL: P' + P2(Pm[0], Pm[1]) + '.') + p('From P to Z: ' + (Z[0] - Pm[0] >= 0 ? '+' : '') + N_(Z[0] - Pm[0]) + ' in the ' + X_('x') + '-direction and ' + (Z[1] - Pm[1] >= 0 ? '+' : '') + N_(Z[1] - Pm[1]) + ' in the ' + X_('y') + '-direction.') + p('From Z to M is twice as far: M' + P2(Mv[0], Mv[1]) + '.'));
+    },
+    function whichLine(l) {
+      const C = [['a line segment from a vertex to the midpoint of the opposite side', 'median'], ['a line segment from a vertex perpendicular to the opposite side', 'altitude'], ['a line through the midpoint of a side, perpendicular to that side', 'perpendicular bisector'], ['a line that divides an angle of the triangle into two equal angles', 'angle bisector']], c = pick(C);
+      return ch(p('What is the name of ' + c[0] + '?'), c[1], ['median', 'altitude', 'perpendicular bisector', 'angle bisector'].filter(o => o !== c[1]), 'Median: to the midpoint. Altitude: perpendicular, from a vertex.', 'This is the ' + c[1] + '.');
+    }
+  ];
+  const V5 = [
+    function whichCentre(l) {
+      const c = pick([['inscribed circle', 'the three angle bisectors'], ['circumscribed circle', 'the three perpendicular bisectors']]);
+      return ch(p('The centre of the ' + c[0] + ' of a triangle is the point of intersection of …'), c[1], ['the three angle bisectors', 'the three perpendicular bisectors', 'the three medians', 'the three altitudes'].filter(o => o !== c[1]), 'Inscribed circle: same distance to the three sides. Circumscribed circle: same distance to the three vertices.', 'The ' + c[0] + ': ' + c[1] + '.');
+    },
+    function rightCircumcentre(l) {
+      let x1, y1, x2, y2; do { x1 = ri(-6, 4); y1 = ri(-6, 4); x2 = x1 + 2 * ri(1, 5) * pick([1, -1]); y2 = y1 + 2 * ri(1, 5) * pick([1, -1]); } while (false);
+      return ptQ(p('Triangle ABC has A' + P2(x1, y1) + ', B' + P2(x2, y1) + ' and C' + P2(x1, y2) + '. The angle at A is 90°. Calculate the centre of the circumscribed circle.'), (x2 + x1) / 2, (y1 + y2) / 2, 'In a right-angled triangle the centre of the circumscribed circle is the midpoint of the hypotenuse.', p('The hypotenuse is BC.') + p('Midpoint of BC: ((' + N_(x2) + ' + ' + Pa(x1) + ') / 2, (' + N_(y1) + ' + ' + Pa(y2) + ') / 2) = ' + P2((x1 + x2) / 2, (y1 + y2) / 2)));
+    },
+    function circumRadius(l) {
+      const a = ri(2, 12), b = ri(2, 12), r = Math.hypot(a, b) / 2, rr = rd(r, 2);
+      return nu(p('A right-angled triangle has legs of ' + a + ' cm and ' + b + ' cm. Calculate the radius of its circumscribed circle. <small>(Round to 2 decimals.)</small>'), rr, 'The hypotenuse is a diameter of the circumscribed circle. Use Pythagoras.', p('hypotenuse = √(' + a + '² + ' + b + '²) = √' + (a * a + b * b) + (Number.isInteger(2 * r) ? ' = ' : ' ≈ ') + rd(2 * r, 2)) + p('radius = hypotenuse : 2' + (rd(r, 2) === rd(r, 6) ? ' = ' : ' ≈ ') + rr + ' cm'), { tol: .006, needStep: true });
+    }
+  ];
+  const G1 = G['7.1'].concat(V1), G2 = V2.concat(G['7.5']), X1 = XG['7.1'], X2 = XG['7.5'];
+  G['7.1'] = G1; G['7.2'] = G2; G['7.3'] = V3; G['7.4'] = V4; G['7.5'] = V5;
+  XG['7.1'] = X1; XG['7.2'] = X2; XG['7.3'] = []; XG['7.4'] = []; XG['7.5'] = [];
+  SECTIONS.splice(0, SECTIONS.length,
+    { id: '7.1', title: '7.1 Reasoning with angles', sub: 'Definitions, theorems, angles in triangles and parallel lines' },
+    { id: '7.2', title: '7.2 Similar and congruent triangles', sub: 'aa, sss, sas, ssr, calculating sides' },
+    { id: '7.3', title: '7.3 Bisectors', sub: 'Angle bisector, perpendicular bisector' },
+    { id: '7.4', title: '7.4 Altitudes and medians', sub: 'Altitude, area, median, centroid' },
+    { id: '7.5', title: '7.5 Inscribed and circumscribed circles', sub: 'Centres and radius' });
+  GOALS.splice(0, GOALS.length,
+    ['7.1', 'I can reason with angles and give the reason', ['triSum', 'isoTri', 'quadAngles', 'straightVert', 'parallel', 'angleName', 'exteriorAngle', 'defOrTheorem'], 'Write the reason after every step.'],
+    ['7.2', 'I can show that triangles are similar or congruent', ['whichPostulate', 'congruentFactor', 'nested', 'hourglass', 'shadow', 'whySimilar', 'nestedPart'], 'aa, sss, sas, ssr. Congruent: scale factor 1.'],
+    ['7.3', 'I can use angle bisectors and perpendicular bisectors', ['whichLocus', 'midpoint', 'bisectorsMeet'], 'Perpendicular bisector: same distance to two points.'],
+    ['7.4', 'I can use altitudes and medians', ['altitudeFromArea', 'centroidSplit', 'vertexFromCentroid', 'whichLine'], 'The centroid divides a median 2 : 1.'],
+    ['7.5', 'I can find the centre of an inscribed or circumscribed circle', ['whichCentre', 'rightCircumcentre', 'circumRadius'], 'Right-angled triangle: the centre is the midpoint of the hypotenuse.']);
+}
+return { key: 'nx-' + P.cls.toLowerCase() + '-ch7-v1', SECTIONS, LESSONS: [], G, XG, defaultMode: 'para', GOALS };
+
+})(NX, {"cls": "3VT"});
+window.Ch3 = NX.engine(__def); window.Ch3.GOALS = __def.GOALS;
+</script>
+<script>
+(function(){
+'use strict';
+const E=window.Ch3,$=s=>document.querySelector(s);
+const LV=['Mild','Medium','Spicy','Extra spicy'],GOAL=10;let mix=false;
+const hasLessons=Array.isArray(E.LESSONS)&&E.LESSONS.length>0;
+const KEY=E.KEY||'nx-page';
+const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const plain=h=>String(h).replace(/<svg[\s\S]*?<\/svg>/g,' [figure] ').replace(/<span class="nu">/g,'(').replace(/<\/span><span class="de">/g,')/(').replace(/<sup[^>]*>/g,'^').replace(/<[^>]+>/g,'').replace(/&nbsp;/g,' ').replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/\s+/g,' ').trim();
+const items=()=>hasLessons&&st.mode==='lesson'?E.LESSONS:E.SECTIONS;
+const todayISO=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
+const latestLesson=()=>{const t=todayISO();let L=E.LESSONS[0];E.LESSONS.forEach(x=>{if(x.date&&x.date<=t&&!x.rev&&x.id!=='L10')L=x});return L.id};
+function defaultFor(mode){return mode==='lesson'&&hasLessons?latestLesson():E.SECTIONS[0].id}
+function setMode(m){if(st.mode===m)return;st.secs[st.mode]=st.sec;st.mode=m;st.sec=st.secs[m]||defaultFor(m);test=null;mix=false;free=null;focus=null;save();next(true)}
+let st={mode:E.defaultMode||'lesson',secs:{},done:{},stat:{},best:{},tests:[],sec:'',prog:{},lvl:{},res:{},log:[],badges:{},bestRow:0,goalsAll:false};
+try{const r=JSON.parse(localStorage.getItem(KEY)||'null');if(r&&r.prog)st=Object.assign(st,r)}catch(e){}
+if(!hasLessons)st.mode='para';
+if(!st.modeSet&&st.prog&&Object.keys(st.prog).length&&hasLessons)st.mode='para';
+['secs','done','stat','best','res','badges'].forEach(k=>{st[k]=st[k]||{}});st.tests=st.tests||[];st.log=st.log||[];st.prog=st.prog||{};st.lvl=st.lvl||{};
+if(!st.sec||!items().some(x=>x.id===st.sec))st.sec=defaultFor(st.mode);
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify({mode:st.mode,modeSet:1,secs:st.secs,sec:st.sec,prog:st.prog,lvl:st.lvl,done:st.done,stat:st.stat,best:st.best,tests:st.tests,res:st.res,log:st.log,badges:st.badges,bestRow:st.bestRow,goalsAll:st.goalsAll,auto:st.auto}))}catch(e){}};
+let protoAngle=null;let cur=null,tries=0,done=false,streak=0,wrongRun=0,recent=[],clicked=[],choiceSel=null,hintUsed=false,attempts=[],stepLines=[],row=0;
+let test=null;      // {qs,i,score,log}
+let free=null;      // free practice level (0..3) or null = adaptive
+let focus=null;     // {ids:[goal ids], i}
+
+/* ---------- learning goals ---------- */
+const GL=[],gOfGen={};
+(function buildGoals(){
+  const lists=[];[E.G||{},E.XG||{}].forEach((T,xi)=>Object.keys(T).forEach(sec=>T[sec].forEach(f=>lists.push([sec,f.name,xi===1]))));
+  const present=new Set(lists.map(x=>x[1]));
+  (E.GOALS||[]).forEach((g,i)=>{const gens=g[2].filter(n=>present.has(n));if(!gens.length)return;const o={id:'g'+GL.length,sec:g[0],title:g[1],gens,warn:g[3]||''};GL.push(o);gens.forEach(n=>{if(!(n in gOfGen))gOfGen[n]=o})});
+  const secTitle={};E.SECTIONS.forEach(s=>secTitle[s.id]=s.title.replace(/^[\d.]+\s*/,''));
+  const ch={};
+  lists.forEach(([sec,name])=>{if(name in gOfGen)return;let o=ch[sec];if(!o){o=ch[sec]={id:'g'+GL.length,sec,title:'I can solve harder and mixed questions about '+(secTitle[sec]||sec).toLowerCase(),gens:[],warn:'',challenge:true};GL.push(o)}o.gens.push(name);gOfGen[name]=o});
+})();
+const goalById=id=>GL.find(g=>g.id===id);
+const genName=q=>{if(!q)return null;if(typeof q.gen!=='number')return q.gen;const g=q.gen>=100?(E.XG[q.sec]||[])[q.gen-100]:(E.G[q.sec]||[])[q.gen];return g?g.name:null};
+const goalOfQ=q=>q&&gOfGen[genName(q)]||null;
+function itemGens(it){const s=new Set();if(it.gens){it.gens.concat(it.xg||[]).forEach(e=>s.add(e[1]))}else{(E.G[it.id]||[]).concat(E.XG[it.id]||[]).forEach(f=>s.add(f.name))}return s}
+function goalsForItem(id){const it=items().find(x=>x.id===id)||E.SECTIONS.find(x=>x.id===id);if(!it)return GL;const gs=itemGens(it);return GL.filter(g=>g.gens.some(n=>gs.has(n)))}
+/* mastery: last six results, weights like the chapter 1 page */
+const STAT={mastered:['Mastered','#16803c','#e6f6ec'],almost:['Almost mastered','#2f7d32','#eef7e4'],way:['On the way','#8a5a00','#fff4d6'],attention:['Needs attention','#b25a00','#ffe9d1'],extra:['Extra practice','#b3261e','#fdecea'],none:['Not enough practice yet','#5b6b7a','#eef2f6']};
+function goalScore(g){const r=st.res[g.id]||[];const w=r.slice(-6);const n=w.length;return{n:r.length,pct:n?Math.round(100*w.reduce((a,b)=>a+b,0)/n):null,key:r.length<3?'none':(function(p){return p>=80?'mastered':p>=70?'almost':p>=55?'way':p>=40?'attention':'extra'})(Math.round(100*w.reduce((a,b)=>a+b,0)/n))}}
+function record(q,w){const g=goalOfQ(q);if(!g)return;const r=st.res[g.id]=st.res[g.id]||[];r.push(w);if(r.length>30)r.splice(0,r.length-30)}
+
+/* ---------- badges ---------- */
+const BADGES=[['first','First try!','Answer a question correctly on your first try.'],['row5','5 in a row','Answer 5 questions in a row correctly on the first try.'],['row10','10 in a row','Answer 10 questions in a row correctly on the first try.'],['up','Level up','Reach the next level.'],['spicy','Spicy!','Reach the Spicy level in any section.'],['mm','Master Mix','Unlock a Master Mix.'],['goal','Objective mastered','Get the status Mastered on a learning objective.'],['test','Test ready','Score at least 20 out of 24 in a test preparation.']];
+function award(id){if(st.badges[id])return '';st.badges[id]=todayISO();const b=BADGES.find(x=>x[0]===id);return ' <b>🏅 New badge: '+b[1]+'!</b>'}
+
+/* ---------- navigation ---------- */
+function renderNav(){
+  const n=$('#nav');n.innerHTML='';
+  if(hasLessons){const tg=document.createElement('div');tg.className='seg';tg.innerHTML='<button type="button" class="'+(st.mode==='lesson'?'on':'')+'" data-m="lesson">By lesson</button><button type="button" class="'+(st.mode==='para'?'on':'')+'" data-m="para">By paragraph</button>';
+    tg.querySelectorAll('button').forEach(b=>b.onclick=()=>setMode(b.dataset.m));n.appendChild(tg)}
+  const t0=todayISO(),lat=hasLessons&&st.mode==='lesson'?latestLesson():'';
+  const inMain=!test&&!view;
+  items().forEach(s=>{
+    const b=document.createElement('button');b.className='sec';b.setAttribute('aria-current',String(inMain&&!mix&&st.sec===s.id));
+    const p=Math.min(GOAL,st.prog[s.id]||0);
+    b.innerHTML='<div class="t">'+s.title+'</div><div class="s">'+s.sub+(st.mode==='lesson'&&s.date?(s.date>t0?' · coming up':s.id===lat?' · latest lesson':''):'')+'</div><div class="bar" aria-hidden="true"><i style="width:'+p*100/GOAL+'%"></i></div>';
+    b.onclick=()=>{test=null;view=null;mix=false;free=null;focus=null;st.sec=s.id;save();next(true)};n.appendChild(b);
+    if(st.done[s.id]){const m=document.createElement('button');m.className='sec mm';m.setAttribute('aria-current',String(inMain&&mix&&st.sec===s.id));m.textContent='★ Master Mix';m.onclick=()=>{test=null;view=null;mix=true;free=null;focus=null;st.sec=s.id;save();next(true)};n.appendChild(m)}
+  });
+  const t=document.createElement('button');t.className='sec';t.setAttribute('aria-current',String(!!test));
+  t.innerHTML='<div class="t">Test preparation</div><div class="s">24 mixed questions, no hints</div>';
+  t.onclick=startTest;n.appendChild(t);
+}
+let view=null;
+function lvl(){return st.lvl[st.sec]||0}
+function curLevel(){return mix?'mix':free!==null?free:lvl()}
+function fingerprint(q){return String(q.html||'').replace(/<svg[\s\S]*?<\/svg>/g,'')+'|'+JSON.stringify(q.ans)}
+function findGen(name){for(const T of [E.G||{},E.XG||{}])for(const sec of Object.keys(T)){const f=T[sec].find(x=>x.name===name);if(f)return [f,sec,T===E.XG]}return null}
+function makeFromGoal(g,level){
+  for(let t=0;t<40;t++){
+    const name=g.gens[Math.floor(Math.random()*g.gens.length)],hit=findGen(name);if(!hit)continue;
+    const [f,sec,isX]=hit;let q;try{q=f(Math.min(level,2))}catch(e){continue}
+    q.gen=name;q.sec=sec;q.lvl=level;q.mix=false;q.fp=fingerprint(q);
+    if(q.type==='choice'&&q.opts&&q.opts.length<=2&&level>0&&t<30)continue;
+    if(recent.some(r=>r.f===q.fp))continue;return q;
+  }
+  return E.make(st.sec,level,recent);
+}
+let autoT=null;
+function next(reset){
+  clearTimeout(autoT);view=null;
+  if(reset){streak=0;wrongRun=0;recent=[]}
+  if(focus){const g=goalById(focus.ids[focus.i%focus.ids.length]);focus.i++;const sec=g.sec;cur=makeFromGoal(g,st.lvl[sec]||0)}
+  else cur=E.make(st.sec,curLevel(),recent);
+  if(window.__force)for(let i=0;i<500&&String(cur.gen).replace(/^X/,'')!==window.__force;i++)cur=E.make(st.sec,curLevel(),recent);
+  recent.push({g:cur.gen,f:cur.fp});recent=recent.slice(-12);tries=0;done=false;clicked=[];choiceSel=null;protoAngle=null;hintUsed=false;attempts=[];stepLines=[];renderQ();renderNav();
+}
+
+/* ---------- steps: which questions need working ---------- */
+const NOSTEP=new Set('missingExp multDiv rootEq volPrism volPyramid volCone volHemisphere cylinderNet surfCuboid primeFact nthRootCalc findNumber centroidRatio zToMidpoint decimalToFraction subInt missingNumber divInt missingFactor toMixed toImproper likeAdd equivFrac fractionOf fracDivInt riverShare missingFraction areaVolume maxIntersect maxIntersect5 axisDist substitute readLineY valueAt squareArea findK context graphK symmetryLine findKInv inverseContext axisFromPoints yIntercept exactTrig lcmTwo hcfTwo'.split(' '));
+const ADDMULTI=new Set('divideTerms nthRootFraction rootOfFraction calcRoots nthMix minusBracket binomMul threeFactors powerSpecial simplifyBinom numFracAdd numFracMulDiv numberAndFraction intDivFraction longProduct quotientPower chainBrackets differenceOfSquares2 sumDiff threeFracs binomialDen rootsFractionSum nthRootPow substitute addUnlike quotientRoots difference gauss howManyTerms productRule evenSum sumBetween sumRationalise aspectRatio twoFactors areaFactor mulSci timesBigger commonFactorCount coneInCylinder frustum identity tanFromSinCos missingAngle thirdAngle bisectAngle bisectedFull reflex isosceles angleFromTwo isoscelesAngle slopeToAngle rectDiagAngle cubeAngle cuboidDiag pyramidAngle angleOfElevation'.split(' '));
+const EXPRSTEP=new Set('divideTerms nthRootFraction rootOfFraction calcRoots minusBracket binomMul threeFactors powerSpecial simplifyBinom numFracAdd numFracMulDiv numberAndFraction intDivFraction longProduct quotientPower chainBrackets differenceOfSquares2 sumDiff threeFracs binomialDen rootsFractionSum sumRationalise quotientRoots mulSci timesBigger commonFactorCount simplifyRoot likeRadicals simplifySum mixedRoot rationaliseSimplify threeRoots bigRoot addSci distance surfCylinder surfCone divideRoots pythRoot addSimplify simplifyByPrimes rootOfFractionSimp exactRatios mixedLike addUnlike landUse mixedUnlike pyramid mulFrac fracOrder fracDivOrder threeMixed remainingTrip fracChain tenPower'.split(' '));
+const DISC=new Set('identity tanFromSinCos sideKnownHyp angleInverse isoscelesBase twoArms howManyOn'.split(' '));
+const NODISC=new Set('primeOrNot readPoint gradientIntercept abc vertex table frontView sideView cubeNet pickSkew'.split(' '));
+const DIVSTEP=new Set('bisectAngle'.split(' '));   /* a typed a/b is a division step here, not a fraction answer */
+const eqN=q=>(String(q.steps||'').replace(/<svg[\s\S]*?<\/svg>/g,'').replace(/<[^>]+>/g,'').match(/=/g)||[]).length;
+const canType=q=>q.type==='num'||(q.type==='expr'&&!!E.check);
+function stepMode(q){
+  if(!q||q.noStep)return '';
+  const gn=String(genName(q)||'').replace(/^X/,'');
+  const st_=String(q.steps||'');
+  if(!(q.needStep||eqN(q)>=2||ADDMULTI.has(gn)))return '';
+  if(canType(q)){
+    if(test)return 'note';
+    if(q.needStep)return E.parse?'enforce':'note';
+    if(q.type==='expr'&&!EXPRSTEP.has(gn))return '';
+    if(NOSTEP.has(gn))return '';
+    if(DISC.has(gn)||/\b(sin|cos|tan)\b|sin⁻|cos⁻|tan⁻/.test(st_.replace(/<[^>]+>/g,'')))return 'note';
+    return E.parse?'enforce':'note';   /* pages on the older engine cannot parse typed working, so they only show the note */
+  }
+  return NODISC.has(gn)?'':'note';
+}
+const STEPNOTE='<p class="stepnote"><b>Steps count.</b> Showing your steps is part of a correct answer. '+'This page can only check the final answer of this question, so write your working on paper too (in a test you always must).</p>';
+function qHTML(q){
+  let h='<div class="q">'+q.html+'</div>'+(stepMode(q)==='note'?STEPNOTE:'')+'<div id="stp" class="stp"></div><div class="ans" id="ans">';
+  if(q.type==='num')h+='<label class="sr" for="in0">Your answer</label><input type="text" id="in0" inputmode="text" autocomplete="off" placeholder="your answer">';
+  else if(q.type==='expr')h+='<label class="sr" for="in0">Your answer</label><input type="text" id="in0" inputmode="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="type your answer"><div class="kp" id="kp">'+(q.keys||['√','³√','⁴√','^','/','·','(',')','π']).map(k=>'<button type="button" data-k="'+k+'">'+k+'</button>').join('')+'<button type="button" data-k="⌫" aria-label="delete">⌫</button></div><div class="pv" id="pv" aria-live="polite"></div>';
+  else if(q.type==='point')h+='<label class="sr" for="in0">Your answer</label><input type="text" id="in0" autocomplete="off" placeholder="(x, y)">';
+  else if(q.type==='multi')q.fields.forEach((f,i)=>{h+='<label for="in'+i+'">'+f+'</label><input type="text" id="in'+i+'" autocomplete="off">'});
+  else if(q.type==='choice'){h+='<div class="choices">'+q.opts.map((o,i)=>'<button type="button" class="choice" data-i="'+i+'" aria-pressed="false">'+o+'</button>').join('')+'</div>'}
+  h+='</div>';return h;
+}
+/* ---------- learning-goals panel ---------- */
+function goalsPanel(q){
+  if(!GL.length)return '';
+  const cg=goalOfQ(q),all=st.goalsAll,list=goalsForItem(st.sec);
+  const shown=all?list:(cg?[cg]:[]);
+  const li=g=>{const sc=goalScore(g),S=STAT[sc.key];return '<li'+(cg&&g.id===cg.id?' class="cur" aria-current="step"':'')+'><span class="sd" style="background:'+S[1]+'" title="'+S[0]+'"></span><span class="gt">'+esc(g.title)+'</span></li>'};
+  return '<div class="goals"><div class="gh"><b>Key learning goals</b><span class="gb"><button type="button" class="lk" id="gtoggle" aria-expanded="'+all+'">'+(all?'Show current goal only':'Show all learning goals')+'</button>'+(cg&&!test?'<button type="button" class="lk" id="gexplain">Explain this goal</button>':'')+'</span></div><ul>'+shown.map(li).join('')+'</ul><div id="gcard"></div></div>';
+}
+function modeBar(){
+  if(mix||test)return '';
+  const a=free===null&&!focus;
+  let h='<div class="pmbar"><span class="pml">Practice:</span><button type="button" class="pm'+(a?' on':'')+'" data-f="a">Adaptive</button><span class="pml">Free practice:</span>'+LV.map((l,i)=>'<button type="button" class="pm l'+i+(free===i?' on':'')+'" data-f="'+i+'">'+l+'</button>').join('')+'</div>';
+  if(free!==null)h+='<div class="pmnote"><b>Free practice: '+LV[free]+'.</b> These questions do not count towards reaching the next level. <button type="button" class="btn alt sm" id="back2a">← Back to adaptive</button></div>';
+  if(focus){const g=goalById(focus.ids[(focus.i-1+focus.ids.length)%focus.ids.length]);h+='<div class="pmnote"><b>Focused practice</b> on your weakest objectives'+(g?': '+esc(g.title):'')+'. These questions do not count towards the next level. <button type="button" class="btn alt sm" id="back2a">← Back to adaptive</button></div>'}
+  return h;
+}
+function renderQ(){
+  const m=$('#main'),q=cur;
+  const lvLabel=free!==null?'Free practice · '+LV[q.lvl]:LV[q.lvl];
+  m.innerHTML='<div class="top">'+(q.mix?'<span class="badge lm">Master Mix</span> ':'')+'<span class="badge l'+q.lvl+'">'+lvLabel+'</span><span class="streak">'+(free!==null||focus?'Free practice':'In a row: '+[0,1,2].map(i=>'<span class="dot'+(i<streak?' on':'')+'"></span>').join('')+' &nbsp; Done: '+Math.min(GOAL,st.prog[st.sec]||0)+'/'+GOAL)+'</span></div>'+modeBar()+goalsPanel(q)+
+   qHTML(q)+'<div class="btns"><button class="btn" id="chk">Check</button><button class="btn alt" id="hnt">Hint</button><button class="btn alt" id="sol" style="display:none">Show solution</button><button class="btn alt" id="nxt" style="display:none">Next question</button></div><label class="autoc"><input type="checkbox" id="autoc"'+(st.auto===false?'':' checked')+'> Go to the next question automatically after a correct answer</label><div class="fb" id="fb"></div><div id="hist"></div>'+logPanel();
+  wire();wireChrome();
+  const f=$('#in0');if(f)f.focus();
+}
+function logPanel(){
+  if(!st.log.length)return '';
+  return '<details class="hl"><summary>My recent answers ('+Math.min(st.log.length,15)+')</summary><ul>'+st.log.slice(-15).reverse().map(l=>'<li><span class="'+(l.ok?'ok':'no')+'">'+(l.ok?'✓':'✗')+'</span> <span class="lq">'+esc(l.t)+'</span> → <b>'+esc(l.a)+'</b></li>').join('')+'</ul></details>';
+}
+function wireChrome(){
+  document.querySelectorAll('.pmbar .pm').forEach(b=>b.onclick=()=>{const f=b.dataset.f;free=f==='a'?null:+f;focus=null;mix=false;next(true)});
+  const b2=$('#back2a');if(b2)b2.onclick=()=>{free=null;focus=null;next(true)};
+  const gt=$('#gtoggle');if(gt)gt.onclick=()=>{st.goalsAll=!st.goalsAll;save();const g=document.querySelector('.goals');const tmp=document.createElement('div');tmp.innerHTML=goalsPanel(cur);g.replaceWith(tmp.firstChild);wireChrome()};
+  const ge=$('#gexplain');if(ge)ge.onclick=()=>{const c=$('#gcard');if(c.innerHTML){c.innerHTML='';ge.textContent='Explain this goal';return}ge.textContent='Hide explanation';c.innerHTML=helpCard(goalOfQ(cur))};
+}
+const ENTER={num:'Type a number. A comma or a point both work for decimals.',expr:'Type your answer in the box. Use the buttons under the box for √, higher roots (³√ is the cube root; you can also type 3V27), powers (^) and fractions (/). Use brackets in the bottom of a fraction: 5/(2x). The line “Your answer reads” shows what I understood.',choice:'Click the answer you think is right, then press Check.',point:'Type the coordinates like (2, 3).',multi:'Fill in every box.',click:'Click on the picture, then press Check.',proto:'Click on the protractor scale, then press Check.'};
+const WARN={root:'Simplify completely: no square factor may stay under the root.',mono:'Write the answer as simply as possible: one number, then each letter with one exponent.',poly:'Collect like terms and write everything out without brackets.',lowest:'Cancel the fraction as far as possible.',primes:'Write only prime numbers, in increasing order, with exponents.',sci:'In scientific notation the first number is at least 1 and less than 10.'};
+function helpCard(g){
+  if(!g)return '';
+  let q=null;for(const n of g.gens){const hit=findGen(n);if(!hit)continue;try{q=hit[0](0);q.gen=n;break}catch(e){}}
+  if(!q)return '<div class="hc"><p>No explanation available yet.</p></div>';
+  const how=q.hint?String(q.hint):'Read the question carefully and work step by step.';
+  const form=q.form&&WARN[q.form]?WARN[q.form]:'';
+  const warn=g.warn||form;
+  return '<div class="hc"><h4>'+esc(g.title)+'</h4><div class="hr"><b>What to do</b><p>'+how+'</p></div><div class="hr"><b>Example</b><div class="ex">'+q.html+'<p class="exa"><b>Answer: '+E.answerText(q)+'</b></p></div></div><div class="hr"><b>Steps</b><div>'+(q.steps||'')+'</div></div><div class="hr"><b>What to enter</b><p>'+(ENTER[q.type]||'Enter your answer.')+'</p></div>'+(warn?'<div class="hr warn"><b>Watch out</b><p>'+warn+'</p></div>':'')+'</div>';
+}
+/* ---------- question wiring ---------- */
+function wire(){
+  wireProto();$('#chk').onclick=check;$('#hnt').onclick=hint;$('#sol').onclick=showSolution;$('#nxt').onclick=()=>{if(Date.now()-finT<400)return;test?testNext():next(false)};{const ac=$('#autoc');if(ac)ac.onchange=()=>{st.auto=ac.checked;if(!ac.checked)clearTimeout(autoT);save()}}
+  document.querySelectorAll('.choice').forEach(b=>b.onclick=()=>{if(done)return;choiceSel=+b.dataset.i;document.querySelectorAll('.choice').forEach(x=>x.setAttribute('aria-pressed',String(x===b)))});
+  document.querySelectorAll('#ans input').forEach(i=>i.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();check()}}));
+  wireExpr();wireGrid();
+}
+function wireGrid(){
+  const sv=document.querySelector('svg.grid[data-click]');
+  if(sv)sv.addEventListener('click',ev=>{
+    if(done)return;const r=sv.getBoundingClientRect(),W=+sv.dataset.w,u=+sv.dataset.u,pad=+sv.dataset.pad;
+    const px=(ev.clientX-r.left)*W/r.width,py=(ev.clientY-r.top)*W/r.width;
+    const x=Math.round((px-pad)/u)+ +sv.dataset.xmin,y=+sv.dataset.ymax-Math.round((py-pad)/u);
+    const k=clicked.findIndex(p=>p[0]===x&&p[1]===y);if(k>=0)clicked.splice(k,1);else clicked.push([x,y]);drawMarks(sv);
+  });
+}
+function wireExpr(){
+  const kp=document.getElementById('kp');if(!kp)return;const inp=$('#in0'),pv=$('#pv');
+  const upd=()=>{const v=inp.value.trim();if(!v){pv.innerHTML='';return}let h=null;try{h=E.M(v,cur.noVars?{noVars:true}:{})}catch(e){}pv.innerHTML=h&&E.parse&&(()=>{try{E.parse(v,cur.noVars?{noVars:true}:{});return true}catch(e){return false}})()?'<span class="pl">Your answer reads:</span> '+h:'<span class="pl">I cannot read that yet. Check your brackets and symbols.</span>'};
+  inp.addEventListener('input',upd);
+  kp.querySelectorAll('button').forEach(b=>b.onclick=()=>{if(done)return;const k=b.dataset.k,s=inp.selectionStart,e=inp.selectionEnd,v=inp.value;
+    if(k==='⌫'){if(s!==e){inp.value=v.slice(0,s)+v.slice(e);inp.setSelectionRange(s,s)}else if(s>0){inp.value=v.slice(0,s-1)+v.slice(s);inp.setSelectionRange(s-1,s-1)}}
+    else{inp.value=v.slice(0,s)+k+v.slice(e);const n=s+k.length;inp.setSelectionRange(n,n)}
+    inp.focus();upd()});
+}
+function drawMarks(sv){
+  const u=+sv.dataset.u,pad=+sv.dataset.pad,xmin=+sv.dataset.xmin,ymax=+sv.dataset.ymax;
+  sv.querySelector('.marks').innerHTML=clicked.map(p=>{const cx=pad+(p[0]-xmin)*u,cy=pad+(ymax-p[1])*u;return sv.dataset.cell?'<rect x="'+(cx-u/2+1)+'" y="'+(cy-u/2+1)+'" width="'+(u-2)+'" height="'+(u-2)+'" fill="#f4a58a" stroke="#d1471f" stroke-width="2"/>':'<circle cx="'+cx+'" cy="'+cy+'" r="6" fill="#d1471f" stroke="#fff" stroke-width="1.5"/>'}).join('');
+}
+function userAns(q){
+  if(q.type==='proto')return protoAngle;
+  if(q.type==='num'||q.type==='point'||q.type==='expr')return $('#in0').value;
+  if(q.type==='multi')return q.fields.map((_,i)=>$('#in'+i).value);
+  if(q.type==='choice')return choiceSel;
+  return clicked;
+}
+function ansText(q,u){
+  if(q.type==='choice')return u===null?'':plain(q.opts[u]);
+  if(q.type==='multi')return u.join(' and ');
+  if(q.type==='click')return u.map(p=>'('+p[0]+', '+p[1]+')').join(' ');
+  if(q.type==='proto')return u+'°';
+  return String(u);
+}
+function fb(cls,t){const b=$('#fb');b.className='fb show '+cls;b.innerHTML=t}
+function hint(){if(cur.hint){hintUsed=true;fb('hint','<b class="h">Hint</b>'+cur.hint)}}
+function empty(q,u){if(q.type==='proto')return u===null;if(q.type==='num'||q.type==='point'||q.type==='expr')return !String(u).trim();if(q.type==='multi')return u.some(v=>!String(v).trim());if(q.type==='choice')return u===null;return u.length===0}
+function logAnswer(q,u,ok){
+  const a=ansText(q,u);attempts.push({a,ok});
+  st.log.push({t:plain(q.html).slice(0,90),a:a.slice(0,60),ok,d:todayISO()});if(st.log.length>40)st.log.splice(0,st.log.length-40);
+  const h=$('#hist');if(h)h.innerHTML='<div class="at">Your answers on this question: '+attempts.map(x=>'<span class="'+(x.ok?'ok':'no')+'">'+(x.ok?'✓':'✗')+' '+esc(x.a)+'</span>').join(' ')+'</div>';
+}
+const chk=(q,u)=>E.check?E.check(q,u):{ok:E.grade(q,u)};
+function fmtStep(t){let h=null;if(/\//.test(t)||(cur&&cur.type==='expr'&&/[\^√]/.test(t))){try{h=E.M(t,{noVars:cur&&cur.type!=='expr'})}catch(e){}}else h=esc(t).replace(/\*|·/g,'×').replace(/-/g,'−');return h||esc(t)}
+function drawSteps(fin){const d=$('#stp');if(!d)return;d.innerHTML=stepLines.map(t=>'<div class="stl"><span class="ci open" aria-label="correct step">○</span><span class="sv">'+fmtStep(t)+' <span class="eq">=</span></span></div>').join('')+(fin?'<div class="stl fin"><span class="ci full" aria-label="correct final answer">✓</span><span class="sv">'+fmtStep(fin)+'<div class="fnote">Completely correct! This is the correct final answer.</div></span></div>':'')}
+function stepEq(q,pt){
+  if(q.type==='num'){if(q.tol&&E.evalNum){try{return Math.abs(E.evalNum(pt)-q.ans)<=q.tol}catch(e){return false}}try{E.parse(pt,{noVars:true})}catch(e){return false}return E.check({type:'expr',ans:String(q.ans),form:'any',noVars:true},pt).ok}
+  return E.check({type:'expr',ans:q.ans,form:'any'},pt).ok}
+function check(){
+  if(done)return;const q=cur;let u=userAns(q);
+  if(empty(q,u)){fb('hint','Fill in your answer first.');return}
+  if((q.type==='num'||(q.type==='expr'&&E.check&&!/=/.test(String(q.ans))))&&typeof u==='string'&&u.indexOf('=')>0&&E.parse){
+    const raw=u.split('=').map(x=>x.trim()).filter(Boolean);
+    /* numeric answers: ignore a bare label such as "∠R", "<R", "R" or "angle R", and a trailing ° (so 360-76-86-111=∠R=87° counts) */
+    const parts=q.type==='num'?raw.filter(x=>!/^(?:∠|<|angle\s*)?[A-Za-z]{1,4}°?$/i.test(x)).map(x=>x.replace(/°$/,'').trim()):raw;
+    if(raw.length>=2&&parts.length>=1){const fin=parts[parts.length-1],pre=parts.slice(0,-1);
+      let okPre=false;try{okPre=pre.every(pt=>stepEq(q,pt))}catch(e){}
+      if(okPre&&chk(q,fin).ok){if(!test)stepLines.push(...pre);u=fin;const i0=$('#in0');if(i0)i0.value=fin}}}
+  if(test){return testCheck(q,u)}
+  const sm=stepMode(q);
+  const slashCalc=q.type==='num'&&DIVSTEP.has(String(genName(q)||'').replace(/^X/,''))&&/^\s*\d+(?:[.,]\d+)?\s*\/\s*\d+(?:[.,]\d+)?\s*$/.test(String(u));
+  if(sm==='enforce'&&q.type==='num'&&!stepLines.length&&!isNaN(E.parseNum(u))&&!slashCalc){fb('hint','<b class="h">Show your working first.</b>Showing your steps is part of a correct answer. Type the first calculation you do (for example <i>(4+5)*9</i> or <i>9*9</i>), then work towards the final answer.');return}
+  let calcWrong=false;
+  if(q.type==='num'&&(isNaN(E.parseNum(u))||slashCalc)&&E.parse){let calc=false;try{E.parse(String(u),{noVars:true});calc=true}catch(e){}
+    if(calc){let rr;if(q.tol&&E.evalNum){let vv=NaN;try{vv=E.evalNum(u)}catch(e){}rr={ok:Math.abs(vv-q.ans)<=q.tol}}else rr=E.check({type:'expr',ans:String(q.ans),form:'any',noVars:true},u);
+      if(rr.ok){fb('hint','<b class="h">✓ That calculation is right.</b>Now work it out and type the <b>final number</b> as your answer.');stepLines.push(String(u).trim());drawSteps();const i0=$('#in0');i0.value='';i0.focus();const pv=$('#pv');if(pv)pv.innerHTML='';return}calcWrong=true}}
+  if(q.type==='expr'&&E.check){const r0=E.check(q,u);
+    if(r0.ok){if(sm==='enforce'&&!stepLines.length){fb('hint','<b class="h">Show your working first.</b>Showing your steps is part of a correct answer. Type an in-between step first (for example before you simplify or add things up), then type your final answer.');return}}
+    else if(r0.why==='form'&&stepLines.length<4){stepLines.push(String(u).trim());drawSteps();fb('hint','<b class="h">✓ Good step.</b>That has the right value, but it is not finished yet. Now work it out and type the final answer'+(r0.msg?' ('+esc(r0.msg)+')':'')+'.');const i0=$('#in0');i0.value='';i0.focus();const pv=$('#pv');if(pv)pv.innerHTML='';return}}
+  const R_=chk(q,u),ok=R_.ok;tries++;
+  logAnswer(q,u,ok);
+  const S=st.stat[st.sec]=st.stat[st.sec]||{n:0,ok:0};
+  const counts=free===null&&!focus;
+  if(ok){
+    done=true;if(counts)st.prog[st.sec]=(st.prog[st.sec]||0)+1;S.n++;if(tries===1)S.ok++;
+    const w=hintUsed?0.5:tries===1?1:0.75;record(q,w);
+    let up='';
+    if(tries===1&&!hintUsed){row++;streak+=counts?1:0;wrongRun=0;if(row>st.bestRow)st.bestRow=row;up+=award('first');if(row>=5)up+=award('row5');if(row>=10)up+=award('row10')}else if(tries>1){row=0;if(counts)streak=0}
+    if(counts&&!mix&&streak>=3){streak=0;
+      if(lvl()<3){st.lvl[st.sec]=lvl()+1;st.best[st.sec]=Math.max(st.best[st.sec]||0,lvl());up+=' <b>Level up: '+LV[lvl()]+'!</b>'+(lvl()===3?' These are challenge questions.':'')+award('up');if(lvl()>=2)up+=award('spicy')}
+      else if(!st.done[st.sec]){st.done[st.sec]=true;up+=' <b>Extra spicy completed! ★ Master Mix is now unlocked for this section (see the menu).</b>'+award('mm')}}
+    const g=goalOfQ(q);if(g&&goalScore(g).key==='mastered')up+=award('goal');
+    if(stepLines.length&&(q.type==='num'||q.type==='expr'))drawSteps(String(u).trim());save();fb('ok','<b class="h">Correct!'+(tries>1?' (second try)':'')+'</b>'+q.steps+up);finish();
+    if(st.auto!==false){clearTimeout(autoT);autoT=setTimeout(()=>{if(done&&cur===q&&!test&&!view)next(false)},1000)}
+  }else if(tries===1){
+    row=0;if(counts)streak=0;
+    $('#sol').style.display='';
+    fb('no','<b class="h">Not yet. Try again.</b>'+(R_.why==='form'?(R_.msg||'That has the right value, but it is not in the form asked for.')+' ':calcWrong?'That calculation does not give the right answer. ':R_.why==='parse'?'I could not read that answer. ':'')+(q.hint?q.hint:''));
+  }else{
+    done=true;row=0;wrongRun+=counts?1:0;S.n++;record(q,0);let dn='';
+    if(counts&&!mix&&wrongRun>=2&&lvl()>0){st.lvl[st.sec]=lvl()-1;wrongRun=0;dn=' <i>Next questions will be a bit easier.</i>'}
+    save();fb('no','<b class="h">The answer is: '+E.answerText(q)+'</b>'+q.steps+dn);finish();
+  }
+}
+function showSolution(){
+  if(done||test)return;const q=cur;done=true;row=0;if(free===null&&!focus)streak=0;
+  const S=st.stat[st.sec]=st.stat[st.sec]||{n:0,ok:0};S.n++;record(q,0);
+  attempts.push({a:'(solution shown)',ok:false});
+  save();fb('no','<b class="h">Solution — the answer is: '+E.answerText(q)+'</b>'+q.steps+'<p><i>This question does not count as correct. Try the next one.</i></p>');finish();
+}
+function wireProto(){
+  const sv=document.querySelector('svg.proto[data-proto]');if(!sv)return;
+  sv.addEventListener('click',ev=>{if(done)return;
+    const r=sv.getBoundingClientRect(),W=+sv.dataset.w,H=+sv.dataset.h,cx=+sv.dataset.cx,cy=+sv.dataset.cy,R=+sv.dataset.r;
+    const px=(ev.clientX-r.left)*W/r.width,py=(ev.clientY-r.top)*H/r.height;
+    let a=Math.atan2(cy-py,px-cx)*180/Math.PI;if(py>cy)a=px>=cx?0:180;a=Math.max(0,Math.min(180,Math.round(a)));protoAngle=a;
+    const t=a*Math.PI/180,x2=cx+(R+22)*Math.cos(t),y2=cy-(R+22)*Math.sin(t),xd=cx+R*Math.cos(t),yd=cy-R*Math.sin(t);
+    sv.querySelector('.pm').innerHTML='<line x1="'+cx+'" y1="'+cy+'" x2="'+x2+'" y2="'+y2+'" stroke="#223" stroke-width="3" stroke-linecap="round"/><circle cx="'+xd+'" cy="'+yd+'" r="6" fill="#d1471f" stroke="#fff" stroke-width="1.5"/>';
+  });
+}
+function revealQ(q){
+  if(q.type==='proto'){const sv=document.querySelector('svg.proto');if(!sv||sv.querySelector('.rev'))return;const cx=+190,cy=188,R=160,t=q.target*Math.PI/180;
+    sv.insertAdjacentHTML('beforeend','<g class="rev"><line x1="'+cx+'" y1="'+cy+'" x2="'+(cx+(R+22)*Math.cos(t))+'" y2="'+(cy-(R+22)*Math.sin(t))+'" stroke="#16803c" stroke-width="3" stroke-dasharray="7 4"/><circle cx="'+(cx+R*Math.cos(t))+'" cy="'+(cy-R*Math.sin(t))+'" r="5.5" fill="#16803c" stroke="#fff" stroke-width="1.5"/></g>');return}
+  if(q.type!=='click')return;const sv=document.querySelector('svg.grid[data-click]');if(!sv||sv.querySelector('.rev'))return;
+  const u=+sv.dataset.u,pad=+sv.dataset.pad,xmin=+sv.dataset.xmin,ymax=+sv.dataset.ymax,X=x=>pad+(x-xmin)*u,Y=y=>pad+(ymax-y)*u;
+  const R=q.reveal||{segs:[],pts:q.targets};let h='';
+  (R.segs||[]).forEach(g=>{h+='<line x1="'+X(g.a[0])+'" y1="'+Y(g.a[1])+'" x2="'+X(g.b[0])+'" y2="'+Y(g.b[1])+'" stroke="#16803c" stroke-width="2.2" stroke-dasharray="6 4" opacity=".75"/>'});
+  (R.pts||[]).forEach(p=>{h+=sv.dataset.cell?'<rect x="'+(X(p[0])-u/2+1)+'" y="'+(Y(p[1])-u/2+1)+'" width="'+(u-2)+'" height="'+(u-2)+'" fill="#9be0b3" stroke="#16803c" stroke-width="2" opacity=".85"/>':'<circle cx="'+X(p[0])+'" cy="'+Y(p[1])+'" r="5" fill="#16803c" stroke="#fff" stroke-width="1.5"/>'});
+  sv.querySelector('.marks').insertAdjacentHTML('beforebegin','<g class="rev">'+h+'</g>');
+}
+let finT=0;function finish(){finT=Date.now();revealQ(cur);$('#chk').disabled=true;$('#hnt').disabled=true;$('#sol').style.display='none';$('#nxt').style.display='';$('#nxt').focus();document.querySelectorAll('.choice').forEach(b=>b.disabled=true);document.querySelectorAll('#ans input').forEach(i=>i.disabled=true);document.querySelectorAll('#kp button').forEach(i=>i.disabled=true);renderNavSoft();const lp=document.querySelector('details.hl');if(lp){const o=lp.open;lp.outerHTML=logPanel();const n=document.querySelector('details.hl');if(n)n.open=o}}
+function renderNavSoft(){if(items().some(s=>st.done[s.id]&&!document.querySelector('#nav .mm')))renderNav();const bars=document.querySelectorAll('#nav .bar i');items().forEach((s,i)=>{if(bars[i])bars[i].style.width=Math.min(GOAL,st.prog[s.id]||0)*100/GOAL+'%'});const sd=document.querySelectorAll('.goals .sd');}
+
+/* ---------- test preparation ---------- */
+function startTest(){view=null;free=null;focus=null;test={qs:E.makeTest(),i:0,score:0,log:[]};renderNav();testShow()}
+function testShow(){
+  const q=cur=test.qs[test.i];done=false;clicked=[];choiceSel=null;protoAngle=null;hintUsed=false;
+  $('#main').innerHTML='<div class="top"><span class="badge l1">Test preparation</span><span class="streak">Question '+(test.i+1)+' of '+test.qs.length+'</span></div>'+qHTML(q)+
+   '<div class="btns"><button class="btn" id="chk">Check</button><button class="btn alt" id="nxt" style="display:none">'+(test.i===test.qs.length-1?'See my result':'Next question')+'</button></div><div class="fb" id="fb"></div>';
+  wireProto();$('#chk').onclick=check;$('#nxt').onclick=testNext;
+  const tmp=document.createElement('button');tmp.id='hnt';tmp.style.display='none';$('.btns').appendChild(tmp);
+  document.querySelectorAll('.choice').forEach(b=>b.onclick=()=>{if(done)return;choiceSel=+b.dataset.i;document.querySelectorAll('.choice').forEach(x=>x.setAttribute('aria-pressed',String(x===b)))});
+  document.querySelectorAll('#ans input').forEach(i=>i.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();check()}}));
+  wireExpr();wireGrid();
+  const f=$('#in0');if(f)f.focus();
+}
+function testCheck(q,u){
+  done=true;const ok=E.grade(q,u);if(ok)test.score++;revealQ(q);record(q,ok?1:0);
+  test.log.push({q,ok,u});
+  fb(ok?'ok':'no',ok?'<b class="h">Correct</b>':'<b class="h">Not correct. The answer is: '+E.answerText(q)+'</b>'+q.steps);
+  $('#chk').disabled=true;document.querySelectorAll('.choice').forEach(b=>b.disabled=true);document.querySelectorAll('#ans input').forEach(i=>i.disabled=true);document.querySelectorAll('#kp button').forEach(i=>i.disabled=true);
+  $('#nxt').style.display='';$('#nxt').focus();
+}
+function testNext(){
+  test.i++;if(test.i<test.qs.length)return testShow();
+  const n=test.qs.length,g=Math.round((test.score/n*9+1)*10)/10;
+  const wrong=test.log.filter(x=>!x.ok);st.tests.push({d:new Date().toISOString().slice(0,10),s:test.score,n:n});st.tests=st.tests.slice(-20);
+  const bd=test.score>=20?award('test'):'';save();
+  $('#main').innerHTML='<div class="res"><h2>Your result</h2><div class="grade">'+test.score+' / '+n+'</div><p>That is a '+String(g).replace('.',',')+' on a scale of 1 to 10 (a rough guide only).'+bd+'</p>'+
+   (wrong.length?'<h3>Look at these again</h3>'+wrong.map(x=>{const gg=goalOfQ(x.q);return '<div class="rev"><div>'+x.q.html+'</div><div><b>Answer: '+E.answerText(x.q)+'</b></div><div class="st">'+x.q.steps+'</div>'+(gg?'<div class="st"><i>Learning goal: '+esc(gg.title)+'</i></div>':'')+'</div>'}).join(''):'<p><b>Everything correct. Great work!</b></p>')+
+   '<div class="btns"><button class="btn" id="again">Try a new test</button></div></div>';
+  $('#again').onclick=startTest;
+}
+
+/* ---------- progress overview ---------- */
+function overall(){let n=0,s=0;GL.forEach(g=>{const w=(st.res[g.id]||[]).slice(-6);w.forEach(x=>{n++;s+=x})});return{n,pct:n?Math.round(100*s/n):null}}
+function statusChip(key){const S=STAT[key];return '<span class="stc" style="background:'+S[2]+';color:'+S[1]+';border-color:'+S[1]+'">'+S[0]+'</span>'}
+function showProgress(){
+  test=null;view='progress';renderNav();
+  const rows=items().map(s=>{
+    const cur_=st.lvl[s.id]||0,best=Math.max(st.best[s.id]||0,cur_),d=!!st.done[s.id],S=st.stat[s.id]||{n:0,ok:0};
+    const chips=LV.map((l,i)=>'<span class="chip '+(d||i<best?'ach':i===cur_&&(S.n>0||cur_>0)?'act':'')+'">'+l+'</span>').join('');
+    const gs=goalsForItem(s.id),sc=gs.map(goalScore).filter(x=>x.pct!==null);
+    return '<tr><td><b>'+s.title+'</b></td><td>'+chips+'</td><td>'+(S.n||0)+'</td><td>'+(d?'★ unlocked':'not yet')+'</td></tr>';
+  }).join('');
+  const O=overall(),mastered=GL.filter(g=>goalScore(g).key==='mastered').length;
+  const bySec={};GL.forEach(g=>{(bySec[g.sec]=bySec[g.sec]||[]).push(g)});
+  const goalRows=Object.keys(bySec).map(sec=>{const s=E.SECTIONS.find(x=>x.id===sec);return '<tr class="gsec"><td colspan="3"><b>'+(s?s.title:sec)+'</b></td></tr>'+bySec[sec].map(g=>{const sc=goalScore(g);return '<tr><td>'+esc(g.title)+'</td><td>'+statusChip(sc.key)+'</td><td class="num">'+(sc.pct===null?'–':sc.pct+'%')+' <span class="mut">('+sc.n+')</span></td></tr>'}).join('')}).join('');
+  const weak=weakGoals();
+  const T=st.tests.length?'<h3>Test preparation results</h3><table><tr><th>Date</th><th>Score</th></tr>'+st.tests.slice().reverse().map(t=>'<tr><td>'+t.d+'</td><td>'+t.s+' / '+t.n+'</td></tr>').join('')+'</table>':'<p>You have not done a test preparation yet.</p>';
+  const bad=BADGES.map(b=>'<span class="bdg'+(st.badges[b[0]]?' got':'')+'" title="'+esc(b[2])+'">'+(st.badges[b[0]]?'🏅 ':'🔒 ')+b[1]+'</span>').join('');
+  $('#main').innerHTML='<div class="pg"><h2>My progress'+(hasLessons?' ('+(st.mode==='lesson'?'by lesson':'by paragraph')+')':'')+'</h2>'+
+    '<div class="cards"><div class="card2"><b>'+O.n+'</b><span>answers counted (last 6 per objective)</span></div><div class="card2"><b>'+(O.pct===null?'–':O.pct+'%')+'</b><span>recent score</span></div><div class="card2"><b>'+mastered+' / '+GL.length+'</b><span>objectives mastered</span></div></div>'+
+    '<p class="mut">Recent score: for every learning objective only your <b>last six answers</b> count. Correct on the first try = 100%, first try with a hint = 50%, correct on the second try = 75%, not correct or solution shown = 0%.</p>'+
+    '<h3>Levels</h3><p>Green = level reached. Blue = the level you are working on. Reach Extra spicy and answer 3 in a row correctly to unlock the Master Mix.</p><table><tr><th>'+(st.mode==='lesson'&&hasLessons?'Lesson':'Section')+'</th><th>Levels</th><th>Questions</th><th>Master Mix</th></tr>'+rows+'</table>'+
+    '<h3>Results by learning objective</h3><p class="stkey">'+['mastered','almost','way','attention','extra','none'].map(statusChip).join(' ')+'</p><p class="mut">The status uses your last six answers on that objective (you need at least three answers).</p><table class="gt"><tr><th>Learning objective</th><th>Status</th><th>Score</th></tr>'+goalRows+'</table>'+
+    '<h3>Continue practising</h3>'+(weak.length?'<p>Your weakest objectives right now: '+weak.slice(0,3).map(g=>'<b>'+esc(g.title)+'</b>').join('; ')+'.</p>':'<p>Answer some more questions first, then I can point out what to practise.</p>')+
+    '<div class="btns"><button class="btn" id="fprac">Practise my weakest objectives online</button><button class="btn alt" id="wsheet">Printable practice worksheet</button></div>'+
+    '<h3>Badges</h3><p>'+bad+'</p>'+T+
+    '<h3>My data</h3><p class="mut">Your progress is stored on this device only (in this browser). Make a backup if you want to continue on another device.</p><div class="btns"><button class="btn alt" id="rep">Progress report (PDF)</button><button class="btn alt" id="bk">Download backup</button><label class="btn alt filebtn" for="rs">Restore backup<input type="file" id="rs" accept=".json,application/json" hidden></label><button class="btn alt danger" id="rst">Start again</button></div><div id="datamsg" class="mut"></div>'+
+    '<div class="btns"><button class="btn" id="back">Back to practice</button></div></div>';
+  $('#back').onclick=()=>next(true);$('#fprac').onclick=startFocus;$('#wsheet').onclick=showWorksheet;$('#rep').onclick=showReport;$('#bk').onclick=backup;$('#rst').onclick=startAgain;$('#rs').onchange=restore;
+}
+function weakGoals(){return GL.filter(g=>{const s=goalScore(g);return s.pct!==null&&s.n>=3&&s.key!=='mastered'}).sort((a,b)=>goalScore(a).pct-goalScore(b).pct)}
+function weakOrAny(k){let w=weakGoals();if(w.length<k){const att=GL.filter(g=>!w.includes(g)).sort((a,b)=>{const A=goalScore(a),B=goalScore(b);return (A.pct===null?101:A.pct)-(B.pct===null?101:B.pct)});w=w.concat(att)}return w.slice(0,k)}
+function startFocus(){const w=weakOrAny(4);if(!w.length)return;free=null;mix=false;focus={ids:w.map(g=>g.id),i:0};next(true)}
+function showWorksheet(){
+  view='ws';renderNav();const gs=weakOrAny(4);const qs=[];
+  gs.forEach(g=>{let k=0,guard=0;while(k<3&&guard++<30){const q=makeFromGoal(g,st.lvl[g.sec]||0);if(['num','expr','choice','point'].includes(q.type)&&!qs.some(x=>x.fp===q.fp)){qs.push(q);k++}}});
+  const t0=todayISO();
+  const qh=qs.map((q,i)=>'<div class="wq"><div class="wn">'+(i+1)+'</div><div class="wb">'+q.html+(q.type==='choice'?'<ol type="a" class="wo">'+q.opts.map(o=>'<li>'+o+'</li>').join('')+'</ol>':'<div class="wl">Answer: ________________________</div>')+'</div></div>').join('');
+  const ah=qs.map((q,i)=>'<div class="wa"><b>'+(i+1)+'.</b> '+(q.type==='choice'?String.fromCharCode(97+q.ans)+') ':'')+'<b>'+E.answerText(q)+'</b><div class="st">'+q.steps+'</div></div>').join('');
+  $('#main').innerHTML='<div class="pg ws"><div class="btns noprint"><button class="btn" id="wp">Print / save as PDF</button><button class="btn alt" id="wb">Back to my progress</button></div><h2>Practice worksheet · '+esc(document.querySelector('header h1').textContent)+'</h2><p class="mut">Name: ______________________ &nbsp; Date: '+t0+'</p><p class="mut">Objectives: '+gs.map(g=>esc(g.title)).join(' · ')+'</p>'+qh+'<div class="pbreak"></div><h2>Answers</h2>'+ah+'</div>';
+  $('#wp').onclick=()=>{document.body.classList.add('printing');window.print();setTimeout(()=>document.body.classList.remove('printing'),500)};$('#wb').onclick=showProgress;
+}
+function showReport(){
+  view='report';renderNav();const O=overall();
+  const bySec={};GL.forEach(g=>{(bySec[g.sec]=bySec[g.sec]||[]).push(g)});
+  const gr=Object.keys(bySec).map(sec=>{const s=E.SECTIONS.find(x=>x.id===sec);return '<tr class="gsec"><td colspan="3"><b>'+(s?s.title:sec)+'</b></td></tr>'+bySec[sec].map(g=>{const sc=goalScore(g);return '<tr><td>'+esc(g.title)+'</td><td>'+STAT[sc.key][0]+'</td><td>'+(sc.pct===null?'–':sc.pct+'%')+' ('+sc.n+')</td></tr>'}).join('')}).join('');
+  $('#main').innerHTML='<div class="pg ws"><div class="btns noprint"><button class="btn" id="wp">Print / save as PDF</button><button class="btn alt" id="wb">Back to my progress</button></div><h2>Progress report · '+esc(document.querySelector('header h1').textContent)+'</h2><p>Name: <input type="text" id="rn" class="rname" placeholder="your name"> &nbsp; Date: '+todayISO()+'</p><p><b>Recent score:</b> '+(O.pct===null?'–':O.pct+'%')+' over '+O.n+' counted answers. <b>Objectives mastered:</b> '+GL.filter(g=>goalScore(g).key==='mastered').length+' of '+GL.length+'.</p><table class="gt"><tr><th>Learning objective</th><th>Status</th><th>Score (answers)</th></tr>'+gr+'</table>'+(st.tests.length?'<h3>Test preparation</h3><p>'+st.tests.slice(-5).map(t=>t.d+': '+t.s+'/'+t.n).join(' · ')+'</p>':'')+'<p class="mut">Score = average of the last six answers per objective (first try 100%, with hint 50%, second try 75%, wrong 0%).</p></div>';
+  $('#wp').onclick=()=>{const n=$('#rn');if(n){n.setAttribute('value',n.value)}document.body.classList.add('printing');window.print();setTimeout(()=>document.body.classList.remove('printing'),500)};$('#wb').onclick=showProgress;
+}
+function backup(){
+  const data={page:KEY,saved:new Date().toISOString(),state:JSON.parse(localStorage.getItem(KEY)||'{}')};
+  const blob=new Blob([JSON.stringify(data)],{type:'application/json'}),a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);a.download=KEY+'-backup-'+todayISO()+'.json';document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},500);
+  const m=$('#datamsg');if(m)m.textContent='Backup downloaded.';
+}
+function restore(ev){
+  const f=ev.target.files&&ev.target.files[0];if(!f)return;const r=new FileReader();
+  r.onload=()=>{try{const d=JSON.parse(r.result);if(!d||d.page!==KEY||!d.state||!d.state.prog)throw new Error('wrong file');
+    if(!confirm('Replace the progress on this device with the backup?'))return;localStorage.setItem(KEY,JSON.stringify(d.state));location.reload()}catch(e){const m=$('#datamsg');if(m)m.textContent='That file is not a backup of this page.'}};
+  r.readAsText(f);
+}
+function startAgain(){
+  if(!confirm('Delete all your progress on this page and start again?'))return;
+  st={mode:st.mode,secs:{},done:{},stat:{},best:{},tests:[],sec:st.sec,prog:{},lvl:{},res:{},log:[],badges:{},bestRow:0,goalsAll:st.goalsAll,auto:st.auto};mix=false;free=null;focus=null;save();test=null;renderNav();next(true);
+}
+document.getElementById('pbtn').onclick=showProgress;
+window.__dbg=()=>cur;window.__next=()=>next(false);renderNav();next(true);
+})();
+
+</script>
+</body>
+</html>
