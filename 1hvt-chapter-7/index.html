@@ -61,7 +61,7 @@ svg.grid[data-click]{cursor:crosshair}
 .rt .ix{position:absolute;left:-.42em;top:.12em;font-size:.62em;line-height:1}
 .q sup{font-size:.7em;line-height:0}
 .mx i{padding-right:.09em}.mx sup{font-style:normal;margin-left:.05em;font-size:.7em;line-height:0}
-.kp{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 2px}.kp button{font:inherit;font-size:19px;min-width:42px;padding:5px 10px;border:2px solid #9fb0bf;border-radius:9px;background:#f7fafc;cursor:pointer}.kp .frk{display:inline-flex;flex-direction:column;align-items:center;font-size:12px;line-height:1.05}.kp .frk span:first-child{border-bottom:1.5px solid currentColor;padding:0 2px}.kp button:hover{border-color:var(--brand);background:var(--brand2)}
+.kp{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 2px}.kp button{font:inherit;font-size:19px;min-width:42px;padding:5px 10px;border:2px solid #9fb0bf;border-radius:9px;background:#f7fafc;cursor:pointer}.kp .frk{display:inline-flex;flex-direction:column;align-items:center;font-size:12px;line-height:1.05}.kp .frk span:first-child{border-bottom:1.5px solid currentColor;padding:0 2px}.kp button[data-k^="F:"]{font-size:16px}.kp button:hover{border-color:var(--brand);background:var(--brand2)}
 .pv{min-height:34px;margin:6px 0 0;font-size:20px;color:#223}.pv .pl{font-size:14px;color:var(--mut);margin-right:6px}
 .ans input[type=text].wide{width:min(520px,100%)}
 .ans input#in0{width:min(420px,100%)}
@@ -1265,7 +1265,8 @@ function kpad(q){
   if(ks.indexOf('/')>=0)ks.splice(ks.indexOf('/'),0,'FR');
   if(q.type==='num'&&/∠|angle/i.test(q.html||''))ks.splice(1,0,'∠');
   if(q.eqStep){ks=ks.filter(k=>k!=='°'&&k!=='∠');ks.unshift(q.eqStep,'=')}
-  return '<div class="kp" id="kp">'+ks.map(k=>'<button type="button" data-k="'+k+'"'+(k==='FR'?' aria-label="fraction"':'')+'>'+(k==='FR'?FRK:k)+'</button>').join('')+'<button type="button" data-k="⌫" aria-label="delete">⌫</button></div><div class="pv" id="pv" aria-live="polite"></div>';
+  if(q.type!=='expr'&&/\b(sin|cos|tan)\b|sin⁻|cos⁻|tan⁻|SOH|CAH|TOA/.test(String(q.steps||'')+String(q.hint||'')))ks=ks.concat(['=','F:sin','F:cos','F:tan','F:sin⁻¹','F:cos⁻¹','F:tan⁻¹']);
+  return '<div class="kp" id="kp">'+ks.map(k=>'<button type="button" data-k="'+k+'"'+(k==='FR'?' aria-label="fraction"':'')+'>'+(k==='FR'?FRK:k.replace(/^F:/,''))+'</button>').join('')+'<button type="button" data-k="⌫" aria-label="delete">⌫</button></div><div class="pv" id="pv" aria-live="polite"></div>';
 }
 function wireExpr(){
   const kp=document.getElementById('kp');if(!kp)return;const inp=$('#in0'),pv=$('#pv');
@@ -1273,6 +1274,7 @@ function wireExpr(){
   inp.addEventListener('input',upd);
   kp.querySelectorAll('button').forEach(b=>b.onclick=()=>{if(done)return;const k=b.dataset.k,s=inp.selectionStart,e=inp.selectionEnd,v=inp.value;
     if(k==='⌫'){if(s!==e){inp.value=v.slice(0,s)+v.slice(e);inp.setSelectionRange(s,s)}else if(s>0){inp.value=v.slice(0,s-1)+v.slice(s);inp.setSelectionRange(s-1,s-1)}}
+    else if(k.slice(0,2)==='F:'){const a=v.slice(s,e),fn=k.slice(2);inp.value=v.slice(0,s)+fn+'('+a+')'+v.slice(e);const n=s+fn.length+1+a.length+(a?1:0);inp.setSelectionRange(n,n)}
     else if(k==='FR'){const a=v.slice(s,e);inp.value=v.slice(0,s)+'('+a+')/()'+v.slice(e);const n=a?s+a.length+4:s+1;inp.setSelectionRange(n,n)}
     else{inp.value=v.slice(0,s)+k+v.slice(e);const n=s+k.length;inp.setSelectionRange(n,n)}
     inp.focus();upd()});
@@ -1348,11 +1350,11 @@ function trigTol(q){
 /* values that a correct step may give: the answer, or a value from the worked solution (multi-step questions) */
 function trigHit(q,v){
   if(Math.abs(v-q.ans)<=trigTol(q))return true;
-  const t=String(q.steps||'').replace(/<[^>]+>/g,' ').replace(/−/g,'-');
+  const t=String(q.steps||'').replace(/<[^>]+>/g,' ').replace(/−/g,'-').replace(/(\d)[ \u2009\u202f](?=\d{3}(?!\d))/g,'$1');
   return (t.match(/\d+(?:\.\d+)?/g)||[]).some(n=>{const d=(n.split('.')[1]||'').length;return Math.abs(Math.abs(v)-parseFloat(n))<=(d?0.5*Math.pow(10,-d):0.05)+0.006});
 }
 function trigWork(q,u){
-  const s=String(u).replace(/[−–—]/g,'-').replace(/[÷:]/g,'/').replace(/(\d),(\d)/g,'$1.$2').replace(/(\d|\))\s*[×]\s*/g,'$1*').replace(/(\d|\))\s*[xX]\s*(?=\d|\(|sin|cos|tan)/g,'$1*').replace(/°/g,'');
+  const s=String(u).replace(/½/g,'(1/2)').replace(/⅓/g,'(1/3)').replace(/¼/g,'(1/4)').replace(/²/g,'^2').replace(/³/g,'^3').replace(/(?<![A-Za-z])[A-Z]{2,3}(?![a-z(])/g,'X').replace(/[−–—]/g,'-').replace(/[÷:]/g,'/').replace(/(\d),(\d)/g,'$1.$2').replace(/(\d|\))\s*[×]\s*/g,'$1*').replace(/(\d|\))\s*[xX]\s*(?=\d|\(|sin|cos|tan)/g,'$1*').replace(/°/g,'');
   const tol=trigTol(q),ps=s.split('=').map(t=>t.trim());if(ps.some(t=>!t))return {bad:''};
   const isLab=t=>/^(?:∠|<|angle\s*)?[A-Za-z]{1,3}$/.test(t)&&!/^(sin|cos|tan)$/i.test(t);
   const vars=t=>{const env={};try{E.evalAt(t,env)}catch(e){return null}return Object.keys(env)};
@@ -1416,6 +1418,13 @@ function check(){
     if(w.fin!==undefined){if(!test)w.steps.forEach(add);u=w.fin}
     else if(w.bad===''){fb('hint','<b class="h">I cannot read this step.</b>Write it like <i>sin(60) = x/8</i>, <i>x = 8 · sin(60)</i> or <i>B = cos⁻¹(15/17)</i>. Use one letter for the unknown.');return}
     if(!stepLines.length&&chk(q,u).ok){fb('hint','<b class="h">Show your working first.</b>Showing your steps is part of a correct answer. Type a step first, for example <i>sin(60) = x/8</i> or <i>x = 8 · sin(60)</i>, then type the rounded answer.');return}
+  }
+  else if(stepMode(q)==='enforce'&&q.type==='num'&&!test&&typeof u==='string'&&E.evalAt&&isNaN(E.parseNum(u))&&!(()=>{try{return E.check({type:'expr',ans:String(q.ans),form:'any',noVars:true},u).ok}catch(e){return false}})()){
+    const w=trigWork(q,u),add=t=>{if(stepLines.indexOf(t)<0)stepLines.push(t)},ip=()=>{drawSteps();const i0=$('#in0');i0.value='';i0.focus();const pv=$('#pv');if(pv)pv.innerHTML=''};
+    if(w.ok){add(String(u).trim());ip();fb('hint','<b class="h">✓ Good step.</b>'+(/=/.test(u)&&/[a-z]/i.test(String(u).replace(/sin|cos|tan|sqrt/gi,''))&&!/^\s*[A-Za-z∠]{1,3}\s*=/.test(u)?'That equation is right. Now get the unknown on its own.':'That is right. Type your next step, and finish with the answer.'));return}
+    if(w.bad==='eq'){fb('hint','<b class="h">That equation is not right.</b>Check that you used the right numbers and the right rule. Then type the step again.');return}
+    if(w.bad==='calc'){fb('hint','<b class="h">That calculation does not lead to the answer.</b>It gives about '+(Math.round(w.v*100)/100)+'. Check it, or put your steps together in one calculation (for example <i>12 : 8 × 16</i>).');return}
+    if(w.fin!==undefined){w.steps.forEach(add);u=w.fin}
   }
   else if(q.type==='num'&&!test&&typeof u==='string'&&E.evalNum&&/=/.test(u)&&/°$/.test(E.answerText(q))){const ts=trigStep(q,u);
     if(ts==='ok'){const t=String(u).trim();if(stepLines.indexOf(t)<0)stepLines.push(t);drawSteps();const i0=$('#in0');i0.value='';i0.focus();const pv=$('#pv');if(pv)pv.innerHTML='';fb('hint','<b class="h">✓ Good step.</b>That ratio is right. Now use the inverse ('+esc(t.match(/sin|cos|tan/i)[0].toLowerCase())+'⁻¹ on your calculator) and type the angle.');return}
