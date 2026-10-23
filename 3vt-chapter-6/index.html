@@ -115,7 +115,7 @@ function tokenize(src, o) {
   o = o || {};
   let s = String(src).replace(/[−–—]/g, '-').replace(/ /g, ' ');
   s = s.replace(/(^|[^\d.,])(-?)(\d+)[ ]+(\d+)[ ]*\/[ ]*(\d+)/g, (m, pre, sg, w, n, d) => pre + (sg ? '-' : '') + '(' + w + '+' + n + '/' + d + ')');   // mixed number 2 1/3
-  s = s.replace(/⁻¹/g, '^-1').replace(/sqrt/gi, '√').replace(/(?<![a-zA-Z])pi(?![a-zA-Z])/gi, 'π').replace(/°/g, '');
+  s = s.replace(/⁻¹/g, '^-1').replace(/(sin|cos|tan)\s*-\s*1(?=\s*\()/gi, '$1^-1').replace(/sqrt/gi, '√').replace(/(?<![a-zA-Z])pi(?![a-zA-Z])/gi, 'π').replace(/°/g, '');
   s = s.replace(/([⁰¹²³⁴⁵⁶⁷⁸⁹]+)√/g, (m, d) => '\u0001' + d.split('').map(c => SUP.indexOf(c)).join('') + ';');
   s = s.replace(/(\d+)\s*V/g, (m, d) => '\u0001' + d + ';');   // 3V27 = cube root of 27
   s = s.replace(/∛/g, '\u00013;').replace(/∜/g, '\u00014;');
@@ -868,7 +868,7 @@ function next(reset){
 const NOSTEP=new Set('missingExp multDiv rootEq volPrism volPyramid volCone volHemisphere cylinderNet surfCuboid primeFact nthRootCalc findNumber centroidRatio zToMidpoint decimalToFraction subInt missingNumber divInt missingFactor toMixed toImproper likeAdd equivFrac fractionOf fracDivInt riverShare missingFraction areaVolume maxIntersect maxIntersect5 axisDist substitute readLineY valueAt squareArea findK context graphK symmetryLine findKInv inverseContext axisFromPoints yIntercept exactTrig lcmTwo hcfTwo'.split(' '));
 const ADDMULTI=new Set('divideTerms nthRootFraction rootOfFraction calcRoots nthMix minusBracket binomMul threeFactors powerSpecial simplifyBinom numFracAdd numFracMulDiv numberAndFraction intDivFraction longProduct quotientPower chainBrackets differenceOfSquares2 sumDiff threeFracs binomialDen rootsFractionSum nthRootPow substitute addUnlike quotientRoots difference gauss howManyTerms productRule evenSum sumBetween sumRationalise aspectRatio twoFactors areaFactor mulSci timesBigger commonFactorCount coneInCylinder frustum identity tanFromSinCos missingAngle thirdAngle bisectAngle bisectedFull reflex isosceles angleFromTwo isoscelesAngle slopeToAngle rectDiagAngle cubeAngle cuboidDiag pyramidAngle angleOfElevation'.split(' '));
 const EXPRSTEP=new Set('divideTerms nthRootFraction rootOfFraction calcRoots minusBracket binomMul threeFactors powerSpecial simplifyBinom numFracAdd numFracMulDiv numberAndFraction intDivFraction longProduct quotientPower chainBrackets differenceOfSquares2 sumDiff threeFracs binomialDen rootsFractionSum sumRationalise quotientRoots mulSci timesBigger commonFactorCount simplifyRoot likeRadicals simplifySum mixedRoot rationaliseSimplify threeRoots bigRoot addSci distance surfCylinder surfCone divideRoots pythRoot addSimplify simplifyByPrimes rootOfFractionSimp exactRatios mixedLike addUnlike landUse mixedUnlike pyramid mulFrac fracOrder fracDivOrder threeMixed remainingTrip fracChain tenPower'.split(' '));
-const DISC=new Set('identity tanFromSinCos sideKnownHyp angleInverse isoscelesBase twoArms howManyOn'.split(' '));
+const DISC=new Set('identity tanFromSinCos howManyOn'.split(' '));
 const NODISC=new Set('primeOrNot readPoint gradientIntercept abc vertex table frontView sideView cubeNet pickSkew'.split(' '));
 const DIVSTEP=new Set('bisectAngle'.split(' '));   /* a typed a/b is a division step here, not a fraction answer */
 const eqN=q=>(String(q.steps||'').replace(/<svg[\s\S]*?<\/svg>/g,'').replace(/<[^>]+>/g,'').match(/=/g)||[]).length;
@@ -876,6 +876,7 @@ const canType=q=>q.type==='num'||(q.type==='expr'&&!!E.check);
 function stepMode(q){
   if(q&&q.eqStep&&E.evalAt)return test?'':'eq';
   if(!q||q.noStep)return '';
+  if(q.type==='num'&&E.evalAt&&!DISC.has(String(genName(q)||'').replace(/^X/,''))&&/\b(sin|cos|tan)\b|sin⁻|cos⁻|tan⁻/.test(String(q.steps||'').replace(/<[^>]+>/g,'')))return test?'note':'trig';
   const gn=String(genName(q)||'').replace(/^X/,'');
   const st_=String(q.steps||'');
   if(!(q.needStep||eqN(q)>=2||ADDMULTI.has(gn)))return '';
@@ -890,9 +891,10 @@ function stepMode(q){
   return NODISC.has(gn)?'':'note';
 }
 const EQNOTE='<p class="stepnote"><b>Show the balance method.</b> Type each step as an equation (for example <i>4x = 12</i>) and press Check. Finish with the answer, for example <i>x = 3</i>.</p>';
+const TRIGNOTE='<p class="stepnote"><b>Show your steps.</b> Type each step and press Check, for example <i>sin(60°) = x/8</i>, then <i>x = 8 · sin(60°)</i>. Finish with the rounded answer.</p>';
 const STEPNOTE='<p class="stepnote"><b>Steps count.</b> Showing your steps is part of a correct answer. '+'This page can only check the final answer of this question, so write your working on paper too (in a test you always must).</p>';
 function qHTML(q){
-  let h='<div class="q">'+q.html+'</div>'+(stepMode(q)==='note'?STEPNOTE:stepMode(q)==='eq'?EQNOTE:'')+'<div id="stp" class="stp"></div><div class="ans" id="ans">';
+  let h='<div class="q">'+q.html+'</div>'+(stepMode(q)==='note'?STEPNOTE:stepMode(q)==='eq'?EQNOTE:stepMode(q)==='trig'?TRIGNOTE:'')+'<div id="stp" class="stp"></div><div class="ans" id="ans">';
   if(q.type==='num')h+='<label class="sr" for="in0">Your answer</label><input type="text" id="in0" inputmode="text" autocomplete="off" placeholder="'+(q.eqStep?'a step, or '+q.eqStep+' = …':'your answer')+'">'+kpad(q);
   else if(q.type==='expr')h+='<label class="sr" for="in0">Your answer</label><input type="text" id="in0" inputmode="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="'+(q.eqStep?'a step, or '+q.eqStep+' = …':'type your answer')+'">'+kpad(q);
   else if(q.type==='point')h+='<label class="sr" for="in0">Your answer</label><input type="text" id="in0" autocomplete="off" placeholder="(x, y)">';
@@ -1040,6 +1042,40 @@ function trigStep(q,u){
   const dec=/^-?\d*\.(\d+)$/.test(R)?R.split('.')[1].length:-1,tl=Math.abs(t(q.ans+0.06)-t(q.ans))+Math.abs(t(q.ans-0.06)-t(q.ans))+(dec>=0?0.5*Math.pow(10,-dec):0)+1e-9;
   return Math.abs(v-t(q.ans))<=tl?'ok':'bad';
 }
+/* trig questions: how far a step may be from the rounded answer */
+function trigTol(q){
+  const h=String(q.html||'').replace(/<[^>]+>/g,''),m=h.match(/(\d|one|two|three)\s+decimal/i);
+  let d=m?({one:1,two:2,three:3}[m[1].toLowerCase()]||+m[1]):/whole|nearest (degree|cm|m\b)/i.test(h)?0:Math.max(0,(String(q.ans).split('.')[1]||'').length);
+  if(!m&&d===0&&!/whole|nearest/i.test(h)&&Number.isInteger(q.ans))d=1;
+  return Math.max(q.tol||0,0.5*Math.pow(10,-d)+0.006);
+}
+/* one typed trig step: {ok:true} | {fin} (a final number, maybe with its steps) | {bad:msg} */
+/* values that a correct step may give: the answer, or a value from the worked solution (multi-step questions) */
+function trigHit(q,v){
+  if(Math.abs(v-q.ans)<=trigTol(q))return true;
+  const t=String(q.steps||'').replace(/<[^>]+>/g,' ').replace(/−/g,'-');
+  return (t.match(/\d+(?:\.\d+)?/g)||[]).some(n=>{const d=(n.split('.')[1]||'').length;return Math.abs(Math.abs(v)-parseFloat(n))<=(d?0.5*Math.pow(10,-d):0.05)+0.006});
+}
+function trigWork(q,u){
+  const s=String(u).replace(/[−–—]/g,'-').replace(/[÷:]/g,'/').replace(/(\d),(\d)/g,'$1.$2').replace(/(\d|\))\s*[×]\s*/g,'$1*').replace(/(\d|\))\s*[xX]\s*(?=\d|\(|sin|cos|tan)/g,'$1*').replace(/°/g,'');
+  const tol=trigTol(q),ps=s.split('=').map(t=>t.trim());if(ps.some(t=>!t))return {bad:''};
+  const isLab=t=>/^(?:∠|<|angle\s*)?[A-Za-z]{1,3}$/.test(t)&&!/^(sin|cos|tan)$/i.test(t);
+  const vars=t=>{const env={};try{E.evalAt(t,env)}catch(e){return null}return Object.keys(env)};
+  const real=ps.filter(t=>!isLab(t));if(!real.length)return {bad:''};
+  const vs=real.map(vars);if(vs.some(v=>v===null))return {bad:''};
+  if(vs.some(v=>v.length)){
+    if(ps.length!==2||vs.flat().filter((v,i,a)=>a.indexOf(v)===i).length!==1)return {bad:''};
+    const v=vs.flat()[0],g=t=>{const env={};env[v]=t;return E.evalAt(ps[0],env)-E.evalAt(ps[1],env)};
+    let t=q.ans;for(let i=0;i<60;i++){const hh=1e-6*Math.max(1,Math.abs(t)),g0=g(t),d=(g(t+hh)-g(t-hh))/(2*hh);if(!isFinite(g0)||!isFinite(d)||d===0)break;const n=t-g0/d;if(Math.abs(n-t)<1e-12*Math.max(1,Math.abs(t))){t=n;break}t=n}
+    return isFinite(t)&&Math.abs(g(t))<1e-7*Math.max(1,Math.abs(E.evalAt(ps[1],{[v]:t})))&&trigHit(q,t)?{ok:true}:{bad:'eq'};
+  }
+  const nums=real.map(t=>{try{return E.evalNum(t)}catch(e){return NaN}});if(nums.some(n=>!isFinite(n)))return {bad:''};
+  if(nums.some(n=>!trigHit(q,n)))return {bad:'calc',v:nums.find(n=>!trigHit(q,n))};
+  const last=real[real.length-1],plain=!isNaN(E.parseNum(last));
+  if(Math.abs(nums[nums.length-1]-q.ans)>tol)return real.length===1&&plain?{fin:last,steps:[]}:{ok:true};
+  const calcs=real.filter(t=>isNaN(E.parseNum(t)));
+  return plain?{fin:last,steps:calcs}:{ok:true};
+}
 function freeWork(u){
   if(/\b(sin|cos|tan)/i.test(String(u)))return null;
   const s=String(u).replace(/[−–—]/g,'-').replace(/(\d)\s*[xX×]\s*(?=[\d(])/g,'$1*').replace(/[÷:]/g,'/').replace(/(\d),(\d)/g,'$1.$2').replace(/(\d)\s*°/g,'$1');
@@ -1073,7 +1109,19 @@ function check(){
     if(raw.length>=2&&parts.length>=1){const fin=parts[parts.length-1],pre=parts.slice(0,-1);
       let okPre=false;try{okPre=pre.every(pt=>stepEq(q,pt))}catch(e){}
       if(okPre&&chk(q,fin).ok){if(!test)stepLines.push(...pre);u=fin;const i0=$('#in0');if(i0)i0.value=fin}}}
-  if(q.type==='num'&&!test&&typeof u==='string'&&E.evalNum&&/=/.test(u)&&/°$/.test(E.answerText(q))){const ts=trigStep(q,u);
+  if(stepMode(q)==='trig'&&typeof u==='string'){const deg=/°$/.test(E.answerText(q)),ts=deg&&/=/.test(u)?trigStep(q,u):'';
+    const ip=()=>{drawSteps();const i0=$('#in0');i0.value='';i0.focus();const pv=$('#pv');if(pv)pv.innerHTML=''},add=t=>{if(stepLines.indexOf(t)<0)stepLines.push(t)};
+    if(ts==='ok'){add(String(u).trim());ip();fb('hint','<b class="h">✓ Good step.</b>That ratio is right. Now use the inverse ('+esc(String(u).match(/sin|cos|tan/i)[0].toLowerCase())+'⁻¹ on your calculator) and type the angle.');return}
+    if(ts==='bad'){fb('hint','<b class="h">That ratio is not right.</b>Check which side is opposite the angle, which is adjacent and which is the hypotenuse. SOH CAH TOA: sin = O/H, cos = A/H, tan = O/A.');return}
+    const w=trigWork(q,u);
+    if(w.ok){add(String(u).trim());ip();fb('hint','<b class="h">✓ Good step.</b>'+(/=/.test(u)&&/[a-z]/i.test(String(u).replace(/sin|cos|tan/gi,''))&&!/^\s*[A-Za-z∠]{1,3}\s*=/.test(u)?'That equation is right. Now get '+(deg?'the angle':'the unknown')+' on its own.':'That calculation is right. Now work it out, round it, and type the answer.'));return}
+    if(w.bad==='eq'){fb('hint','<b class="h">That equation is not right.</b>Check which side is opposite the angle, which is adjacent and which is the hypotenuse. SOH CAH TOA: sin = O/H, cos = A/H, tan = O/A.');return}
+    if(w.bad==='calc'){fb('hint','<b class="h">That calculation does not give the right answer.</b>It gives about '+(Math.round(w.v*100)/100)+'. Check the ratio (SOH CAH TOA) and whether you multiply or divide.');return}
+    if(w.fin!==undefined){if(!test)w.steps.forEach(add);u=w.fin}
+    else if(w.bad===''){fb('hint','<b class="h">I cannot read this step.</b>Write it like <i>sin(60) = x/8</i>, <i>x = 8 · sin(60)</i> or <i>B = cos⁻¹(15/17)</i>. Use one letter for the unknown.');return}
+    if(!stepLines.length&&chk(q,u).ok){fb('hint','<b class="h">Show your working first.</b>Showing your steps is part of a correct answer. Type a step first, for example <i>sin(60) = x/8</i> or <i>x = 8 · sin(60)</i>, then type the rounded answer.');return}
+  }
+  else if(q.type==='num'&&!test&&typeof u==='string'&&E.evalNum&&/=/.test(u)&&/°$/.test(E.answerText(q))){const ts=trigStep(q,u);
     if(ts==='ok'){const t=String(u).trim();if(stepLines.indexOf(t)<0)stepLines.push(t);drawSteps();const i0=$('#in0');i0.value='';i0.focus();const pv=$('#pv');if(pv)pv.innerHTML='';fb('hint','<b class="h">✓ Good step.</b>That ratio is right. Now use the inverse ('+esc(t.match(/sin|cos|tan/i)[0].toLowerCase())+'⁻¹ on your calculator) and type the angle.');return}
     if(ts===''&&/sin|cos|tan/i.test(u)){const c=String(u).replace(/^\s*(?:∠|<|angle\s*)?\s*[A-Za-z]{1,3}\s*=/,'').replace(/[−–—]/g,'-').replace(/[÷:]/g,'/').replace(/(\d),(\d)/g,'$1.$2').trim();let v=NaN;try{v=E.evalNum(c)}catch(e){}
       if(isFinite(v)&&Math.abs(v-q.ans)<=0.051+(q.tol||0)){const t=String(u).trim();if(stepLines.indexOf(t)<0)stepLines.push(t);drawSteps();const i0=$('#in0');i0.value='';i0.focus();const pv=$('#pv');if(pv)pv.innerHTML='';fb('hint','<b class="h">✓ That calculation is right.</b>Now work it out on your calculator, round it, and type the angle.');return}
