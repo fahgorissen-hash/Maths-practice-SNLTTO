@@ -417,4 +417,27 @@ const GOALS = [
   ['5.4', 'I can calculate heights in a pyramid', ['pyramidHeight', 'apothem']],
   ['5.5', 'I can check if a triangle is right-angled, acute or obtuse', ['isRight', 'classify', 'whichRight', 'isTriple'], 'Compare a² + b² with c², where c is the longest side.']
 ];
-return { key: 'nx-' + P.cls.toLowerCase() + '-ch5-v1', SECTIONS, LESSONS: [], G, XG, defaultMode: 'para', GOALS };
+  /* ---------- lessons (generated from the 2026-27 study guides) ---------- */
+  const __has = (L, g) => (L[g[0]] || []).some(f => f.name === g[1]);
+  const __LESSONS = ({
+    "2HT": [
+      {"id": "D1", "title": "Lesson · 5.1 Pythagoras' theorem", "sub": "Wed 19 May · ex 1, 2, 6, 7, 8, 9, 10", "date": "2027-05-19", "gens": [["5.1", "hypName"], ["5.1", "writeFormula"], ["5.1", "squaresArea"]], "xg": [["5.1", "tripleScale"], ["5.1", "tiltedSide"]]},
+      {"id": "D2", "title": "Lesson · 5.1 Pythagoras' theorem + 5.2 Calculating sides", "sub": "Thu 20 May · ex 11, 12, 13, 18, 19, 20", "date": "2027-05-20", "gens": [["5.1", "hypName"], ["5.1", "writeFormula"], ["5.1", "squaresArea"], ["5.2", "findHyp"], ["5.2", "findLeg"], ["5.2", "legInt"]], "xg": [["5.1", "tripleScale"], ["5.1", "tiltedSide"], ["5.2", "areaThenHyp"], ["5.2", "twoTriangles"], ["5.2", "isoTrapArea"], ["5.2", "kiteAux"]]},
+      {"id": "D3", "title": "Lesson · 5.2 Calculating sides + 5.3 Applications", "sub": "Fri 21 May · ex 21, 23, 24, 33, 34, 35", "date": "2027-05-21", "gens": [["5.2", "findLeg"], ["5.2", "legInt"], ["5.2", "exactSide"], ["5.2", "rootSides"], ["5.3", "ladder"], ["5.3", "shortcut"], ["5.3", "screenDiag"]], "xg": [["5.2", "areaThenHyp"], ["5.2", "twoTriangles"], ["5.2", "isoTrapArea"], ["5.2", "kiteAux"], ["5.3", "towerRoof"], ["5.3", "twoStepRoute"]]},
+      {"id": "D4", "title": "Lesson · 5.3 Applications", "sub": "Wed 26 May · ex 37, 38, 39, 40, 41, 42", "date": "2027-05-26", "gens": [["5.3", "shortcut"], ["5.3", "screenDiag"], ["5.3", "ramp"]], "xg": [["5.3", "towerRoof"], ["5.3", "twoStepRoute"]]},
+      {"id": "D5", "title": "Lesson · 5.4 A Pythagoras in space", "sub": "Thu 27 May · ex 48, 49, 50, 51, 52", "date": "2027-05-27", "gens": [["5.4", "faceDiag"], ["5.4", "spaceDiag"], ["5.4", "cubeDiag"]], "xg": [["5.4", "boxFit"], ["5.4", "spiderNet"]]},
+      {"id": "D6", "title": "Lesson · 5.4 B Pythagoras in space", "sub": "Fri 28 May · ex 53, 54, 55, 56, 57", "date": "2027-05-28", "gens": [["5.4", "faceDiag"], ["5.4", "spaceDiag"], ["5.4", "cubeDiag"]], "xg": [["5.4", "boxFit"], ["5.4", "spiderNet"]]}
+    ],
+    "2VT": [
+      {"id": "D1", "title": "Lesson · 5.1 Pythagoras' theorem", "sub": "Fri 14 May · ex 1, 2, 6, 7, 8, 9, 10", "date": "2027-05-14", "gens": [["5.1", "hypName"], ["5.1", "writeFormula"], ["5.1", "squaresArea"]], "xg": [["5.1", "tripleScale"], ["5.1", "tiltedSide"]]},
+      {"id": "D2", "title": "Lesson · 5.1 Pythagoras' theorem + 5.2 Calculating sides", "sub": "Tue 18 May · ex 11, 12, 13, 15, 18, 19", "date": "2027-05-18", "gens": [["5.1", "writeFormula"], ["5.1", "squaresArea"], ["5.1", "hypInt"], ["5.2", "findHyp"], ["5.2", "findLeg"], ["5.2", "legInt"]], "xg": [["5.1", "tripleScale"], ["5.1", "tiltedSide"], ["5.2", "areaThenHyp"], ["5.2", "twoTriangles"], ["5.2", "isoTrapArea"], ["5.2", "kiteAux"]]},
+      {"id": "D3", "title": "Lesson · 5.2 Calculating sides", "sub": "Wed 19 May · ex 20, 21, 22, 24, 26, 27", "date": "2027-05-19", "gens": [["5.2", "findLeg"], ["5.2", "legInt"], ["5.2", "exactSide"], ["5.2", "rootSides"], ["5.2", "gridDistance"], ["5.2", "isoHeight"], ["5.2", "trapSide"]], "xg": [["5.2", "areaThenHyp"], ["5.2", "twoTriangles"], ["5.2", "isoTrapArea"], ["5.2", "kiteAux"]]},
+      {"id": "D4", "title": "Lesson · 5.3 Applications", "sub": "Fri 21 May · ex 33, 35, 36, 38, 39, 40", "date": "2027-05-21", "gens": [["5.3", "ladder"], ["5.3", "shortcut"], ["5.3", "screenDiag"]], "xg": [["5.3", "towerRoof"], ["5.3", "twoStepRoute"]]},
+      {"id": "D5", "title": "Lesson · 5.4 A Pythagoras in space", "sub": "Wed 26 May · ex 48, 49, 50, 52, 53", "date": "2027-05-26", "gens": [["5.4", "faceDiag"], ["5.4", "spaceDiag"], ["5.4", "cubeDiag"]], "xg": [["5.4", "boxFit"], ["5.4", "spiderNet"]]},
+      {"id": "D6", "title": "Lesson · 5.4 B Pythagoras in space", "sub": "Fri 28 May · ex 55, 56, 57, 58", "date": "2027-05-28", "gens": [["5.4", "spaceDiag"], ["5.4", "cubeDiag"], ["5.4", "pyramidHeight"]], "xg": [["5.4", "boxFit"], ["5.4", "spiderNet"]]},
+      {"id": "D7", "title": "Lesson · 5.5 A Right-angled or not?", "sub": "Tue 1 Jun · ex 65, 66, 68, 69, 70", "date": "2027-06-01", "gens": [["5.5", "isRight"], ["5.5", "classify"], ["5.5", "whichRight"]], "xg": [["5.5", "makeRight"], ["5.5", "maxSideAcute"]]},
+      {"id": "D8", "title": "Lesson · 5.5 B Right-angled or not?", "sub": "Wed 2 Jun · ex 71, 72, 73, 74", "date": "2027-06-02", "gens": [["5.5", "isRight"], ["5.5", "classify"], ["5.5", "whichRight"]], "xg": [["5.5", "makeRight"], ["5.5", "maxSideAcute"]]}
+    ]
+  }[P.cls] || []).map(o => Object.assign({}, o, { gens: o.gens.filter(g => __has(G, g)), xg: o.xg.filter(g => __has(XG, g)) })).filter(o => o.gens.length);
+  /* ---------- end lessons ---------- */
+return { key: 'nx-' + P.cls.toLowerCase() + '-ch5-v1', SECTIONS, LESSONS: __LESSONS, G, XG, defaultMode: __LESSONS.length ? 'lesson' : 'para', GOALS };

@@ -240,4 +240,19 @@ const GOALS = [
   ['6.3', 'I can calculate sides and angles with sin, cos and tan', ['trigValue', 'whichRatio', 'sideMultiply', 'sideDivide', 'findAngle', 'otherAngle'], 'Unknown in the denominator: divide.'],
   ['6.4', 'I can use trigonometry in real situations', ['slopePercent', 'inclinationFromPercent', 'percentFromAngle', 'ladderAngle', 'walkUp'], 'slope % = tan(angle) · 100%']
 ];
-return { key: 'nx-3ht-ch6-v1', SECTIONS, LESSONS: [], G, XG, defaultMode: 'para', GOALS };
+  /* ---------- lessons (generated from the 2026-27 study guides) ---------- */
+  const __has = (L, g) => (L[g[0]] || []).some(f => f.name === g[1]);
+  const __LESSONS = ({
+    "3HT": [
+      {"id": "D1", "title": "Lesson · 6.1 A Pythagoras and similar triangles", "sub": "Wed 17 Feb · ex 1, 2, 6, 7, 8, 9, 10", "date": "2027-02-17", "gens": [["6.1", "hypotenuse"], ["6.1", "leg"], ["6.1", "isRight"]], "xg": [["6.1", "ladderWall"]]},
+      {"id": "D2", "title": "Lesson · 6.1 B Pythagoras and similar triangles", "sub": "Thu 18 Feb · ex 11, 12, 13, 15, 16, 17, 18", "date": "2027-02-18", "gens": [["6.1", "hypotenuse"], ["6.1", "leg"], ["6.1", "isRight"]], "xg": [["6.1", "ladderWall"]]},
+      {"id": "D3", "title": "Lesson · 6.2 A Special triangles and ratios", "sub": "Fri 19 Feb · ex 24, 25, 26, 27, 28, 29", "date": "2027-02-19", "gens": [["6.2", "tri3060"], ["6.2", "tri4545"], ["6.2", "nameRatio"]], "xg": [["6.2", "hexagonArea"]]},
+      {"id": "D4", "title": "Lesson · 6.2 B Special triangles and ratios", "sub": "Wed 3 Mar · ex 30, 31, 32, 33, 34", "date": "2027-03-03", "gens": [["6.2", "tri4545"], ["6.2", "nameRatio"], ["6.2", "exactRatio"]], "xg": [["6.2", "hexagonArea"]]},
+      {"id": "D5", "title": "Lesson · 6.3 A Calculating sides and angles", "sub": "Thu 4 Mar · ex 41, 42, 43, 44, 45, 46, 47", "date": "2027-03-04", "gens": [["6.3", "trigValue"], ["6.3", "whichRatio"], ["6.3", "sideMultiply"]], "xg": [["6.3", "treeHeight"], ["6.3", "rhombusAngle"]]},
+      {"id": "D6", "title": "Lesson · 6.3 B Calculating sides and angles", "sub": "Fri 5 Mar · ex 48, 49, 50, 51, 52, 53, 54", "date": "2027-03-05", "gens": [["6.3", "sideMultiply"], ["6.3", "sideDivide"], ["6.3", "findAngle"]], "xg": [["6.3", "treeHeight"], ["6.3", "rhombusAngle"]]},
+      {"id": "D7", "title": "Lesson · 6.4 Applications", "sub": "Thu 11 Mar · ex 59, 60, 61, 62, 63, 64", "date": "2027-03-11", "gens": [["6.4", "slopePercent"], ["6.4", "inclinationFromPercent"], ["6.4", "percentFromAngle"]], "xg": [["6.4", "runFromSlope"], ["6.4", "isoscelesSide"]]},
+      {"id": "D8", "title": "Test prep · chapters 5 & 6", "sub": "Fri 12 Mar", "date": "2027-03-12", "gens": [["6.1", "hypotenuse"], ["6.1", "leg"], ["6.1", "isRight"], ["6.1", "similarRight"], ["6.2", "tri3060"], ["6.2", "tri4545"], ["6.2", "nameRatio"], ["6.2", "exactRatio"], ["6.2", "tanSide"], ["6.3", "trigValue"], ["6.3", "whichRatio"], ["6.3", "sideMultiply"], ["6.3", "sideDivide"], ["6.3", "findAngle"], ["6.3", "otherAngle"], ["6.4", "slopePercent"], ["6.4", "inclinationFromPercent"], ["6.4", "percentFromAngle"], ["6.4", "ladderAngle"], ["6.4", "walkUp"]], "xg": [["6.1", "ladderWall"], ["6.2", "hexagonArea"], ["6.3", "treeHeight"], ["6.3", "rhombusAngle"], ["6.4", "runFromSlope"], ["6.4", "isoscelesSide"]], "rev": true}
+    ]
+  }[P.cls] || []).map(o => Object.assign({}, o, { gens: o.gens.filter(g => __has(G, g)), xg: o.xg.filter(g => __has(XG, g)) })).filter(o => o.gens.length);
+  /* ---------- end lessons ---------- */
+return { key: 'nx-3ht-ch6-v1', SECTIONS, LESSONS: __LESSONS, G, XG, defaultMode: __LESSONS.length ? 'lesson' : 'para', GOALS };

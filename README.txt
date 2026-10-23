@@ -82,3 +82,11 @@ Each new chapter: read solutions -> design generators (levels 0-2 + extras) -> w
 - Frank's tone: wants results, short reports, one clear next step; asks questions only when truly blocked.
 
 Tab icon: favicon.svg (plus favicon-32.png and apple-touch-icon.png) in the root. The build template (2ht-chapter-2) links it, so new pages get it automatically.
+
+By-lesson lists (chapters 3-8, school year 2026-27)
+The lesson cards on the chapter 3-8 pages are generated from the trimester 2 and 3 study guides.
+Each guide day becomes one lesson; the exercise numbers are matched to the book's paragraphs
+(from the worked solutions) to choose the question types. The data sits in each _src content file
+between "lessons (generated from the 2026-27 study guides)" and "end lessons", one list per class.
+The generator scripts and exercise maps are kept in the project files: site/lesson-tools/.
+No lessons yet: 3HT/3VT chapter 4 (poster assignment) and 3VT chapter 8 (not in a study guide).

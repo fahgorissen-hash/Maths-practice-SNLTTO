@@ -308,4 +308,19 @@ if (P.cls === '3VT') {
     ['8.5', 'I can work with propositions and logical symbols', ['isProposition', 'symbols', 'truthValue', 'validConclusion'], '¬ not, ∧ and, ∨ or.'],
     ['8.6', 'I can calculate lengths and angles in solids', ['spaceDiagonal', 'diagonalAngle', 'frustum', 'hypercube'], 'Look for a right-angled triangle.']);
 }
-return { key: 'nx-' + P.cls.toLowerCase() + '-ch8-v1', SECTIONS, LESSONS: [], G, XG, defaultMode: 'para', GOALS };
+  /* ---------- lessons (generated from the 2026-27 study guides) ---------- */
+  const __has = (L, g) => (L[g[0]] || []).some(f => f.name === g[1]);
+  const __LESSONS = ({
+    "3HT": [
+      {"id": "D1", "title": "Lesson · 8.1 A Rate of change", "sub": "Wed 2 Jun · ex 1, 2, 3, 4, 5, 6", "date": "2027-06-02", "gens": [["8.1", "intervalNotation"], ["8.1", "avgGradient"], ["8.1", "avgFromTable"]], "xg": [["8.1", "averageCost"]]},
+      {"id": "D2", "title": "Lesson · 8.1 B Rate of change", "sub": "Thu 3 Jun · ex 7, 9, 10, 12", "date": "2027-06-03", "gens": [["8.1", "avgFromTable"], ["8.1", "gradientShape"], ["8.1", "avgSpeed"]], "xg": [["8.1", "averageCost"]]},
+      {"id": "D3", "title": "Lesson · 8.2 A Counting", "sub": "Fri 4 Jun · ex 14, 15, 16, 17, 18, 19", "date": "2027-06-04", "gens": [["8.2", "menu"], ["8.2", "codeRepeat"], ["8.2", "codeNoRepeat"]], "xg": [["8.2", "routesVia"], ["8.2", "samePawns"]]},
+      {"id": "D4", "title": "Lesson · 8.2 B Counting", "sub": "Wed 9 Jun · ex 20, 21, 22, 23, 24", "date": "2027-06-09", "gens": [["8.2", "codeNoRepeat"], ["8.2", "arrange"], ["8.2", "roles"], ["8.2", "plates"]], "xg": [["8.2", "routesVia"], ["8.2", "samePawns"]]},
+      {"id": "D5", "title": "Lesson · 8.3 A Functions", "sub": "Thu 10 Jun · ex 29, 30, 31, 32, 33, 34", "date": "2027-06-10", "gens": [["8.3", "evalLinear"], ["8.3", "evalQuad"], ["8.3", "solveFx"]], "xg": [["8.3", "familyP"], ["8.3", "newFunction"]]},
+      {"id": "D6", "title": "Lesson · 8.3 B Functions", "sub": "Fri 11 Jun · ex 35, 36, 37, 38, 39, 40", "date": "2027-06-11", "gens": [["8.3", "solveFx"], ["8.3", "difference"], ["8.3", "maxMin"], ["8.3", "maxMinFactored"]], "xg": [["8.3", "familyP"], ["8.3", "newFunction"]]},
+      {"id": "D7", "title": "Test prep · chapters 7 & 8", "sub": "Wed 16 Jun", "date": "2027-06-16", "gens": [["8.1", "intervalNotation"], ["8.1", "avgGradient"], ["8.1", "avgFromTable"], ["8.1", "gradientShape"], ["8.1", "avgSpeed"], ["8.2", "menu"], ["8.2", "codeRepeat"], ["8.2", "codeNoRepeat"], ["8.2", "arrange"], ["8.2", "roles"], ["8.2", "plates"], ["8.2", "whichCount"], ["8.3", "evalLinear"], ["8.3", "evalQuad"], ["8.3", "solveFx"], ["8.3", "difference"], ["8.3", "maxMin"], ["8.3", "maxMinFactored"], ["8.3", "onGraph"]], "xg": [["8.1", "averageCost"], ["8.2", "routesVia"], ["8.2", "samePawns"], ["8.3", "familyP"], ["8.3", "newFunction"]], "rev": true},
+      {"id": "D8", "title": "Test prep · chapters 7 & 8", "sub": "Thu 17 Jun", "date": "2027-06-17", "gens": [["8.1", "intervalNotation"], ["8.1", "avgGradient"], ["8.1", "avgFromTable"], ["8.1", "gradientShape"], ["8.1", "avgSpeed"], ["8.2", "menu"], ["8.2", "codeRepeat"], ["8.2", "codeNoRepeat"], ["8.2", "arrange"], ["8.2", "roles"], ["8.2", "plates"], ["8.2", "whichCount"], ["8.3", "evalLinear"], ["8.3", "evalQuad"], ["8.3", "solveFx"], ["8.3", "difference"], ["8.3", "maxMin"], ["8.3", "maxMinFactored"], ["8.3", "onGraph"]], "xg": [["8.1", "averageCost"], ["8.2", "routesVia"], ["8.2", "samePawns"], ["8.3", "familyP"], ["8.3", "newFunction"]], "rev": true}
+    ]
+  }[P.cls] || []).map(o => Object.assign({}, o, { gens: o.gens.filter(g => __has(G, g)), xg: o.xg.filter(g => __has(XG, g)) })).filter(o => o.gens.length);
+  /* ---------- end lessons ---------- */
+return { key: 'nx-' + P.cls.toLowerCase() + '-ch8-v1', SECTIONS, LESSONS: __LESSONS, G, XG, defaultMode: __LESSONS.length ? 'lesson' : 'para', GOALS };

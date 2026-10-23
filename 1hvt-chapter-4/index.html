@@ -761,7 +761,30 @@ const GOALS = [
   ['4.4', 'I can read and make bar charts, pie charts and line graphs', ['pieAngle', 'percentAngle', 'angleToCount', 'barRead', 'whichDiagram', 'readLine'], '1% of a pie chart is 3.6°.'],
   ['4.5', 'I can describe a relationship with a graph', ['maxRise', 'riseFall', 'axisChoice'], 'Time goes on the horizontal axis.']
 ];
-return { key: 'nx-1hvt-ch4-v1', SECTIONS, LESSONS: [], G, XG, defaultMode: 'para', GOALS };
+  /* ---------- lessons (generated from the 2026-27 study guides) ---------- */
+  const __has = (L, g) => (L[g[0]] || []).some(f => f.name === g[1]);
+  const __LESSONS = ({
+    "1HVT": [
+      {"id": "D1", "title": "Lesson · 4.1 A Data", "sub": "Thu 10 Dec · ex 1, 2, 6, 7, 8, 9", "date": "2026-12-10", "gens": [["4.1", "tableMean"], ["4.1", "listMean"], ["4.1", "totalFreq"]], "xg": [["4.1", "neededMark"]]},
+      {"id": "D2", "title": "Lesson · 4.1 B Data", "sub": "Fri 11 Dec · ex 10, 11, 12, 13, 14", "date": "2026-12-11", "gens": [["4.1", "listMean"], ["4.1", "totalFreq"], ["4.1", "missingValue"]], "xg": [["4.1", "neededMark"]]},
+      {"id": "D3", "title": "Lesson · 4.1 C Data", "sub": "Tue 15 Dec · ex 15, 16, 17, 18, 19", "date": "2026-12-15", "gens": [["4.1", "missingValue"], ["4.1", "roundNumber"], ["4.1", "roundContext"]], "xg": [["4.1", "neededMark"]]},
+      {"id": "D4", "title": "Lesson · 4.1 Data + 4.2 Ratios", "sub": "Wed 16 Dec · ex 20, 21, 25, 26, 27", "date": "2026-12-16", "gens": [["4.1", "roundNumber"], ["4.1", "roundContext"], ["4.1", "roundBounds"], ["4.2", "simplifyRatio"], ["4.2", "partWhole"], ["4.2", "share"]], "xg": [["4.1", "neededMark"], ["4.2", "whichSweeter"]]},
+      {"id": "D5", "title": "Lesson · 4.2 A Ratios", "sub": "Thu 17 Dec · ex 28, 29, 30, 31, 32", "date": "2026-12-17", "gens": [["4.2", "simplifyRatio"], ["4.2", "partWhole"], ["4.2", "share"]], "xg": [["4.2", "whichSweeter"]]},
+      {"id": "D6", "title": "Lesson · 4.2 B Ratios", "sub": "Tue 5 Jan · ex 33, 34, 35, 36, 37, 38", "date": "2027-01-05", "gens": [["4.2", "partWhole"], ["4.2", "share"], ["4.2", "scaleMap"]], "xg": [["4.2", "whichSweeter"]]},
+      {"id": "D7", "title": "Lesson · 4.2 Ratios + 4.3 Percentages", "sub": "Wed 6 Jan · ex 39, 40, 43, 44, 45", "date": "2027-01-06", "gens": [["4.2", "share"], ["4.2", "scaleMap"], ["4.2", "findScale"], ["4.3", "fracToPercent"], ["4.3", "percentOf"], ["4.3", "discount"]], "xg": [["4.2", "whichSweeter"], ["4.3", "backToWhole"]]},
+      {"id": "D8", "title": "Lesson · 4.3 A Percentages", "sub": "Thu 7 Jan · ex 46, 47, 48, 49, 50", "date": "2027-01-07", "gens": [["4.3", "fracToPercent"], ["4.3", "percentOf"], ["4.3", "discount"]], "xg": [["4.3", "backToWhole"]]},
+      {"id": "D9", "title": "Lesson · 4.3 B Percentages", "sub": "Fri 8 Jan · ex 51, 52, 53, 54, 55", "date": "2027-01-08", "gens": [["4.3", "fracToPercent"], ["4.3", "percentOf"], ["4.3", "discount"]], "xg": [["4.3", "backToWhole"]]},
+      {"id": "D10", "title": "Lesson · 4.3 C Percentages", "sub": "Tue 12 Jan · ex 56, 57, 58, 59, 60", "date": "2027-01-12", "gens": [["4.3", "percentOf"], ["4.3", "discount"], ["4.3", "vat"]], "xg": [["4.3", "backToWhole"]]},
+      {"id": "D11", "title": "Lesson · 4.3 D Percentages", "sub": "Wed 13 Jan · ex 61, 62, 63, 68", "date": "2027-01-13", "gens": [["4.3", "discount"], ["4.3", "vat"], ["4.3", "whatPercent"]], "xg": [["4.3", "backToWhole"]]},
+      {"id": "D12", "title": "Lesson · 4.4 A Graphs and charts", "sub": "Fri 15 Jan · ex 69, 70, 71, 72, 73", "date": "2027-01-15", "gens": [["4.4", "pieAngle"], ["4.4", "percentAngle"], ["4.4", "angleToCount"]], "xg": []},
+      {"id": "D13", "title": "Lesson · 4.4 B Graphs and charts", "sub": "Tue 19 Jan · ex 74, 75, 76, 77", "date": "2027-01-19", "gens": [["4.4", "angleToCount"], ["4.4", "barRead"], ["4.4", "whichDiagram"]], "xg": []},
+      {"id": "D14", "title": "Lesson · 4.5 A Relationships and graphs", "sub": "Wed 20 Jan · ex 82, 83, 84, 85, 86", "date": "2027-01-20", "gens": [["4.5", "maxRise"], ["4.5", "riseFall"], ["4.5", "axisChoice"]], "xg": []},
+      {"id": "D15", "title": "Lesson · 4.5 B Relationships and graphs", "sub": "Thu 21 Jan · ex 87, 88, 89, 90, 91", "date": "2027-01-21", "gens": [["4.5", "maxRise"], ["4.5", "riseFall"], ["4.5", "axisChoice"]], "xg": []},
+      {"id": "D16", "title": "Test prep · chapter 4", "sub": "Tue 26 Jan · ex 96, 98, 100, 102, 104, 106, 108", "date": "2027-01-26", "gens": [["4.1", "tableMean"], ["4.1", "listMean"], ["4.1", "totalFreq"], ["4.1", "missingValue"], ["4.1", "roundNumber"], ["4.1", "roundContext"], ["4.1", "roundBounds"], ["4.1", "weightedMean"], ["4.2", "simplifyRatio"], ["4.2", "partWhole"], ["4.2", "share"], ["4.2", "scaleMap"], ["4.2", "findScale"], ["4.3", "fracToPercent"], ["4.3", "percentOf"], ["4.3", "discount"], ["4.3", "vat"], ["4.3", "whatPercent"], ["4.4", "pieAngle"], ["4.4", "percentAngle"], ["4.4", "angleToCount"], ["4.4", "barRead"], ["4.4", "whichDiagram"], ["4.4", "readLine"], ["4.5", "maxRise"], ["4.5", "riseFall"], ["4.5", "axisChoice"]], "xg": [["4.1", "neededMark"], ["4.2", "whichSweeter"], ["4.3", "backToWhole"]], "rev": true}
+    ]
+  }[P.cls] || []).map(o => Object.assign({}, o, { gens: o.gens.filter(g => __has(G, g)), xg: o.xg.filter(g => __has(XG, g)) })).filter(o => o.gens.length);
+  /* ---------- end lessons ---------- */
+return { key: 'nx-1hvt-ch4-v1', SECTIONS, LESSONS: __LESSONS, G, XG, defaultMode: __LESSONS.length ? 'lesson' : 'para', GOALS };
 
 })(NX, {"cls": "1HVT"});
 window.Ch3 = NX.engine(__def); window.Ch3.GOALS = __def.GOALS;
