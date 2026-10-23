@@ -80,3 +80,5 @@ Each new chapter: read solutions -> design generators (levels 0-2 + extras) -> w
 - The repo remote prints "repository moved" warnings on push; pushes still succeed.
 - The user's stop hook complains about unpushed commits - always push after committing.
 - Frank's tone: wants results, short reports, one clear next step; asks questions only when truly blocked.
+
+Tab icon: favicon.svg (plus favicon-32.png and apple-touch-icon.png) in the root. The build template (2ht-chapter-2) links it, so new pages get it automatically.
