@@ -1006,7 +1006,7 @@ function fb(cls,t){const b=$('#fb');b.className='fb show '+cls;b.innerHTML=t}
 function hint(){if(cur.hint){hintUsed=true;fb('hint','<b class="h">Hint</b>'+cur.hint)}}
 function empty(q,u){if(q.type==='proto')return u===null;if(q.type==='num'||q.type==='point'||q.type==='expr')return !String(u).trim();if(q.type==='multi')return u.some(v=>!String(v).trim());if(q.type==='choice')return u===null;return u.length===0}
 function logAnswer(q,u,ok){
-  const a=ansText(q,u);attempts.push({a,ok});
+  let a=ansText(q,u);if(q.type==='num'&&!/°/.test(a)&&!isNaN(E.parseNum(a))&&/°$/.test(E.answerText(q)))a+='°';attempts.push({a,ok});
   st.log.push({t:plain(q.html).slice(0,90),a:a.slice(0,60),ok,d:todayISO()});if(st.log.length>40)st.log.splice(0,st.log.length-40);
   const h=$('#hist');if(h)h.innerHTML='<div class="at">Your answers on this question: '+attempts.map(x=>'<span class="'+(x.ok?'ok':'no')+'">'+(x.ok?'✓':'✗')+' '+esc(x.a)+'</span>').join(' ')+'</div>';
 }
@@ -1072,6 +1072,7 @@ function trigWork(q,u){
     return isFinite(t)&&Math.abs(g(t))<1e-7*Math.max(1,Math.abs(E.evalAt(ps[1],{[v]:t})))&&trigHit(q,t)?{ok:true}:{bad:'eq'};
   }
   const nums=real.map(t=>{try{return E.evalNum(t)}catch(e){return NaN}});if(nums.some(n=>!isFinite(n)))return {bad:''};
+  if(real.length===1&&!isNaN(E.parseNum(real[0])))return {fin:real[0],steps:[]};
   if(nums.some(n=>!trigHit(q,n)))return {bad:'calc',v:nums.find(n=>!trigHit(q,n))};
   const last=real[real.length-1],plain=!isNaN(E.parseNum(last));
   if(Math.abs(nums[nums.length-1]-q.ans)>tol)return real.length===1&&plain?{fin:last,steps:[]}:{ok:true};
@@ -1158,7 +1159,8 @@ function check(){
       if(lvl()<3){st.lvl[st.sec]=lvl()+1;st.best[st.sec]=Math.max(st.best[st.sec]||0,lvl());up+=' <b>Level up: '+LV[lvl()]+'!</b>'+(lvl()===3?' These are challenge questions.':'')+award('up');if(lvl()>=2)up+=award('spicy')}
       else if(!st.done[st.sec]){st.done[st.sec]=true;up+=' <b>Extra spicy completed! ★ Master Mix is now unlocked for this section (see the menu).</b>'+award('mm')}}
     const g=goalOfQ(q);if(g&&goalScore(g).key==='mastered')up+=award('goal');
-    if(stepLines.length&&(q.type==='num'||q.type==='expr'))drawSteps((q.eqStep?q.eqStep+' = ':'')+String(u).trim());save();fb('ok','<b class="h">Correct!'+(tries>1?' (second try)':'')+'</b>'+q.steps+up);finish();
+    const dg=q.type==='num'&&/°$/.test(E.answerText(q));
+    if(stepLines.length&&(q.type==='num'||q.type==='expr'))drawSteps((q.eqStep?q.eqStep+' = ':'')+String(u).trim().replace(/\s*°$/,'')+(dg?'°':''));save();fb('ok','<b class="h">Correct!'+(tries>1?' (second try)':'')+(dg?' The answer is: '+E.answerText(q):'')+'</b>'+q.steps+up);finish();
     if(st.auto!==false){clearTimeout(autoT);autoT=setTimeout(()=>{if(done&&cur===q&&!test&&!view)next(false)},1000)}
   }else if(tries===1){
     row=0;if(counts)streak=0;
