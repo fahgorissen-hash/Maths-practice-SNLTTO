@@ -61,7 +61,7 @@ svg.grid[data-click]{cursor:crosshair}
 .rt .ix{position:absolute;left:-.42em;top:.12em;font-size:.62em;line-height:1}
 .q sup{font-size:.7em;line-height:0}
 .mx i{padding-right:.09em}.mx sup{font-style:normal;margin-left:.05em;font-size:.7em;line-height:0}
-.kp{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 2px}.kp button{font:inherit;font-size:19px;min-width:42px;padding:5px 10px;border:2px solid #9fb0bf;border-radius:9px;background:#f7fafc;cursor:pointer}.kp button:hover{border-color:var(--brand);background:var(--brand2)}
+.kp{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 2px}.kp button{font:inherit;font-size:19px;min-width:42px;padding:5px 10px;border:2px solid #9fb0bf;border-radius:9px;background:#f7fafc;cursor:pointer}.kp .frk{display:inline-flex;flex-direction:column;align-items:center;font-size:12px;line-height:1.05}.kp .frk span:first-child{border-bottom:1.5px solid currentColor;padding:0 2px}.kp button:hover{border-color:var(--brand);background:var(--brand2)}
 .pv{min-height:34px;margin:6px 0 0;font-size:20px;color:#223}.pv .pl{font-size:14px;color:var(--mut);margin-right:6px}
 .ans input[type=text].wide{width:min(520px,100%)}
 .ans input#in0{width:min(420px,100%)}
@@ -115,7 +115,7 @@ function tokenize(src, o) {
   o = o || {};
   let s = String(src).replace(/[−–—]/g, '-').replace(/ /g, ' ');
   s = s.replace(/(^|[^\d.,])(-?)(\d+)[ ]+(\d+)[ ]*\/[ ]*(\d+)/g, (m, pre, sg, w, n, d) => pre + (sg ? '-' : '') + '(' + w + '+' + n + '/' + d + ')');   // mixed number 2 1/3
-  s = s.replace(/sqrt/gi, '√').replace(/(?<![a-zA-Z])pi(?![a-zA-Z])/gi, 'π');
+  s = s.replace(/⁻¹/g, '^-1').replace(/sqrt/gi, '√').replace(/(?<![a-zA-Z])pi(?![a-zA-Z])/gi, 'π').replace(/°/g, '');
   s = s.replace(/([⁰¹²³⁴⁵⁶⁷⁸⁹]+)√/g, (m, d) => '\u0001' + d.split('').map(c => SUP.indexOf(c)).join('') + ';');
   s = s.replace(/(\d+)\s*V/g, (m, d) => '\u0001' + d + ';');   // 3V27 = cube root of 27
   s = s.replace(/∛/g, '\u00013;').replace(/∜/g, '\u00014;');
@@ -129,6 +129,7 @@ function tokenize(src, o) {
     let m;
     if ((m = /^\d+(?:[.,]\d+)?|^[.,]\d+/.exec(s.slice(i)))) { t.push({ k: 'num', v: parseFloat(m[0].replace(',', '.')), s: m[0].replace(',', '.') }); i += m[0].length; continue; }
     if (c === 'π') { t.push({ k: 'pi' }); i++; continue; }
+    if ((m = /^(?:(sin|cos|tan)\s*\^\s*\(?\s*-\s*1\s*\)?|(?:arc|a)(sin|cos|tan)|(sin|cos|tan))/i.exec(s.slice(i)))) { t.push({ k: 'fn', n: (m[1] || m[2] ? 'a' : '') + (m[1] || m[2] || m[3]).toLowerCase() }); i += m[0].length; continue; }   // trig in degrees; sin^-1 = inverse
     if (/[×·⋅*]/.test(c)) { t.push({ k: 'op', v: '*' }); i++; continue; }
     if (/[x]/i.test(c) && o.noVars) { t.push({ k: 'op', v: '*' }); i++; continue; }
     if (/[a-zA-Z]/.test(c)) { if (o.noVars) throw new Error('var'); t.push({ k: 'var', n: c }); i++; continue; }
@@ -143,7 +144,7 @@ function tokenize(src, o) {
 function parse(src, o) {
   const T = tokenize(src, o); let p = 0;
   const peek = () => T[p], isOp = v => T[p] && T[p].k === 'op' && T[p].v === v;
-  const startsFactor = () => { const k = T[p]; return k && (k.k === 'num' || k.k === 'var' || k.k === 'pi' || k.k === 'sqrt' || (k.k === 'op' && k.v === '(')); };
+  const startsFactor = () => { const k = T[p]; return k && (k.k === 'num' || k.k === 'var' || k.k === 'pi' || k.k === 'sqrt' || k.k === 'fn' || (k.k === 'op' && k.v === '(')); };
   function expr() {
     let a = term();
     while (isOp('+') || isOp('-')) { const op = T[p++].v; const b = term(); a = { t: op === '+' ? 'add' : 'sub', a, b }; }
@@ -187,6 +188,7 @@ function parse(src, o) {
       if (neg) r = { t: 'neg', a: r };
       return { t: 'sqrt', a: r, k: k.n };
     }
+    if (k.k === 'fn') { p++; return { t: 'fn', n: k.n, a: power() }; }
     if (isOp('(')) { p++; const e = expr(); if (!isOp(')')) throw new Error('paren'); p++; e.par = true; return e; }
     throw new Error('atom');
   }
@@ -200,6 +202,7 @@ function evalAst(n, env) {
     case 'mul': return evalAst(n.a, env) * evalAst(n.b, env); case 'div': return evalAst(n.a, env) / evalAst(n.b, env);
     case 'pow': return Math.pow(evalAst(n.a, env), evalAst(n.b, env));
     case 'sqrt': { const x = evalAst(n.a, env); if (n.k % 2 === 1) return (x < 0 ? -1 : 1) * Math.pow(Math.abs(x), 1 / n.k); return x < 0 ? NaN : Math.pow(x, 1 / n.k); }
+    case 'fn': { const x = evalAst(n.a, env), D = Math.PI / 180; return n.n === 'sin' ? Math.sin(x * D) : n.n === 'cos' ? Math.cos(x * D) : n.n === 'tan' ? Math.tan(x * D) : n.n === 'asin' ? Math.asin(x) / D : n.n === 'acos' ? Math.acos(x) / D : Math.atan(x) / D; }
   }
   return NaN;
 }
@@ -363,6 +366,7 @@ function R(src, o) {
       case 'div': return n.inl ? w(P(n.a) + ' ÷ ' + P(n.b)) : w('<span class="fr"><span class="nu">' + P(n.a, true) + '</span><span class="de">' + P(n.b, true) + '</span></span>');
       case 'pow': return w(P(n.a) + '<sup>' + P(n.b, true) + '</sup>');
       case 'sqrt': return w('<span class="rt' + (n.k > 2 ? ' rn' : '') + '">' + (n.k > 2 ? '<sup class="ix">' + n.k + '</sup>' : '') + '<span class="sq"></span><span class="ov">' + P(n.a, true) + '</span></span>');
+      case 'fn': return w((n.n[0] === 'a' ? n.n.slice(1) + '<sup>−1</sup>' : n.n) + '(' + P(n.a, true) + (n.n[0] === 'a' ? ')' : '°)'));
     }
     return '';
   }
@@ -374,12 +378,32 @@ const mixed = (w, n, d) => '<span class="mx">' + w + fr(n, d) + '</span>';
 const tbl = (rows) => '<table class="tbl">' + rows.map(r => '<tr>' + r.map((c, i) => (i === 0 ? '<th>' : '<td>') + c + (i === 0 ? '</th>' : '</td>')).join('') + '</tr>').join('') + '</table>';
 
 /* ---- number formatting for answers ---- */
-function fmtNum(n) { if (isInt(n)) return f(Math.round(n)); return f(Math.round(n * 1e4) / 1e4).replace('.', ','); }
+function fmtNum(n) { if (isInt(n)) return f(Math.round(n)); return f(Math.round(n * 1e4) / 1e4); }
+/* an angle answer: the worked solution writes the answer with a degree sign */
+function isDeg(q) { const t = String(q.steps || '').replace(/<[^>]+>/g, '').replace(/−/g, '-').replace(/(\d),(\d)/g, '$1.$2'), a = String(Math.round(q.ans * 1e4) / 1e4).replace(/^-/, ''); return new RegExp('(^|[^\\d.])' + a.replace('.', '\\.') + '\\s*°').test(t); }
 function ratText(n, d) { const g = gcd(n, d); n /= g; d /= g; if (d < 0) { n = -n; d = -d; } return d === 1 ? String(n) : n + '/' + d; }
 
 /* ================= grading ================= */
+/* English number words (0-999) so "two", "twenty-one" or "one hundred and five" count as typed numbers */
+const NUMW = { zero: 0, one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9, ten: 10, eleven: 11, twelve: 12, thirteen: 13, fourteen: 14, fifteen: 15, sixteen: 16, seventeen: 17, eighteen: 18, nineteen: 19, twenty: 20, thirty: 30, forty: 40, fifty: 50, sixty: 60, seventy: 70, eighty: 80, ninety: 90 };
+function wordBelow100(t) {
+  if (Object.prototype.hasOwnProperty.call(NUMW, t)) return NUMW[t];
+  const m = t.match(/^(twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety) (one|two|three|four|five|six|seven|eight|nine)$/);
+  return m ? NUMW[m[1]] + NUMW[m[2]] : NaN;
+}
+function wordNum(s) {
+  let t = String(s).toLowerCase().replace(/[−–—]/g, '-').trim();
+  if (!/^[a-z][a-z -]*$/.test(t)) return NaN;
+  let neg = false; const m0 = t.match(/^(?:minus|negative) (.+)$/); if (m0) { neg = true; t = m0[1]; }
+  t = t.replace(/-/g, ' ').replace(/\s+/g, ' ');
+  let v; const mh = t.match(/^(one|two|three|four|five|six|seven|eight|nine) hundred(?: (?:and )?(.+))?$/);
+  if (mh) { v = NUMW[mh[1]] * 100; if (mh[2] !== undefined) { const r = wordBelow100(mh[2]); if (isNaN(r) || r === 0) return NaN; v += r; } }
+  else v = wordBelow100(t);
+  return isNaN(v) ? NaN : (neg ? -v : v);
+}
 function parseNum(s) {
   if (s === null || s === undefined) return NaN;
+  const wn = wordNum(s); if (!isNaN(wn)) return wn;
   s = String(s).replace(/[−–—]/g, '-').replace(/\s*(?:°|degrees?)\s*$/i, '').replace(/\s+/g, '').replace(',', '.');
   const fr_ = s.match(/^([+-]?\d+\.?\d*)\/([+-]?\d+\.?\d*)$/);
   if (fr_ && parseFloat(fr_[2]) !== 0) return parseFloat(fr_[1]) / parseFloat(fr_[2]);
@@ -392,6 +416,7 @@ function parsePoint(s) {
   return null;
 }
 function check(q, u) {                      // -> {ok, why?, msg?}
+  if (typeof q.grade === 'function') { let r = false; try { r = q.grade(u); } catch (e) { } return r && typeof r === 'object' ? r : { ok: !!r }; }   // own grading (protractor questions, roots with letters): true/false or {ok, why, msg}
   if (q.type === 'num') { const n = parseNum(u); if (isNaN(n)) return { ok: false, why: 'parse' }; return { ok: Math.abs(n - q.ans) <= (q.tol || 1e-9) }; }
   if (q.type === 'multi') { const ok = Array.isArray(u) && u.length === q.ans.length && u.every((v, i) => { const n = parseNum(v); return !isNaN(n) && Math.abs(n - q.ans[i]) <= (q.tol || 1e-9); }); return { ok }; }
   if (q.type === 'point') { const p = parsePoint(u); return { ok: !!p && Math.abs(p[0] - q.ans[0]) < 1e-9 && Math.abs(p[1] - q.ans[1]) < 1e-9 }; }
@@ -403,7 +428,7 @@ function check(q, u) {                      // -> {ok, why?, msg?}
 const grade = (q, u) => check(q, u).ok;
 function answerText(q) {
   if (q.ansText) return q.ansText;
-  if (q.type === 'num') return fmtNum(q.ans);
+  if (q.type === 'num') return fmtNum(q.ans) + (isDeg(q) ? '°' : '');
   if (q.type === 'multi') return q.ans.map(fmtNum).join(' and ');
   if (q.type === 'point') return '(' + f(q.ans[0]) + ', ' + f(q.ans[1]) + ')';
   if (q.type === 'choice') return q.opts[q.ans];
@@ -448,7 +473,7 @@ function engine(def) {
     const secs = []; for (let i = 0; i < N; i++) secs.push(SECTIONS[i % n].id);
     const seen = []; return shuffle(secs).map((s, i) => { const q = make(s, lv[i], seen); seen.push({ g: null, f: q.fp }); q.hint = null; return q; });
   }
-  return { KEY: def.key, SECTIONS, LESSONS, G, XG, make, makeTest, grade, check, answerText, evalNum: s => evalAst(parse(String(s), { noVars: true }), {}), parseNum, parsePoint, f, M, parse, defaultMode: def.defaultMode || 'lesson' };
+  return { KEY: def.key, SECTIONS, LESSONS, G, XG, make, makeTest, grade, check, answerText, evalNum: s => evalAst(parse(String(s), { noVars: true }), {}), evalAt: (s, env) => evalAst(parse(String(s)), env), parseNum, parsePoint, f, M, parse, defaultMode: def.defaultMode || 'lesson' };
 }
 
 /* ---------- click grid (shared) ---------- */
@@ -497,8 +522,7 @@ const U = { gridSVG, clipLine, ri, pick, shuffle, nz, f, gcd, lcm, isPrime, prim
 if (typeof module !== 'undefined' && module.exports) module.exports = U; else root.NX = U;
 })(typeof window !== 'undefined' ? window : globalThis);
 
-</script>
-<script>
+</script><script>
 window.Ch3=NX.engine((/* 2VT / 2HT Chapter 2: solid geometry (book: 2TTOA ch 2). Params: P.cls */
 (function (NX, P) {
 const { ri, pick, shuffle, nz, f, gcd, M, fr, fmtNum, ratText } = NX;
@@ -905,8 +929,7 @@ LESSONS.forEach(le => { le.gens = le.gens.filter(g => !SKIP.includes(g[1])); le.
 return { key: 'nx-' + P.cls.toLowerCase() + '-ch2-v1', SECTIONS, LESSONS, G, XG, defaultMode: 'lesson' };
 }))(NX,{"cls": "2VT"}));
 window.Ch3.GOALS=[["2.1", "I can name solids and their parts (faces, edges, vertices)", ["solidName", "lineKind", "countParts", "baseShape", "isPrism"]], ["2.2", "I can calculate the volume of prisms and cylinders", ["volPrism", "volCylinder"], "Volume = area of the base × height. Check the units."], ["2.2", "I can calculate the volume of pyramids, cones and spheres", ["volPyramid", "volCone", "volSphere", "volHemisphere", "volComposite", "volReverse"], "Pyramid and cone have a factor ⅓."], ["2.3", "I can describe how two lines in space are related (parallel, intersecting, skew)", ["lineRelation", "countParallel", "pickSkew"]], ["2.4", "I can read front, side and top views of cube buildings", ["totalCubes", "frontView", "sideView", "viewsToTop", "clickFront"]], ["2.5", "I can recognise nets of cubes and dice", ["cubeNet", "diceNet", "clickNet"]], ["2.5", "I can calculate surface areas of solids", ["surfCuboid", "surfPrism", "surfCylinder", "surfSphere", "surfCone", "wrapping", "cylinderNet"], "Surface area is in square units (cm²)."]];
-</script>
-<script>
+</script><script>
 (function(){
 'use strict';
 const E=window.Ch3,$=s=>document.querySelector(s);
@@ -1009,6 +1032,7 @@ const DIVSTEP=new Set('bisectAngle'.split(' '));   /* a typed a/b is a division 
 const eqN=q=>(String(q.steps||'').replace(/<svg[\s\S]*?<\/svg>/g,'').replace(/<[^>]+>/g,'').match(/=/g)||[]).length;
 const canType=q=>q.type==='num'||(q.type==='expr'&&!!E.check);
 function stepMode(q){
+  if(q&&q.eqStep&&E.evalAt)return test?'':'eq';
   if(!q||q.noStep)return '';
   const gn=String(genName(q)||'').replace(/^X/,'');
   const st_=String(q.steps||'');
@@ -1023,11 +1047,12 @@ function stepMode(q){
   }
   return NODISC.has(gn)?'':'note';
 }
+const EQNOTE='<p class="stepnote"><b>Show the balance method.</b> Type each step as an equation (for example <i>4x = 12</i>) and press Check. Finish with the answer, for example <i>x = 3</i>.</p>';
 const STEPNOTE='<p class="stepnote"><b>Steps count.</b> Showing your steps is part of a correct answer. '+'This page can only check the final answer of this question, so write your working on paper too (in a test you always must).</p>';
 function qHTML(q){
-  let h='<div class="q">'+q.html+'</div>'+(stepMode(q)==='note'?STEPNOTE:'')+'<div id="stp" class="stp"></div><div class="ans" id="ans">';
-  if(q.type==='num')h+='<label class="sr" for="in0">Your answer</label><input type="text" id="in0" inputmode="text" autocomplete="off" placeholder="your answer">';
-  else if(q.type==='expr')h+='<label class="sr" for="in0">Your answer</label><input type="text" id="in0" inputmode="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="type your answer"><div class="kp" id="kp">'+(q.keys||['√','³√','⁴√','^','/','·','(',')','π']).map(k=>'<button type="button" data-k="'+k+'">'+k+'</button>').join('')+'<button type="button" data-k="⌫" aria-label="delete">⌫</button></div><div class="pv" id="pv" aria-live="polite"></div>';
+  let h='<div class="q">'+q.html+'</div>'+(stepMode(q)==='note'?STEPNOTE:stepMode(q)==='eq'?EQNOTE:'')+'<div id="stp" class="stp"></div><div class="ans" id="ans">';
+  if(q.type==='num')h+='<label class="sr" for="in0">Your answer</label><input type="text" id="in0" inputmode="text" autocomplete="off" placeholder="'+(q.eqStep?'a step, or '+q.eqStep+' = …':'your answer')+'">'+kpad(q);
+  else if(q.type==='expr')h+='<label class="sr" for="in0">Your answer</label><input type="text" id="in0" inputmode="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="'+(q.eqStep?'a step, or '+q.eqStep+' = …':'type your answer')+'">'+kpad(q);
   else if(q.type==='point')h+='<label class="sr" for="in0">Your answer</label><input type="text" id="in0" autocomplete="off" placeholder="(x, y)">';
   else if(q.type==='multi')q.fields.forEach((f,i)=>{h+='<label for="in'+i+'">'+f+'</label><input type="text" id="in'+i+'" autocomplete="off">'});
   else if(q.type==='choice'){h+='<div class="choices">'+q.opts.map((o,i)=>'<button type="button" class="choice" data-i="'+i+'" aria-pressed="false">'+o+'</button>').join('')+'</div>'}
@@ -1094,12 +1119,22 @@ function wireGrid(){
     const k=clicked.findIndex(p=>p[0]===x&&p[1]===y);if(k>=0)clicked.splice(k,1);else clicked.push([x,y]);drawMarks(sv);
   });
 }
+/* symbol keys under the answer box; FR inserts a fraction to fill in */
+const FRK='<span class="frk"><span>□</span><span>□</span></span>';
+function kpad(q){
+  let ks=q.type==='expr'?(q.keys||['√','³√','⁴√','^','/','·','(',')','π']).slice():['°','/','√','^','·','(',')','π'];
+  if(ks.indexOf('/')>=0)ks.splice(ks.indexOf('/'),0,'FR');
+  if(q.type==='num'&&/∠|angle/i.test(q.html||''))ks.splice(1,0,'∠');
+  if(q.eqStep){ks=ks.filter(k=>k!=='°'&&k!=='∠');ks.unshift(q.eqStep,'=')}
+  return '<div class="kp" id="kp">'+ks.map(k=>'<button type="button" data-k="'+k+'"'+(k==='FR'?' aria-label="fraction"':'')+'>'+(k==='FR'?FRK:k)+'</button>').join('')+'<button type="button" data-k="⌫" aria-label="delete">⌫</button></div><div class="pv" id="pv" aria-live="polite"></div>';
+}
 function wireExpr(){
   const kp=document.getElementById('kp');if(!kp)return;const inp=$('#in0'),pv=$('#pv');
-  const upd=()=>{const v=inp.value.trim();if(!v){pv.innerHTML='';return}let h=null;try{h=E.M(v,cur.noVars?{noVars:true}:{})}catch(e){}pv.innerHTML=h&&E.parse&&(()=>{try{E.parse(v,cur.noVars?{noVars:true}:{});return true}catch(e){return false}})()?'<span class="pl">Your answer reads:</span> '+h:'<span class="pl">I cannot read that yet. Check your brackets and symbols.</span>'};
+  const nv=cur.noVars||(cur.type==='num'&&!cur.eqStep);const upd=()=>{const v=inp.value.trim();if(!v||(cur.type==='num'&&!/[\/√^π·*()]/.test(v))||/[=∠]/.test(v)){pv.innerHTML='';return}let h=null;try{h=E.M(v,nv?{noVars:true}:{})}catch(e){}pv.innerHTML=h&&E.parse&&(()=>{try{E.parse(v,nv?{noVars:true}:{});return true}catch(e){return false}})()?'<span class="pl">Your answer reads:</span> '+h:'<span class="pl">I cannot read that yet. Check your brackets and symbols.</span>'};
   inp.addEventListener('input',upd);
   kp.querySelectorAll('button').forEach(b=>b.onclick=()=>{if(done)return;const k=b.dataset.k,s=inp.selectionStart,e=inp.selectionEnd,v=inp.value;
     if(k==='⌫'){if(s!==e){inp.value=v.slice(0,s)+v.slice(e);inp.setSelectionRange(s,s)}else if(s>0){inp.value=v.slice(0,s-1)+v.slice(s);inp.setSelectionRange(s-1,s-1)}}
+    else if(k==='FR'){const a=v.slice(s,e);inp.value=v.slice(0,s)+'('+a+')/()'+v.slice(e);const n=a?s+a.length+4:s+1;inp.setSelectionRange(n,n)}
     else{inp.value=v.slice(0,s)+k+v.slice(e);const n=s+k.length;inp.setSelectionRange(n,n)}
     inp.focus();upd()});
 }
@@ -1130,21 +1165,83 @@ function logAnswer(q,u,ok){
   const h=$('#hist');if(h)h.innerHTML='<div class="at">Your answers on this question: '+attempts.map(x=>'<span class="'+(x.ok?'ok':'no')+'">'+(x.ok?'✓':'✗')+' '+esc(x.a)+'</span>').join(' ')+'</div>';
 }
 const chk=(q,u)=>E.check?E.check(q,u):{ok:E.grade(q,u)};
-function fmtStep(t){let h=null;if(/\//.test(t)||(cur&&cur.type==='expr'&&/[\^√]/.test(t))){try{h=E.M(t,{noVars:cur&&cur.type!=='expr'})}catch(e){}}else h=esc(t).replace(/\*|·/g,'×').replace(/-/g,'−');return h||esc(t)}
-function drawSteps(fin){const d=$('#stp');if(!d)return;d.innerHTML=stepLines.map(t=>'<div class="stl"><span class="ci open" aria-label="correct step">○</span><span class="sv">'+fmtStep(t)+' <span class="eq">=</span></span></div>').join('')+(fin?'<div class="stl fin"><span class="ci full" aria-label="correct final answer">✓</span><span class="sv">'+fmtStep(fin)+'<div class="fnote">Completely correct! This is the correct final answer.</div></span></div>':'')}
+function fmtStep(t){if(/=/.test(t))return t.split('=').map(x=>fmtStep(x.trim())).join(' <span class="eq">=</span> ');let h=null;if(/\//.test(t)||(cur&&cur.type==='expr'&&/[\^√]/.test(t))){try{h=E.M(t,{noVars:cur&&cur.type!=='expr'})}catch(e){}}else h=esc(t).replace(/\*|·/g,'×').replace(/-/g,'−');return h||esc(t)}
+function drawSteps(fin){const d=$('#stp');if(!d)return;d.innerHTML=stepLines.map(t=>'<div class="stl"><span class="ci open" aria-label="correct step">○</span><span class="sv">'+fmtStep(t)+(/=/.test(t)?'':' <span class="eq">=</span>')+'</span></div>').join('')+(fin?'<div class="stl fin"><span class="ci full" aria-label="correct final answer">✓</span><span class="sv">'+fmtStep(fin)+'<div class="fnote">Completely correct! This is the correct final answer.</div></span></div>':'')}
 function stepEq(q,pt){
   if(q.type==='num'){if(q.tol&&E.evalNum){try{return Math.abs(E.evalNum(pt)-q.ans)<=q.tol}catch(e){return false}}try{E.parse(pt,{noVars:true})}catch(e){return false}return E.check({type:'expr',ans:String(q.ans),form:'any',noVars:true},pt).ok}
   return E.check({type:'expr',ans:q.ans,form:'any'},pt).ok}
+/* balance method: is "L = R" a correct in-between equation (same solution as the question, still linear, not 0 = 0)? */
+function eqLine(q,s){
+  const v=q.eqStep,sd=String(s).split('=').map(t=>t.trim().replace(/:/g,'/').replace(/,/g,'.'));if(sd.length!==2||!sd[0]||!sd[1])return false;
+  let sol=q.type==='num'?q.ans:NaN;if(q.type!=='num'){try{sol=E.evalNum(String(q.ans))}catch(e){}}
+  const g=t=>{const env={};env[v]=t;let r=NaN;try{r=E.evalAt(sd[0],env)-E.evalAt(sd[1],env)}catch(e){}return Object.keys(env).length===1?r:NaN};
+  const a=g(sol),b=g(sol+1),c=g(sol+2.5);if(![a,b,c].every(isFinite))return false;
+  const sc=Math.max(1,Math.abs(b),Math.abs(c));
+  return Math.abs(a)<=1e-7*sc&&Math.abs(b)>1e-9&&Math.abs(c-2.5*b)<=1e-7*sc;
+}
+/* split "x = 7" into the final answer, or return null when the right side is still a calculation */
+function eqFinal(q,u){
+  const sd=String(u).split('=').map(t=>t.trim());if(sd.length!==2)return null;
+  const v=q.eqStep,i=sd[0].toLowerCase()===v?1:sd[1].toLowerCase()===v?0:-1;if(i<0)return null;const r=sd[i];
+  if(q.type==='num'&&!isNaN(E.parseNum(r)))return r;
+  if(q.type==='expr'&&!/[a-z]/i.test(r)&&(chk(q,r).ok||!/[+\-*·:]/.test(r.replace(/^[-−]/,''))&&!/\/.*\//.test(r)))return r;
+  return null;
+}
+/* free working such as "16:8=2, ratio is 2  12x2=24": read the calculations, skip the words,
+   check that every "=" is true and return the last value as the answer */
+/* a trig step on an angle question, such as "cos B = 15/17": 'ok', 'bad', or '' when it is not one */
+function trigStep(q,u){
+  const m=String(u).replace(/[−–—]/g,'-').match(/^\s*(sin|cos|tan)\s*\(?\s*(?:∠|<|angle\s*)?\s*[A-Za-z]{0,3}\s*\)?\s*=\s*(.+)$/i);
+  if(!m)return '';const R=m[2].trim().replace(/[÷:]/g,'/').replace(/(\d),(\d)/g,'$1.$2').replace(/(\d)\s*[xX×]\s*(?=\d)/g,'$1*');
+  let v=NaN;try{v=E.evalNum(R)}catch(e){}if(!isFinite(v))return 'bad';
+  const D=Math.PI/180,fn=m[1].toLowerCase(),t=a=>fn==='sin'?Math.sin(a*D):fn==='cos'?Math.cos(a*D):Math.tan(a*D);
+  const dec=/^-?\d*\.(\d+)$/.test(R)?R.split('.')[1].length:-1,tl=Math.abs(t(q.ans+0.06)-t(q.ans))+Math.abs(t(q.ans-0.06)-t(q.ans))+(dec>=0?0.5*Math.pow(10,-dec):0)+1e-9;
+  return Math.abs(v-t(q.ans))<=tl?'ok':'bad';
+}
+function freeWork(u){
+  if(/\b(sin|cos|tan)/i.test(String(u)))return null;
+  const s=String(u).replace(/[−–—]/g,'-').replace(/(\d)\s*[xX×]\s*(?=[\d(])/g,'$1*').replace(/[÷:]/g,'/').replace(/(\d),(\d)/g,'$1.$2').replace(/(\d)\s*°/g,'$1');
+  const runs=[];s.split(/[^0-9.+\-*\/^()√π=\s]+/).forEach(r=>r.split(/(?<=[\d)π])\s+(?=[\d(√π])/).forEach(t=>{t=t.trim().replace(/^[=+*\/^]+|[=+\-*\/^]+$/g,'').trim();if(/\d/.test(t))runs.push(t)}));
+  if(!runs.length)return null;
+  const val=t=>{try{const v=E.evalNum(t);return isFinite(v)?v:NaN}catch(e){return NaN}};
+  const pre=[];let fin=null;
+  for(const r of runs){const ps=r.split('=').map(t=>t.trim());if(ps.some(t=>!t))return null;
+    const vs=ps.map(val);if(vs.some(isNaN))return null;
+    for(let i=1;i<ps.length;i++){const d=(ps[i].split('.')[1]||'').length,tl=/^-?[\d.]+$/.test(ps[i])?0.5*Math.pow(10,-d)+1e-9:1e-9*Math.max(1,Math.abs(vs[i]));
+      if(Math.abs(vs[i-1]-vs[i])>tl)return {bad:ps[i-1]+' = '+ps[i]}}
+    ps.forEach(t=>{if(/[+\-*\/^√π(]/.test(t.replace(/^-/,'')))pre.push(t)});fin=ps[ps.length-1]}
+  return {fin,pre:pre.filter(t=>t!==fin)};
+}
 function check(){
   if(done)return;const q=cur;let u=userAns(q);
   if(empty(q,u)){fb('hint','Fill in your answer first.');return}
-  if((q.type==='num'||(q.type==='expr'&&E.check&&!/=/.test(String(q.ans))))&&typeof u==='string'&&u.indexOf('=')>0&&E.parse){
+  if(q.eqStep&&E.evalAt&&typeof u==='string'){
+    const ip=()=>{const i0=$('#in0');if(i0){i0.value='';i0.focus()}const pv=$('#pv');if(pv)pv.innerHTML=''};
+    if(u.indexOf('=')>=0){const fin=eqFinal(q,u);
+      if(fin!==null){u=fin}
+      else if(test){}
+      else if(eqLine(q,u)){const t=String(u).trim();if(stepLines.indexOf(t)<0)stepLines.push(t);drawSteps();ip();fb('hint','<b class="h">✓ Good step.</b>Both sides are still in balance. Type your next step, and finish with '+q.eqStep+' = …');return}
+      else{fb('hint','<b class="h">That step is not right.</b>Check that you did the same thing on both sides, and that you calculated correctly. Then type the step again.');return}}
+    if(!test&&!stepLines.length&&chk(q,u).ok){fb('hint','<b class="h">Show your working first.</b>Showing your steps is part of a correct answer. Type the first step of the balance method as an equation (for example <i>4'+q.eqStep+' = 12</i>), then work towards '+q.eqStep+' = …');return}
+  }
+  if(!q.eqStep&&(q.type==='num'||(q.type==='expr'&&E.check&&!/=/.test(String(q.ans))))&&typeof u==='string'&&u.indexOf('=')>0&&E.parse){
     const raw=u.split('=').map(x=>x.trim()).filter(Boolean);
     /* numeric answers: ignore a bare label such as "∠R", "<R", "R" or "angle R", and a trailing ° (so 360-76-86-111=∠R=87° counts) */
     const parts=q.type==='num'?raw.filter(x=>!/^(?:∠|<|angle\s*)?[A-Za-z]{1,4}°?$/i.test(x)).map(x=>x.replace(/°$/,'').trim()):raw;
     if(raw.length>=2&&parts.length>=1){const fin=parts[parts.length-1],pre=parts.slice(0,-1);
       let okPre=false;try{okPre=pre.every(pt=>stepEq(q,pt))}catch(e){}
       if(okPre&&chk(q,fin).ok){if(!test)stepLines.push(...pre);u=fin;const i0=$('#in0');if(i0)i0.value=fin}}}
+  if(q.type==='num'&&!test&&typeof u==='string'&&E.evalNum&&/=/.test(u)&&/°$/.test(E.answerText(q))){const ts=trigStep(q,u);
+    if(ts==='ok'){const t=String(u).trim();if(stepLines.indexOf(t)<0)stepLines.push(t);drawSteps();const i0=$('#in0');i0.value='';i0.focus();const pv=$('#pv');if(pv)pv.innerHTML='';fb('hint','<b class="h">✓ Good step.</b>That ratio is right. Now use the inverse ('+esc(t.match(/sin|cos|tan/i)[0].toLowerCase())+'⁻¹ on your calculator) and type the angle.');return}
+    if(ts===''&&/sin|cos|tan/i.test(u)){const c=String(u).replace(/^\s*(?:∠|<|angle\s*)?\s*[A-Za-z]{1,3}\s*=/,'').replace(/[−–—]/g,'-').replace(/[÷:]/g,'/').replace(/(\d),(\d)/g,'$1.$2').trim();let v=NaN;try{v=E.evalNum(c)}catch(e){}
+      if(isFinite(v)&&Math.abs(v-q.ans)<=0.051+(q.tol||0)){const t=String(u).trim();if(stepLines.indexOf(t)<0)stepLines.push(t);drawSteps();const i0=$('#in0');i0.value='';i0.focus();const pv=$('#pv');if(pv)pv.innerHTML='';fb('hint','<b class="h">✓ That calculation is right.</b>Now work it out on your calculator, round it, and type the angle.');return}
+      fb('hint','<b class="h">That calculation does not give the right angle.</b>'+(isFinite(v)?'It gives about '+(Math.round(v*10)/10)+'. ':'')+'Check which ratio you need (SOH CAH TOA) and use the inverse: for example <i>B = cos⁻¹(15/17)</i>.');return}
+    if(ts==='bad'){fb('hint','<b class="h">That ratio is not right.</b>Check which side is opposite the angle, which is adjacent and which is the hypotenuse. SOH CAH TOA: sin = O/H, cos = A/H, tan = O/A.');return}}
+  if(q.type==='num'&&!q.eqStep&&typeof u==='string'&&E.evalNum&&isNaN(E.parseNum(u))&&(()=>{try{E.parse(String(u),{noVars:true});return false}catch(e){return true}})()){
+    const w=freeWork(u);
+    if(w&&w.bad&&!test){fb('hint','<b class="h">One calculation is not right: '+esc(w.bad.replace(/\*/g,' × ').replace(/\//g,' : '))+'.</b>Check it and try again.');return}
+    if(w&&!w.bad){if(!test)w.pre.forEach(t=>{if(stepLines.indexOf(t)<0)stepLines.push(t)});u=w.fin}
+    else if(!test){fb('hint','<b class="h">I cannot read this answer.</b>Use numbers and the signs + − × : (you can type <i>x</i> or <i>*</i> for times, <i>:</i> or <i>/</i> for divide). Put a comma between calculations and end with the final number, for example <i>16 : 8 = 2, 12 x 2 = 24</i>.');return}}
   if(test){return testCheck(q,u)}
   const sm=stepMode(q);
   const slashCalc=q.type==='num'&&DIVSTEP.has(String(genName(q)||'').replace(/^X/,''))&&/^\s*\d+(?:[.,]\d+)?\s*\/\s*\d+(?:[.,]\d+)?\s*$/.test(String(u));
@@ -1169,7 +1266,7 @@ function check(){
       if(lvl()<3){st.lvl[st.sec]=lvl()+1;st.best[st.sec]=Math.max(st.best[st.sec]||0,lvl());up+=' <b>Level up: '+LV[lvl()]+'!</b>'+(lvl()===3?' These are challenge questions.':'')+award('up');if(lvl()>=2)up+=award('spicy')}
       else if(!st.done[st.sec]){st.done[st.sec]=true;up+=' <b>Extra spicy completed! ★ Master Mix is now unlocked for this section (see the menu).</b>'+award('mm')}}
     const g=goalOfQ(q);if(g&&goalScore(g).key==='mastered')up+=award('goal');
-    if(stepLines.length&&(q.type==='num'||q.type==='expr'))drawSteps(String(u).trim());save();fb('ok','<b class="h">Correct!'+(tries>1?' (second try)':'')+'</b>'+q.steps+up);finish();
+    if(stepLines.length&&(q.type==='num'||q.type==='expr'))drawSteps((q.eqStep?q.eqStep+' = ':'')+String(u).trim());save();fb('ok','<b class="h">Correct!'+(tries>1?' (second try)':'')+'</b>'+q.steps+up);finish();
     if(st.auto!==false){clearTimeout(autoT);autoT=setTimeout(()=>{if(done&&cur===q&&!test&&!view)next(false)},1000)}
   }else if(tries===1){
     row=0;if(counts)streak=0;

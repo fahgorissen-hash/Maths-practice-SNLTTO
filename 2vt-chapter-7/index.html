@@ -61,7 +61,7 @@ svg.grid[data-click]{cursor:crosshair}
 .rt .ix{position:absolute;left:-.42em;top:.12em;font-size:.62em;line-height:1}
 .q sup{font-size:.7em;line-height:0}
 .mx i{padding-right:.09em}.mx sup{font-style:normal;margin-left:.05em;font-size:.7em;line-height:0}
-.kp{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 2px}.kp button{font:inherit;font-size:19px;min-width:42px;padding:5px 10px;border:2px solid #9fb0bf;border-radius:9px;background:#f7fafc;cursor:pointer}.kp button:hover{border-color:var(--brand);background:var(--brand2)}
+.kp{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 2px}.kp button{font:inherit;font-size:19px;min-width:42px;padding:5px 10px;border:2px solid #9fb0bf;border-radius:9px;background:#f7fafc;cursor:pointer}.kp .frk{display:inline-flex;flex-direction:column;align-items:center;font-size:12px;line-height:1.05}.kp .frk span:first-child{border-bottom:1.5px solid currentColor;padding:0 2px}.kp button:hover{border-color:var(--brand);background:var(--brand2)}
 .pv{min-height:34px;margin:6px 0 0;font-size:20px;color:#223}.pv .pl{font-size:14px;color:var(--mut);margin-right:6px}
 .ans input[type=text].wide{width:min(520px,100%)}
 .ans input#in0{width:min(420px,100%)}
@@ -115,7 +115,7 @@ function tokenize(src, o) {
   o = o || {};
   let s = String(src).replace(/[−–—]/g, '-').replace(/ /g, ' ');
   s = s.replace(/(^|[^\d.,])(-?)(\d+)[ ]+(\d+)[ ]*\/[ ]*(\d+)/g, (m, pre, sg, w, n, d) => pre + (sg ? '-' : '') + '(' + w + '+' + n + '/' + d + ')');   // mixed number 2 1/3
-  s = s.replace(/sqrt/gi, '√').replace(/(?<![a-zA-Z])pi(?![a-zA-Z])/gi, 'π').replace(/°/g, '');
+  s = s.replace(/⁻¹/g, '^-1').replace(/sqrt/gi, '√').replace(/(?<![a-zA-Z])pi(?![a-zA-Z])/gi, 'π').replace(/°/g, '');
   s = s.replace(/([⁰¹²³⁴⁵⁶⁷⁸⁹]+)√/g, (m, d) => '\u0001' + d.split('').map(c => SUP.indexOf(c)).join('') + ';');
   s = s.replace(/(\d+)\s*V/g, (m, d) => '\u0001' + d + ';');   // 3V27 = cube root of 27
   s = s.replace(/∛/g, '\u00013;').replace(/∜/g, '\u00014;');
@@ -378,12 +378,32 @@ const mixed = (w, n, d) => '<span class="mx">' + w + fr(n, d) + '</span>';
 const tbl = (rows) => '<table class="tbl">' + rows.map(r => '<tr>' + r.map((c, i) => (i === 0 ? '<th>' : '<td>') + c + (i === 0 ? '</th>' : '</td>')).join('') + '</tr>').join('') + '</table>';
 
 /* ---- number formatting for answers ---- */
-function fmtNum(n) { if (isInt(n)) return f(Math.round(n)); return f(Math.round(n * 1e4) / 1e4).replace('.', ','); }
+function fmtNum(n) { if (isInt(n)) return f(Math.round(n)); return f(Math.round(n * 1e4) / 1e4); }
+/* an angle answer: the worked solution writes the answer with a degree sign */
+function isDeg(q) { const t = String(q.steps || '').replace(/<[^>]+>/g, '').replace(/−/g, '-').replace(/(\d),(\d)/g, '$1.$2'), a = String(Math.round(q.ans * 1e4) / 1e4).replace(/^-/, ''); return new RegExp('(^|[^\\d.])' + a.replace('.', '\\.') + '\\s*°').test(t); }
 function ratText(n, d) { const g = gcd(n, d); n /= g; d /= g; if (d < 0) { n = -n; d = -d; } return d === 1 ? String(n) : n + '/' + d; }
 
 /* ================= grading ================= */
+/* English number words (0-999) so "two", "twenty-one" or "one hundred and five" count as typed numbers */
+const NUMW = { zero: 0, one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9, ten: 10, eleven: 11, twelve: 12, thirteen: 13, fourteen: 14, fifteen: 15, sixteen: 16, seventeen: 17, eighteen: 18, nineteen: 19, twenty: 20, thirty: 30, forty: 40, fifty: 50, sixty: 60, seventy: 70, eighty: 80, ninety: 90 };
+function wordBelow100(t) {
+  if (Object.prototype.hasOwnProperty.call(NUMW, t)) return NUMW[t];
+  const m = t.match(/^(twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety) (one|two|three|four|five|six|seven|eight|nine)$/);
+  return m ? NUMW[m[1]] + NUMW[m[2]] : NaN;
+}
+function wordNum(s) {
+  let t = String(s).toLowerCase().replace(/[−–—]/g, '-').trim();
+  if (!/^[a-z][a-z -]*$/.test(t)) return NaN;
+  let neg = false; const m0 = t.match(/^(?:minus|negative) (.+)$/); if (m0) { neg = true; t = m0[1]; }
+  t = t.replace(/-/g, ' ').replace(/\s+/g, ' ');
+  let v; const mh = t.match(/^(one|two|three|four|five|six|seven|eight|nine) hundred(?: (?:and )?(.+))?$/);
+  if (mh) { v = NUMW[mh[1]] * 100; if (mh[2] !== undefined) { const r = wordBelow100(mh[2]); if (isNaN(r) || r === 0) return NaN; v += r; } }
+  else v = wordBelow100(t);
+  return isNaN(v) ? NaN : (neg ? -v : v);
+}
 function parseNum(s) {
   if (s === null || s === undefined) return NaN;
+  const wn = wordNum(s); if (!isNaN(wn)) return wn;
   s = String(s).replace(/[−–—]/g, '-').replace(/\s*(?:°|degrees?)\s*$/i, '').replace(/\s+/g, '').replace(',', '.');
   const fr_ = s.match(/^([+-]?\d+\.?\d*)\/([+-]?\d+\.?\d*)$/);
   if (fr_ && parseFloat(fr_[2]) !== 0) return parseFloat(fr_[1]) / parseFloat(fr_[2]);
@@ -408,7 +428,7 @@ function check(q, u) {                      // -> {ok, why?, msg?}
 const grade = (q, u) => check(q, u).ok;
 function answerText(q) {
   if (q.ansText) return q.ansText;
-  if (q.type === 'num') return fmtNum(q.ans);
+  if (q.type === 'num') return fmtNum(q.ans) + (isDeg(q) ? '°' : '');
   if (q.type === 'multi') return q.ans.map(fmtNum).join(' and ');
   if (q.type === 'point') return '(' + f(q.ans[0]) + ', ' + f(q.ans[1]) + ')';
   if (q.type === 'choice') return q.opts[q.ans];
@@ -1168,8 +1188,8 @@ const EQNOTE='<p class="stepnote"><b>Show the balance method.</b> Type each step
 const STEPNOTE='<p class="stepnote"><b>Steps count.</b> Showing your steps is part of a correct answer. '+'This page can only check the final answer of this question, so write your working on paper too (in a test you always must).</p>';
 function qHTML(q){
   let h='<div class="q">'+q.html+'</div>'+(stepMode(q)==='note'?STEPNOTE:stepMode(q)==='eq'?EQNOTE:'')+'<div id="stp" class="stp"></div><div class="ans" id="ans">';
-  if(q.type==='num')h+='<label class="sr" for="in0">Your answer</label><input type="text" id="in0" inputmode="text" autocomplete="off" placeholder="'+(q.eqStep?'a step, or '+q.eqStep+' = …':'your answer')+'">';
-  else if(q.type==='expr')h+='<label class="sr" for="in0">Your answer</label><input type="text" id="in0" inputmode="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="'+(q.eqStep?'a step, or '+q.eqStep+' = …':'type your answer')+'"><div class="kp" id="kp">'+(q.keys||['√','³√','⁴√','^','/','·','(',')','π']).map(k=>'<button type="button" data-k="'+k+'">'+k+'</button>').join('')+'<button type="button" data-k="⌫" aria-label="delete">⌫</button></div><div class="pv" id="pv" aria-live="polite"></div>';
+  if(q.type==='num')h+='<label class="sr" for="in0">Your answer</label><input type="text" id="in0" inputmode="text" autocomplete="off" placeholder="'+(q.eqStep?'a step, or '+q.eqStep+' = …':'your answer')+'">'+kpad(q);
+  else if(q.type==='expr')h+='<label class="sr" for="in0">Your answer</label><input type="text" id="in0" inputmode="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="'+(q.eqStep?'a step, or '+q.eqStep+' = …':'type your answer')+'">'+kpad(q);
   else if(q.type==='point')h+='<label class="sr" for="in0">Your answer</label><input type="text" id="in0" autocomplete="off" placeholder="(x, y)">';
   else if(q.type==='multi')q.fields.forEach((f,i)=>{h+='<label for="in'+i+'">'+f+'</label><input type="text" id="in'+i+'" autocomplete="off">'});
   else if(q.type==='choice'){h+='<div class="choices">'+q.opts.map((o,i)=>'<button type="button" class="choice" data-i="'+i+'" aria-pressed="false">'+o+'</button>').join('')+'</div>'}
@@ -1236,12 +1256,22 @@ function wireGrid(){
     const k=clicked.findIndex(p=>p[0]===x&&p[1]===y);if(k>=0)clicked.splice(k,1);else clicked.push([x,y]);drawMarks(sv);
   });
 }
+/* symbol keys under the answer box; FR inserts a fraction to fill in */
+const FRK='<span class="frk"><span>□</span><span>□</span></span>';
+function kpad(q){
+  let ks=q.type==='expr'?(q.keys||['√','³√','⁴√','^','/','·','(',')','π']).slice():['°','/','√','^','·','(',')','π'];
+  if(ks.indexOf('/')>=0)ks.splice(ks.indexOf('/'),0,'FR');
+  if(q.type==='num'&&/∠|angle/i.test(q.html||''))ks.splice(1,0,'∠');
+  if(q.eqStep){ks=ks.filter(k=>k!=='°'&&k!=='∠');ks.unshift(q.eqStep,'=')}
+  return '<div class="kp" id="kp">'+ks.map(k=>'<button type="button" data-k="'+k+'"'+(k==='FR'?' aria-label="fraction"':'')+'>'+(k==='FR'?FRK:k)+'</button>').join('')+'<button type="button" data-k="⌫" aria-label="delete">⌫</button></div><div class="pv" id="pv" aria-live="polite"></div>';
+}
 function wireExpr(){
   const kp=document.getElementById('kp');if(!kp)return;const inp=$('#in0'),pv=$('#pv');
-  const upd=()=>{const v=inp.value.trim();if(!v){pv.innerHTML='';return}let h=null;try{h=E.M(v,cur.noVars?{noVars:true}:{})}catch(e){}pv.innerHTML=h&&E.parse&&(()=>{try{E.parse(v,cur.noVars?{noVars:true}:{});return true}catch(e){return false}})()?'<span class="pl">Your answer reads:</span> '+h:'<span class="pl">I cannot read that yet. Check your brackets and symbols.</span>'};
+  const nv=cur.noVars||(cur.type==='num'&&!cur.eqStep);const upd=()=>{const v=inp.value.trim();if(!v||(cur.type==='num'&&!/[\/√^π·*()]/.test(v))||/[=∠]/.test(v)){pv.innerHTML='';return}let h=null;try{h=E.M(v,nv?{noVars:true}:{})}catch(e){}pv.innerHTML=h&&E.parse&&(()=>{try{E.parse(v,nv?{noVars:true}:{});return true}catch(e){return false}})()?'<span class="pl">Your answer reads:</span> '+h:'<span class="pl">I cannot read that yet. Check your brackets and symbols.</span>'};
   inp.addEventListener('input',upd);
   kp.querySelectorAll('button').forEach(b=>b.onclick=()=>{if(done)return;const k=b.dataset.k,s=inp.selectionStart,e=inp.selectionEnd,v=inp.value;
     if(k==='⌫'){if(s!==e){inp.value=v.slice(0,s)+v.slice(e);inp.setSelectionRange(s,s)}else if(s>0){inp.value=v.slice(0,s-1)+v.slice(s);inp.setSelectionRange(s-1,s-1)}}
+    else if(k==='FR'){const a=v.slice(s,e);inp.value=v.slice(0,s)+'('+a+')/()'+v.slice(e);const n=a?s+a.length+4:s+1;inp.setSelectionRange(n,n)}
     else{inp.value=v.slice(0,s)+k+v.slice(e);const n=s+k.length;inp.setSelectionRange(n,n)}
     inp.focus();upd()});
 }
@@ -1294,6 +1324,31 @@ function eqFinal(q,u){
   if(q.type==='expr'&&!/[a-z]/i.test(r)&&(chk(q,r).ok||!/[+\-*·:]/.test(r.replace(/^[-−]/,''))&&!/\/.*\//.test(r)))return r;
   return null;
 }
+/* free working such as "16:8=2, ratio is 2  12x2=24": read the calculations, skip the words,
+   check that every "=" is true and return the last value as the answer */
+/* a trig step on an angle question, such as "cos B = 15/17": 'ok', 'bad', or '' when it is not one */
+function trigStep(q,u){
+  const m=String(u).replace(/[−–—]/g,'-').match(/^\s*(sin|cos|tan)\s*\(?\s*(?:∠|<|angle\s*)?\s*[A-Za-z]{0,3}\s*\)?\s*=\s*(.+)$/i);
+  if(!m)return '';const R=m[2].trim().replace(/[÷:]/g,'/').replace(/(\d),(\d)/g,'$1.$2').replace(/(\d)\s*[xX×]\s*(?=\d)/g,'$1*');
+  let v=NaN;try{v=E.evalNum(R)}catch(e){}if(!isFinite(v))return 'bad';
+  const D=Math.PI/180,fn=m[1].toLowerCase(),t=a=>fn==='sin'?Math.sin(a*D):fn==='cos'?Math.cos(a*D):Math.tan(a*D);
+  const dec=/^-?\d*\.(\d+)$/.test(R)?R.split('.')[1].length:-1,tl=Math.abs(t(q.ans+0.06)-t(q.ans))+Math.abs(t(q.ans-0.06)-t(q.ans))+(dec>=0?0.5*Math.pow(10,-dec):0)+1e-9;
+  return Math.abs(v-t(q.ans))<=tl?'ok':'bad';
+}
+function freeWork(u){
+  if(/\b(sin|cos|tan)/i.test(String(u)))return null;
+  const s=String(u).replace(/[−–—]/g,'-').replace(/(\d)\s*[xX×]\s*(?=[\d(])/g,'$1*').replace(/[÷:]/g,'/').replace(/(\d),(\d)/g,'$1.$2').replace(/(\d)\s*°/g,'$1');
+  const runs=[];s.split(/[^0-9.+\-*\/^()√π=\s]+/).forEach(r=>r.split(/(?<=[\d)π])\s+(?=[\d(√π])/).forEach(t=>{t=t.trim().replace(/^[=+*\/^]+|[=+\-*\/^]+$/g,'').trim();if(/\d/.test(t))runs.push(t)}));
+  if(!runs.length)return null;
+  const val=t=>{try{const v=E.evalNum(t);return isFinite(v)?v:NaN}catch(e){return NaN}};
+  const pre=[];let fin=null;
+  for(const r of runs){const ps=r.split('=').map(t=>t.trim());if(ps.some(t=>!t))return null;
+    const vs=ps.map(val);if(vs.some(isNaN))return null;
+    for(let i=1;i<ps.length;i++){const d=(ps[i].split('.')[1]||'').length,tl=/^-?[\d.]+$/.test(ps[i])?0.5*Math.pow(10,-d)+1e-9:1e-9*Math.max(1,Math.abs(vs[i]));
+      if(Math.abs(vs[i-1]-vs[i])>tl)return {bad:ps[i-1]+' = '+ps[i]}}
+    ps.forEach(t=>{if(/[+\-*\/^√π(]/.test(t.replace(/^-/,'')))pre.push(t)});fin=ps[ps.length-1]}
+  return {fin,pre:pre.filter(t=>t!==fin)};
+}
 function check(){
   if(done)return;const q=cur;let u=userAns(q);
   if(empty(q,u)){fb('hint','Fill in your answer first.');return}
@@ -1313,6 +1368,17 @@ function check(){
     if(raw.length>=2&&parts.length>=1){const fin=parts[parts.length-1],pre=parts.slice(0,-1);
       let okPre=false;try{okPre=pre.every(pt=>stepEq(q,pt))}catch(e){}
       if(okPre&&chk(q,fin).ok){if(!test)stepLines.push(...pre);u=fin;const i0=$('#in0');if(i0)i0.value=fin}}}
+  if(q.type==='num'&&!test&&typeof u==='string'&&E.evalNum&&/=/.test(u)&&/°$/.test(E.answerText(q))){const ts=trigStep(q,u);
+    if(ts==='ok'){const t=String(u).trim();if(stepLines.indexOf(t)<0)stepLines.push(t);drawSteps();const i0=$('#in0');i0.value='';i0.focus();const pv=$('#pv');if(pv)pv.innerHTML='';fb('hint','<b class="h">✓ Good step.</b>That ratio is right. Now use the inverse ('+esc(t.match(/sin|cos|tan/i)[0].toLowerCase())+'⁻¹ on your calculator) and type the angle.');return}
+    if(ts===''&&/sin|cos|tan/i.test(u)){const c=String(u).replace(/^\s*(?:∠|<|angle\s*)?\s*[A-Za-z]{1,3}\s*=/,'').replace(/[−–—]/g,'-').replace(/[÷:]/g,'/').replace(/(\d),(\d)/g,'$1.$2').trim();let v=NaN;try{v=E.evalNum(c)}catch(e){}
+      if(isFinite(v)&&Math.abs(v-q.ans)<=0.051+(q.tol||0)){const t=String(u).trim();if(stepLines.indexOf(t)<0)stepLines.push(t);drawSteps();const i0=$('#in0');i0.value='';i0.focus();const pv=$('#pv');if(pv)pv.innerHTML='';fb('hint','<b class="h">✓ That calculation is right.</b>Now work it out on your calculator, round it, and type the angle.');return}
+      fb('hint','<b class="h">That calculation does not give the right angle.</b>'+(isFinite(v)?'It gives about '+(Math.round(v*10)/10)+'. ':'')+'Check which ratio you need (SOH CAH TOA) and use the inverse: for example <i>B = cos⁻¹(15/17)</i>.');return}
+    if(ts==='bad'){fb('hint','<b class="h">That ratio is not right.</b>Check which side is opposite the angle, which is adjacent and which is the hypotenuse. SOH CAH TOA: sin = O/H, cos = A/H, tan = O/A.');return}}
+  if(q.type==='num'&&!q.eqStep&&typeof u==='string'&&E.evalNum&&isNaN(E.parseNum(u))&&(()=>{try{E.parse(String(u),{noVars:true});return false}catch(e){return true}})()){
+    const w=freeWork(u);
+    if(w&&w.bad&&!test){fb('hint','<b class="h">One calculation is not right: '+esc(w.bad.replace(/\*/g,' × ').replace(/\//g,' : '))+'.</b>Check it and try again.');return}
+    if(w&&!w.bad){if(!test)w.pre.forEach(t=>{if(stepLines.indexOf(t)<0)stepLines.push(t)});u=w.fin}
+    else if(!test){fb('hint','<b class="h">I cannot read this answer.</b>Use numbers and the signs + − × : (you can type <i>x</i> or <i>*</i> for times, <i>:</i> or <i>/</i> for divide). Put a comma between calculations and end with the final number, for example <i>16 : 8 = 2, 12 x 2 = 24</i>.');return}}
   if(test){return testCheck(q,u)}
   const sm=stepMode(q);
   const slashCalc=q.type==='num'&&DIVSTEP.has(String(genName(q)||'').replace(/^X/,''))&&/^\s*\d+(?:[.,]\d+)?\s*\/\s*\d+(?:[.,]\d+)?\s*$/.test(String(u));
