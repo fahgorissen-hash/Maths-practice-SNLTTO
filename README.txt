@@ -89,4 +89,4 @@ Each guide day becomes one lesson; the exercise numbers are matched to the book'
 (from the worked solutions) to choose the question types. The data sits in each _src content file
 between "lessons (generated from the 2026-27 study guides)" and "end lessons", one list per class.
 The generator scripts and exercise maps are kept in the project files: site/lesson-tools/.
-No lessons yet: 3HT/3VT chapter 4 (poster assignment) and 3VT chapter 8 (not in a study guide).
+No lessons: 3HT/3VT chapter 4 (poster assignment). 3VT chapter 8 is not taught in 2026-27. 2VT follows the 2VTb guide (Frank teaches 2VTb only).
