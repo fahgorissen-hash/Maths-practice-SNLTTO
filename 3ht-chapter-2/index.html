@@ -637,7 +637,7 @@ G['2.3'] = [
   },
   function whichWord(l) {
     const q = pick([['A line that cuts an angle into two equal angles.', 'angle bisector'], ['A line that is perpendicular to AB and goes through the midpoint of AB.', 'perpendicular bisector'], ['The set of points that are the same distance from point A and point B.', 'perpendicular bisector'], ['The set of points that are the same distance from both arms of an angle.', 'angle bisector']]);
-    return ch(p('Which word fits? <i>' + q[0] + '</i>'), q[1], ['angle bisector', 'perpendicular bisector', 'median', 'altitude'].filter(x => x !== q[1]).slice(0, 3), 'Equidistant from two points: perpendicular bisector. Equidistant from two lines (arms): angle bisector.', q[1] + '.');
+    return ch(p('Which word fits? <i>' + q[0] + '</i>'), q[1], ['angle bisector', 'perpendicular bisector', 'altitude'].filter(x => x !== q[1]), 'Equidistant from two points: perpendicular bisector. Equidistant from two lines (arms): angle bisector.', q[1] + '.');
   },
   function equidistantPoint(l) {
     const d = ri(3, 12); const pb = Math.random() < .5; return nu(p(pb ? 'Point P lies on the perpendicular bisector of AB. PA = <b>' + d + ' cm</b>. How long is PB (in cm)?' : 'Point P lies on the bisector of angle ∠ABC. The distance from P to arm BA is <b>' + d + ' cm</b>. What is the distance from P to arm BC (in cm)?'), d, pb ? 'Every point on the perpendicular bisector has the same distance to A and B.' : 'Every point on the angle bisector has the same distance to both arms.', 'The answer is ' + d + ' cm.');
@@ -662,7 +662,7 @@ XG['2.3'] = [
   }
 ];
 
-/* ---------- 2.4 Altitudes and medians ---------- */
+/* ---------- 2.4 Altitudes (medians are not in the 2026-27 study guide) ---------- */
 G['2.4'] = [
   function orthoPlace(l) {
     const t = pick([['acute triangle (all angles less than 90°)', 'inside the triangle'], ['right triangle', 'at the vertex of the right angle'], ['obtuse triangle (one angle more than 90°)', 'outside the triangle']]);
@@ -675,33 +675,66 @@ G['2.4'] = [
     const b = LR(l, 3, 8) * 2, h = LR(l, 3, 8); const b2 = pick([4, 5, 6, 8, 10].filter(x => (b * h) % x === 0 && x !== b)); if (!b2) return G['2.4'][1](l);
     return nu(p('A triangle has area ' + b * h / 2 + ' cm². The altitude to side a = ' + b + ' cm is ' + h + ' cm. How long is the altitude to the side of ' + b2 + ' cm (in cm)?'), b * h / b2, 'The area is the same, whichever side you use as the base: ½ × a × h_a = ½ × b × h_b.', 'h = ' + b + ' × ' + h + ' ÷ ' + b2 + ' = ' + f(b * h / b2) + ' cm.');
   },
-  function midpoint(l) {
-    const x1 = LR(l, -6, 6), y1 = LR(l, -6, 6), x2 = x1 + 2 * LR(l, -4, 4), y2 = y1 + 2 * LR(l, -4, 4); return pt(p('Calculate the midpoint of A(' + x1 + ', ' + y1 + ') and B(' + x2 + ', ' + y2 + '). (Type for example <b>(3, -1)</b>.)'), [(x1 + x2) / 2, (y1 + y2) / 2], 'Midpoint: the average of the x-coordinates and the average of the y-coordinates.', '((' + x1 + ' + ' + x2 + ') ÷ 2, (' + y1 + ' + ' + y2 + ') ÷ 2) = (' + (x1 + x2) / 2 + ', ' + (y1 + y2) / 2 + ').');
-  },
-  function centroid(l) {
-    const x = LR(l, -4, 3) * 3, y = LR(l, -4, 3) * 3; const A = [LR(l, -6, 6) * 3 / 3, LR(l, -6, 6)], B = [LR(l, -6, 6), LR(l, -6, 6)]; const C = [3 * (x / 3 * 1) - A[0] - B[0], 3 * (y / 3) - A[1] - B[1]];
-    const g = [(A[0] + B[0] + C[0]) / 3, (A[1] + B[1] + C[1]) / 3];
-    return pt(p('Triangle ABC has A(' + A.join(', ') + '), B(' + B.join(', ') + ') and C(' + C.join(', ') + '). Calculate the <b>centroid</b> (the intersection of the medians). Type for example <b>(1, 2)</b>.'), g, 'Centroid = the average of the three x-coordinates and the average of the three y-coordinates.', '(' + (A[0] + B[0] + C[0]) + '/3, ' + (A[1] + B[1] + C[1]) + '/3) = (' + g.join(', ') + ').');
-  },
-  function centroidRatio(l) {
-    const m = ri(2, 8) * 3; return nu(p('The median from A in triangle ABC has length <b>' + m + ' cm</b>. The centroid Z lies on this median. How long is AZ (in cm)?'), 2 * m / 3, 'The centroid divides each median in the ratio 2 : 1, counted from the vertex.', 'AZ = 2/3 × ' + m + ' = ' + 2 * m / 3 + ' cm.');
-  },
   function whichLine(l) {
-    const q = pick([['A line from a vertex perpendicular to the opposite side.', 'altitude'], ['A line from a vertex to the midpoint of the opposite side.', 'median'], ['The point where the three altitudes meet.', 'orthocentre'], ['The point where the three medians meet.', 'centroid']]);
-    return ch(p('Which word fits? <i>' + q[0] + '</i>'), q[1], ['altitude', 'median', 'orthocentre', 'centroid'].filter(x => x !== q[1]), 'Altitude → orthocentre (perpendicular, 90°). Median → centroid (midpoint).', q[1] + '.');
+    const q = pick([['A line segment from a vertex, perpendicular to the opposite side.', 'altitude'], ['The point where the three altitudes meet.', 'orthocentre'], ['A line through the midpoint of a side, perpendicular to that side.', 'perpendicular bisector'], ['A line that cuts an angle into two equal angles.', 'angle bisector']]);
+    return ch(p('Which word fits? <i>' + q[0] + '</i>'), q[1], ['altitude', 'orthocentre', 'perpendicular bisector', 'angle bisector'].filter(x => x !== q[1]), 'An altitude starts at a vertex and makes 90° with the opposite side. The altitudes meet in the orthocentre.', q[1] + '.');
   }
 ];
 XG['2.4'] = [
-  function missingVertex(l) {
-    const A = [ri(-4, 4), ri(-4, 4)], M2 = [ri(-4, 4), ri(-4, 4)]; const B = [2 * M2[0] - A[0], 2 * M2[1] - A[1]];
-    return pt(p('M(' + M2.join(', ') + ') is the midpoint of AB. A is (' + A.join(', ') + '). Find B. Type for example <b>(3, -1)</b>.'), B, 'Go from A to M, and do the same step again.', 'B = (2 × ' + M2[0] + ' − ' + A[0] + ', 2 × ' + M2[1] + ' − ' + A[1] + ') = (' + B.join(', ') + ').');
+  function altitudeHyp(l) {
+    const k = pick([1, 2, 3, 4]), t = pick([[3, 4], [4, 3]]).map(x => x * k).concat([5 * k]), area = t[0] * t[1] / 2, hc = Math.round(area * 2 / t[2] * 10) / 10;
+    return nu(p('Triangle ABC has a right angle at A. AB = <b>' + t[0] + ' cm</b>, AC = <b>' + t[1] + ' cm</b> and BC = <b>' + t[2] + ' cm</b>. Calculate the length of the altitude from A to side BC (in cm).'), hc, 'First calculate the area with the two legs AB and AC. Then use BC as the base: ½ × BC × altitude = area.', 'Area = ½ × ' + t[0] + ' × ' + t[1] + ' = ' + f(area) + ' cm². With base BC: ½ × ' + t[2] + ' × h = ' + f(area) + ', so h = ' + f(area * 2) + ' ÷ ' + t[2] + ' = ' + f(hc) + ' cm.');
+  }
+];
+
+/* ---------- 2.5 Circumscribed circle (study guide: ex 67-69) ---------- */
+const LV2 = l => typeof l === 'number' ? Math.min(l, 2) : 1;
+const perpDir = (a, b) => [-(b[1] - a[1]), b[0] - a[0]];
+G['2.5'] = [
+  function circumWhich(l) {
+    const q = pick([
+      ['The centre of the circumscribed circle of a triangle is the point of intersection of the three …', 'perpendicular bisectors of the sides', ['angle bisectors', 'altitudes']],
+      ['The circumscribed circle of a triangle goes through …', 'the three vertices of the triangle', ['the midpoints of the three sides', 'the orthocentre of the triangle']],
+      ['M is the point of intersection of the perpendicular bisectors of triangle ABC. Why is MA = MB = MC?', 'Every point on a perpendicular bisector is the same distance from both ends of that side', ['Every point on an angle bisector is the same distance from both arms', 'M is the midpoint of every side']]]);
+    return ch(p(q[0]), q[1], q[2], 'A point on the perpendicular bisector of AB is the same distance from A and from B. The circle around a triangle needs a centre that is the same distance from all three vertices.', 'The answer is: ' + q[1] + '.');
   },
-  function missingCentroidVertex(l) {
-    const A = [ri(-5, 5), ri(-5, 5)], B = [ri(-5, 5), ri(-5, 5)], C = [ri(-5, 5), ri(-5, 5)]; const g = [(A[0] + B[0] + C[0]) / 3, (A[1] + B[1] + C[1]) / 3]; if (!Number.isInteger(g[0]) || !Number.isInteger(g[1])) return XG['2.4'][0](l);
-    return pt(p('The centroid of triangle ABC is Z(' + g.join(', ') + '). A is (' + A.join(', ') + ') and B is (' + B.join(', ') + '). Find C. Type for example <b>(3, -1)</b>.'), C, 'The centroid is the average of the three vertices, so the sum of the x-coordinates is 3 × the x of Z.', 'x: 3 × ' + g[0] + ' − ' + A[0] + ' − ' + B[0] + ' = ' + C[0] + '; y: 3 × ' + g[1] + ' − ' + A[1] + ' − ' + B[1] + ' = ' + C[1] + '.');
+  function circumEqual(l) {
+    const v = pick(['P', 'Q', 'R']), w = pick(['P', 'Q', 'R'].filter(x => x !== v));
+    if (LV2(l) === 0 || Math.random() < .5) { const d = ri(3, 12); return nu(p('M is the centre of the circumscribed circle of triangle PQR. M' + v + ' = <b>' + d + ' cm</b>. How long is M' + w + ' (in cm)?'), d, 'The circle goes through P, Q and R, so MP, MQ and MR are all radii.', 'MP = MQ = MR = radius, so M' + w + ' = ' + d + ' cm.', { noStep: true }); }
+    const D = ri(3, 12) * 2; return nu(p('The circumscribed circle of triangle PQR has a diameter of <b>' + D + ' cm</b>. M is its centre. How long is M' + w + ' (in cm)?'), D / 2, 'M' + w + ' is a radius. The radius is half the diameter.', 'radius = ' + D + ' ÷ 2 = ' + D / 2 + ' cm, so M' + w + ' = ' + D / 2 + ' cm.', { noStep: true });
   },
-  function zToMidpoint(l) {
-    const m = ri(2, 9); return nu(p('Z is the centroid of triangle ABC and M is the midpoint of BC. The distance AZ = <b>' + 2 * m + ' cm</b>. How long is ZM (in cm)?'), m, 'AZ : ZM = 2 : 1.', 'ZM = ' + 2 * m + ' ÷ 2 = ' + m + ' cm.');
+  function twoBisectors(l) {
+    return ch(p('You want to find the centre M of the circumscribed circle of a triangle. What is the <b>least</b> number of perpendicular bisectors you have to draw?'), '2', ['1', '3'], 'Two lines already meet in one point. The third perpendicular bisector goes through that same point.', 'Draw two perpendicular bisectors; their point of intersection is M. The third one also goes through M, so you can use it as a check.');
+  },
+  function circumPlace(l) {
+    const t = pick([['an acute triangle (all angles less than 90°)', 'inside the triangle'], ['a right-angled triangle', 'on the hypotenuse (at its midpoint)'], ['an obtuse triangle (one angle more than 90°)', 'outside the triangle']]);
+    return ch(p('Where is the centre of the circumscribed circle of ' + t[0] + '?'), t[1], ['inside the triangle', 'on the hypotenuse (at its midpoint)', 'outside the triangle'].filter(x => x !== t[1]), 'Draw a triangle of this kind and two perpendicular bisectors. Look where they meet.', 'For ' + t[0] + ' the centre is ' + t[1] + '.');
+  },
+  function clickCircumcentre(l) {
+    const lv = LV2(l), r = 7, R2 = lv === 0 ? [25] : lv === 1 ? [25, 10, 13] : [25, 10, 13, 5, 17];
+    let A, B, C, M;
+    for (;;) {
+      const q = pick(R2), on = []; for (let x = -5; x <= 5; x++) for (let y = -5; y <= 5; y++) if (x * x + y * y === q) on.push([x, y]);
+      M = [ri(-2, 2), ri(-2, 2)]; const s = shuffle(on.slice()).slice(0, 3).map(d => [M[0] + d[0], M[1] + d[1]]);
+      if (s.some(z => Math.abs(z[0]) > r || Math.abs(z[1]) > r)) continue;
+      [A, B, C] = s; if (Math.abs((B[0] - A[0]) * (C[1] - A[1]) - (C[0] - A[0]) * (B[1] - A[1])) < 10) continue; break;
+    }
+    const ln = (a, b) => CLP([(a[0] + b[0]) / 2, (a[1] + b[1]) / 2], perpDir(a, b), -r, r, -r, r), l1 = ln(A, B), l2 = ln(B, C);
+    return clickQ(p('Click the <b>centre of the circumscribed circle</b> of triangle ABC.') + GR({ xmin: -r, xmax: r, ymin: -r, ymax: r, click: true, polys: [{ pts: [A, B, C] }], pts: [{ x: A[0], y: A[1], label: 'A' }, { x: B[0], y: B[1], label: 'B' }, { x: C[0], y: C[1], label: 'C' }] }), [M],
+      { segs: [l1, l2].filter(Boolean).map(z => ({ a: z.a, b: z.b })), pts: [M] },
+      'Draw (in your head or on paper) the perpendicular bisectors of two sides. Where they cross is the centre: it is the same distance from A, B and C.',
+      'The perpendicular bisectors of AB and BC (green lines) meet in M' + ptT(M[0], M[1]) + '. Check: MA, MB and MC are all √' + ((A[0] - M[0]) ** 2 + (A[1] - M[1]) ** 2) + ' long.');
+  }
+];
+XG['2.5'] = [
+  function rightCircumcentre(l) {
+    const x1 = ri(-6, 2), y1 = ri(-6, 2), x2 = x1 + 2 * ri(1, 4), y2 = y1 + 2 * ri(1, 4), m = [(x1 + x2) / 2, (y1 + y2) / 2];
+    return pt(p('Triangle ABC has A(' + x1 + ', ' + y1 + '), B(' + x2 + ', ' + y1 + ') and C(' + x1 + ', ' + y2 + '). The angle at A is 90°. Calculate the centre M of the circumscribed circle. Type for example <b>(3, -1)</b>.'), m, 'In a right-angled triangle the perpendicular bisectors meet on the hypotenuse, at its midpoint.', 'The hypotenuse is BC. Its midpoint is ((' + x2 + ' + ' + x1 + ') ÷ 2, (' + y1 + ' + ' + y2 + ') ÷ 2) = (' + m.join(', ') + ').');
+  },
+  function circumRadius(l) {
+    const M2 = [ri(-3, 3), ri(-3, 3)], d = pick([[3, 4], [4, 3], [2, 3], [1, 3], [3, 1], [2, 1], [1, 2], [4, 1], [6, 8], [5, 5]]), A = [M2[0] + d[0] * pick([1, -1]), M2[1] + d[1] * pick([1, -1])];
+    const q = d[0] * d[0] + d[1] * d[1], rr = Math.sqrt(q), exact = Number.isInteger(rr), ans = Math.round(rr * 10) / 10;
+    return nu(p('M(' + M2.join(', ') + ') is the centre of the circumscribed circle of triangle ABC, and A is (' + A.join(', ') + '). Calculate the radius of the circle.' + (exact ? '' : ' Round to 1 decimal.')), exact ? rr : ans, 'The radius is the length of MA. Make a right-angled triangle with horizontal and vertical sides and use Pythagoras.', 'Horizontal ' + d[0] + ', vertical ' + d[1] + '. MA = √(' + d[0] + '² + ' + d[1] + '²) = √' + q + (exact ? ' = ' + rr : ' ≈ ' + f(ans)) + '.', exact ? {} : { tol: .051 });
   }
 ];
 
@@ -737,26 +770,6 @@ G['2.1'].push(function clickSimilarRect(l) {
   }
 });
 
-G['2.4'].push(function clickMidpoint(l) {
-  const r = [5, 6, 7][l]; let a, b;
-  do { a = [ri(-r, r), ri(-r, r)]; b = [ri(-r, r), ri(-r, r)]; } while ((a[0] + b[0]) % 2 || (a[1] + b[1]) % 2 || Math.abs(a[0] - b[0]) + Math.abs(a[1] - b[1]) < 4);
-  const m = [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2];
-  return clickQ(p('Click the <b>midpoint</b> of line segment AB.') + GR({ xmin: -r, xmax: r, ymin: -r, ymax: r, click: true, segs: [{ a, b, color: '#345', w: 2 }], pts: [{ x: a[0], y: a[1], label: 'A' }, { x: b[0], y: b[1], label: 'B' }] }), [m], null,
-    'Add the x-coordinates of A and B and divide by 2. Do the same for the y-coordinates.',
-    'x = (' + f(a[0]) + ' + ' + f(b[0]) + ') ÷ 2 = ' + f(m[0]) + ' and y = (' + f(a[1]) + ' + ' + f(b[1]) + ') ÷ 2 = ' + f(m[1]) + '. The midpoint is ' + ptT(m[0], m[1]) + '.');
-});
-G['2.4'].push(function clickCentroid(l) {
-  const r = [5, 6, 7][l]; let A, B, C;
-  for (;;) {
-    A = [ri(-r, r), ri(-r, r)]; B = [ri(-r, r), ri(-r, r)]; C = [ri(-r, r), ri(-r, r)];
-    if ((A[0] + B[0] + C[0]) % 3 || (A[1] + B[1] + C[1]) % 3) continue;
-    if (Math.abs((B[0] - A[0]) * (C[1] - A[1]) - (C[0] - A[0]) * (B[1] - A[1])) < 8) continue; break;
-  }
-  const g = [(A[0] + B[0] + C[0]) / 3, (A[1] + B[1] + C[1]) / 3];
-  return clickQ(p('Click the <b>centroid</b> of triangle ABC (the point where the medians meet).') + GR({ xmin: -r, xmax: r, ymin: -r, ymax: r, click: true, polys: [{ pts: [A, B, C] }], pts: [{ x: A[0], y: A[1], label: 'A' }, { x: B[0], y: B[1], label: 'B' }, { x: C[0], y: C[1], label: 'C' }] }), [g], null,
-    'The centroid has the average of the three x-coordinates and the average of the three y-coordinates.',
-    'x = (' + f(A[0]) + ' + ' + f(B[0]) + ' + ' + f(C[0]) + ') ÷ 3 = ' + f(g[0]) + ' and y = (' + f(A[1]) + ' + ' + f(B[1]) + ' + ' + f(C[1]) + ') ÷ 3 = ' + f(g[1]) + '. The centroid is ' + ptT(g[0], g[1]) + '.');
-});
 G['2.3'].push(function clickPerpBisector(l) {
   const r = 6, d = ri(1, 3), t = l === 0 ? pick(['h', 'v']) : pick(['h', 'v', 'd1', 'd2']);
   let a, b, dir;
@@ -787,7 +800,8 @@ const SECTIONS = [
   { id: '2.1', title: '2.1 Similar figures', sub: 'Corresponding angles and sides, scale factor' },
   { id: '2.2', title: '2.2 Similar triangles', sub: 'aa, sss, proofs, scale factor' },
   { id: '2.3', title: '2.3 Bisectors', sub: 'Angle bisector and perpendicular bisector' },
-  { id: '2.4', title: '2.4 Altitudes and medians', sub: 'Orthocentre and centroid' }
+  { id: '2.4', title: '2.4 Altitudes', sub: 'Altitudes, area and the orthocentre' },
+  { id: '2.5', title: '2.5 Circumscribed circle', sub: 'Perpendicular bisectors and the centre of the circle' }
 ];
 const ALL = sec => (G[sec] || []).map(fn => [sec, fn.name]), ALLX = sec => (XG[sec] || []).map(fn => [sec, fn.name]);
 const nm = (sec, names) => names.map(n => [sec, n]);
@@ -799,13 +813,13 @@ const LESSONS = [
   L('L3', 'Lesson · 2.2 B Proving similarity', 'Wed 7 Oct', '2026-10-07', nm('2.2', ['anglePair', 'aaOrSss', 'matchingOrder', 'similarSide', 'pythSimilar']), nm('2.2', ['nestedTri', 'shadow', 'areaFactor'])),
   L('L4', 'Lesson · 2.3 A Angle bisector', 'Thu 8 Oct', '2026-10-08', nm('2.3', ['bisectAngle', 'whichWord', 'equidistantPoint', 'clickAngleBisector']), nm('2.3', ['bisectedFull', 'triangleBis'])),
   L('L5', 'Lesson · 2.3 B Perpendicular bisector', 'Fri 9 Oct', '2026-10-09', nm('2.3', ['whichWord', 'equidistantPoint', 'closerTo', 'trueFalseBis', 'clickPerpBisector']), nm('2.3', ['triangleBis'])),
-  L('L6', 'Lesson · 2.4 A Altitudes', 'Wed 28 Oct', '2026-10-28', nm('2.4', ['orthoPlace', 'altitudeArea', 'twoAltitudes', 'whichLine']), nm('2.4', ['missingVertex'])),
-  L('L7', 'Lesson · 2.4 B Medians', 'Thu 29 Oct', '2026-10-29', nm('2.4', ['midpoint', 'centroid', 'centroidRatio', 'whichLine', 'clickMidpoint', 'clickCentroid']), nm('2.4', ['missingVertex', 'missingCentroidVertex', 'zToMidpoint'])),
-  L('L8', 'Revision · mock test chapters 1 and 2', 'Fri 30 Oct', '2026-10-30', [].concat(...['2.1', '2.2', '2.3', '2.4'].map(ALL)), [].concat(...['2.1', '2.2', '2.3', '2.4'].map(ALLX)), { rev: true })
+  L('L6', 'Lesson · 2.4 A Altitudes', 'Wed 28 Oct', '2026-10-28', nm('2.4', ['orthoPlace', 'altitudeArea', 'twoAltitudes', 'whichLine']), nm('2.4', ['altitudeHyp'])),
+  L('L7', 'Lesson · 2.5 Circumscribed circle', 'Thu 29 Oct', '2026-10-29', nm('2.5', ['circumWhich', 'circumEqual', 'twoBisectors', 'circumPlace', 'clickCircumcentre']), nm('2.5', ['rightCircumcentre', 'circumRadius'])),
+  L('L8', 'Revision · mock test chapters 1 and 2', 'Fri 30 Oct', '2026-10-30', [].concat(...['2.1', '2.2', '2.3', '2.4', '2.5'].map(ALL)), [].concat(...['2.1', '2.2', '2.3', '2.4', '2.5'].map(ALLX)), { rev: true })
 ];
 return { key: 'nx-3ht-ch2-v1', SECTIONS, LESSONS, G, XG, defaultMode: 'lesson' };
 }))(NX,{"cls": "3HT"}));
-window.Ch3.GOALS=[["2.1", "I can tell whether figures are similar and find missing angles and sides", ["quadAngle", "polySide", "similarFigures", "aspectRatio", "insideRect", "twoFactors", "clickSimilarRect"]], ["2.2", "I can find a scale factor and a missing side of similar triangles", ["scaleFactor", "similarSide", "pythSimilar", "ratioTable", "areaFactor", "shadow", "nestedTri"], "Match corresponding sides: same position in the figure."], ["2.2", "I can prove that triangles are similar (aa, sss)", ["missingAngle", "aaOrSss", "anglePair", "matchingOrder", "sidesNotSimilar"]], ["2.3", "I can use angle bisectors and perpendicular bisectors", ["bisectAngle", "whichWord", "equidistantPoint", "closerTo", "trueFalseBis", "bisectedFull", "triangleBis", "clickPerpBisector", "clickAngleBisector"]], ["2.4", "I can work with altitudes and the orthocentre", ["orthoPlace", "altitudeArea", "twoAltitudes", "whichLine"]], ["2.4", "I can work with midpoints, medians and the centroid", ["midpoint", "centroid", "centroidRatio", "missingVertex", "missingCentroidVertex", "zToMidpoint", "clickMidpoint", "clickCentroid"]]];
+window.Ch3.GOALS=[["2.1", "I can tell whether figures are similar and find missing angles and sides", ["quadAngle", "polySide", "similarFigures", "aspectRatio", "insideRect", "twoFactors", "clickSimilarRect"]], ["2.2", "I can find a scale factor and a missing side of similar triangles", ["scaleFactor", "similarSide", "pythSimilar", "ratioTable", "areaFactor", "shadow", "nestedTri"], "Match corresponding sides: same position in the figure."], ["2.2", "I can prove that triangles are similar (aa, sss)", ["missingAngle", "aaOrSss", "anglePair", "matchingOrder", "sidesNotSimilar"]], ["2.3", "I can use angle bisectors and perpendicular bisectors", ["bisectAngle", "whichWord", "equidistantPoint", "closerTo", "trueFalseBis", "bisectedFull", "triangleBis", "clickPerpBisector", "clickAngleBisector"]], ["2.4", "I can work with altitudes and the orthocentre", ["orthoPlace", "altitudeArea", "twoAltitudes", "whichLine", "altitudeHyp"]], ["2.5", "I can find the centre of the circumscribed circle of a triangle", ["circumWhich", "circumEqual", "twoBisectors", "circumPlace", "clickCircumcentre", "rightCircumcentre", "circumRadius"], "The centre is where the perpendicular bisectors meet: the same distance from all three vertices."]];
 </script><script>
 (function(){
 'use strict';

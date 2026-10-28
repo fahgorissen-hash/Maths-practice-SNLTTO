@@ -90,3 +90,9 @@ Each guide day becomes one lesson; the exercise numbers are matched to the book'
 between "lessons (generated from the 2026-27 study guides)" and "end lessons", one list per class.
 The generator scripts and exercise maps are kept in the project files: site/lesson-tools/.
 No lessons: 3HT/3VT chapter 4 (poster assignment). 3VT chapter 8 is not taught in 2026-27. 2VT follows the 2VTb guide (Frank teaches 2VTb only).
+
+3HT chapter 2 (2026-10-28): the 3HT P1 study guide changed week 44 Thu from ex 55-58 (medians) to
+ex 67-69 (circumscribed circle). 3ht-chapter-2 is a standalone page (no _src file): 2.4 is now
+"Altitudes" only (median, centroid and midpoint questions removed), and a new 2.5 "Circumscribed
+circle" was added (definition, equal radii, where the centre lies, click the centre on a grid,
+extras: right-angled triangle centre and radius). Lesson L7 (Thu 29 Oct) now uses 2.5.
