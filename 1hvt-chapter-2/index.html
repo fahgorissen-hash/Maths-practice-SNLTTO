@@ -467,11 +467,20 @@ function engine(def) {
     }
     return q;
   }
-  function makeTest() {
-    const n = SECTIONS.length, N = 24;
-    const lv = shuffle([0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2]);
-    const secs = []; for (let i = 0; i < N; i++) secs.push(SECTIONS[i % n].id);
-    const seen = []; return shuffle(secs).map((s, i) => { const q = make(s, lv[i], seen); seen.push({ g: null, f: q.fp }); q.hint = null; return q; });
+  function makeTest() {   // 24 questions, test level: levels 1-2 only, every generator once before any repeats, def.TEST.skip leaves out practice-only items
+    const N = 24, skip = new Set(((def.TEST || {}).skip) || []);
+    const pool = SECTIONS.map(s => ({ id: s.id, gens: (G[s.id] || []).filter(fn => !skip.has(fn.name)) })).filter(s => s.gens.length);
+    const total = pool.reduce((a, s) => a + s.gens.length, 0), slots = [];
+    pool.forEach(s => { s.n = Math.max(2, Math.round(N * s.gens.length / total)); s.used = {}; });
+    while (pool.reduce((a, s) => a + s.n, 0) > N) pool.filter(s => s.n > 2).sort((a, b) => b.n / b.gens.length - a.n / a.gens.length)[0].n--;
+    while (pool.reduce((a, s) => a + s.n, 0) < N) pool.slice().sort((a, b) => a.n / a.gens.length - b.n / b.gens.length)[0].n++;
+    pool.forEach(s => { for (let i = 0; i < s.n; i++) { const c = Math.min(...s.gens.map(fn => s.used[fn.name] || 0)), fn = pick(s.gens.filter(g => (s.used[g.name] || 0) === c)); s.used[fn.name] = c + 1; slots.push([s.id, fn]); } });
+    const lv = shuffle([1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2]), seen = [];
+    return shuffle(slots).map((e, i) => {
+      let q;
+      for (let t = 0; t < 40; t++) { try { q = e[1](lv[i]); } catch (err) { if (t > 30) throw err; continue; } q.fp = fingerprint(q); if (!seen.includes(q.fp)) break; }
+      q.gen = e[1].name; q.sec = e[0]; q.lvl = lv[i]; q.mix = false; seen.push(q.fp); q.hint = null; return q;
+    });
   }
   return { KEY: def.key, SECTIONS, LESSONS, G, XG, make, makeTest, grade, check, answerText, evalNum: s => evalAst(parse(String(s), { noVars: true }), {}), evalAt: (s, env) => evalAst(parse(String(s)), env), parseNum, parsePoint, f, M, parse, defaultMode: def.defaultMode || 'lesson' };
 }
@@ -732,6 +741,24 @@ const __def = (function (NX, P) {
         hint: rel === 'par' ? 'A parallel line has the same direction as m. Look at how m goes: steps right and up or down. Start at a point and take the same steps.' : 'A perpendicular line meets m at 90°. Swap the steps of m: if m goes 2 right and 1 up, a perpendicular line goes 1 right and 2 down (or 1 left and 2 up).',
         steps: 'Many answers are correct. The green lines show some possible lines; any two (or more) points on one of them are right.',
         reveal: (() => { const L = [revLine(C, e)]; for (let i = 0; i < 2; i++) { let P2, tr = 0; do { P2 = [ri(-5, 5), ri(-5, 5)]; tr++; } while (tr < 50 && (rel === 'par' && (P2[0] - A[0]) * d[1] - (P2[1] - A[1]) * d[0] === 0)); L.push(revLine(P2, e)); } return { segs: L.map(x => x.seg), pts: [].concat(...L.map(x => x.pts)) }; })() };
+    },
+    function lineSymbols(l) {   // four lines: which are parallel, which perpendicular (written with // and ⊥, as in the test)
+      const D = l === 1 ? [[1, 0], [0, 1], [1, 1], [1, -1]] : [[1, 1], [1, -1], [2, 1], [1, 2], [2, -1], [1, -2]];
+      const d = pick(D), e = [-d[1], d[0]], cr = (u, v) => u[0] * v[1] - u[1] * v[0], dot = (u, v) => u[0] * v[0] + u[1] * v[1];
+      const o = pick([[1, 0], [0, 1], [1, 1], [1, -1], [2, 1], [1, 2], [2, -1], [1, -2], [3, 1], [1, 3]].filter(v => cr(v, d) && cr(v, e) && dot(v, d) && dot(v, e)));
+      const far = (P, v) => { let k = 0; while (Math.abs(P[0] + (k + 1) * v[0]) <= 7 && Math.abs(P[1] + (k + 1) * v[1]) <= 7) k++; let j = 0; while (Math.abs(P[0] - (j + 1) * v[0]) <= 7 && Math.abs(P[1] - (j + 1) * v[1]) <= 7) j++; return { a: [P[0] - j * v[0], P[1] - j * v[1]], b: [P[0] + k * v[0], P[1] + k * v[1]] }; };
+      const A = [ri(-3, 0), ri(-3, 0)]; let B, t = 0;
+      do { B = [ri(1, 4), ri(1, 4)]; t++; } while (t < 50 && Math.abs(cr([B[0] - A[0], B[1] - A[1]], d)) < 3 * Math.hypot(d[0], d[1]));
+      const dirs = [d, d, e, o], base = [A, B, [ri(-2, 2), ri(-2, 2)], [ri(-2, 2), ri(-2, 2)]], nm = shuffle(['k', 'l', 'm', 'n']), cols = [ptc, MIR, '#16803c', '#7a3db8'];
+      const segs = dirs.map((v, i) => Object.assign(far(base[i], v), { color: cols[i], label: nm[i] }));
+      const par = (i, j) => cr(dirs[i], dirs[j]) === 0, perp = (i, j) => dot(dirs[i], dirs[j]) === 0, all = [];
+      for (let i = 0; i < 4; i++) for (let j = i + 1; j < 4; j++) for (let a = 0; a < 4; a++) for (let b = a + 1; b < 4; b++) if (i + '' + j !== a + '' + b) all.push({ t: nm[i] + ' // ' + nm[j] + ' and ' + nm[a] + ' ⊥ ' + nm[b], ok: par(i, j) && perp(a, b) });
+      const good = pick(all.filter(x => x.ok)), opts = shuffle([good].concat(shuffle(all.filter(x => !x.ok)).slice(0, 3)));
+      const pp = nm[0] + ' // ' + nm[1], pq = nm[2] + ' ⊥ ' + nm[0] + ' and ' + nm[2] + ' ⊥ ' + nm[1];
+      return { type: 'choice', opts: opts.map(x => x.t), ans: opts.indexOf(good), correct: opts.indexOf(good),
+        html: '<p>Look at the lines k, l, m and n. Which statement is <b>true</b>? (// means parallel, ⊥ means perpendicular.)</p>' + grp({ segs }),
+        hint: 'Follow each line square by square: how many steps right and how many up or down? Parallel lines take the same steps. For perpendicular lines the steps are swapped and one changes direction.',
+        steps: nm[0] + ' and ' + nm[1] + ' have the same direction, so ' + pp + '. Line ' + nm[2] + ' makes right angles with both of them, so ' + pq + '. Line ' + nm[3] + ' is neither. The true statement is: ' + good.t + '.' };
     }
   ];
 
@@ -915,6 +942,37 @@ const __def = (function (NX, P) {
         html: '<p>This is ' + shape + '. A <b>diagonal</b> goes from one corner to another corner that is <b>not next to it</b>.' + (mode === 'shown' ? ' The diagonals from corner A are drawn (dashed).' : '') + ' How many diagonals does the ' + (n === 4 ? 'quadrilateral' : 'pentagon') + ' have <b>in total</b>?</p>' + grp({ polys: [{ v: V }], texts: cornerLabels(V, L), segs: mode === 'shown' ? fromA : [] }),
         hint: 'Start at A and count its diagonals. Then go to B, then C, and so on. Do not count a diagonal twice: AC and CA are the same diagonal.',
         steps: 'The diagonals are ' + list.slice(0, -1).join(', ') + ' and ' + list[list.length - 1] + '. That is ' + ans + ' diagonals. (Check: ' + n + ' corners · ' + (n - 3) + ' diagonal' + (n > 4 ? 's' : '') + ' each = ' + n * (n - 3) + ', and every diagonal is counted twice: ' + n * (n - 3) + ' : 2 = ' + ans + '.)' };
+    },
+    function circlesInRect(l) {   // equal circles that fit exactly in a rectangle
+      const rows = l === 2 && Math.random() < .5 ? 2 : 1, cols = rows === 2 ? pick([2, 3]) : pick([2, 3, 4]), r = pick([2, 2.5, 3, 4, 5, 6, 7.5]);
+      const L = 2 * r * cols, W = 2 * r * rows, ask = l === 2 ? pick(['r', 'L']) : 'r', u = Math.min(300 / L, 140 / W);
+      let svg = '<svg class="grid" viewBox="0 0 ' + (L * u + 20).toFixed(0) + ' ' + (W * u + 20).toFixed(0) + '" style="max-width:340px"><rect width="100%" height="100%" fill="#fff"/><rect x="10" y="10" width="' + (L * u).toFixed(1) + '" height="' + (W * u).toFixed(1) + '" fill="none" stroke="#223" stroke-width="2"/>';
+      for (let i = 0; i < cols; i++) for (let j = 0; j < rows; j++) svg += '<circle cx="' + (10 + (2 * i + 1) * r * u).toFixed(1) + '" cy="' + (10 + (2 * j + 1) * r * u).toFixed(1) + '" r="' + (r * u).toFixed(1) + '" fill="rgba(27,95,168,.10)" stroke="' + ptc + '" stroke-width="2"/>';
+      svg += '</svg>';
+      const n = rows * cols, fmt = v => String(v).replace('.', ','), lay = rows === 2 ? n + ' equal circles (2 rows of ' + cols + ')' : cols + ' equal circles';
+      if (ask === 'r') return { type: 'num', ans: r, correct: String(r),
+        html: '<p>' + lay + ' fit exactly in a rectangle of <b>' + fmt(L) + ' cm</b> by <b>' + fmt(W) + ' cm</b> (see the figure). Calculate the <b>radius</b> of one circle. (Give the number of cm.)</p>' + svg,
+        hint: 'Look at the width of the rectangle: how many diameters fit in it? The radius is half of a diameter.',
+        steps: (rows === 1 ? 'The width of the rectangle is one diameter, so the diameter = ' + fmt(W) + ' cm.' : 'Two diameters fit in the width, so the diameter = ' + fmt(W) + ' : 2 = ' + fmt(2 * r) + ' cm.') + ' Radius = ' + fmt(2 * r) + ' : 2 = ' + fmt(r) + ' cm. (Check: ' + cols + ' · ' + fmt(2 * r) + ' = ' + fmt(L) + ' cm, the length.)' };
+      return { type: 'num', ans: L, correct: String(L),
+        html: '<p>' + lay + ' with a radius of <b>' + fmt(r) + ' cm</b> fit exactly in a rectangle (see the figure). How long is the <b>long side</b> of the rectangle? (Give the number of cm.)</p>' + svg,
+        hint: 'First work out the diameter. How many diameters fit along the long side?',
+        steps: 'Diameter = 2 · ' + fmt(r) + ' = ' + fmt(2 * r) + ' cm. Along the long side there are ' + cols + ' diameters: ' + cols + ' · ' + fmt(2 * r) + ' = ' + fmt(L) + ' cm.' };
+    },
+    function fourthVertex(l) {   // click the missing corner S
+      const kind = pick(l === 1 ? ['rectangle', 'square'] : ['square', 'parallelogram', 'rectangle']);
+      for (let t = 0; t < 300; t++) {
+        let v, w;
+        if (kind === 'square') { v = l === 1 ? pick([[ri(2, 4), 0], [0, ri(2, 4)]]) : [ri(1, 3), ri(1, 3) * pick([-1, 1])]; w = [-v[1], v[0]]; if (Math.abs(v[0]) + Math.abs(v[1]) < 3) continue; }
+        else if (kind === 'rectangle') { if (l === 1) { v = [ri(2, 5), 0]; w = [0, ri(2, 4)]; if (w[1] === v[0]) continue; } else { v = [ri(1, 2), ri(1, 2) * pick([-1, 1])]; w = [-2 * v[1], 2 * v[0]]; } }
+        else { v = [ri(2, 4), 0]; w = [ri(1, 3) * pick([-1, 1]), ri(2, 4)]; }
+        const P = [ri(-6, 2), ri(-6, 2)], Q = [P[0] + v[0], P[1] + v[1]], R = [Q[0] + w[0], Q[1] + w[1]], S = [P[0] + w[0], P[1] + w[1]];
+        if (![P, Q, R, S].every(p => inR(p, 6))) continue;
+        return clickQ('<p>P, Q and R are three corners of <b>' + kind + ' PQRS</b>. Click the fourth corner <b>S</b>.</p>' + grp({ click: true, segs: [{ a: P, b: Q, color: ptc }, { a: Q, b: R, color: ptc }], pts: [{ x: P[0], y: P[1], label: 'P' }, { x: Q[0], y: Q[1], label: 'Q' }, { x: R[0], y: R[1], label: 'R' }] }), [S],
+          'In a ' + kind + ' the opposite sides are parallel and equally long. Count the steps from Q to R. Start at P and take the same steps.',
+          'From Q to R is ' + Math.abs(w[0]) + ' step' + (Math.abs(w[0]) === 1 ? '' : 's') + (w[0] >= 0 ? ' right' : ' left') + ' and ' + Math.abs(w[1]) + (w[1] >= 0 ? ' up' : ' down') + '. Take the same steps from P to find S (marked in green). Then PS // QR and SR // PQ.');
+      }
+      return GN('2.3', 'fourthVertex')(l);
     }
   ];
 
@@ -929,10 +987,18 @@ const __def = (function (NX, P) {
       let P, A, B; const tri = l > 0;
       for (let k = 0; k < 200; k++) {
         P = [ri(-3, 3), ri(-3, 3)]; A = [ri(-5, 5), ri(-5, 5)]; if (!tri) { B = null; } else { B = [A[0] + ri(1, 3), A[1] + ri(-3, 3)]; }
-        const pts = tri ? [A, B, [A[0] - ri(0, 2), A[1] + ri(1, 3)]] : [A];
+        const quad = l === 2, w = ri(2, 3), h = ri(2, 3);
+        const pts = quad ? [A, [A[0] + w, A[1] + ri(-1, 1)], [A[0] + w + ri(-1, 1), A[1] + h], [A[0] + ri(-1, 0), A[1] + h + ri(0, 1)]] : tri ? [A, B, [A[0] - ri(0, 2), A[1] + ri(1, 3)]] : [A];
         const im = pts.map(p => [2 * P[0] - p[0], 2 * P[1] - p[1]]);
         if (pts.every(p => inR(p, 6)) && im.every(p => inR(p, 6)) && !pts.some(p => p[0] === P[0] && p[1] === P[1])) {
-          return clickQ('<p>Reflect ' + (tri ? 'triangle <b>ABC</b>' : 'point <b>A</b>') + ' in point <b>P</b>. Click ' + (tri ? 'the three corners of the image' : 'the image A′') + '. (Click again to remove a point.)</p>' + grp({ click: true, polys: tri ? [{ v: pts, label: ['A', 'B', 'C'] }] : [], pts: (tri ? [] : [{ x: pts[0][0], y: pts[0][1], label: 'A' }]).concat([{ x: P[0], y: P[1], label: 'P', color: MIR }]) }), im,
+          if (pts.some(p => im.some(q => q[0] === p[0] && q[1] === p[1]))) continue;
+          if (quad) {   // convex, and P outside the quadrilateral so the image does not overlap it
+            const cr = pts.map((p, i) => { const a = pts[(i + 1) % 4], b = pts[(i + 2) % 4]; return (a[0] - p[0]) * (b[1] - a[1]) - (a[1] - p[1]) * (b[0] - a[0]); });
+            if (!(cr.every(c => c > 0) || cr.every(c => c < 0))) continue;
+            const xs = pts.map(p => p[0]), ys = pts.map(p => p[1]);
+            if (P[0] >= Math.min(...xs) - 1 && P[0] <= Math.max(...xs) + 1 && P[1] >= Math.min(...ys) - 1 && P[1] <= Math.max(...ys) + 1) continue;
+          }
+          return clickQ('<p>Reflect ' + (quad ? 'quadrilateral <b>ABCD</b>' : tri ? 'triangle <b>ABC</b>' : 'point <b>A</b>') + ' in point <b>P</b>. Click ' + (quad ? 'the four corners of the image' : tri ? 'the three corners of the image' : 'the image A′') + '. (Click again to remove a point.)</p>' + grp({ click: true, polys: tri ? [{ v: pts, label: ['A', 'B', 'C', 'D'] }] : [], pts: (tri ? [] : [{ x: pts[0][0], y: pts[0][1], label: 'A' }]).concat([{ x: P[0], y: P[1], label: 'P', color: MIR }]) }), im,
             'The image is at the same distance from P as the original, but on the other side of P. Go from A to P, and just as far again.', 'The image is marked in green on the grid.');
         }
       }
@@ -1181,7 +1247,7 @@ const __def = (function (NX, P) {
     { id: 'L4', title: 'Lesson 4 · 2.3 Triangles', sub: 'Wed 7 Oct', date: '2026-10-07',
       gens: [['2.3', 'triByAngles'], ['2.3', 'triBySidesFromAngles'], ['2.3', 'triBySides']], xg: [['2.3', 'thirdAngle'], ['2.3', 'isosceles'], ['2.4', 'thirdSide']] },
     { id: 'L5', title: 'Lesson 5 · 2.3 Quadrilaterals and circles', sub: 'Thu 8 Oct', date: '2026-10-08',
-      gens: [['2.3', 'quadName'], ['2.3', 'alwaysSometimes'], ['2.3', 'circleConv'], ['2.3', 'diagonals']], xg: [['2.3', 'radiiTriangle'], ['2.3', 'circlesMeet'], ['2.3', 'diagonalsPattern']] },
+      gens: [['2.3', 'quadName'], ['2.3', 'alwaysSometimes'], ['2.3', 'circleConv'], ['2.3', 'circlesInRect'], ['2.3', 'fourthVertex'], ['2.3', 'diagonals']], xg: [['2.3', 'radiiTriangle'], ['2.3', 'circlesMeet'], ['2.3', 'diagonalsPattern']] },
     { id: 'L6', title: 'Lesson 6 · 2.4 Constructing triangles', sub: 'Fri 9 Oct', date: '2026-10-09',
       gens: [['2.4', 'tools'], ['2.4', 'compassCircle'], ['2.3', 'triBySides']], xg: [['2.4', 'canMake'], ['2.3', 'thirdAngle'], ['2.4', 'thirdSide'], ['2.3', 'isosceles']] },
     { id: 'L7', title: 'Lesson 7 · 2.4 Constructing with a compass', sub: 'Tue 27 Oct', date: '2026-10-27',
@@ -1223,8 +1289,10 @@ const __def = (function (NX, P) {
   };
   const __wrap = L => { for (const k in L) L[k] = L[k].map(fn => { const g = l => __conv(fn(l), fn.name); Object.defineProperty(g, 'name', { value: fn.name }); return g; }); };
   __wrap(G); __wrap(XG);
-  const GOALS = [["2.1", "I can name lines, rays and segments and say how lines are related", ["nameIt", "relation", "maxIntersect", "maxIntersect5"]], ["2.1", "I can measure distances between points and lines, and draw parallel lines", ["distPointLine", "parDist", "atDistance", "clickParPerp", "distParallelPoints", "throughPoint"]], ["2.2", "I can name and classify angles", ["typeByDegrees", "typeByPicture", "reflex", "vertexName", "angleReason"]], ["2.2", "I can calculate with angles, clocks and compass directions", ["clock", "compass", "complete", "turnSequence", "clockAngle"]], ["2.2", "I can read and draw angles with a protractor", ["drawAngle", "readAngle", "pickReading", "twoArms"]], ["2.3", "I can classify triangles and quadrilaterals", ["triByAngles", "triBySidesFromAngles", "triBySides", "quadName", "alwaysSometimes"]], ["2.3", "I can use angle sums, circles and diagonals", ["thirdAngle", "circleConv", "diagonals", "diagonalsPattern", "circlesMeet", "isosceles", "radiiTriangle"]], ["2.4", "I can decide whether a triangle can be constructed and choose the right tool", ["canMake", "tools", "compassCircle", "thirdSide"]], ["2.4", "I can reflect points in a point or a line and find a midpoint", ["reflectPoint", "reflectLine", "midpoint", "whereIsP", "mirrorDist", "rhombusFacts", "doubleReflect"]]];
-  return { key: 'ch2-1hvt-plane-figures-v1', SECTIONS, LESSONS: LESSONS, G, XG, GOALS };
+  const GOALS = [["2.1", "I can name lines, rays and segments and say how lines are related", ["nameIt", "relation", "lineSymbols", "maxIntersect", "maxIntersect5"]], ["2.1", "I can measure distances between points and lines, and draw parallel lines", ["distPointLine", "parDist", "atDistance", "clickParPerp", "distParallelPoints", "throughPoint"]], ["2.2", "I can name and classify angles", ["typeByDegrees", "typeByPicture", "reflex", "vertexName", "angleReason"]], ["2.2", "I can calculate with angles, clocks and compass directions", ["clock", "compass", "complete", "turnSequence", "clockAngle"]], ["2.2", "I can read and draw angles with a protractor", ["drawAngle", "readAngle", "pickReading", "twoArms"]], ["2.3", "I can classify triangles and quadrilaterals", ["triByAngles", "triBySidesFromAngles", "triBySides", "quadName", "fourthVertex", "alwaysSometimes"]], ["2.3", "I can use angle sums, circles and diagonals", ["thirdAngle", "circleConv", "circlesInRect", "diagonals", "diagonalsPattern", "circlesMeet", "isosceles", "radiiTriangle"]], ["2.4", "I can decide whether a triangle can be constructed and choose the right tool", ["canMake", "tools", "compassCircle", "thirdSide"]], ["2.4", "I can reflect points in a point or a line and find a midpoint", ["reflectPoint", "reflectLine", "midpoint", "whereIsP", "mirrorDist", "rhombusFacts", "doubleReflect"]]];
+  /* test preparation: one-step recall items stay in practice only (compared with the 2026-27 test and book ex 91-104) */
+  const TEST = { skip: ['relation', 'typeByPicture', 'vertexName', 'pickReading', 'triBySides', 'circleConv', 'tools', 'midpoint', 'whereIsP', 'mirrorDist', 'rhombusFacts', 'compassCircle'] };
+  return { key: 'ch2-1hvt-plane-figures-v1', SECTIONS, LESSONS: LESSONS, G, XG, GOALS, TEST };
 
 })(NX, {"cls": "1HVT"});
 window.Ch3 = NX.engine(__def); window.Ch3.GOALS = __def.GOALS;

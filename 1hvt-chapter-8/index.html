@@ -467,11 +467,20 @@ function engine(def) {
     }
     return q;
   }
-  function makeTest() {
-    const n = SECTIONS.length, N = 24;
-    const lv = shuffle([0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2]);
-    const secs = []; for (let i = 0; i < N; i++) secs.push(SECTIONS[i % n].id);
-    const seen = []; return shuffle(secs).map((s, i) => { const q = make(s, lv[i], seen); seen.push({ g: null, f: q.fp }); q.hint = null; return q; });
+  function makeTest() {   // 24 questions, test level: levels 1-2 only, every generator once before any repeats, def.TEST.skip leaves out practice-only items
+    const N = 24, skip = new Set(((def.TEST || {}).skip) || []);
+    const pool = SECTIONS.map(s => ({ id: s.id, gens: (G[s.id] || []).filter(fn => !skip.has(fn.name)) })).filter(s => s.gens.length);
+    const total = pool.reduce((a, s) => a + s.gens.length, 0), slots = [];
+    pool.forEach(s => { s.n = Math.max(2, Math.round(N * s.gens.length / total)); s.used = {}; });
+    while (pool.reduce((a, s) => a + s.n, 0) > N) pool.filter(s => s.n > 2).sort((a, b) => b.n / b.gens.length - a.n / a.gens.length)[0].n--;
+    while (pool.reduce((a, s) => a + s.n, 0) < N) pool.slice().sort((a, b) => a.n / a.gens.length - b.n / b.gens.length)[0].n++;
+    pool.forEach(s => { for (let i = 0; i < s.n; i++) { const c = Math.min(...s.gens.map(fn => s.used[fn.name] || 0)), fn = pick(s.gens.filter(g => (s.used[g.name] || 0) === c)); s.used[fn.name] = c + 1; slots.push([s.id, fn]); } });
+    const lv = shuffle([1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2]), seen = [];
+    return shuffle(slots).map((e, i) => {
+      let q;
+      for (let t = 0; t < 40; t++) { try { q = e[1](lv[i]); } catch (err) { if (t > 30) throw err; continue; } q.fp = fingerprint(q); if (!seen.includes(q.fp)) break; }
+      q.gen = e[1].name; q.sec = e[0]; q.lvl = lv[i]; q.mix = false; seen.push(q.fp); q.hint = null; return q;
+    });
   }
   return { KEY: def.key, SECTIONS, LESSONS, G, XG, make, makeTest, grade, check, answerText, evalNum: s => evalAst(parse(String(s), { noVars: true }), {}), evalAt: (s, env) => evalAst(parse(String(s)), env), parseNum, parsePoint, f, M, parse, defaultMode: def.defaultMode || 'lesson' };
 }
