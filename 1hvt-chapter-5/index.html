@@ -697,7 +697,29 @@ XG['5.4'] = [
   function ringArea(l) {
     const R = ri(5, 12), r = ri(2, R - 2), A = R * R - r * r;
     return ch(p('A ring is a circle with radius ' + R + ' with a hole of radius ' + r + ' in the middle. What is the exact area of the ring?'), A + PI, [(R - r) * (R - r) + PI, 2 * (R - r) + PI, (R * R + r * r) + PI], 'Area of the big circle minus area of the small circle.', 'π × ' + R + '² − π × ' + r + '² = ' + R * R + PI + ' − ' + r * r + PI + ' = ' + A + PI);
-  }
+  },
+  function compositeArea(l) {   // composite figures (test questions collection ch5, ex 13-14 and 17-19)
+    const k = l === 1 ? pick([0, 2]) : pick([0, 1, 2]), S = 22, st = 'fill="rgba(27,95,168,.18)" stroke="#1b5fa8" stroke-width="2"';
+    if (k === 0) {   // rectangle with a semicircle on the short side
+      const W = 2 * ri(2, 6), L = W + 2 * ri(1, 4), r = W / 2, A = rd(L * W + Math.PI * r * r / 2, 2);
+      const fig = svg(L * S + r * S + 100, W * S + 40, '<g transform="translate(45,0)">'+'<path d="M20 20 h' + L * S + ' a' + r * S + ' ' + r * S + ' 0 0 1 0 ' + W * S + ' h-' + L * S + ' z" ' + st + '/>' + txt(L + ' cm', 20 + L * S / 2, 15) + txt(W + ' cm', 15, 25 + W * S / 2, 'end') + '</g>');
+      return nu(p('The figure is a rectangle of ' + L + ' cm by ' + W + ' cm with a half circle on one side. Calculate the area of the whole figure. <small>(Round to 2 decimals.)</small>') + fig, A,
+        'Split the figure: a rectangle and half a circle. The diameter of the half circle is ' + W + ' cm.',
+        p('rectangle: ' + L + ' × ' + W + ' = ' + L * W + ' cm²') + p('radius = ' + W + ' : 2 = ' + r + ' cm; half circle: ½ × π × ' + r + '² ≈ ' + rd(Math.PI * r * r / 2, 2) + ' cm²') + p('total ≈ ' + L * W + ' + ' + rd(Math.PI * r * r / 2, 2) + ' ≈ ' + A + ' cm²'), { tol: 0.011 });
+    }
+    if (k === 1) {   // square minus a quarter circle
+      const a = ri(4, 10), A = rd(a * a - Math.PI * a * a / 4, 2);
+      const fig = svg(a * S + 100, a * S + 40, '<g transform="translate(45,0)">'+'<path d="M20 20 h' + a * S + ' v' + a * S + ' a' + a * S + ' ' + a * S + ' 0 0 0 -' + a * S + ' -' + a * S + ' z" ' + st + '/><rect x="20" y="20" width="' + a * S + '" height="' + a * S + '" fill="none" stroke="#1b5fa8" stroke-width="1" stroke-dasharray="4 3"/>' + txt(a + ' cm', 20 + a * S / 2, 15) + '</g>');
+      return nu(p('A square has sides of ' + a + ' cm. A quarter circle with radius ' + a + ' cm is cut out of it (see the figure). Calculate the area of the shaded part. <small>(Round to 2 decimals.)</small>') + fig, A,
+        'Shaded part = square − quarter circle. A quarter circle is ¼ of a whole circle.',
+        p('square: ' + a + ' × ' + a + ' = ' + a * a + ' cm²') + p('quarter circle: ¼ × π × ' + a + '² ≈ ' + rd(Math.PI * a * a / 4, 2) + ' cm²') + p('shaded ≈ ' + a * a + ' − ' + rd(Math.PI * a * a / 4, 2) + ' ≈ ' + A + ' cm²'), { tol: 0.011 });
+    }
+    const L = ri(6, 12), W = ri(4, 8), c = ri(2, L - 2), d = ri(2, W - 1), A = L * W - c * d / 2;   // rectangle with a corner triangle cut off
+    const fig = svg(L * S + 100, W * S + 40, '<g transform="translate(45,0)">'+'<path d="M20 20 h' + (L - c) * S + ' l' + c * S + ' ' + d * S + ' v' + (W - d) * S + ' h-' + L * S + ' z" ' + st + '/><path d="M' + (20 + (L - c) * S) + ' 20 h' + c * S + ' v' + d * S + '" fill="none" stroke="#1b5fa8" stroke-dasharray="4 3"/>' + txt(L + ' cm', 20 + L * S / 2, W * S + 36) + txt(W + ' cm', 15, 25 + W * S / 2, 'end') + txt(c + ' cm', 20 + (L - c / 2) * S, 15) + txt(d + ' cm', L * S + 26, 25 + d * S / 2, 'start') + '</g>');
+    return nu(p('A corner is cut off a rectangle of ' + L + ' cm by ' + W + ' cm (see the figure). The triangle that is cut off has sides of ' + c + ' cm and ' + d + ' cm next to the right angle. Calculate the area of the figure that is left.') + fig, A,
+      'Area of the figure = rectangle − triangle.',
+      p('rectangle: ' + L + ' × ' + W + ' = ' + L * W + ' cm²') + p('triangle: ½ × ' + c + ' × ' + d + ' = ' + c * d / 2 + ' cm²') + p('left: ' + L * W + ' − ' + c * d / 2 + ' = ' + A + ' cm²'));
+  },
 ];
 
 /* ======================= 5.5 Volume ======================= */

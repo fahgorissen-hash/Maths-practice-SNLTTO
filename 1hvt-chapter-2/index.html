@@ -781,13 +781,6 @@ const __def = (function (NX, P) {
       return { type: 'choice', opts, ans, correct: ans, html: '<p>What kind of angle is this? (The red arc shows the angle.)</p>' + angleSvg(d, rot),
         hint: 'Compare with a right angle (a square corner). Is the red arc smaller or bigger? Does it go around more than half a turn?', steps: 'This angle is ' + ATYPES[aType(d)].toLowerCase() + '.' };
     },
-    function reflex(l) {
-      const small = l === 0 ? ri(2, 17) * 10 : ri(11, 179), toBig = Math.random() < .6;
-      return toBig ? { type: 'num', ans: 360 - small, correct: String(360 - small), html: '<p>The (small) angle between two lines is <b>' + small + '°</b>. What is the <b>reflex angle</b> on the other side?</p>',
-        hint: 'A full turn is 360°. Subtract the small angle.', steps: '360° − ' + small + '° = ' + (360 - small) + '°.' } :
-        { type: 'num', ans: small, correct: String(small), html: '<p>A reflex angle is <b>' + (360 - small) + '°</b>. What is the (small) angle on the other side?</p>',
-        hint: 'A full turn is 360°. Subtract the reflex angle from 360°.', steps: '360° − ' + (360 - small) + '° = ' + small + '°.' };
-    },
     function clock(l) {   // whole hours only (1HVT scope: no hour hand between two numbers)
       const h = l === 0 ? ri(1, 6) : ri(1, 12), k = h > 6 ? 12 - h : h, d = k * 30;
       return { type: 'num', ans: d, correct: String(d), html: '<p>What is the <b>(smaller) angle between the hands</b> of a clock at <b>' + h + ':00</b>?</p>',
@@ -817,31 +810,6 @@ const __def = (function (NX, P) {
       const right = '∠' + nm[0], o2 = shuffle(nm.map(c => '∠' + c));
       return { type: 'choice', opts: o2, ans: o2.indexOf(right), correct: o2.indexOf(right), html: '<p>What is the name of the angle between the two lines?</p>' + svg,
         hint: 'An angle is named after its vertex: the point where the two lines meet.', steps: 'The lines meet at point ' + nm[0] + ', so the angle is called ' + right + '.' };
-    },
-    function complete(l) {
-      const nm = { 90: 'a right angle', 180: 'a straight angle', 360: 'a full angle' };
-      if (l === 0) {                       // two known angles, one missing
-        const T = pick([90, 180]), x = 5 * ri(2, T / 5 - 6), a = 5 * ri(2, (T - x) / 5 - 2), b = T - x - a;
-        if (b <= 0 || a <= 0) return GN('2.2', 'complete')(l);
-        return { type: 'num', ans: x, correct: String(x),
-          html: '<p>The angles <b>' + a + '°</b> and <b>' + b + '°</b> are next to each other, together with a third angle <b>x</b>. All three together make <b>' + nm[T] + '</b> (' + T + '°). How big is <b>x</b>? (Give the number of degrees.)</p>',
-          hint: 'Add the two angles you know. Then subtract the total from ' + T + '°.', steps: a + ' + ' + b + ' = ' + (a + b) + '°. Then ' + T + ' − ' + (a + b) + ' = ' + x + '°.' };
-      }
-      if (l === 1) {                       // three known angles, full turn or straight angle
-        const T = pick([180, 360]), n = T === 180 ? 2 : 3; let ang = [], sum = 0;
-        for (let i = 0; i < n; i++) { const v = ri(18, Math.floor((T - 30) / (n + 0.5))); ang.push(v); sum += v; }
-        const x = T - sum;
-        if (x < 10) return GN('2.2', 'complete')(l);
-        return { type: 'num', ans: x, correct: String(x),
-          html: '<p>Around a point (or on a straight line) the angles ' + ang.map(v => '<b>' + v + '°</b>').join(', ') + ' and one more angle <b>x</b> together make <b>' + nm[T] + '</b> (' + T + '°). How big is <b>x</b>? (Give the number of degrees.)</p>',
-          hint: 'Add all the angles you know. Then subtract the total from ' + T + '°.', steps: ang.join(' + ') + ' = ' + sum + '°. Then ' + T + ' − ' + sum + ' = ' + x + '°.' };
-      }
-      const ang = []; let sum = 0;
-      for (let i = 0; i < 3; i++) { const v = ri(31, 99); ang.push(v); sum += v; }
-      const x = 360 - sum;
-      return { type: 'num', ans: x, correct: String(x),
-        html: '<p>Four angles around a point make a <b>full angle</b> (360°). Three of them are <b>' + ang[0] + '°</b>, <b>' + ang[1] + '°</b> and <b>' + ang[2] + '°</b>. How big is the fourth angle? (Give the number of degrees.)</p>',
-        hint: 'Add the three angles. Then subtract the total from 360°.', steps: ang.join(' + ') + ' = ' + sum + '°. Then 360 − ' + sum + ' = ' + x + '°.' };
     },
     function drawAngle(l) {
       const start = l === 0 ? 'R' : pick(['R', 'L']);
@@ -1112,6 +1080,39 @@ const __def = (function (NX, P) {
     }
   ];
   XG['2.2'] = [
+    /* calculating angles is not in 1HVT ch2 (Frank, 2026-10-29): extra challenge only */
+    function reflex(l) {
+      const small = l === 0 ? ri(2, 17) * 10 : ri(11, 179), toBig = Math.random() < .6;
+      return toBig ? { type: 'num', ans: 360 - small, correct: String(360 - small), html: '<p>The (small) angle between two lines is <b>' + small + '°</b>. What is the <b>reflex angle</b> on the other side?</p>',
+        hint: 'A full turn is 360°. Subtract the small angle.', steps: '360° − ' + small + '° = ' + (360 - small) + '°.' } :
+        { type: 'num', ans: small, correct: String(small), html: '<p>A reflex angle is <b>' + (360 - small) + '°</b>. What is the (small) angle on the other side?</p>',
+        hint: 'A full turn is 360°. Subtract the reflex angle from 360°.', steps: '360° − ' + (360 - small) + '° = ' + small + '°.' };
+    },
+    function complete(l) {
+      const nm = { 90: 'a right angle', 180: 'a straight angle', 360: 'a full angle' };
+      if (l === 0) {                       // two known angles, one missing
+        const T = pick([90, 180]), x = 5 * ri(2, T / 5 - 6), a = 5 * ri(2, (T - x) / 5 - 2), b = T - x - a;
+        if (b <= 0 || a <= 0) return GN('2.2', 'complete')(l);
+        return { type: 'num', ans: x, correct: String(x),
+          html: '<p>The angles <b>' + a + '°</b> and <b>' + b + '°</b> are next to each other, together with a third angle <b>x</b>. All three together make <b>' + nm[T] + '</b> (' + T + '°). How big is <b>x</b>? (Give the number of degrees.)</p>',
+          hint: 'Add the two angles you know. Then subtract the total from ' + T + '°.', steps: a + ' + ' + b + ' = ' + (a + b) + '°. Then ' + T + ' − ' + (a + b) + ' = ' + x + '°.' };
+      }
+      if (l === 1) {                       // three known angles, full turn or straight angle
+        const T = pick([180, 360]), n = T === 180 ? 2 : 3; let ang = [], sum = 0;
+        for (let i = 0; i < n; i++) { const v = ri(18, Math.floor((T - 30) / (n + 0.5))); ang.push(v); sum += v; }
+        const x = T - sum;
+        if (x < 10) return GN('2.2', 'complete')(l);
+        return { type: 'num', ans: x, correct: String(x),
+          html: '<p>Around a point (or on a straight line) the angles ' + ang.map(v => '<b>' + v + '°</b>').join(', ') + ' and one more angle <b>x</b> together make <b>' + nm[T] + '</b> (' + T + '°). How big is <b>x</b>? (Give the number of degrees.)</p>',
+          hint: 'Add all the angles you know. Then subtract the total from ' + T + '°.', steps: ang.join(' + ') + ' = ' + sum + '°. Then ' + T + ' − ' + sum + ' = ' + x + '°.' };
+      }
+      const ang = []; let sum = 0;
+      for (let i = 0; i < 3; i++) { const v = ri(31, 99); ang.push(v); sum += v; }
+      const x = 360 - sum;
+      return { type: 'num', ans: x, correct: String(x),
+        html: '<p>Four angles around a point make a <b>full angle</b> (360°). Three of them are <b>' + ang[0] + '°</b>, <b>' + ang[1] + '°</b> and <b>' + ang[2] + '°</b>. How big is the fourth angle? (Give the number of degrees.)</p>',
+        hint: 'Add the three angles. Then subtract the total from 360°.', steps: ang.join(' + ') + ' = ' + sum + '°. Then 360 − ' + sum + ' = ' + x + '°.' };
+    },
     function angleReason() {
       const kinds = [
         ['an <b>acute</b> angle', 'twice as big', 'acute, right or obtuse', 0],
@@ -1241,9 +1242,9 @@ const __def = (function (NX, P) {
   const LESSONS = [
     { id: 'L1', title: 'Lesson 1 · 2.1 Lines and distances', sub: 'Thu 1 Oct', date: '2026-10-01', gens: ALL('2.1'), xg: [['2.1', 'distParallelPoints'], ['2.1', 'throughPoint'], ['2.1', 'maxIntersect5']] },
     { id: 'L2', title: 'Lesson 2 · 2.2 Angles', sub: 'Fri 2 Oct', date: '2026-10-02',
-      gens: [['2.2', 'typeByDegrees'], ['2.2', 'typeByPicture'], ['2.2', 'reflex'], ['2.2', 'clock'], ['2.2', 'compass'], ['2.2', 'vertexName'], ['2.2', 'complete']], xg: [['2.2', 'angleReason'], ['2.2', 'clockAngle'], ['2.2', 'turnSequence']] },
+      gens: [['2.2', 'typeByDegrees'], ['2.2', 'typeByPicture'], ['2.2', 'clock'], ['2.2', 'compass'], ['2.2', 'vertexName']], xg: [['2.2', 'reflex'], ['2.2', 'complete'], ['2.2', 'angleReason'], ['2.2', 'clockAngle'], ['2.2', 'turnSequence']] },
     { id: 'L3', title: 'Lesson 3 · 2.2 Measuring and drawing angles', sub: 'Tue 6 Oct', date: '2026-10-06',
-      gens: [['2.2', 'drawAngle'], ['2.2', 'readAngle'], ['2.2', 'pickReading'], ['2.2', 'complete'], ['2.4', 'tools']], xg: [['2.2', 'twoArms'], ['2.2', 'angleReason']] },
+      gens: [['2.2', 'drawAngle'], ['2.2', 'readAngle'], ['2.2', 'pickReading'], ['2.4', 'tools']], xg: [['2.2', 'twoArms'], ['2.2', 'angleReason']] },
     { id: 'L4', title: 'Lesson 4 · 2.3 Triangles', sub: 'Wed 7 Oct', date: '2026-10-07',
       gens: [['2.3', 'triByAngles'], ['2.3', 'triBySidesFromAngles'], ['2.3', 'triBySides']], xg: [['2.3', 'thirdAngle'], ['2.3', 'isosceles'], ['2.4', 'thirdSide']] },
     { id: 'L5', title: 'Lesson 5 · 2.3 Quadrilaterals and circles', sub: 'Thu 8 Oct', date: '2026-10-08',

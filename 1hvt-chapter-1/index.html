@@ -904,6 +904,23 @@ G['1.4'] = [
     const names = pick([['Waal', 'The river Rhine'], ['Pannerdensch Canal', 'The Rhine at the border']]);
     return nu(p(names[1] + ' carries <b>' + f(t) + ' million litres</b> of water per second. The branch <b>' + names[0] + '</b> takes <b>' + fr(a, b) + '</b> of this water. How many million litres per second flow through the ' + names[0] + '?'), ans, 'Calculate ' + fr(a, b) + ' of ' + f(t) + ', so ' + fr(a, b) + ' × ' + f(t) + '.', fr(a, b) + ' × ' + f(t) + ' = ' + f(t) + ' : ' + b + ' × ' + a + ' = ' + f(rd(t / b)) + ' × ' + a + ' = ' + f(ans) + ' million litres per second.');
   },
+  function fracStory(l) {   // a fraction of a fraction in context (test questions collection ch1, ex 15-16)
+    const pf = d => { let a; do { a = ri(1, d - 1); } while (gcd(a, d) > 1); return a; };
+    const b = pick([3, 4, 5, 8]), d = pick([3, 4, 5]), a = pf(b), c = pf(d), N = b * d * (l === 2 ? ri(10, 30) : ri(4, 12)) ;
+    const k = N / b * a, rest = N - k, kind = l === 1 ? pick(['part', 'rest']) : pick(['rest', 'restPart']);
+    if (kind === 'part') { const ans = k / d * c;
+      return nu(p('A school has <b>' + N + ' students</b>. ' + fr(a, b) + ' of them have a pet. ' + fr(c, d) + ' of the students with a pet have a cat. How many students have a cat?'), ans,
+        'First calculate how many students have a pet. Then take ' + fr(c, d) + ' of that number.',
+        'Students with a pet: ' + fr(a, b) + ' of ' + N + ' = ' + N + ' : ' + b + ' × ' + a + ' = ' + k + '. Students with a cat: ' + fr(c, d) + ' of ' + k + ' = ' + k + ' : ' + d + ' × ' + c + ' = ' + ans + '.'); }
+    if (kind === 'rest') { const P = pick([120, 180, 225, 240, 360, 450, 600]), bb = pick([3, 4, 5, 6, 9, 15].filter(x => P % x === 0)), aa = pf(bb), give = P / bb * aa;
+      return nu(p('The winner of a prize of <b>£' + P + '</b> gives ' + fr(aa, bb) + ' of it to charity. How much money (in £) does the winner keep?'), P - give,
+        'Calculate ' + fr(aa, bb) + ' of £' + P + '. Then subtract it from £' + P + '.',
+        fr(aa, bb) + ' of ' + P + ' = ' + P + ' : ' + bb + ' × ' + aa + ' = ' + give + '. The winner keeps ' + P + ' − ' + give + ' = £' + (P - give) + '.'); }
+    const ans = rest / d * c;
+    return nu(p('A school has <b>' + N + ' students</b>. ' + fr(a, b) + ' of them have a pet. ' + fr(c, d) + ' of the students <b>without</b> a pet would like to have one. How many students would like to have a pet?'), ans,
+      'First calculate how many students have a pet, and how many do not. Then take ' + fr(c, d) + ' of the students without a pet.',
+      'With a pet: ' + N + ' : ' + b + ' × ' + a + ' = ' + k + '. Without a pet: ' + N + ' − ' + k + ' = ' + rest + '. ' + fr(c, d) + ' of ' + rest + ' = ' + rest + ' : ' + d + ' × ' + c + ' = ' + ans + '.');
+  },
   function missingFraction(l) {
     const t = ri(0, 2); let a = properFrac([3, 4, 5, 7, 8, 11]), b = properFrac([3, 4, 5, 6, 9]), html, x, st; if (l >= 1) { a = Math.random() < 0.5 ? rat(-a[0], a[1]) : a; }
     if (t === 0) { x = b; const prod = rmul(a, b); html = T(a) + ' × <b>?</b> = ' + T(prod); st = '? = ' + FR(prod) + ' : ' + TP(a) + ' = ' + FR(x) + '.'; }
