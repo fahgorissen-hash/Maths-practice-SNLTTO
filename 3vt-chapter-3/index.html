@@ -450,7 +450,14 @@ function engine(def) {
     let q, e;
     if (lvl === 3 && xgs.length && Math.random() < 0.7) { e = pick(xgs); q = e[1](2); }
     else { e = pick(gens); q = e[1](Math.min(lvl, 2)); }
-    q.gen = e[0]; q.sec = key; q.lvl = lvl; q.mix = mixq; return q;
+    q.gen = e[0]; q.sec = key; q.lvl = lvl; q.mix = mixq; return numOrder(q);
+  }
+  function numOrder(q) {   // number options (2, 3, 1 or 120°, 60°) are shown from small to large
+    if (!q || q.type !== 'choice' || !Array.isArray(q.opts) || q.opts.length < 2) return q;
+    const v = o => { const m = /^\s*([−-]?\d+(?:[.,]\d+)?)\s*(?:°|%|cm²?|cm³|m²?|km|kg|g|points?|cubes?|times|solutions?|diagonals?|faces?|edges?|vertices)?\s*$/.exec(String(o).replace(/<[^>]+>/g, '')); return m ? parseFloat(m[1].replace('−', '-').replace(',', '.')) : NaN; };
+    const nums = q.opts.map(v); if (nums.some(isNaN) || new Set(nums).size < nums.length) return q;
+    const idx = q.opts.map((_, i) => i).sort((i, j) => nums[i] - nums[j]), right = q.opts[q.ans];
+    q.opts = idx.map(i => q.opts[i]); q.ans = q.opts.indexOf(right); if (typeof q.correct === 'number') q.correct = q.ans; return q;
   }
   const fingerprint = q => String(q.html || '').replace(/<svg[\s\S]*?<\/svg>/g, '') + '|' + JSON.stringify(q.ans);
   function make(key, lvl, recent) {
@@ -479,7 +486,7 @@ function engine(def) {
     return shuffle(slots).map((e, i) => {
       let q;
       for (let t = 0; t < 40; t++) { try { q = e[1](lv[i]); } catch (err) { if (t > 30) throw err; continue; } q.fp = fingerprint(q); if (!seen.includes(q.fp)) break; }
-      q.gen = e[1].name; q.sec = e[0]; q.lvl = lv[i]; q.mix = false; seen.push(q.fp); q.hint = null; return q;
+      q.gen = e[1].name; q.sec = e[0]; q.lvl = lv[i]; q.mix = false; seen.push(q.fp); q.hint = null; return numOrder(q);
     });
   }
   return { KEY: def.key, SECTIONS, LESSONS, G, XG, make, makeTest, grade, check, answerText, evalNum: s => evalAst(parse(String(s), { noVars: true }), {}), evalAt: (s, env) => evalAst(parse(String(s)), env), parseNum, parsePoint, f, M, parse, defaultMode: def.defaultMode || 'lesson' };

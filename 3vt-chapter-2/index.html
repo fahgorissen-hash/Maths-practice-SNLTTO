@@ -450,7 +450,14 @@ function engine(def) {
     let q, e;
     if (lvl === 3 && xgs.length && Math.random() < 0.7) { e = pick(xgs); q = e[1](2); }
     else { e = pick(gens); q = e[1](Math.min(lvl, 2)); }
-    q.gen = e[0]; q.sec = key; q.lvl = lvl; q.mix = mixq; return q;
+    q.gen = e[0]; q.sec = key; q.lvl = lvl; q.mix = mixq; return numOrder(q);
+  }
+  function numOrder(q) {   // number options (2, 3, 1 or 120°, 60°) are shown from small to large
+    if (!q || q.type !== 'choice' || !Array.isArray(q.opts) || q.opts.length < 2) return q;
+    const v = o => { const m = /^\s*([−-]?\d+(?:[.,]\d+)?)\s*(?:°|%|cm²?|cm³|m²?|km|kg|g|points?|cubes?|times|solutions?|diagonals?|faces?|edges?|vertices)?\s*$/.exec(String(o).replace(/<[^>]+>/g, '')); return m ? parseFloat(m[1].replace('−', '-').replace(',', '.')) : NaN; };
+    const nums = q.opts.map(v); if (nums.some(isNaN) || new Set(nums).size < nums.length) return q;
+    const idx = q.opts.map((_, i) => i).sort((i, j) => nums[i] - nums[j]), right = q.opts[q.ans];
+    q.opts = idx.map(i => q.opts[i]); q.ans = q.opts.indexOf(right); if (typeof q.correct === 'number') q.correct = q.ans; return q;
   }
   const fingerprint = q => String(q.html || '').replace(/<svg[\s\S]*?<\/svg>/g, '') + '|' + JSON.stringify(q.ans);
   function make(key, lvl, recent) {
@@ -479,7 +486,7 @@ function engine(def) {
     return shuffle(slots).map((e, i) => {
       let q;
       for (let t = 0; t < 40; t++) { try { q = e[1](lv[i]); } catch (err) { if (t > 30) throw err; continue; } q.fp = fingerprint(q); if (!seen.includes(q.fp)) break; }
-      q.gen = e[1].name; q.sec = e[0]; q.lvl = lv[i]; q.mix = false; seen.push(q.fp); q.hint = null; return q;
+      q.gen = e[1].name; q.sec = e[0]; q.lvl = lv[i]; q.mix = false; seen.push(q.fp); q.hint = null; return numOrder(q);
     });
   }
   return { KEY: def.key, SECTIONS, LESSONS, G, XG, make, makeTest, grade, check, answerText, evalNum: s => evalAst(parse(String(s), { noVars: true }), {}), evalAt: (s, env) => evalAst(parse(String(s)), env), parseNum, parsePoint, f, M, parse, defaultMode: def.defaultMode || 'lesson' };
@@ -804,7 +811,10 @@ const radS = (c, r) => (c === 1 && r > 1 ? '' : String(c)) + (r > 1 ? '√' + r 
 G['2.2'].push(
   function pythSimilar(l) {
     const T = PL(l, [[3, 4, 5], [6, 8, 10], [5, 12, 13], [8, 15, 17]]); const k = PL(l, [2, 3, 1.5, 2.5]); const [a, b] = T; const h = Math.hypot(a, b);
-    return nu(p('Triangle KLM is right-angled at L with KL = ' + a + ' and LM = ' + b + '. Triangle PQR ~ KLM (P ↔ K, Q ↔ L, R ↔ M). In triangle PQR, PQ = ' + f(a * k) + '. Calculate <b>PR</b> (the hypotenuse of PQR).'), h * k, 'First find KM with Pythagoras. Then use the scale factor PQ ÷ KL.', 'KM = √(' + a + '² + ' + b + '²) = ' + f(h) + '. Scale factor = ' + f(a * k) + ' ÷ ' + a + ' = ' + f(k) + '. PR = ' + f(h) + ' × ' + f(k) + ' = ' + f(h * k) + '.');
+    const sq = (v, u, w) => { const n = (z) => { const d = Math.hypot(z[0] - v[0], z[1] - v[1]); return [(z[0] - v[0]) / d * 11, (z[1] - v[1]) / d * 11]; }, e = n(u), g = n(w); return '<polyline points="' + [v[0] + e[0], v[1] + e[1]] + ' ' + [v[0] + e[0] + g[0], v[1] + e[1] + g[1]] + ' ' + [v[0] + g[0], v[1] + g[1]] + '" fill="none" stroke="#345" stroke-width="1.5"/>'; };
+    const s1 = 90 / Math.max(a, b), s2 = 115 / Math.max(a, b), K = [35, 140 - a * s1], L = [35, 140], M = [35 + b * s1, 140], Q = [335, 25], R = [335 - b * s2, 25], P = [335, 25 + a * s2];
+    const fig = '<svg class="fig" viewBox="0 0 370 170" role="img" xmlns="http://www.w3.org/2000/svg" style="max-width:370px">' + tri([K, L, M], ['K', 'L', 'M'], [a, b, null]) + sq(L, K, M) + tri([P, Q, R], ['P', 'Q', 'R'], [f(a * k), null, '?']) + sq(Q, P, R) + '</svg>';
+    return Object.assign(nu(p('Triangle PQR is <b>similar</b> to triangle KLM (see the figure, not drawn to scale). KL = ' + a + ', LM = ' + b + ' and PQ = ' + f(a * k) + '. Calculate <b>PR</b>. Show your calculation.') + fig, h * k, 'First find KM with Pythagoras. Then use the scale factor PQ ÷ KL.', 'KM = √(' + a + '² + ' + b + '²) = ' + f(h) + '. Scale factor = ' + f(a * k) + ' ÷ ' + a + ' = ' + f(k) + '. PR = ' + f(h) + ' × ' + f(k) + ' = ' + f(h * k) + '.'), { needStep: true });
   },
   function rightSimilar(l) {
     const T = pick([[3, 4, 5], [6, 8, 10], [5, 12, 13], [8, 15, 17], [9, 12, 15]]); const k = pick([2, 3, 1.5]); const same = pick([true, false, true]); const [a, b, c] = T;
