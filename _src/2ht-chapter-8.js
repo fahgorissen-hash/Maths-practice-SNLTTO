@@ -551,4 +551,4 @@ if (P.cls === '1HVT') {
     ]
   }[P.cls] || []).map(o => Object.assign({}, o, { gens: o.gens.filter(g => __has(G, g)), xg: o.xg.filter(g => __has(XG, g)) })).filter(o => o.gens.length);
   /* ---------- end lessons ---------- */
-return { key: 'nx-' + P.cls.toLowerCase() + '-ch8-v1', SECTIONS, LESSONS: __LESSONS, G, XG, defaultMode: __LESSONS.length ? 'lesson' : 'para', GOALS };
+return { key: 'nx-' + P.cls.toLowerCase() + '-ch8-v1', SECTIONS, LESSONS: __LESSONS, G, XG, TEST: { skip: ['likeChoice', 'ruleChoice', 'bracketPower', 'writePower', 'identifyForm', 'multiplyTerms', 'hcf'] }, defaultMode: __LESSONS.length ? 'lesson' : 'para', GOALS };

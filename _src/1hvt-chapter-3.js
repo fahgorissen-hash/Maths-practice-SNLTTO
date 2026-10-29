@@ -495,4 +495,4 @@
     ]
   }[P.cls] || []).map(o => Object.assign({}, o, { gens: o.gens.filter(g => __has(G, g)), xg: o.xg.filter(g => __has(XG, g)) })).filter(o => o.gens.length);
   /* ---------- end lessons ---------- */
-  return { key: 'ch3-relations-v1', SECTIONS, LESSONS: __LESSONS, G, XG, defaultMode: __LESSONS.length ? 'lesson' : 'para', GOALS };
+  return { key: 'ch3-relations-v1', SECTIONS, LESSONS: __LESSONS, G, XG, TEST: { skip: ['quadrant', 'clickPoint', 'axisDist', 'readPoint', 'readLineY', 'yAxisCross', 'changePer', 'growth'] }, defaultMode: __LESSONS.length ? 'lesson' : 'para', GOALS };

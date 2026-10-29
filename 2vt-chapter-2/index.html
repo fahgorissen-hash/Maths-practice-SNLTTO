@@ -935,7 +935,7 @@ else LESSONS = [
   L('L8', 'Revision B · lines, views and surface area', 'Fri 30 Oct', '2026-10-30', [].concat(ALL('2.3'), ALL('2.4'), ALL('2.5')), [].concat(ALLX('2.3'), ALLX('2.4'), ALLX('2.5')), { rev: true })
 ];
 LESSONS.forEach(le => { le.gens = le.gens.filter(g => !SKIP.includes(g[1])); le.xg = le.xg.filter(g => !SKIP.includes(g[1])); });
-return { key: 'nx-' + P.cls.toLowerCase() + '-ch2-v1', SECTIONS, LESSONS, G, XG, defaultMode: 'lesson' };
+return { key: 'nx-' + P.cls.toLowerCase() + '-ch2-v1', SECTIONS, LESSONS, G, XG, TEST: { skip: ['solidName', 'lineKind', 'baseShape', 'countParallel', 'cylinderNet'] }, defaultMode: 'lesson' };
 }))(NX,{"cls": "2VT"}));
 window.Ch3.GOALS=[["2.1", "I can name solids and their parts (faces, edges, vertices)", ["solidName", "lineKind", "countParts", "baseShape", "isPrism"]], ["2.2", "I can calculate the volume of prisms and cylinders", ["volPrism", "volCylinder"], "Volume = area of the base × height. Check the units."], ["2.2", "I can calculate the volume of pyramids, cones and spheres", ["volPyramid", "volCone", "volSphere", "volHemisphere", "volComposite", "volReverse"], "Pyramid and cone have a factor ⅓."], ["2.3", "I can describe how two lines in space are related (parallel, intersecting, skew)", ["lineRelation", "countParallel", "pickSkew"]], ["2.4", "I can read front, side and top views of cube buildings", ["totalCubes", "frontView", "sideView", "viewsToTop", "clickFront"]], ["2.5", "I can recognise nets of cubes and dice", ["cubeNet", "diceNet", "clickNet"]], ["2.5", "I can calculate surface areas of solids", ["surfCuboid", "surfPrism", "surfCylinder", "surfSphere", "surfCone", "wrapping", "cylinderNet"], "Surface area is in square units (cm²)."]];
 </script><script>

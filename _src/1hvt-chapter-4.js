@@ -256,4 +256,4 @@ const GOALS = [
     ]
   }[P.cls] || []).map(o => Object.assign({}, o, { gens: o.gens.filter(g => __has(G, g)), xg: o.xg.filter(g => __has(XG, g)) })).filter(o => o.gens.length);
   /* ---------- end lessons ---------- */
-return { key: 'nx-1hvt-ch4-v1', SECTIONS, LESSONS: __LESSONS, G, XG, defaultMode: __LESSONS.length ? 'lesson' : 'para', GOALS };
+return { key: 'nx-1hvt-ch4-v1', SECTIONS, LESSONS: __LESSONS, G, XG, TEST: { skip: ['roundNumber', 'whichDiagram', 'axisChoice', 'percentAngle', 'fracToPercent', 'simplifyRatio', 'readLine'] }, defaultMode: __LESSONS.length ? 'lesson' : 'para', GOALS };

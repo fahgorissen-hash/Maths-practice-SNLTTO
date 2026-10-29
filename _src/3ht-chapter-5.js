@@ -607,4 +607,4 @@ const GV = [
     ]
   }[P.cls] || []).map(o => Object.assign({}, o, { gens: o.gens.filter(g => __has(G, g)), xg: o.xg.filter(g => __has(XG, g)) })).filter(o => o.gens.length);
   /* ---------- end lessons ---------- */
-return { key: 'nx-' + P.cls.toLowerCase() + '-ch5-v1', SECTIONS, LESSONS: __LESSONS, G, XG, defaultMode: __LESSONS.length ? 'lesson' : 'para', GOALS: VT ? GV : GOALS };
+return { key: 'nx-' + P.cls.toLowerCase() + '-ch5-v1', SECTIONS, LESSONS: __LESSONS, G, XG, TEST: { skip: ['signTurn', 'readABC', 'howManyPower', 'checkSolution'] }, defaultMode: __LESSONS.length ? 'lesson' : 'para', GOALS: VT ? GV : GOALS };
