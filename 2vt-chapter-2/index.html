@@ -823,10 +823,7 @@ G['2.5'] = [
     const r = ri(2, 8), h = ri(3, 12); return ex_pi(p('The net of a cylinder has a rectangle for the curved face. The cylinder has radius <b>' + r + '</b> cm. How wide is the rectangle (in cm)? Give an exact answer.'), 2 * r, 1, 'The width of the rectangle wraps around the circle once: it equals the circumference of the circle.', 'Circumference = 2 · π · ' + r + ' = ' + piTxt(2 * r, 1) + ' cm.');
   }
 ];
-if (VT) G['2.5'].push(function surfCone(l) {
-  const T = pick([[3, 4, 5], [6, 8, 10], [5, 12, 13], [9, 12, 15], [4, 3, 5]]); const r = T[0], sl = T[2];
-  return ex_pi(p('A cone has radius <b>' + r + '</b> cm and slant height <b>' + sl + '</b> cm. Give its exact surface area in cm² (including the base).'), r * r + r * sl, 1, 'The curved face is a sector of a circle with radius equal to the slant height. Its area is π · r · (slant height). Add the base circle π r².', 'Base: π · ' + r + '² = ' + r * r + 'π. Curved face: π · ' + r + ' · ' + sl + ' = ' + r * sl + 'π. Total = ' + piTxt(r * r + r * sl, 1) + ' cm².');
-});
+/* no cone surface area with a slant height: 2VT meets Pythagoras only in ch5 (Frank, 2026-10-29) */
 XG['2.5'] = [
   function sameVolume(l) {
     const V = pick([36, 48, 64, 72, 96]); const opts = []; for (let a = 1; a <= V; a++) if (V % a === 0) for (let b = a; b <= V / a; b++) if ((V / a) % b === 0) { const c = V / a / b; if (c >= b) opts.push([a, b, c]); }
@@ -920,7 +917,7 @@ if (VT) LESSONS = [
   L('L4', 'Lesson · 2.3–2.4 Lines in space and views', 'Wed 7 Oct', '2026-10-07', [].concat(ALL('2.3'), ALL('2.4')), [].concat(ALLX('2.3'), ALLX('2.4'))),
   L('L5', 'Lesson · 2.5 A Nets', 'Fri 9 Oct', '2026-10-09', nm('2.5', ['cubeNet', 'diceNet', 'cylinderNet', 'clickNet']), nm('2.5', ['diceOpposite', 'sameVolume'])),
   L('L6', 'Lesson · 2.5 B Surface area', 'Tue 27 Oct', '2026-10-27', nm('2.5', ['surfCuboid', 'surfPrism', 'surfCylinder', 'surfSphere', 'wrapping']), nm('2.5', ['sameVolume', 'cubeEdgeFromSurface'])),
-  L('L7', 'Lesson · 2.5 C Exploring surface area', 'Wed 28 Oct', '2026-10-28', nm('2.5', ['surfCone', 'diceNet', 'surfCylinder', 'wrapping', 'surfSphere']), nm('2.5', ['coneSector', 'sameVolume', 'diceOpposite'])),
+  L('L7', 'Lesson · 2.5 C Exploring surface area', 'Wed 28 Oct', '2026-10-28', nm('2.5', ['diceNet', 'surfCylinder', 'wrapping', 'surfSphere']), nm('2.5', ['coneSector', 'sameVolume', 'diceOpposite'])),
   L('L8', 'Revision · mock test chapter 2', 'Fri 30 Oct', '2026-10-30', [].concat(...['2.1', '2.2', '2.3', '2.4', '2.5'].map(ALL)), [].concat(...['2.1', '2.2', '2.3', '2.4', '2.5'].map(ALLX)), { rev: true })
 ];
 else LESSONS = [
@@ -937,7 +934,7 @@ else LESSONS = [
 LESSONS.forEach(le => { le.gens = le.gens.filter(g => !SKIP.includes(g[1])); le.xg = le.xg.filter(g => !SKIP.includes(g[1])); });
 return { key: 'nx-' + P.cls.toLowerCase() + '-ch2-v1', SECTIONS, LESSONS, G, XG, TEST: { skip: ['solidName', 'lineKind', 'baseShape', 'countParallel', 'cylinderNet'] }, defaultMode: 'lesson' };
 }))(NX,{"cls": "2VT"}));
-window.Ch3.GOALS=[["2.1", "I can name solids and their parts (faces, edges, vertices)", ["solidName", "lineKind", "countParts", "baseShape", "isPrism"]], ["2.2", "I can calculate the volume of prisms and cylinders", ["volPrism", "volCylinder"], "Volume = area of the base × height. Check the units."], ["2.2", "I can calculate the volume of pyramids, cones and spheres", ["volPyramid", "volCone", "volSphere", "volHemisphere", "volComposite", "volReverse"], "Pyramid and cone have a factor ⅓."], ["2.3", "I can describe how two lines in space are related (parallel, intersecting, skew)", ["lineRelation", "countParallel", "pickSkew"]], ["2.4", "I can read front, side and top views of cube buildings", ["totalCubes", "frontView", "sideView", "viewsToTop", "clickFront"]], ["2.5", "I can recognise nets of cubes and dice", ["cubeNet", "diceNet", "clickNet"]], ["2.5", "I can calculate surface areas of solids", ["surfCuboid", "surfPrism", "surfCylinder", "surfSphere", "surfCone", "wrapping", "cylinderNet"], "Surface area is in square units (cm²)."]];
+window.Ch3.GOALS=[["2.1", "I can name solids and their parts (faces, edges, vertices)", ["solidName", "lineKind", "countParts", "baseShape", "isPrism"]], ["2.2", "I can calculate the volume of prisms and cylinders", ["volPrism", "volCylinder"], "Volume = area of the base × height. Check the units."], ["2.2", "I can calculate the volume of pyramids, cones and spheres", ["volPyramid", "volCone", "volSphere", "volHemisphere", "volComposite", "volReverse"], "Pyramid and cone have a factor ⅓."], ["2.3", "I can describe how two lines in space are related (parallel, intersecting, skew)", ["lineRelation", "countParallel", "pickSkew"]], ["2.4", "I can read front, side and top views of cube buildings", ["totalCubes", "frontView", "sideView", "viewsToTop", "clickFront"]], ["2.5", "I can recognise nets of cubes and dice", ["cubeNet", "diceNet", "clickNet"]], ["2.5", "I can calculate surface areas of solids", ["surfCuboid", "surfPrism", "surfCylinder", "surfSphere", "wrapping", "cylinderNet"], "Surface area is in square units (cm²)."]];
 </script><script>
 (function(){
 'use strict';
