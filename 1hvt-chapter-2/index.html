@@ -777,18 +777,19 @@ const __def = (function (NX, P) {
       return { type: 'choice', opts, ans, correct: ans, html: '<p>You face <b>' + dirs[i] + '</b>. You turn <b>' + t + '° to the ' + side + '</b> (clockwise = right). In which direction do you face now?</p>',
         hint: 'Between North, East, South and West there are 90° turns. 45° is half of that. Turning right goes North → East → South → West.', steps: 'Start ' + dirs[i] + ', turn ' + t + '° ' + side + ': ' + dirs[j] + '.' };
     },
-    function vertexName(l) {
-      const nm = shuffle(['A', 'B', 'C', 'D', 'K', 'L', 'M', 'P', 'Q', 'R']).slice(0, 3), v = ri(0, 2);
-      const opts = [0, 1, 2].map(k => '∠' + [nm[(k + 1) % 3], nm[k], nm[(k + 2) % 3]].join('')), ans = v;
-      const ordered = [0, 1, 2].map(k => nm[k]);
-      const vtx = [110, 100], rot = ri(0, 359), d = pick([50, 70, 110, 130]);
-      const pts = [[vtx[0] + 80 * Math.cos(rad(rot)), vtx[1] - 80 * Math.sin(rad(rot))], [vtx[0] + 80 * Math.cos(rad(rot + d)), vtx[1] - 80 * Math.sin(rad(rot + d))]];
-      const svg = '<svg class="grid" viewBox="0 0 220 200" style="max-width:260px"><rect width="220" height="200" fill="#fff"/><path d="M' + pts[0][0].toFixed(1) + ' ' + pts[0][1].toFixed(1) + ' L110 100 L' + pts[1][0].toFixed(1) + ' ' + pts[1][1].toFixed(1) + '" fill="none" stroke="#223" stroke-width="2.4"/>' +
-        [[vtx, nm[v]], [pts[0], nm[(v + 1) % 3]], [pts[1], nm[(v + 2) % 3]]].map(p => '<text x="' + (p[0][0] + (p[0][0] > 110 ? 8 : -16)).toFixed(1) + '" y="' + (p[0][1] + (p[0][1] > 100 ? 16 : -8)).toFixed(1) + '" font-size="15" font-weight="700" fill="#123">' + p[1] + '</text>').join('') + '</svg>';
-      const right = '∠' + [nm[(v + 1) % 3], nm[v], nm[(v + 2) % 3]].join('');
-      const o2 = shuffle([right, '∠' + [nm[v], nm[(v + 1) % 3], nm[(v + 2) % 3]].join(''), '∠' + [nm[(v + 1) % 3], nm[(v + 2) % 3], nm[v]].join('')]);
-      return { type: 'choice', opts: o2, ans: o2.indexOf(right), correct: o2.indexOf(right), html: '<p>Which is the correct name of the angle between the two lines?</p>' + svg,
-        hint: 'In the name of an angle, the letter of the vertex (the corner point) is in the middle.', steps: 'The vertex is ' + nm[v] + ', so the name is ' + right + '.' };
+    function vertexName(l) {   // the book names an angle by its vertex only (∠A), not with three letters
+      const nm = shuffle(['A', 'B', 'C', 'D', 'K', 'L', 'M', 'P', 'Q', 'R']).slice(0, 3), d = pick([40, 60, 75, 110, 130, 150]), rot = ri(0, 359), R = 80;
+      const u = a => [Math.cos(rad(a)), -Math.sin(rad(a))];
+      let P = [[0, 0], [R * u(rot)[0], R * u(rot)[1]], [R * u(rot + d)[0], R * u(rot + d)[1]]];
+      const xs = P.map(p => p[0]), ys = P.map(p => p[1]), dx = 120 - (Math.min(...xs) + Math.max(...xs)) / 2, dy = 90 - (Math.min(...ys) + Math.max(...ys)) / 2;
+      P = P.map(p => [p[0] + dx, p[1] + dy]);
+      const bis = u(rot + d / 2), lab = [[P[0][0] - 18 * bis[0], P[0][1] - 18 * bis[1]], [P[1][0] + 16 * u(rot)[0], P[1][1] + 16 * u(rot)[1]], [P[2][0] + 16 * u(rot + d)[0], P[2][1] + 16 * u(rot + d)[1]]];
+      const svg = '<svg class="grid" viewBox="0 0 240 180" style="max-width:280px"><rect width="240" height="180" fill="#fff"/><path d="M' + P[1].map(v => v.toFixed(1)).join(' ') + ' L' + P[0].map(v => v.toFixed(1)).join(' ') + ' L' + P[2].map(v => v.toFixed(1)).join(' ') + '" fill="none" stroke="#223" stroke-width="2.6" stroke-linejoin="round"/>' +
+        P.map(p => '<circle cx="' + p[0].toFixed(1) + '" cy="' + p[1].toFixed(1) + '" r="3.2" fill="#223"/>').join('') +
+        lab.map((p, k) => '<text x="' + p[0].toFixed(1) + '" y="' + p[1].toFixed(1) + '" font-size="16" font-weight="700" fill="#123" text-anchor="middle" dominant-baseline="central">' + nm[k] + '</text>').join('') + '</svg>';
+      const right = '∠' + nm[0], o2 = shuffle(nm.map(c => '∠' + c));
+      return { type: 'choice', opts: o2, ans: o2.indexOf(right), correct: o2.indexOf(right), html: '<p>What is the name of the angle between the two lines?</p>' + svg,
+        hint: 'An angle is named after its vertex: the point where the two lines meet.', steps: 'The lines meet at point ' + nm[0] + ', so the angle is called ' + right + '.' };
     },
     function complete(l) {
       const nm = { 90: 'a right angle', 180: 'a straight angle', 360: 'a full angle' };
