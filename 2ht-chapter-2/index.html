@@ -764,9 +764,17 @@ G['2.4'] = [
     const g = randGrid(l === 0 ? 2 : 3, l === 0 ? 2 : 3, l === 2 ? 4 : 3); const rm = rowMaxFront(g);
     return Object.assign(nu(p('This top view shows the number of cubes on each square. Give the <b>side view from the right</b>: the highest stack in each row. Start with the row nearest to you (the <b>front</b>) on the left.') + stackSVG(g), rm, 'Looking from the right you see, for each row, the tallest stack in that row. The front row is on your left.', 'Row maxima from front to back: ' + rm.join(', ') + '.'), { type: 'multi', fields: rm.map((_, i) => 'row ' + (i + 1) + (i === 0 ? ' (front)' : i === rm.length - 1 ? ' (back)' : '')), ans: rm });
   },
-  function viewsToTop(l) {
-    const g = randGrid(2, 2, 3); const cm = colMax(g), rm = rowMaxFront(g); const mx = Array.from({ length: 2 }, (_, i) => Array.from({ length: 2 }, (_, j) => Math.min(cm[j], rm[i]))).flat().reduce((a, b) => a + b, 0);
-    return nu(p('A building of cubes has this <b>front view</b>: the columns have <b>' + cm.join(' and ') + '</b> cubes (left to right). Its <b>side view from the right</b> has columns of <b>' + rm.join(' and ') + '</b> cubes (front to back). What is the <b>largest</b> number of cubes the building can have?'), mx, 'For every square, the stack cannot be higher than its column in the front view and also not higher than its row in the side view.', 'Each square gets the smaller of the two numbers: the total is ' + mx + ' cubes.');
+  function viewsToTop(l) {   // front view and side view drawn as figures (Frank, 2026-10-29)
+    const R = l === 2 ? 3 : 2, C = l === 0 ? 2 : 3; let g, cm, rm;
+    do { g = randGrid(R, C, l === 0 ? 3 : 4); cm = colMax(g); rm = rowMaxFront(g); } while (new Set(cm).size < 2 || new Set(rm).size < 2);
+    const mm = minMax(cm, rm), askMin = l === 2 && Math.random() < .5, ans = askMin ? mm[0] : mm[1];
+    const view = (cols, title) => { const u = 22, H = Math.max(...cm, ...rm), w = cols.length * u + 20, h = H * u + 34; let b = '';
+      cols.forEach((n, c) => { for (let k = 0; k < n; k++) b += '<rect x="' + (10 + c * u) + '" y="' + (10 + (H - 1 - k) * u) + '" width="' + u + '" height="' + u + '" fill="rgba(27,95,168,.16)" stroke="#1b5fa8" stroke-width="1.6"/>'; });
+      return '<figure style="display:inline-block;margin:0 18px 0 0;text-align:center"><svg viewBox="0 0 ' + w + ' ' + h + '" width="' + w + '" height="' + h + '" role="img" aria-label="' + title + '"><line x1="4" y1="' + (10 + H * u) + '" x2="' + (w - 4) + '" y2="' + (10 + H * u) + '" stroke="#223" stroke-width="2"/>' + b + '</svg><figcaption style="font-size:13px">' + title + '</figcaption></figure>'; };
+    const figs = '<div>' + view(cm, 'front view') + view(rm, 'side view (from the right)') + '</div>';
+    return nu(p('A building is made of cubes on a ' + R + ' by ' + C + ' grid. These are its <b>front view</b> and its <b>side view from the right</b>. What is the <b>' + (askMin ? 'smallest' : 'largest') + '</b> number of cubes the building can have?') + figs, ans,
+      askMin ? 'Every column of the front view and every column of the side view must be reached by at least one stack. Use as few stacks as possible: one stack can serve a front column and a side column at the same time.' : 'For every square, the stack cannot be higher than its column in the front view and also not higher than its row in the side view.',
+      askMin ? 'Put each needed height where a front column and a side column with that height meet, so one stack counts for both. The smallest total is ' + ans + ' cubes.' : 'Each square gets the smaller of the two heights (front column and side column): ' + cm.map(a => '(' + rm.map(b => Math.min(a, b)).join(' + ') + ')').join(' + ') + ' = ' + ans + ' cubes.');
   }
 ];
 function totalsFor(f_, s_) { const R = s_.length, C = f_.length, tot = new Set(), g = Array(R * C).fill(0);
