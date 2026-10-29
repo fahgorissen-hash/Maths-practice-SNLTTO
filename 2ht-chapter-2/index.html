@@ -661,8 +661,8 @@ G['2.2'] = [
   function volCone(l) {
     if (l === 0) { const r = 3 * ri(1, 3), h = ri(2, 9); return ex_pi(p('A cone has radius <b>' + r + '</b> cm and height <b>' + h + '</b> cm. Give its exact volume in cm³.'), r * r * h, 3, 'V = ⅓ · π · r² · h. Leave π in your answer.', 'V = ⅓ · π · ' + r + '² · ' + h + ' = ' + piTxt(r * r * h, 3) + ' cm³.'); }
     if (l === 1) { const r = ri(2, 8), h = ri(2, 12); return ex_pi(p('A cone has radius <b>' + r + '</b> cm and height <b>' + h + '</b> cm. Give its exact volume in cm³. (Type for example <b>20π/3</b>.)'), r * r * h, 3, 'V = ⅓ · π · r² · h. You may leave a fraction.', 'V = ⅓ · π · ' + r + '² · ' + h + ' = ' + piTxt(r * r * h, 3) + ' cm³.'); }
-    const T = pick([[3, 4, 5], [6, 8, 10], [5, 12, 13], [9, 12, 15]]); const r = T[0], h = T[1];
-    return ex_pi(p('A cone has radius <b>' + r + '</b> cm and slant height <b>' + T[2] + '</b> cm. Give its exact volume in cm³.'), r * r * h, 3, 'Use Pythagoras to find the height of the cone first: h² + r² = (slant height)².', 'h = √(' + T[2] + '² − ' + r + '²) = ' + h + '. V = ⅓ · π · ' + r + '² · ' + h + ' = ' + piTxt(r * r * h, 3) + ' cm³.');
+    const d = 2 * ri(2, 6), r = d / 2, h = 3 * ri(1, 4) + pick([0, 1, 2]);   // year 2 meets Pythagoras only in ch5: give the height, ask with the diameter
+    return ex_pi(p('A cone has a <b>diameter</b> of <b>' + d + '</b> cm and a height of <b>' + h + '</b> cm. Give its exact volume in cm³. (Type for example <b>20π/3</b>.)'), r * r * h, 3, 'First halve the diameter to get the radius. Then V = ⅓ · π · r² · h.', 'r = ' + d + ' : 2 = ' + r + '. V = ⅓ · π · ' + r + '² · ' + h + ' = ' + piTxt(r * r * h, 3) + ' cm³.');
   },
   function volSphere(l) {
     if (l === 0) { const r = 3 * ri(1, 3); return ex_pi(p('A sphere has radius <b>' + r + '</b> cm. Give its exact volume in cm³.'), 4 * r * r * r, 3, 'V = 4/3 · π · r³.', 'V = 4/3 · π · ' + r + '³ = ' + piTxt(4 * r * r * r, 3) + ' cm³.'); }
