@@ -612,7 +612,7 @@
     function doubleReflect() {
       let k, A, P, B, C, n = 0;
       do { k = ri(-3, 3); A = [ri(-5, 5), ri(-5, 5)]; P = [ri(-5, 5), ri(-5, 5)]; B = [A[0], 2 * k - A[1]]; C = [2 * P[0] - B[0], 2 * P[1] - B[1]]; n++; }
-      while (n < 300 && (!inR(B, 6) || !inR(C, 6) || A[1] === k));
+      while (n < 300 && (!inR(B, 6) || !inR(C, 6) || A[1] === k || (C[0] === P[0] && C[1] === P[1]) || (C[0] === A[0] && C[1] === A[1])));   // A″ must not sit on a given point
       return clickQ('<p>Point <b>A</b> is reflected in the <b>mirror line n</b> (dashed). The image is called <b>A′</b>. Then A′ is reflected in <b>point P</b>, which gives <b>A″</b>. Click <b>A″</b>.</p>' + grp({ click: true, segs: [{ a: [-7, k], b: [7, k], color: '#16803c', label: 'n', dash: true }], pts: [{ x: A[0], y: A[1], label: 'A' }, { x: P[0], y: P[1], label: 'P', color: MIR }] }), [C],
         'Do it in two steps. Step 1: A′ is as far below/above n as A is, on the other side. Step 2: A″ is as far from P as A′, on the opposite side (a half turn around P).',
         'A′ is on the other side of the mirror line (same distance). A″ is on the other side of P (same distance). A″ is marked in green.');
