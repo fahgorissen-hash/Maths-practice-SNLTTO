@@ -832,7 +832,14 @@ G['2.5'] = [
     const rr = ri(3, 12) + .5; return r1q(p('A sphere has radius <b>' + String(rr).replace('.', ',') + '</b> cm. What is its surface area in cm²?' + ROUND), 4 * Math.PI * rr * rr, 'Use 4 · π · r² with the π button.', '4π · ' + rr + '² ≈ ' + fmtNum(rnd1(4 * Math.PI * rr * rr)) + ' cm².');
   },
   function wrapping(l) {
-    const A = [LR(l, 2, 8), LR(l, 2, 8), LR(l, 2, 8)], B = [LR(l, 2, 8), LR(l, 2, 8), LR(l, 2, 8)]; const s = x => 2 * (x[0] * x[1] + x[0] * x[2] + x[1] * x[2]); if (s(A) === s(B)) return G['2.5'][6](l);
+    const s = x => 2 * (x[0] * x[1] + x[0] * x[2] + x[1] * x[2]), v = x => x[0] * x[1] * x[2], srt = x => x.slice().sort((a, b) => a - b), dom = (x, y) => srt(x).every((a, i) => a >= srt(y)[i]);
+    let A, B, best = null;   // neither box is bigger in every direction, so you have to calculate (Frank, 2026-10-29)
+    for (let t = 0; t < 400; t++) {
+      A = [ri(2, 9), ri(2, 9), ri(2, 9)]; B = [ri(2, 9), ri(2, 9), ri(2, 9)];
+      if (s(A) === s(B) || dom(A, B) || dom(B, A) || Math.abs(s(A) - s(B)) > 0.2 * Math.max(s(A), s(B))) continue;
+      best = [A, B]; if (l === 0 || (v(A) - v(B)) * (s(A) - s(B)) < 0) break;   // higher levels: the bigger box (volume) needs less paper
+    }
+    A = best[0]; B = best[1];
     const t = s(A) > s(B) ? 'Box A' : 'Box B';
     return ch(p('Box A measures ' + A.join(' × ') + ' cm. Box B measures ' + B.join(' × ') + ' cm. Which box needs <b>more wrapping paper</b>?'), t, [s(A) > s(B) ? 'Box B' : 'Box A', 'They need the same'], 'Wrapping paper covers the surface: calculate the surface area of both boxes.', 'Box A: ' + s(A) + ' cm². Box B: ' + s(B) + ' cm². So ' + t + ' needs more.');
   },
