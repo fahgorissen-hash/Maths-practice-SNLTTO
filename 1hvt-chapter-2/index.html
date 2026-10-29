@@ -1343,7 +1343,7 @@ const __def = (function (NX, P) {
     }
     return false;
   };
-  const __noStep = new Set(['xIntercept', 'missingCoord', 'solveX', 'solveNeg', 'whereCrossesX', 'timeFor', 'breakEven']);   // equations: the working is solving, not one calculation
+  const __noStep = new Set(['diagonals', 'diagonalsPattern', 'xIntercept', 'missingCoord', 'solveX', 'solveNeg', 'whereCrossesX', 'timeFor', 'breakEven']);   // equations: the working is solving, not one calculation
   const __conv = (q, name) => {
     if (!q) return q;
     if (__noStep.has(name) && q.type === 'num') q.noStep = true;
@@ -1356,7 +1356,7 @@ const __def = (function (NX, P) {
   __wrap(G); __wrap(XG);
   const GOALS = [["2.1", "I can name lines, rays and segments and say how lines are related", ["nameIt", "relation", "lineSymbols", "maxIntersect", "maxIntersect5"]], ["2.1", "I can measure distances between points and lines, and draw parallel lines", ["distPointLine", "parDist", "atDistance", "clickParPerp", "distParallelPoints", "throughPoint"]], ["2.2", "I can name and classify angles", ["typeByDegrees", "typeByPicture", "reflex", "vertexName", "angleReason"]], ["2.2", "I can calculate with angles, clocks and compass directions", ["clock", "compass", "complete", "turnSequence", "clockAngle"]], ["2.2", "I can read and draw angles with a protractor", ["drawAngle", "readAngle", "pickReading", "twoArms"]], ["2.3", "I can classify triangles and quadrilaterals", ["triByAngles", "triBySidesFromAngles", "triBySides", "triBoth", "quadName", "fourthVertex", "alwaysSometimes"]], ["2.3", "I can use angle sums, circles and diagonals", ["thirdAngle", "circleConv", "circlesInRect", "diagonals", "diagonalsPattern", "circlesMeet", "isosceles", "radiiTriangle"]], ["2.4", "I can decide whether a triangle can be constructed and choose the right tool", ["canMake", "tools", "compassCircle", "thirdSide"]], ["2.4", "I can reflect points in a point or a line and find a midpoint", ["reflectPoint", "reflectLine", "midpoint", "whereIsP", "mirrorDist", "rhombusFacts", "doubleReflect"]]];
   /* test preparation: one-step recall items stay in practice only (compared with the 2026-27 test and book ex 91-104) */
-  const TEST = { skip: ['nameIt', 'relation', 'triByAngles', 'triBySidesFromAngles', 'typeByPicture', 'vertexName', 'pickReading', 'triBySides', 'circleConv', 'tools', 'midpoint', 'whereIsP', 'mirrorDist', 'rhombusFacts', 'compassCircle'] };
+  const TEST = { skip: ['diagonals', 'nameIt', 'relation', 'triByAngles', 'triBySidesFromAngles', 'typeByPicture', 'vertexName', 'pickReading', 'triBySides', 'circleConv', 'tools', 'midpoint', 'whereIsP', 'mirrorDist', 'rhombusFacts', 'compassCircle'] };
   return { key: 'ch2-1hvt-plane-figures-v1', SECTIONS, LESSONS: LESSONS, G, XG, GOALS, TEST };
 
 })(NX, {"cls": "1HVT"});
