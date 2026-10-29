@@ -47,7 +47,7 @@ svg.grid[data-click]{cursor:crosshair}
 .fb.show{display:block}.fb.ok{background:var(--okbg);border:1px solid #8fd1a8}.fb.no{background:var(--badbg);border:1px solid #eba8a3}.fb.hint{background:var(--warnbg);border:1px solid #e6c874}
 .fb b.h{display:block;margin-bottom:2px}
 .res h2{margin-top:0}.grade{font-size:44px;font-weight:700;color:var(--brand)}
-.rev{border-top:1px solid var(--line);padding:10px 0;font-size:17px}.rev .st{color:var(--mut)}
+.rev{border-top:1px solid var(--line);padding:10px 0;font-size:17px}.drawnote{background:var(--warnbg);border-radius:8px;padding:8px 12px;margin-top:8px}.rev .st{color:var(--mut)}
 @media(max-width:760px){.wrap{grid-template-columns:1fr}nav{display:grid;grid-template-columns:1fr 1fr;gap:4px}nav .reset{grid-column:1/-1}}
 .sr{position:absolute;left:-9999px}
 
@@ -1337,7 +1337,7 @@ function check(){
     const g=goalOfQ(q);if(g&&goalScore(g).key==='mastered')up+=award('goal');
     const dg=q.type==='num'&&/°$/.test(E.answerText(q));
     if(stepLines.length&&(q.type==='num'||q.type==='expr'))drawSteps((q.eqStep?q.eqStep+' = ':'')+String(u).trim().replace(/\s*°$/,'')+(dg?'°':''));save();fb('ok','<b class="h">Correct!'+(tries>1?' (second try)':'')+(dg?' The answer is: '+E.answerText(q):'')+'</b>'+q.steps+up);finish();
-    if(st.auto!==false){clearTimeout(autoT);autoT=setTimeout(()=>{if(done&&cur===q&&!test&&!view)next(false)},1000)}
+    if(st.auto!==false&&!q.construct){clearTimeout(autoT);autoT=setTimeout(()=>{if(done&&cur===q&&!test&&!view)next(false)},1000)}
   }else if(tries===1){
     row=0;if(counts)streak=0;
     $('#sol').style.display='';
@@ -1370,8 +1370,10 @@ function revealQ(q){
   if(q.type!=='click')return;const sv=document.querySelector('svg.grid[data-click]');if(!sv||sv.querySelector('.rev'))return;
   const u=+sv.dataset.u,pad=+sv.dataset.pad,xmin=+sv.dataset.xmin,ymax=+sv.dataset.ymax,X=x=>pad+(x-xmin)*u,Y=y=>pad+(ymax-y)*u;
   const R=q.reveal||{segs:[],pts:q.targets};let h='';
-  (R.segs||[]).forEach(g=>{h+='<line x1="'+X(g.a[0])+'" y1="'+Y(g.a[1])+'" x2="'+X(g.b[0])+'" y2="'+Y(g.b[1])+'" stroke="#16803c" stroke-width="2.2" stroke-dasharray="6 4" opacity=".75"/>'});
+  (R.polys||[]).forEach(v=>{h+='<polygon points="'+v.map(p=>X(p[0])+','+Y(p[1])).join(' ')+'" fill="rgba(22,128,60,.12)" stroke="#16803c" stroke-width="2.2"/>'});
+  (R.segs||[]).forEach(g=>{h+='<line x1="'+X(g.a[0])+'" y1="'+Y(g.a[1])+'" x2="'+X(g.b[0])+'" y2="'+Y(g.b[1])+'" stroke="#16803c" stroke-width="'+(g.w||2.2)+'"'+(g.solid?' stroke-linecap="round"':' stroke-dasharray="6 4" opacity=".75"')+'/>'});
   (R.pts||[]).forEach(p=>{h+=sv.dataset.cell?'<rect x="'+(X(p[0])-u/2+1)+'" y="'+(Y(p[1])-u/2+1)+'" width="'+(u-2)+'" height="'+(u-2)+'" fill="#9be0b3" stroke="#16803c" stroke-width="2" opacity=".85"/>':'<circle cx="'+X(p[0])+'" cy="'+Y(p[1])+'" r="5" fill="#16803c" stroke="#fff" stroke-width="1.5"/>'});
+  (R.texts||[]).forEach(t=>{h+='<text x="'+X(t.x)+'" y="'+(Y(t.y)+5)+'" font-size="14" font-weight="700" text-anchor="middle" fill="#16803c">'+t.t+'</text>'});
   sv.querySelector('.marks').insertAdjacentHTML('beforebegin','<g class="rev">'+h+'</g>');
 }
 let finT=0;function finish(){finT=Date.now();revealQ(cur);$('#chk').disabled=true;$('#hnt').disabled=true;$('#sol').style.display='none';$('#nxt').style.display='';$('#nxt').focus();document.querySelectorAll('.choice').forEach(b=>b.disabled=true);document.querySelectorAll('#ans input').forEach(i=>i.disabled=true);document.querySelectorAll('#kp button').forEach(i=>i.disabled=true);renderNavSoft();const lp=document.querySelector('details.hl');if(lp){const o=lp.open;lp.outerHTML=logPanel();const n=document.querySelector('details.hl');if(n)n.open=o}}
@@ -1393,7 +1395,7 @@ function testShow(){
 function testCheck(q,u){
   done=true;const ok=E.grade(q,u);if(ok)test.score++;revealQ(q);record(q,ok?1:0);
   test.log.push({q,ok,u});
-  fb(ok?'ok':'no',ok?'<b class="h">Correct</b>':'<b class="h">Not correct. The answer is: '+E.answerText(q)+'</b>'+q.steps);
+  fb(ok?'ok':'no',ok?'<b class="h">Correct</b>'+(q.construct?q.steps:''):'<b class="h">Not correct. The answer is: '+E.answerText(q)+'</b>'+q.steps);
   $('#chk').disabled=true;document.querySelectorAll('.choice').forEach(b=>b.disabled=true);document.querySelectorAll('#ans input').forEach(i=>i.disabled=true);document.querySelectorAll('#kp button').forEach(i=>i.disabled=true);
   $('#nxt').style.display='';$('#nxt').focus();
 }

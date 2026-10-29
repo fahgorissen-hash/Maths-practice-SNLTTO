@@ -47,7 +47,7 @@ svg.grid[data-click]{cursor:crosshair}
 .fb.show{display:block}.fb.ok{background:var(--okbg);border:1px solid #8fd1a8}.fb.no{background:var(--badbg);border:1px solid #eba8a3}.fb.hint{background:var(--warnbg);border:1px solid #e6c874}
 .fb b.h{display:block;margin-bottom:2px}
 .res h2{margin-top:0}.grade{font-size:44px;font-weight:700;color:var(--brand)}
-.rev{border-top:1px solid var(--line);padding:10px 0;font-size:17px}.rev .st{color:var(--mut)}
+.rev{border-top:1px solid var(--line);padding:10px 0;font-size:17px}.drawnote{background:var(--warnbg);border-radius:8px;padding:8px 12px;margin-top:8px}.rev .st{color:var(--mut)}
 @media(max-width:760px){.wrap{grid-template-columns:1fr}nav{display:grid;grid-template-columns:1fr 1fr;gap:4px}nav .reset{grid-column:1/-1}}
 .sr{position:absolute;left:-9999px}
 
@@ -944,6 +944,54 @@ const __def = (function (NX, P) {
     }
   ];
 
+  /* reflections: random shapes that use the grid, and the construction lines shown on the answer screen */
+  function randPoly(n) {   // convex lattice polygon of varied size inside [-6, 6], or null; corners counter-clockwise
+    const s = ri(3, 7), c = [ri(-6 + Math.ceil(s / 2), 6 - Math.ceil(s / 2)), ri(-6 + Math.ceil(s / 2), 6 - Math.ceil(s / 2))], t0 = Math.random() * 2 * Math.PI;
+    const V = [];
+    for (let k = 0; k < n; k++) { const a = t0 + 2 * Math.PI * k / n + (Math.random() - .5) * 1.1 * Math.PI / n, r = s * (.45 + .35 * Math.random()); V.push([Math.round(c[0] + r * Math.cos(a)), Math.round(c[1] + r * Math.sin(a))]); }
+    if (!V.every(p => inR(p, 6)) || new Set(V.map(String)).size < n) return null;
+    let area = 0;
+    for (let i = 0; i < n; i++) {
+      const p = V[i], a = V[(i + 1) % n], b = V[(i + 2) % n], cr = (a[0] - p[0]) * (b[1] - a[1]) - (a[1] - p[1]) * (b[0] - a[0]);
+      if (cr <= 0) return null;   // convex, no three corners on a line
+      const u = [p[0] - a[0], p[1] - a[1]], v = [b[0] - a[0], b[1] - a[1]];
+      if (Math.acos((u[0] * v[0] + u[1] * v[1]) / Math.hypot(...u) / Math.hypot(...v)) < rad(22)) return null;   // no needle-thin corners
+      area += p[0] * a[1] - a[0] * p[1];
+    }
+    return area / 2 >= (n === 3 ? 3 : 5) ? V : null;
+  }
+  const clipLine = (o, e) => {   // the part of the line o + t·e inside the grid; the upper (or right) end last, where the label goes
+    let lo = -99, hi = 99;
+    [0, 1].forEach(i => { if (e[i]) { const a = (-7 - o[i]) / e[i], b = (7 - o[i]) / e[i]; lo = Math.max(lo, Math.min(a, b)); hi = Math.min(hi, Math.max(a, b)); } });
+    const A = [o[0] + lo * e[0], o[1] + lo * e[1]], B = [o[0] + hi * e[0], o[1] + hi * e[1]];
+    return B[1] > A[1] || (B[1] === A[1] && B[0] > A[0]) ? [A, B] : [B, A];
+  };
+  function conLines(p, q, mir, nt) {   // dashed line p→q, nt small dashes on both halves (equal lengths), right-angle mark where it crosses the mirror (direction mir)
+    const m = [(p[0] + q[0]) / 2, (p[1] + q[1]) / 2], len = Math.hypot(q[0] - p[0], q[1] - p[1]), d = [(q[0] - p[0]) / len, (q[1] - p[1]) / len], nn = [-d[1], d[0]];
+    const segs = [{ a: p, b: q }];
+    [p, q].forEach(s => {
+      const c = [(s[0] + m[0]) / 2, (s[1] + m[1]) / 2];
+      for (let k = 0; k < nt; k++) { const o = (k - (nt - 1) / 2) * .13, cc = [c[0] + d[0] * o, c[1] + d[1] * o]; segs.push({ a: [cc[0] - nn[0] * .2, cc[1] - nn[1] * .2], b: [cc[0] + nn[0] * .2, cc[1] + nn[1] * .2], solid: true, w: 2 }); }
+    });
+    if (mir) {
+      const el = Math.hypot(...mir), e = [mir[0] / el * .28, mir[1] / el * .28], b = [-d[0] * .28, -d[1] * .28];
+      segs.push({ a: [m[0] + e[0], m[1] + e[1]], b: [m[0] + e[0] + b[0], m[1] + e[1] + b[1]], solid: true, w: 1.8 }, { a: [m[0] + e[0] + b[0], m[1] + e[1] + b[1]], b: [m[0] + b[0], m[1] + b[1]], solid: true, w: 1.8 });
+    }
+    return segs;
+  }
+  const outLabels = (V, L) => {   // corner letters just outside a polygon (one point: up and to the right)
+    const cx = V.reduce((s, p) => s + p[0], 0) / V.length, cy = V.reduce((s, p) => s + p[1], 0) / V.length;
+    return V.map((p, i) => { const r = Math.hypot(p[0] - cx, p[1] - cy); return V.length > 1 && r ? { x: p[0] + .55 * (p[0] - cx) / r, y: p[1] + .55 * (p[1] - cy) / r, t: L[i] } : { x: p[0] + .45, y: p[1] + .45, t: L[i] }; });
+  };
+  function conReveal(pts, im, mir, L, t0) {   // answer-screen drawing: construction lines, the image (green) and its labels A′, B′, ...
+    const segs = [].concat(...pts.map((p, i) => conLines(p, im[i], mir, (t0 || 0) + i + 1)));
+    return { segs, pts: im, polys: im.length > 2 ? [im] : [], texts: outLabels(im, L.map(x => x + '′')) };
+  }
+  const drawNote = kind => '<p class="drawnote">✏️ <b>Draw this on paper too.</b> ' + (kind === 'line'
+    ? 'From every point, draw a line at 90° to the mirror line (use your set square) and mark the right angle. Measure the distance to the mirror line and measure the same distance on the other side. Mark equal distances with the same number of small dashes.'
+    : kind === 'both' ? 'Step 1: draw a line from A at 90° to n (set square), mark the right angle and measure the same distance on the other side. Step 2: draw a line from A′ through P and measure the same distance again. Mark equal distances with the same number of small dashes.'
+    : 'Draw a line from every point through P. Measure the distance to P and measure the same distance on the other side of P. Mark equal distances with the same number of small dashes.') + ' Leave your construction lines on the paper.</p>';
+
   /* 2.4 Constructing and reflecting */
   G['2.4'] = [
     function tools(l) {
@@ -952,42 +1000,45 @@ const __def = (function (NX, P) {
       return { type: 'choice', opts, ans: opts.indexOf(q[1]), correct: opts.indexOf(q[1]), html: '<p>Which tool do you use to <b>' + q[0] + '</b>?</p>', hint: 'Compass: circles and arcs. Ruler: lengths. Protractor: angles.', steps: q[1] + '.' };
     },
     function reflectPoint(l) {
-      let P, A, B; const tri = l > 0;
-      for (let k = 0; k < 200; k++) {
-        P = [ri(-3, 3), ri(-3, 3)]; A = [ri(-5, 5), ri(-5, 5)]; if (!tri) { B = null; } else { B = [A[0] + ri(1, 3), A[1] + ri(-3, 3)]; }
-        const quad = l === 2, w = ri(2, 3), h = ri(2, 3);
-        const pts = quad ? [A, [A[0] + w, A[1] + ri(-1, 1)], [A[0] + w + ri(-1, 1), A[1] + h], [A[0] + ri(-1, 0), A[1] + h + ri(0, 1)]] : tri ? [A, B, [A[0] - ri(0, 2), A[1] + ri(1, 3)]] : [A];
+      const tri = l > 0, quad = l === 2, n = quad ? 4 : 3;
+      for (let k = 0; k < 2000; k++) {
+        const P = [ri(-4, 4), ri(-4, 4)], pts = tri ? randPoly(n) : [[ri(-6, 6), ri(-6, 6)]];
+        if (!pts) continue;
         const im = pts.map(p => [2 * P[0] - p[0], 2 * P[1] - p[1]]);
-        if (pts.every(p => inR(p, 6)) && im.every(p => inR(p, 6)) && !pts.some(p => p[0] === P[0] && p[1] === P[1])) {
-          if (pts.some(p => im.some(q => q[0] === p[0] && q[1] === p[1]))) continue;
-          if (quad) {   // convex, and P outside the quadrilateral so the image does not overlap it
-            const cr = pts.map((p, i) => { const a = pts[(i + 1) % 4], b = pts[(i + 2) % 4]; return (a[0] - p[0]) * (b[1] - a[1]) - (a[1] - p[1]) * (b[0] - a[0]); });
-            if (!(cr.every(c => c > 0) || cr.every(c => c < 0))) continue;
-            const xs = pts.map(p => p[0]), ys = pts.map(p => p[1]);
-            if (P[0] >= Math.min(...xs) - 1 && P[0] <= Math.max(...xs) + 1 && P[1] >= Math.min(...ys) - 1 && P[1] <= Math.max(...ys) + 1) continue;
-          }
-          return clickQ('<p>Reflect ' + (quad ? 'quadrilateral <b>ABCD</b>' : tri ? 'triangle <b>ABC</b>' : 'point <b>A</b>') + ' in point <b>P</b>. Click ' + (quad ? 'the four corners of the image' : tri ? 'the three corners of the image' : 'the image A′') + '. (Click again to remove a point.)</p>' + grp({ click: true, polys: tri ? [{ v: pts, label: ['A', 'B', 'C', 'D'] }] : [], pts: (tri ? [] : [{ x: pts[0][0], y: pts[0][1], label: 'A' }]).concat([{ x: P[0], y: P[1], label: 'P', color: MIR }]) }), im,
-            'The image is at the same distance from P as the original, but on the other side of P. Go from A to P, and just as far again.', 'The image is marked in green on the grid.');
-        }
+        if (!im.every(p => inR(p, 6)) || pts.some(p => Math.hypot(p[0] - P[0], p[1] - P[1]) < 2)) continue;
+        const xs = pts.map(p => p[0]), ys = pts.map(p => p[1]);   // P outside the box around the shape, so the image never overlaps it
+        if (tri && P[0] >= Math.min(...xs) && P[0] <= Math.max(...xs) && P[1] >= Math.min(...ys) && P[1] <= Math.max(...ys)) continue;
+        const L = ['A', 'B', 'C', 'D'].slice(0, pts.length);
+        return clickQ('<p>Reflect ' + (quad ? 'quadrilateral <b>ABCD</b>' : tri ? 'triangle <b>ABC</b>' : 'point <b>A</b>') + ' in point <b>P</b>. Click ' + (quad ? 'the four corners of the image' : tri ? 'the three corners of the image' : 'the image A′') + '. (Click again to remove a point.)</p>' + grp({ click: true, polys: tri ? [{ v: pts }] : [], texts: tri ? outLabels(pts, L) : [], pts: (tri ? [] : [{ x: pts[0][0], y: pts[0][1], label: 'A' }]).concat([{ x: P[0], y: P[1], label: 'P', color: MIR }]) }), im,
+          'The image is at the same distance from P as the original, but on the other side of P. Go from A to P, and just as far again.',
+          '<p>The image is marked in green. Every line from a point to its image goes through P, and P is exactly in the middle.</p>' + drawNote('point'),
+          { construct: true, reveal: conReveal(pts, im, null, L) });
       }
-    
       return GN('2.4', 'reflectPoint')(l);
     },
     function reflectLine(l) {
-      const tri = l > 0, kind = l === 2 ? pick(['x', 'y', 'd', 'd']) : pick(['x', 'y']), k = kind === 'd' ? 0 : ri(-2, 3);
-      for (let t = 0; t < 300; t++) {
-        const A = [ri(-5, 5), ri(-5, 5)], pts = tri ? [A, [A[0] + ri(1, 3), A[1] + ri(-2, 2)], [A[0] + ri(-2, 1), A[1] + ri(1, 3)]] : [A];
-        const refl = p => kind === 'x' ? [2 * k - p[0], p[1]] : kind === 'y' ? [p[0], 2 * k - p[1]] : [p[1], p[0]];
-        const im = pts.map(refl);
-        const onLine = pts.some(p => (kind === 'x' ? p[0] === k : kind === 'y' ? p[1] === k : p[0] === p[1]));
-        if (pts.every(p => inR(p, 6)) && im.every(p => inR(p, 6)) && !onLine && new Set(pts.map(String)).size === pts.length) {
-          const mirror = kind === 'x' ? { a: [k, -7], b: [k, 7], dash: true, color: MIR, label: 'n' } : kind === 'y' ? { a: [-7, k], b: [7, k], dash: true, color: MIR, label: 'n' } : { a: [-7, -7], b: [7, 7], dash: true, color: MIR, label: 'n' };
-          const nm = kind === 'x' ? 'x = ' + f(k) : kind === 'y' ? 'y = ' + f(k) : 'y = x';
-          return clickQ('<p>Reflect ' + (tri ? 'triangle <b>ABC</b>' : 'point <b>A</b>') + ' in the mirror line <b>n</b>. Click ' + (tri ? 'the three corners of the image' : 'the image A′') + '.</p>' + grp({ click: true, segs: [mirror], polys: tri ? [{ v: pts, label: ['A', 'B', 'C'] }] : [], pts: tri ? [] : [{ x: A[0], y: A[1], label: 'A' }] }), im,
-            'The image is at the same distance from the mirror line as the original, on the other side, and the line between them is at 90° to the mirror line.', 'The image is marked in green on the grid.');
-        }
+      const tri = l > 0, kind = l === 2 ? pick(['x', 'y', 'd', 'a']) : pick(['x', 'y']);
+      const c = kind === 'd' || kind === 'a' ? ri(-2, 2) : ri(-4, 4);
+      const M = kind === 'x' ? { o: [c, 0], e: [0, 1] } : kind === 'y' ? { o: [0, c], e: [1, 0] } : { o: [0, c], e: kind === 'd' ? [1, 1] : [1, -1] };
+      const ee = M.e[0] * M.e[0] + M.e[1] * M.e[1];
+      const side = p => (p[1] - M.o[1]) * M.e[0] - (p[0] - M.o[0]) * M.e[1];   // > 0 on one side of the mirror, 0 on it
+      const along = p => (p[0] - M.o[0]) * M.e[0] + (p[1] - M.o[1]) * M.e[1];
+      const refl = p => { const t = 2 * along(p) / ee; return [2 * M.o[0] + t * M.e[0] - p[0], 2 * M.o[1] + t * M.e[1] - p[1]]; };
+      for (let t = 0; t < 3000; t++) {
+        const pts = tri ? randPoly(3) : [[ri(-6, 6), ri(-6, 6)]];
+        if (!pts) continue;
+        const im = pts.map(refl), sd = pts.map(side);
+        if (!im.every(p => inR(p, 6)) || sd.some(s => Math.abs(s) < ee)) continue;   // at least 1 square (diagonal: 1 diagonal) from the mirror
+        if (!(sd.every(s => s > 0) || sd.every(s => s < 0))) continue;   // whole shape on one side, so the image does not overlap it
+        if (new Set(pts.map(along)).size < pts.length) continue;   // no two corners on the same perpendicular, so the construction lines stay apart
+        if (im.some(q => pts.some(p => p[0] === q[0] && p[1] === q[1]))) continue;
+        const L = ['A', 'B', 'C'].slice(0, pts.length), ends = clipLine(M.o, M.e);
+        const mirror = { a: ends[0], b: ends[1], dash: true, color: MIR, label: 'n' };
+        return clickQ('<p>Reflect ' + (tri ? 'triangle <b>ABC</b>' : 'point <b>A</b>') + ' in the mirror line <b>n</b>. Click ' + (tri ? 'the three corners of the image' : 'the image A′') + '.</p>' + grp({ click: true, segs: [mirror], polys: tri ? [{ v: pts }] : [], texts: tri ? outLabels(pts, L) : [], pts: tri ? [] : [{ x: pts[0][0], y: pts[0][1], label: 'A' }] }), im,
+          'The image is at the same distance from the mirror line as the original, on the other side, and the line between them is at 90° to the mirror line.',
+          '<p>The image is marked in green. Each line from a point to its image is at 90° to n, and n cuts it exactly in the middle.</p>' + drawNote('line'),
+          { construct: true, reveal: conReveal(pts, im, M.e, L) });
       }
-    
       return GN('2.4', 'reflectLine')(l);
     },
     function midpoint(l) {
@@ -1226,7 +1277,8 @@ const __def = (function (NX, P) {
       while (n < 300 && (!inR(B, 6) || !inR(C, 6) || A[1] === k || (C[0] === P[0] && C[1] === P[1]) || (C[0] === A[0] && C[1] === A[1])));   // A″ must not sit on a given point
       return clickQ('<p>Point <b>A</b> is reflected in the <b>mirror line n</b> (dashed). The image is called <b>A′</b>. Then A′ is reflected in <b>point P</b>, which gives <b>A″</b>. Click <b>A″</b>.</p>' + grp({ click: true, segs: [{ a: [-7, k], b: [7, k], color: '#16803c', label: 'n', dash: true }], pts: [{ x: A[0], y: A[1], label: 'A' }, { x: P[0], y: P[1], label: 'P', color: MIR }] }), [C],
         'Do it in two steps. Step 1: A′ is as far below/above n as A is, on the other side. Step 2: A″ is as far from P as A′, on the opposite side (a half turn around P).',
-        'A′ is on the other side of the mirror line (same distance). A″ is on the other side of P (same distance). A″ is marked in green.');
+        '<p>A′ is on the other side of the mirror line (same distance). A″ is on the other side of P (same distance). A″ is marked in green.</p>' + drawNote('both'),
+        { construct: true, reveal: { segs: conLines(A, B, [1, 0], 1).concat(conLines(B, C, null, 2)), pts: [B, C], texts: outLabels([B], ['A′']).concat(outLabels([C], ['A″'])) } });
     }
   ];
 
@@ -1695,7 +1747,7 @@ function check(){
     const g=goalOfQ(q);if(g&&goalScore(g).key==='mastered')up+=award('goal');
     const dg=q.type==='num'&&/°$/.test(E.answerText(q));
     if(stepLines.length&&(q.type==='num'||q.type==='expr'))drawSteps((q.eqStep?q.eqStep+' = ':'')+String(u).trim().replace(/\s*°$/,'')+(dg?'°':''));save();fb('ok','<b class="h">Correct!'+(tries>1?' (second try)':'')+(dg?' The answer is: '+E.answerText(q):'')+'</b>'+q.steps+up);finish();
-    if(st.auto!==false){clearTimeout(autoT);autoT=setTimeout(()=>{if(done&&cur===q&&!test&&!view)next(false)},1000)}
+    if(st.auto!==false&&!q.construct){clearTimeout(autoT);autoT=setTimeout(()=>{if(done&&cur===q&&!test&&!view)next(false)},1000)}
   }else if(tries===1){
     row=0;if(counts)streak=0;
     $('#sol').style.display='';
@@ -1728,8 +1780,10 @@ function revealQ(q){
   if(q.type!=='click')return;const sv=document.querySelector('svg.grid[data-click]');if(!sv||sv.querySelector('.rev'))return;
   const u=+sv.dataset.u,pad=+sv.dataset.pad,xmin=+sv.dataset.xmin,ymax=+sv.dataset.ymax,X=x=>pad+(x-xmin)*u,Y=y=>pad+(ymax-y)*u;
   const R=q.reveal||{segs:[],pts:q.targets};let h='';
-  (R.segs||[]).forEach(g=>{h+='<line x1="'+X(g.a[0])+'" y1="'+Y(g.a[1])+'" x2="'+X(g.b[0])+'" y2="'+Y(g.b[1])+'" stroke="#16803c" stroke-width="2.2" stroke-dasharray="6 4" opacity=".75"/>'});
+  (R.polys||[]).forEach(v=>{h+='<polygon points="'+v.map(p=>X(p[0])+','+Y(p[1])).join(' ')+'" fill="rgba(22,128,60,.12)" stroke="#16803c" stroke-width="2.2"/>'});
+  (R.segs||[]).forEach(g=>{h+='<line x1="'+X(g.a[0])+'" y1="'+Y(g.a[1])+'" x2="'+X(g.b[0])+'" y2="'+Y(g.b[1])+'" stroke="#16803c" stroke-width="'+(g.w||2.2)+'"'+(g.solid?' stroke-linecap="round"':' stroke-dasharray="6 4" opacity=".75"')+'/>'});
   (R.pts||[]).forEach(p=>{h+=sv.dataset.cell?'<rect x="'+(X(p[0])-u/2+1)+'" y="'+(Y(p[1])-u/2+1)+'" width="'+(u-2)+'" height="'+(u-2)+'" fill="#9be0b3" stroke="#16803c" stroke-width="2" opacity=".85"/>':'<circle cx="'+X(p[0])+'" cy="'+Y(p[1])+'" r="5" fill="#16803c" stroke="#fff" stroke-width="1.5"/>'});
+  (R.texts||[]).forEach(t=>{h+='<text x="'+X(t.x)+'" y="'+(Y(t.y)+5)+'" font-size="14" font-weight="700" text-anchor="middle" fill="#16803c">'+t.t+'</text>'});
   sv.querySelector('.marks').insertAdjacentHTML('beforebegin','<g class="rev">'+h+'</g>');
 }
 let finT=0;function finish(){finT=Date.now();revealQ(cur);$('#chk').disabled=true;$('#hnt').disabled=true;$('#sol').style.display='none';$('#nxt').style.display='';$('#nxt').focus();document.querySelectorAll('.choice').forEach(b=>b.disabled=true);document.querySelectorAll('#ans input').forEach(i=>i.disabled=true);document.querySelectorAll('#kp button').forEach(i=>i.disabled=true);renderNavSoft();const lp=document.querySelector('details.hl');if(lp){const o=lp.open;lp.outerHTML=logPanel();const n=document.querySelector('details.hl');if(n)n.open=o}}
@@ -1751,7 +1805,7 @@ function testShow(){
 function testCheck(q,u){
   done=true;const ok=E.grade(q,u);if(ok)test.score++;revealQ(q);record(q,ok?1:0);
   test.log.push({q,ok,u});
-  fb(ok?'ok':'no',ok?'<b class="h">Correct</b>':'<b class="h">Not correct. The answer is: '+E.answerText(q)+'</b>'+q.steps);
+  fb(ok?'ok':'no',ok?'<b class="h">Correct</b>'+(q.construct?q.steps:''):'<b class="h">Not correct. The answer is: '+E.answerText(q)+'</b>'+q.steps);
   $('#chk').disabled=true;document.querySelectorAll('.choice').forEach(b=>b.disabled=true);document.querySelectorAll('#ans input').forEach(i=>i.disabled=true);document.querySelectorAll('#kp button').forEach(i=>i.disabled=true);
   $('#nxt').style.display='';$('#nxt').focus();
 }
