@@ -1200,7 +1200,7 @@ function check(){
     if(w&&w.bad&&!test){fb('hint','<b class="h">One calculation is not right: '+esc(w.bad.replace(/\*/g,' × ').replace(/\//g,' : '))+'.</b>Check it and try again.');return}
     if(w&&!w.bad){if(!test)w.pre.forEach(t=>{if(stepLines.indexOf(t)<0)stepLines.push(t)});u=w.fin}
     else if(!test){fb('hint','<b class="h">I cannot read this answer.</b>Use numbers and the signs + − × : (you can type <i>x</i> or <i>*</i> for times, <i>:</i> or <i>/</i> for divide). Put a comma between calculations and end with the final number, for example <i>16 : 8 = 2, 12 x 2 = 24</i>.');return}}
-  if(test){return testCheck(q,u)}
+  if(test){if(q.type==='expr'&&E.check){const r0=E.check(q,u);if(!r0.ok&&r0.why==='form'&&stepLines.length<4){stepLines.push(String(u).trim());drawSteps();fb('hint','<b class="h">✓ Good step.</b>That has the right value, but it is not finished yet. '+(q.needPi?'Work it out to one number times π (for example 180π).':'Work it out and type the final answer'+(r0.msg?' ('+esc(r0.msg)+')':'')+'.'));const i0=$('#in0');if(i0){i0.value='';i0.focus()}const pv=$('#pv');if(pv)pv.innerHTML='';return}}return testCheck(q,u)}   /* test preparation: a right but unfinished expression is a step (open circle), not a wrong answer */
   const sm=stepMode(q);
   const slashCalc=q.type==='num'&&DIVSTEP.has(String(genName(q)||'').replace(/^X/,''))&&/^\s*\d+(?:[.,]\d+)?\s*\/\s*\d+(?:[.,]\d+)?\s*$/.test(String(u));
   if(sm==='enforce'&&q.type==='num'&&!stepLines.length&&!isNaN(E.parseNum(u))&&!slashCalc){fb('hint','<b class="h">Show your working first.</b>Showing your steps is part of a correct answer. Type the first calculation you do (for example <i>(4+5)*9</i> or <i>9*9</i>), then work towards the final answer.');return}
@@ -1210,7 +1210,7 @@ function check(){
       if(rr.ok){fb('hint','<b class="h">✓ That calculation is right.</b>Now work it out and type the <b>final number</b> as your answer.');stepLines.push(String(u).trim());drawSteps();const i0=$('#in0');i0.value='';i0.focus();const pv=$('#pv');if(pv)pv.innerHTML='';return}calcWrong=true}}
   if(q.type==='expr'&&E.check){const r0=E.check(q,u);
     if(r0.ok){if(sm==='enforce'&&!stepLines.length){fb('hint','<b class="h">Show your working first.</b>Showing your steps is part of a correct answer. Type an in-between step first (for example before you simplify or add things up), then type your final answer.');return}}
-    else if(r0.why==='form'&&stepLines.length<4){stepLines.push(String(u).trim());drawSteps();fb('hint','<b class="h">✓ Good step.</b>That has the right value, but it is not finished yet. Now work it out and type the final answer'+(r0.msg?' ('+esc(r0.msg)+')':'')+'.');const i0=$('#in0');i0.value='';i0.focus();const pv=$('#pv');if(pv)pv.innerHTML='';return}}
+    else if(r0.why==='form'&&stepLines.length<4){stepLines.push(String(u).trim());drawSteps();fb('hint','<b class="h">✓ Good step.</b>That has the right value, but it is not finished yet. '+(q.needPi?'Work it out to one number times π (for example 180π).':'Now work it out and type the final answer'+(r0.msg?' ('+esc(r0.msg)+')':'')+'.'));const i0=$('#in0');i0.value='';i0.focus();const pv=$('#pv');if(pv)pv.innerHTML='';return}}
   const R_=chk(q,u),ok=R_.ok;tries++;
   logAnswer(q,u,ok);
   const S=st.stat[st.sec]=st.stat[st.sec]||{n:0,ok:0};
@@ -1269,7 +1269,7 @@ function renderNavSoft(){if(items().some(s=>st.done[s.id]&&!document.querySelect
 /* ---------- test preparation ---------- */
 function startTest(){view=null;free=null;focus=null;test={qs:E.makeTest(),i:0,score:0,log:[]};renderNav();testShow()}
 function testShow(){
-  const q=cur=test.qs[test.i];done=false;clicked=[];choiceSel=null;protoAngle=null;hintUsed=false;
+  const q=cur=test.qs[test.i];done=false;clicked=[];stepLines=[];choiceSel=null;protoAngle=null;hintUsed=false;
   $('#main').innerHTML='<div class="top"><span class="badge l1">Test preparation</span><span class="streak">Question '+(test.i+1)+' of '+test.qs.length+'</span></div>'+qHTML(q)+
    '<div class="btns"><button class="btn" id="chk">Check</button><button class="btn alt" id="nxt" style="display:none">'+(test.i===test.qs.length-1?'See my result':'Next question')+'</button></div><div class="fb" id="fb"></div>';
   wireProto();$('#chk').onclick=check;$('#nxt').onclick=testNext;
