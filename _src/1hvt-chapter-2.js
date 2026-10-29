@@ -73,6 +73,7 @@
       s += '<circle cx="' + X(p.x) + '" cy="' + Y(p.y) + '" r="4.6" fill="' + (p.color || '#1b5fa8') + '" stroke="#fff" stroke-width="1.2"/>';
       if (p.label) s += '<text x="' + (X(p.x) + 7) + '" y="' + (Y(p.y) - 7) + '" font-size="13" font-weight="700" fill="#123">' + p.label + '</text>';
     });
+    (o.texts || []).forEach(t => { s += '<text x="' + X(t.x) + '" y="' + (Y(t.y) + 5) + '" font-size="14" font-weight="700" text-anchor="middle" fill="#123">' + t.t + '</text>'; });   // centred labels, e.g. corners placed outside a shape
     s += '<g class="marks"></g></svg>';
     return s;
   }
@@ -129,6 +130,7 @@
   const gr = (o) => grid(Object.assign({ xmin: -7, xmax: 7, ymin: -7, ymax: 7 }, o));
   const grp = (o) => gr(Object.assign({ plain: true }, o));
   const inR = (p, r) => Math.abs(p[0]) <= r && Math.abs(p[1]) <= r;
+  const cornerLabels = (V, L) => V.map((p, i) => { const r = Math.hypot(p[0], p[1]) || 1; return { x: p[0] * (1 + .8 / r), y: p[1] * (1 + .8 / r), t: L[i] }; });   // corner letters just outside a shape centred on (0, 0)
   const clickQ = (html, targets, hint, steps, extra) => Object.assign({ type: 'click', targets, correct: targets, html, hint, steps }, extra || {});
   const revLine = (P, e) => {            // full line through P with primitive direction e, plus lattice points on it
     const pts = [], R = 7; let k = 0;
@@ -385,12 +387,26 @@
       return toD ? { type: 'num', ans: 2 * r, correct: String(2 * r), html: '<p>A circle has a <b>radius</b> of <b>' + r + ' cm</b>. What is its <b>diameter</b>?</p>', hint: 'The diameter goes through the centre. It is twice the radius.', steps: '2 · ' + r + ' = ' + 2 * r + ' cm.' }
         : { type: 'num', ans: r, correct: String(r), html: '<p>A circle has a <b>diameter</b> of <b>' + 2 * r + ' cm</b>. What is its <b>radius</b>?</p>', hint: 'The radius is half of the diameter.', steps: f(2 * r) + ' : 2 = ' + r + ' cm.' };
     },
-    function diagonals(l) {
-      const n = l === 0 ? ri(4, 7) : l === 1 ? ri(6, 10) : ri(10, 25), ans = n * (n - 3) / 2, hs = Math.random() < .3 && l > 0;
-      return hs ? { type: 'num', ans: n * (n - 1) / 2, correct: String(n * (n - 1) / 2), html: '<p>' + n + ' people shake hands once with everybody else. How many handshakes?</p>',
-        hint: 'Each person shakes hands with ' + (n - 1) + ' others, but every handshake is counted twice.', steps: n + ' · ' + (n - 1) + ' : 2 = ' + n * (n - 1) / 2 + '.' }
-        : { type: 'num', ans, correct: String(ans), html: '<p>How many diagonals does a polygon with <b>' + n + ' sides</b> have?</p>',
-        hint: 'From each corner you can draw ' + (n - 3) + ' diagonals (not to itself or to its two neighbours). Every diagonal is then counted twice.', steps: n + ' · ' + (n - 3) + ' : 2 = ' + ans + '.' };
+    function diagonals(l) {   // 1HVT scope: quadrilateral or pentagon only, with a drawing as scaffolding
+      const n = l === 0 ? pick([4, 5]) : l === 1 ? pick([4, 5, 5]) : 5, ans = n * (n - 3) / 2, hs = Math.random() < .25 && l > 0;
+      if (hs) { const p = ri(3, 5), h = p * (p - 1) / 2;
+        return { type: 'num', ans: h, correct: String(h), html: '<p><b>' + p + ' friends</b> each shake hands once with every other friend. How many handshakes are there?</p>',
+          hint: 'Give the friends letters: A, B, C' + (p > 3 ? ', D' : '') + (p > 4 ? ', E' : '') + '. Write down every pair: AB, AC, … AB and BA are the same handshake, so count it once.',
+          steps: 'Each friend shakes ' + (p - 1) + ' hands: ' + p + ' · ' + (p - 1) + ' = ' + p * (p - 1) + '. Every handshake is counted twice, so ' + p * (p - 1) + ' : 2 = ' + h + '.' }; }
+      const L = 'ABCDE'.slice(0, n).split('');
+      const V = n === 4 ? [[-5, -4], [5, -3], [4, 4], [-3, 5]] : [0, 1, 2, 3, 4].map(k => { const t = (90 + 72 * k + 144) * Math.PI / 180; return [+(5.5 * Math.cos(t)).toFixed(2), +(5.5 * Math.sin(t)).toFixed(2)]; });
+      const fromA = V.slice(2, n - 1).map(p => ({ a: V[0], b: p, color: '#16803c', dash: true }));
+      const shape = n === 4 ? 'quadrilateral ABCD' : 'pentagon ABCDE', mode = l === 0 ? 'fromA' : l === 1 ? 'shown' : 'total';
+      const others = L.slice(2, n - 1), list = [];
+      for (let i = 0; i < n; i++) for (let j = i + 2; j < n; j++) if (!(i === 0 && j === n - 1)) list.push(L[i] + L[j]);
+      if (mode === 'fromA') return { type: 'num', ans: n - 3, correct: String(n - 3),
+        html: '<p>This is ' + shape + '. A <b>diagonal</b> is a line segment from one corner to another corner that is <b>not next to it</b>. How many diagonals start at corner <b>A</b>?</p>' + grp({ polys: [{ v: V }], texts: cornerLabels(V, L) }),
+        hint: 'The corners next to A are ' + L[1] + ' and ' + L[n - 1] + '. A line from A to them is a side, not a diagonal. Which corners are left?',
+        steps: 'From A you can go to ' + others.join(' and ') + ' (' + L[1] + ' and ' + L[n - 1] + ' are next to A). So ' + (n - 3) + ' diagonal' + (n - 3 > 1 ? 's' : '') + ' start at A: ' + others.map(c => 'A' + c).join(' and ') + '.' };
+      return { type: 'num', ans, correct: String(ans),
+        html: '<p>This is ' + shape + '. A <b>diagonal</b> goes from one corner to another corner that is <b>not next to it</b>.' + (mode === 'shown' ? ' The diagonals from corner A are drawn (dashed).' : '') + ' How many diagonals does the ' + (n === 4 ? 'quadrilateral' : 'pentagon') + ' have <b>in total</b>?</p>' + grp({ polys: [{ v: V }], texts: cornerLabels(V, L), segs: mode === 'shown' ? fromA : [] }),
+        hint: 'Start at A and count its diagonals. Then go to B, then C, and so on. Do not count a diagonal twice: AC and CA are the same diagonal.',
+        steps: 'The diagonals are ' + list.slice(0, -1).join(', ') + ' and ' + list[list.length - 1] + '. That is ' + ans + ' diagonals. (Check: ' + n + ' corners · ' + (n - 3) + ' diagonal' + (n > 4 ? 's' : '') + ' each = ' + n * (n - 3) + ', and every diagonal is counted twice: ' + n * (n - 3) + ' : 2 = ' + ans + '.)' };
     }
   ];
 
@@ -563,12 +579,13 @@
     }
   ];
   XG['2.3'] = [
-    function diagonalsPattern() {
-      const n = pick([8, 9, 10]), tab = [0, 2, 5, 9, 14, 20, 27, 35], ans = tab[n - 3];
-      return { type: 'num', ans, correct: String(ans),
-        html: '<p>A regular polygon has this number of diagonals: 3 sides → 0, 4 sides → 2, 5 sides → 5, 6 sides → 9, 7 sides → 14. How many diagonals does a regular polygon with <b>' + n + ' sides</b> have?</p>',
-        hint: 'Look at how much the number goes up each time: +2, +3, +4, +5, … Continue the pattern.',
-        steps: 'The steps are +2, +3, +4, +5, +6, +7, … So 7 sides: 14, 8 sides: 20, 9 sides: 27, 10 sides: 35. For ' + n + ' sides: ' + ans + ' diagonals.' };
+    function diagonalsPattern() {   // challenge, still at most a pentagon: where do the diagonals cross?
+      const V = [0, 1, 2, 3, 4].map(k => { const t = (90 + 72 * k + 144) * Math.PI / 180; return [+(5.5 * Math.cos(t)).toFixed(2), +(5.5 * Math.sin(t)).toFixed(2)]; });
+      const segs = []; for (let i = 0; i < 5; i++) for (let j = i + 2; j < 5; j++) if (!(i === 0 && j === 4)) segs.push({ a: V[i], b: V[j], color: '#16803c' });
+      const q = pick([['How many diagonals does the pentagon have?', 5, 'The diagonals are AC, AD, BD, BE and CE: 5 diagonals.'], ['Inside the pentagon, how many points are there where two diagonals cross?', 5, 'Each diagonal crosses two others. The crossing points form a small pentagon in the middle: 5 points.']]);
+      return { type: 'num', ans: q[1], correct: String(q[1]),
+        html: '<p>All diagonals of pentagon ABCDE are drawn. ' + q[0] + '</p>' + grp({ polys: [{ v: V }], texts: cornerLabels(V, 'ABCDE'.split('')), segs }),
+        hint: 'Count carefully and tick off each one you have counted. A diagonal goes from a corner to a corner that is not next to it.', steps: q[2] };
     },
     function circlesMeet() {
       const r1 = ri(2, 5), r2 = ri(2, 5), mode = ri(0, 2), d = mode === 0 ? r1 + r2 : mode === 1 ? Math.abs(r1 - r2) + ri(1, Math.min(r1, r2) * 2 - 1) : r1 + r2 + ri(1, 3);
