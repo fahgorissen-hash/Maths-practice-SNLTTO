@@ -146,7 +146,7 @@
   G['2.1'] = [
     function nameIt(l) {
       const items = [
-        ['A line goes on for ever in both directions. It has no starting point and no end point.', 'Line'],
+        ['It goes on for ever in both directions. It has no starting point and no end point.', 'Line'],
         ['It has one end point and goes on for ever in one direction.', 'Ray'],
         ['It has two end points. You can measure its length.', 'Line segment'],
         ['Two lines that never meet, because they stay at the same distance from each other.', 'Parallel lines'],
@@ -807,5 +807,5 @@
   __wrap(G); __wrap(XG);
   const GOALS = [["2.1", "I can name lines, rays and segments and say how lines are related", ["nameIt", "relation", "lineSymbols", "maxIntersect", "maxIntersect5"]], ["2.1", "I can measure distances between points and lines, and draw parallel lines", ["distPointLine", "parDist", "atDistance", "clickParPerp", "distParallelPoints", "throughPoint"]], ["2.2", "I can name and classify angles", ["typeByDegrees", "typeByPicture", "reflex", "vertexName", "angleReason"]], ["2.2", "I can calculate with angles, clocks and compass directions", ["clock", "compass", "complete", "turnSequence", "clockAngle"]], ["2.2", "I can read and draw angles with a protractor", ["drawAngle", "readAngle", "pickReading", "twoArms"]], ["2.3", "I can classify triangles and quadrilaterals", ["triByAngles", "triBySidesFromAngles", "triBySides", "quadName", "fourthVertex", "alwaysSometimes"]], ["2.3", "I can use angle sums, circles and diagonals", ["thirdAngle", "circleConv", "circlesInRect", "diagonals", "diagonalsPattern", "circlesMeet", "isosceles", "radiiTriangle"]], ["2.4", "I can decide whether a triangle can be constructed and choose the right tool", ["canMake", "tools", "compassCircle", "thirdSide"]], ["2.4", "I can reflect points in a point or a line and find a midpoint", ["reflectPoint", "reflectLine", "midpoint", "whereIsP", "mirrorDist", "rhombusFacts", "doubleReflect"]]];
   /* test preparation: one-step recall items stay in practice only (compared with the 2026-27 test and book ex 91-104) */
-  const TEST = { skip: ['relation', 'typeByPicture', 'vertexName', 'pickReading', 'triBySides', 'circleConv', 'tools', 'midpoint', 'whereIsP', 'mirrorDist', 'rhombusFacts', 'compassCircle'] };
+  const TEST = { skip: ['nameIt', 'relation', 'typeByPicture', 'vertexName', 'pickReading', 'triBySides', 'circleConv', 'tools', 'midpoint', 'whereIsP', 'mirrorDist', 'rhombusFacts', 'compassCircle'] };
   return { key: 'ch2-1hvt-plane-figures-v1', SECTIONS, LESSONS: LESSONS, G, XG, GOALS, TEST };

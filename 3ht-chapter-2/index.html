@@ -645,7 +645,7 @@ G['2.3'] = [
     const a = ri(20, 80) * 2; return nu(p('The angle bisector of ∠ABC = <b>' + a + '°</b> is the line BD. How big is ∠ABD (in °)?'), a / 2, 'An angle bisector cuts the angle into two equal parts.', a + ' ÷ 2 = ' + a / 2 + '°.');
   },
   function whichWord(l) {
-    const q = pick([['A line that cuts an angle into two equal angles.', 'angle bisector'], ['A line that is perpendicular to AB and goes through the midpoint of AB.', 'perpendicular bisector'], ['The set of points that are the same distance from point A and point B.', 'perpendicular bisector'], ['The set of points that are the same distance from both arms of an angle.', 'angle bisector']]);
+    const q = pick([['A line that cuts the space between two arms into two equal parts.', 'angle bisector'], ['A line that makes a right angle with AB and goes through the middle of AB.', 'perpendicular bisector'], ['The set of points that are the same distance from point A and point B.', 'perpendicular bisector'], ['The set of points that are the same distance from two lines that meet.', 'angle bisector']]);
     return ch(p('Which word fits? <i>' + q[0] + '</i>'), q[1], ['angle bisector', 'perpendicular bisector', 'altitude'].filter(x => x !== q[1]), 'Equidistant from two points: perpendicular bisector. Equidistant from two lines (arms): angle bisector.', q[1] + '.');
   },
   function equidistantPoint(l) {
@@ -685,7 +685,7 @@ G['2.4'] = [
     return nu(p('A triangle has area ' + b * h / 2 + ' cm². The altitude to side a = ' + b + ' cm is ' + h + ' cm. How long is the altitude to the side of ' + b2 + ' cm (in cm)?'), b * h / b2, 'The area is the same, whichever side you use as the base: ½ × a × h_a = ½ × b × h_b.', 'h = ' + b + ' × ' + h + ' ÷ ' + b2 + ' = ' + f(b * h / b2) + ' cm.');
   },
   function whichLine(l) {
-    const q = pick([['A line segment from a vertex, perpendicular to the opposite side.', 'altitude'], ['The point where the three altitudes meet.', 'orthocentre'], ['A line through the midpoint of a side, perpendicular to that side.', 'perpendicular bisector'], ['A line that cuts an angle into two equal angles.', 'angle bisector']]);
+    const q = pick([['A line segment from a vertex, perpendicular to the opposite side.', 'altitude'], ['The point where the three altitudes meet.', 'orthocentre'], ['A line through the middle of a side that makes a right angle with that side.', 'perpendicular bisector'], ['A line that cuts the space between two arms into two equal parts.', 'angle bisector']]);
     return ch(p('Which word fits? <i>' + q[0] + '</i>'), q[1], ['altitude', 'orthocentre', 'perpendicular bisector', 'angle bisector'].filter(x => x !== q[1]), 'An altitude starts at a vertex and makes 90° with the opposite side. The altitudes meet in the orthocentre.', q[1] + '.');
   }
 ];

@@ -347,7 +347,7 @@ if (P.cls === '3VT') {
   ];
   const V3 = [
     function whichLocus(l) {
-      const C = [['all points at the same distance from A and B', 'the perpendicular bisector of AB'], ['all points at the same distance from the two arms of angle A', 'the bisector of angle A'], ['the line through the midpoint of AB, perpendicular to AB', 'the perpendicular bisector of AB'], ['the line that divides angle A into two equal angles', 'the bisector of angle A']], c = pick(C);
+      const C = [['all points at the same distance from A and B', 'the perpendicular bisector of AB'], ['all points at the same distance from the two lines AB and AC', 'the bisector of angle A'], ['the line through the middle of AB that makes a right angle with AB', 'the perpendicular bisector of AB'], ['the line through A that splits the opening between AB and AC into two equal parts', 'the bisector of angle A']], c = pick(C);
       return ch(p('What do you get: ' + c[0] + '?'), c[1], ['the perpendicular bisector of AB', 'the bisector of angle A', 'the median from A', 'the altitude from A'].filter(o => o !== c[1]), 'Perpendicular bisector: equal distance to two points. Angle bisector: equal distance to two lines.', 'This is ' + c[1] + '.');
     },
     function midpoint(l) {
@@ -377,7 +377,7 @@ if (P.cls === '3VT') {
       return ptQ(p('Triangle KLM has K' + P2(K[0], K[1]) + ' and L' + P2(L[0], L[1]) + '. Its centroid is Z' + P2(Z[0], Z[1]) + '. Calculate the coordinates of M.'), Mv[0], Mv[1], 'P is the midpoint of KL. M lies on line PZ with ZM = 2 · PZ.', p('Midpoint of KL: P' + P2(Pm[0], Pm[1]) + '.') + p('From P to Z: ' + (Z[0] - Pm[0] >= 0 ? '+' : '') + N_(Z[0] - Pm[0]) + ' in the ' + X_('x') + '-direction and ' + (Z[1] - Pm[1] >= 0 ? '+' : '') + N_(Z[1] - Pm[1]) + ' in the ' + X_('y') + '-direction.') + p('From Z to M is twice as far: M' + P2(Mv[0], Mv[1]) + '.'));
     },
     function whichLine(l) {
-      const C = [['a line segment from a vertex to the midpoint of the opposite side', 'median'], ['a line segment from a vertex perpendicular to the opposite side', 'altitude'], ['a line through the midpoint of a side, perpendicular to that side', 'perpendicular bisector'], ['a line that divides an angle of the triangle into two equal angles', 'angle bisector']], c = pick(C);
+      const C = [['a line segment from a vertex to the midpoint of the opposite side', 'median'], ['a line segment from a vertex perpendicular to the opposite side', 'altitude'], ['a line through the middle of a side that makes a right angle with that side', 'perpendicular bisector'], ['a line from a vertex that splits the opening at that vertex into two equal parts', 'angle bisector']], c = pick(C);
       return ch(p('What is the name of ' + c[0] + '?'), c[1], ['median', 'altitude', 'perpendicular bisector', 'angle bisector'].filter(o => o !== c[1]), 'Median: to the midpoint. Altitude: perpendicular, from a vertex.', 'This is the ' + c[1] + '.');
     }
   ];
