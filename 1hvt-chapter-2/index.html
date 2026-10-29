@@ -747,10 +747,11 @@ const __def = (function (NX, P) {
       const d = pick(D), e = [-d[1], d[0]], cr = (u, v) => u[0] * v[1] - u[1] * v[0], dot = (u, v) => u[0] * v[0] + u[1] * v[1];
       const o = pick([[1, 0], [0, 1], [1, 1], [1, -1], [2, 1], [1, 2], [2, -1], [1, -2], [3, 1], [1, 3]].filter(v => cr(v, d) && cr(v, e) && dot(v, d) && dot(v, e)));
       const far = (P, v) => { let k = 0; while (Math.abs(P[0] + (k + 1) * v[0]) <= 7 && Math.abs(P[1] + (k + 1) * v[1]) <= 7) k++; let j = 0; while (Math.abs(P[0] - (j + 1) * v[0]) <= 7 && Math.abs(P[1] - (j + 1) * v[1]) <= 7) j++; return { a: [P[0] - j * v[0], P[1] - j * v[1]], b: [P[0] + k * v[0], P[1] + k * v[1]] }; };
-      const A = [ri(-3, 0), ri(-3, 0)]; let B, t = 0;
-      do { B = [ri(1, 4), ri(1, 4)]; t++; } while (t < 50 && Math.abs(cr([B[0] - A[0], B[1] - A[1]], d)) < 3 * Math.hypot(d[0], d[1]));
+      const A = [ri(-3, 0), ri(-3, 0)], sh = Math.ceil(3 / Math.hypot(e[0], e[1])) * pick([1, -1]), B = [A[0] + sh * e[0], A[1] + sh * e[1]];   // the second parallel line is moved sideways, so it never lies on top of the first
+      if (!inR(B, 6)) return GN('2.1', 'lineSymbols')(l);
       const dirs = [d, d, e, o], base = [A, B, [ri(-2, 2), ri(-2, 2)], [ri(-2, 2), ri(-2, 2)]], nm = shuffle(['k', 'l', 'm', 'n']), cols = [ptc, MIR, '#16803c', '#7a3db8'];
       const segs = dirs.map((v, i) => Object.assign(far(base[i], v), { color: cols[i], label: nm[i] }));
+      if (segs.some(g => Math.hypot(g.b[0] - g.a[0], g.b[1] - g.a[1]) < 6)) return GN('2.1', 'lineSymbols')(l);   // every line clearly visible
       const par = (i, j) => cr(dirs[i], dirs[j]) === 0, perp = (i, j) => dot(dirs[i], dirs[j]) === 0, all = [];
       for (let i = 0; i < 4; i++) for (let j = i + 1; j < 4; j++) for (let a = 0; a < 4; a++) for (let b = a + 1; b < 4; b++) if (i + '' + j !== a + '' + b) all.push({ t: nm[i] + ' // ' + nm[j] + ' and ' + nm[a] + ' ⊥ ' + nm[b], ok: par(i, j) && perp(a, b) });
       const good = pick(all.filter(x => x.ok)), opts = shuffle([good].concat(shuffle(all.filter(x => !x.ok)).slice(0, 3)));
