@@ -417,7 +417,7 @@ function parsePoint(s) {
 }
 function check(q, u) {                      // -> {ok, why?, msg?}
   if (typeof q.grade === 'function') { let r = false; try { r = q.grade(u); } catch (e) { } return r && typeof r === 'object' ? r : { ok: !!r }; }   // own grading (protractor questions, roots with letters): true/false or {ok, why, msg}
-  if (q.type === 'num') { const n = parseNum(u); if (isNaN(n)) return { ok: false, why: 'parse' }; return { ok: Math.abs(n - q.ans) <= (q.tol || 1e-9) }; }
+  if (q.type === 'num') { let n = parseNum(u); if (isNaN(n) && /[0-9)][\s]*[-+*/:·×xX^²³√(]/.test(String(u))) { try { n = evalAst(parse(String(u), { noVars: true }), {}); } catch (e) { n = NaN; } } if (isNaN(n) || !isFinite(n)) return { ok: false, why: 'parse' }; return { ok: Math.abs(n - q.ans) <= (q.tol || 1e-9) }; }   // a typed calculation such as 2x5x6+2x5x7 counts by its value
   if (q.type === 'multi') { const ok = Array.isArray(u) && u.length === q.ans.length && u.every((v, i) => { const n = parseNum(v); return !isNaN(n) && Math.abs(n - q.ans[i]) <= (q.tol || 1e-9); }); return { ok }; }
   if (q.type === 'point') { const p = parsePoint(u); return { ok: !!p && Math.abs(p[0] - q.ans[0]) < 1e-9 && Math.abs(p[1] - q.ans[1]) < 1e-9 }; }
   if (q.type === 'choice') return { ok: Number(u) === q.ans };
