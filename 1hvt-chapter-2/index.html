@@ -670,6 +670,7 @@ const __def = (function (NX, P) {
   const NAMES = ['A', 'B', 'C', 'D', 'E', 'F', 'K', 'L', 'M', 'P', 'Q', 'R', 'S', 'T'];
 
   /* 2.1 Lines and distances */
+  const GN = (sec, n) => G[sec].concat(XG[sec] || []).find(fn => fn.name === n);   // generator by name (so moving one between G and XG is safe)
   G['2.1'] = [
     function nameIt(l) {
       const items = [
@@ -692,7 +693,7 @@ const __def = (function (NX, P) {
       else { const pr = pick([[0, 1], [1, 2], [-1, 0.5], ['v', 1], [2, 'v']]); m1 = pr[0]; m2 = pr[1]; b2 = ri(-2, 2); }
       const mk = (m, b, col, lab) => m === 'v' ? { a: [b, -7], b: [b, 7], color: col, label: lab } : { a: [-7, m * -7 + b], b: [7, m * 7 + b], color: col };
       const s1 = mk(m1, b1, ptc, 'l'), s2 = mk(m2, b2, MIR, 'm');
-      if (kind === 'intersect' && ((m1 === 'v' ? 1 : 0) + (m2 === 'v' ? 1 : 0)) === 2) return G['2.1'][1](l);
+      if (kind === 'intersect' && ((m1 === 'v' ? 1 : 0) + (m2 === 'v' ? 1 : 0)) === 2) return GN('2.1', 'relation')(l);
       const opts = ['l // m (parallel)', 'l ⊥ m (perpendicular)', 'l and m intersect, but not at 90°'], ans = kinds.indexOf(kind);
       return { type: 'choice', opts, ans, correct: ans,
         html: '<p>Look at the lines l (blue) and m (red). Which statement is true?</p>' + grp({ segs: [s1, s2] }),
@@ -701,18 +702,11 @@ const __def = (function (NX, P) {
     },
     function distPointLine(l) {
       const horiz = Math.random() < .5, k = ri(-3, 3), A = horiz ? [ri(-5, 5), k + nz(-5, 5)] : [k + nz(-5, 5), ri(-5, 5)];
-      if (!inR(A, 7)) return G['2.1'][2](l);
+      if (!inR(A, 7)) return GN('2.1', 'distPointLine')(l);
       const d = horiz ? Math.abs(A[1] - k) : Math.abs(A[0] - k);
       return { type: 'num', ans: d, correct: String(d),
         html: '<p>What is the distance from point <b>P</b> to line <b>l</b>? One square is 1 cm. (Give the number of cm.)</p>' + grp({ segs: [horiz ? { a: [-7, k], b: [7, k], color: ptc, label: 'l' } : { a: [k, -7], b: [k, 7], color: ptc, label: 'l' }], pts: [{ x: A[0], y: A[1], label: 'P', color: MIR }] }),
         hint: 'The distance to a line is the shortest way: straight (at 90°) to the line. Count the squares.', steps: 'Count squares in a straight line from P to l: ' + d + ' cm.' };
-    },
-    function parDist(l) {
-      const horiz = Math.random() < .5, k1 = ri(-5, 0), d = ri(2, 6), k2 = k1 + d;
-      const s = (k, c, lab) => horiz ? { a: [-7, k], b: [7, k], color: c, label: lab } : { a: [k, -7], b: [k, 7], color: c, label: lab };
-      return { type: 'num', ans: d, correct: String(d),
-        html: '<p>Lines <b>l</b> and <b>m</b> are parallel. What is the distance between l and m? One square is 1 cm. (Give the number of cm.)</p>' + grp({ segs: [s(k1, ptc, 'l'), s(Math.min(k2, 6), MIR, 'm')] }),
-        hint: 'Choose a point on l. Measure the distance from that point straight to the other line. The distance between parallel lines is the same everywhere.', steps: 'Distance = ' + d + ' cm.' };
     },
     function atDistance(l) {
       const k = ri(-2, 2), d = ri(1, 3), x = ri(-4, 4), horiz = Math.random() < .5;
@@ -721,13 +715,6 @@ const __def = (function (NX, P) {
       const other = horiz ? { a: [x, -7], b: [x, 7], color: '#16803c', label: 'n', dash: true } : { a: [-7, x], b: [7, x], color: '#16803c', label: 'n', dash: true };
       return clickQ('<p>Click <b>all points</b> on line <b>n</b> (green) that are <b>' + d + ' cm</b> from line <b>l</b> (blue). One square is 1 cm.</p>' + grp({ segs: [line, other], click: true }), t,
         'Points at distance ' + d + ' from a line lie on both sides of the line. There are two of them.', 'Go ' + d + ' squares from l in both directions along n. That gives two points (marked in green).');
-    },
-    function maxIntersect(l) {
-      const n = l === 0 ? ri(2, 3) : ri(3, 4), ans = n * (n - 1) / 2;
-      return { type: 'num', ans, correct: String(ans),
-        html: '<p>You draw <b>' + n + ' lines</b> in a plane. What is the <b>maximum</b> number of points of intersection?</p>',
-        hint: 'Make a drawing. Every line can cross every other line once. Each line crosses ' + (n - 1) + ' others, but every point is then counted twice.',
-        steps: n + ' · ' + (n - 1) + ' = ' + n * (n - 1) + ', counted twice, so ' + n * (n - 1) + ' : 2 = ' + ans + '.' };
     },
     function clickParPerp(l) {
       const dirs = l === 0 ? [[1, 0], [0, 1], [1, 1], [1, -1]] : [[1, 0], [0, 1], [1, 1], [1, -1], [2, 1], [1, 2], [2, -1], [1, -2], [3, 1], [1, -3]];
@@ -757,7 +744,7 @@ const __def = (function (NX, P) {
       const d = l === 2 ? pick(edge) : l === 0 ? pick([25, 45, 60, 90, 120, 135, 180, 200, 250, 360]) : ri(5, 355);
       const opts = l === 0 ? ['Acute', 'Right', 'Obtuse', 'Reflex'].filter(o => true) : ATYPES;
       const ans = opts.indexOf(ATYPES[aType(d)]);
-      if (ans < 0) return G['2.2'][0](l);
+      if (ans < 0) return GN('2.2', 'typeByDegrees')(l);
       return { type: 'choice', opts, ans, correct: ans, html: '<p>What kind of angle is an angle of <b>' + d + '°</b>?</p>',
         hint: 'Acute: less than 90°. Right: exactly 90°. Obtuse: between 90° and 180°. Straight: 180°. Reflex: between 180° and 360°. Full: 360°.', steps: d + '° is ' + (aType(d) === 0 ? 'an acute' : 'a' + (ATYPES[aType(d)] === 'Obtuse' ? 'n' : '') + ' ' + ATYPES[aType(d)].toLowerCase()) + ' angle.' };
     },
@@ -774,22 +761,19 @@ const __def = (function (NX, P) {
         { type: 'num', ans: small, correct: String(small), html: '<p>A reflex angle is <b>' + (360 - small) + '°</b>. What is the (small) angle on the other side?</p>',
         hint: 'A full turn is 360°. Subtract the reflex angle from 360°.', steps: '360° − ' + (360 - small) + '° = ' + small + '°.' };
     },
-    function clock(l) {
-      let h = ri(1, 12), m = 0;
-      if (l === 1) m = pick([0, 0, 30]); if (l === 2) m = pick([15, 30, 45]);
-      const ha = (h % 12) * 30 + m * 0.5, ma = m * 6; let d = Math.abs(ha - ma); if (d > 180) d = 360 - d;
-      const tm = h + ':' + (m < 10 ? '0' + m : m);
-      return { type: 'num', ans: d, correct: String(d), html: '<p>What is the <b>(smaller) angle between the hands</b> of a clock at <b>' + tm + '</b>?</p>',
-        hint: 'A clock has 12 hours, so each hour is 360° : 12 = 30°.' + (m ? ' The hour hand also moves: every minute 0.5°.' : ''),
-        steps: m === 0 ? 'The hands are ' + Math.round(d / 30) + ' hours apart: ' + Math.round(d / 30) + ' · 30° = ' + d + '°.' : 'Hour hand: ' + ha + '°, minute hand: ' + ma + '° (from 12). Difference: ' + d + '°.' };
+    function clock(l) {   // whole hours only (1HVT scope: no hour hand between two numbers)
+      const h = l === 0 ? ri(1, 6) : ri(1, 12), k = h > 6 ? 12 - h : h, d = k * 30;
+      return { type: 'num', ans: d, correct: String(d), html: '<p>What is the <b>(smaller) angle between the hands</b> of a clock at <b>' + h + ':00</b>?</p>',
+        hint: 'A clock has 12 hours, so each hour is 360° : 12 = 30°. Count how many hours the hands are apart' + (h > 6 ? ', the short way round.' : '.'),
+        steps: (h > 6 ? 'The short way round, from ' + h + ' to 12 is ' + k + ' hours. ' : 'From 12 to ' + h + ' is ' + k + ' hour' + (k > 1 ? 's' : '') + '. ') + k + ' · 30° = ' + d + '°.' };
     },
     function compass(l) {
       const dirs = ['North', 'North-east', 'East', 'South-east', 'South', 'South-west', 'West', 'North-west'], i = ri(0, 7);
       const turns = l === 0 ? [90, 180] : l === 1 ? [45, 90, 135, 180, 270] : [45, 135, 225, 270, 315];
       const t = pick(turns), side = pick(['right', 'left']), j = ((i + (side === 'right' ? 1 : -1) * t / 45) % 8 + 8) % 8;
       const opts = l === 0 ? ['North', 'East', 'South', 'West'] : dirs, ans = opts.indexOf(dirs[j]);
-      if (ans < 0) return G['2.2'][3](l);
-      if (l === 0 && i % 2) return G['2.2'][3](l);
+      if (ans < 0) return GN('2.2', 'clock')(l);
+      if (l === 0 && i % 2) return GN('2.2', 'clock')(l);
       return { type: 'choice', opts, ans, correct: ans, html: '<p>You face <b>' + dirs[i] + '</b>. You turn <b>' + t + '° to the ' + side + '</b> (clockwise = right). In which direction do you face now?</p>',
         hint: 'Between North, East, South and West there are 90° turns. 45° is half of that. Turning right goes North → East → South → West.', steps: 'Start ' + dirs[i] + ', turn ' + t + '° ' + side + ': ' + dirs[j] + '.' };
     },
@@ -810,7 +794,7 @@ const __def = (function (NX, P) {
       const nm = { 90: 'a right angle', 180: 'a straight angle', 360: 'a full angle' };
       if (l === 0) {                       // two known angles, one missing
         const T = pick([90, 180]), x = 5 * ri(2, T / 5 - 6), a = 5 * ri(2, (T - x) / 5 - 2), b = T - x - a;
-        if (b <= 0 || a <= 0) return G['2.2'][6](l);
+        if (b <= 0 || a <= 0) return GN('2.2', 'complete')(l);
         return { type: 'num', ans: x, correct: String(x),
           html: '<p>The angles <b>' + a + '°</b> and <b>' + b + '°</b> are next to each other, together with a third angle <b>x</b>. All three together make <b>' + nm[T] + '</b> (' + T + '°). How big is <b>x</b>? (Give the number of degrees.)</p>',
           hint: 'Add the two angles you know. Then subtract the total from ' + T + '°.', steps: a + ' + ' + b + ' = ' + (a + b) + '°. Then ' + T + ' − ' + (a + b) + ' = ' + x + '°.' };
@@ -819,7 +803,7 @@ const __def = (function (NX, P) {
         const T = pick([180, 360]), n = T === 180 ? 2 : 3; let ang = [], sum = 0;
         for (let i = 0; i < n; i++) { const v = ri(18, Math.floor((T - 30) / (n + 0.5))); ang.push(v); sum += v; }
         const x = T - sum;
-        if (x < 10) return G['2.2'][6](l);
+        if (x < 10) return GN('2.2', 'complete')(l);
         return { type: 'num', ans: x, correct: String(x),
           html: '<p>Around a point (or on a straight line) the angles ' + ang.map(v => '<b>' + v + '°</b>').join(', ') + ' and one more angle <b>x</b> together make <b>' + nm[T] + '</b> (' + T + '°). How big is <b>x</b>? (Give the number of degrees.)</p>',
           hint: 'Add all the angles you know. Then subtract the total from ' + T + '°.', steps: ang.join(' + ') + ' = ' + sum + '°. Then ' + T + ' − ' + sum + ' = ' + x + '°.' };
@@ -887,17 +871,12 @@ const __def = (function (NX, P) {
       return { type: 'choice', opts, ans: kind, correct: kind, html: '<p>A triangle has sides of <b>' + t.join(' cm, ') + ' cm</b>. What kind of triangle is it?</p>',
         hint: 'Count how many sides are equal.', steps: kind === 0 ? 'All three sides are equal: equilateral.' : kind === 1 ? 'Exactly two sides are equal: isosceles.' : 'No sides are equal: scalene.' };
     },
-    function thirdAngle(l) {
-      const a = ri(25, 90), b = ri(20, 175 - a - 10), c = 180 - a - b;
-      return { type: 'num', ans: c, correct: String(c), html: '<p>Two angles of a triangle are <b>' + a + '°</b> and <b>' + b + '°</b>. How large is the third angle?</p>',
-        hint: 'The three angles of a triangle add up to 180°.', steps: '180° − ' + a + '° − ' + b + '° = ' + c + '°.' };
-    },
     function quadName(l) {
       const items = [
         ['four equal sides and four right angles', 'Square'],
-        ['four right angles, but the sides are not all equal', 'Rectangle'],
-        ['four equal sides, but the angles are not right angles', 'Rhombus'],
-        ['two pairs of parallel sides, but no right angles and not all sides equal', 'Parallelogram']
+        ['four right angles, but the sides are not necessarily all equal', 'Rectangle'],
+        ['four equal sides, but the angles are not necessarily right angles', 'Rhombus'],
+        ['two pairs of parallel sides, but not necessarily right angles or equal sides', 'Parallelogram']
       ];
       const q = pick(l === 0 ? items.slice(0, 2) : items), opts = ['Square', 'Rectangle', 'Rhombus', 'Parallelogram'].slice(0, l === 0 ? 2 : 4);
       return { type: 'choice', opts, ans: opts.indexOf(q[1]), correct: opts.indexOf(q[1]), html: '<p>Which quadrilateral has <b>' + q[0] + '</b>?</p>',
@@ -940,15 +919,6 @@ const __def = (function (NX, P) {
 
   /* 2.4 Constructing and reflecting */
   G['2.4'] = [
-    function canMake(l) {
-      const yes = Math.random() < .5; let a, b, c;
-      if (yes) { do { a = ri(2, 9); b = ri(2, 9); c = ri(2, 9); } while (Math.max(a, b, c) >= a + b + c - Math.max(a, b, c)); }
-      else { a = ri(2, 6); b = ri(2, 6); c = a + b + (l === 0 ? ri(1, 5) : l === 1 ? pick([0, 1, 2]) : pick([0, 0, 1])); }
-      const t = shuffle([a, b, c]);
-      return { type: 'choice', opts: ['Yes, you can make this triangle', 'No, you cannot make this triangle'], ans: yes ? 0 : 1, correct: yes ? 0 : 1,
-        html: '<p>Can you construct a triangle with sides of <b>' + t.join(' cm, ') + ' cm</b>?</p>', hint: 'The longest side must be less than the sum of the other two sides.',
-        steps: 'Longest side: ' + Math.max(a, b, c) + ' cm. The other two: ' + (a + b + c - Math.max(a, b, c)) + ' cm. ' + (yes ? 'The longest side is smaller, so yes.' : 'The longest side is not smaller, so no.') };
-    },
     function tools(l) {
       const Q = [['draw a circle', 'Compass'], ['measure the length of a line segment', 'Ruler'], ['measure an angle', 'Protractor'], ['draw an arc with a given radius', 'Compass'], ['draw a line segment of 7 cm', 'Ruler'], ['draw an angle of 65°', 'Protractor']];
       const q = pick(Q), opts = ['Compass', 'Ruler', 'Protractor'];
@@ -966,7 +936,7 @@ const __def = (function (NX, P) {
         }
       }
     
-      return G['2.4'][2](l);
+      return GN('2.4', 'reflectPoint')(l);
     },
     function reflectLine(l) {
       const tri = l > 0, kind = l === 2 ? pick(['x', 'y', 'd', 'd']) : pick(['x', 'y']), k = kind === 'd' ? 0 : ri(-2, 3);
@@ -983,18 +953,18 @@ const __def = (function (NX, P) {
         }
       }
     
-      return G['2.4'][3](l);
+      return GN('2.4', 'reflectLine')(l);
     },
     function midpoint(l) {
       const a = [ri(-6, 6), ri(-6, 6)], dx = 2 * ri(1, 4) * pick([-1, 1]), dy = 2 * ri(0, 3) * pick([-1, 1]), b = [a[0] + dx, a[1] + dy];
-      if (!inR(b, 6)) return G['2.4'][4](l);
+      if (!inR(b, 6)) return GN('2.4', 'midpoint')(l);
       const m = [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2];
       return clickQ('<p>Click the <b>middle</b> of line segment <b>AB</b>.</p>' + grp({ click: true, segs: [{ a, b, color: ptc }], pts: [{ x: a[0], y: a[1], label: 'A' }, { x: b[0], y: b[1], label: 'B' }] }), [m],
         'The middle is exactly as far from A as from B. Count the squares from A to B and go half of that way.', 'Go from A to B in two equal parts. The middle is marked in green.');
     },
     function whereIsP(l) {
       const P = [ri(-4, 4), ri(-4, 4)], A = [ri(-5, 5), ri(-5, 5)], A2 = [2 * P[0] - A[0], 2 * P[1] - A[1]];
-      if (!inR(A2, 6) || (A[0] === A2[0] && A[1] === A2[1])) return G['2.4'][5](l);
+      if (!inR(A2, 6) || (A[0] === A2[0] && A[1] === A2[1])) return GN('2.4', 'whereIsP')(l);
       return clickQ('<p>Point <b>A</b> is reflected in a point <b>P</b>. The image is <b>A′</b>. Click point <b>P</b>.</p>' + grp({ click: true, pts: [{ x: A[0], y: A[1], label: 'A' }, { x: A2[0], y: A2[1], label: 'A′' }] }), [P],
         'P is exactly in the middle of A and A′.', 'P is the middle of A and A′ (marked in green).');
     },
@@ -1005,17 +975,17 @@ const __def = (function (NX, P) {
         : { type: 'num', ans: d, correct: String(d), html: '<p>Point A is reflected in point P. The distance between A and A′ is <b>' + 2 * d + ' cm</b>. What is the distance from <b>A to P</b>?</p>',
         hint: 'P is exactly in the middle between A and A′.', steps: f(2 * d) + ' : 2 = ' + d + ' cm.' };
     },
-    function rhombusFacts(l) {
+    function rhombusFacts(l) {   // side facts only: perimeter is not in 1HVT ch2
       const side = ri(3, 9), p = ri(3, 8), q = p + ri(1, 5), mode = ri(0, 2);
-      if (mode === 0) return { type: 'num', ans: 4 * side, correct: String(4 * side),
-        html: '<p>ABCD is a <b>rhombus</b>. Side AB is <b>' + side + ' cm</b>. What is the <b>perimeter</b> of the rhombus? (Give the number of cm.)</p>',
-        hint: 'All four sides of a rhombus are equally long.', steps: '4 · ' + side + ' = ' + 4 * side + ' cm.' };
+      if (mode === 0) { const s2 = pick(['BC', 'CD', 'DA']); return { type: 'num', ans: side, correct: String(side),
+        html: '<p>ABCD is a <b>rhombus</b>. Side AB is <b>' + side + ' cm</b>. How long is side <b>' + s2 + '</b>? (Give the number of cm.)</p>',
+        hint: 'All four sides of a rhombus are equally long.', steps: 'All sides of a rhombus are equal, so ' + s2 + ' = ' + side + ' cm.' }; }
       if (mode === 1) return { type: 'num', ans: p, correct: String(p),
         html: '<p>KLMN is a <b>parallelogram</b>. KL = <b>' + p + ' cm</b> and LM = <b>' + q + ' cm</b>. How long is side <b>MN</b>? (Give the number of cm.)</p>',
         hint: 'In a parallelogram the opposite sides are equally long. Which side is opposite to MN?', steps: 'MN is opposite to KL, so MN = ' + p + ' cm.' };
-      return { type: 'num', ans: 2 * (p + q), correct: String(2 * (p + q)),
-        html: '<p>KLMN is a <b>parallelogram</b>. KL = <b>' + p + ' cm</b> and LM = <b>' + q + ' cm</b>. What is the <b>perimeter</b> of KLMN? (Give the number of cm.)</p>',
-        hint: 'The opposite sides are equally long, so there are two sides of ' + p + ' cm and two sides of ' + q + ' cm.', steps: '2 · ' + p + ' + 2 · ' + q + ' = ' + (2 * (p + q)) + ' cm.' };
+      const opts = ['LM', 'MN', 'NK'];
+      return { type: 'choice', opts, ans: 1, correct: 1, html: '<p>KLMN is a <b>parallelogram</b>. Which side is <b>parallel</b> to side <b>KL</b>?</p>',
+        hint: 'In a parallelogram the opposite sides are parallel. Draw KLMN and look at the side across from KL.', steps: 'MN is opposite to KL, so KL // MN.' };
     },
     function compassCircle(l) {
       const r = ri(2, 8), mode = ri(0, 1);
@@ -1031,6 +1001,20 @@ const __def = (function (NX, P) {
   const XG = {};   // extra spicy generators per section
   /* ---------- Extra spicy (level 4): challenge questions ---------- */
   XG['2.1'] = [
+    function parDist(l) {
+      const horiz = Math.random() < .5, k1 = ri(-5, 0), d = ri(2, 6), k2 = k1 + d;
+      const s = (k, c, lab) => horiz ? { a: [-7, k], b: [7, k], color: c, label: lab } : { a: [k, -7], b: [k, 7], color: c, label: lab };
+      return { type: 'num', ans: d, correct: String(d),
+        html: '<p>Lines <b>l</b> and <b>m</b> are parallel. What is the distance between l and m? One square is 1 cm. (Give the number of cm.)</p>' + grp({ segs: [s(k1, ptc, 'l'), s(Math.min(k2, 6), MIR, 'm')] }),
+        hint: 'Choose a point on l. Measure the distance from that point straight to the other line. The distance between parallel lines is the same everywhere.', steps: 'Distance = ' + d + ' cm.' };
+    },
+    function maxIntersect(l) {
+      const n = l === 0 ? ri(2, 3) : ri(3, 4), ans = n * (n - 1) / 2;
+      return { type: 'num', ans, correct: String(ans),
+        html: '<p>You draw <b>' + n + ' lines</b> in a plane. What is the <b>maximum</b> number of points of intersection?</p>',
+        hint: 'Make a drawing. Every line can cross every other line once. Each line crosses ' + (n - 1) + ' others, but every point is then counted twice.',
+        steps: n + ' · ' + (n - 1) + ' = ' + n * (n - 1) + ', counted twice, so ' + n * (n - 1) + ' : 2 = ' + ans + '.' };
+    },
     function maxIntersect5() {
       const n = pick([5, 6, 7]), ans = n * (n - 1) / 2, prev = (n - 1) * (n - 2) / 2;
       return { type: 'num', ans, correct: String(ans),
@@ -1098,7 +1082,7 @@ const __def = (function (NX, P) {
     function clockAngle() {
       const h = ri(1, 11), m = 10 * ri(0, 5);
       const hand = (30 * h + m / 2) % 360, min = 6 * m, diff = Math.abs(hand - min), ang = diff > 180 ? 360 - diff : diff;
-      if (ang === 0 || ang === 180) return XG['2.2'][1]();
+      if (ang === 0 || ang === 180) return GN('2.2', 'turnSequence')();
       const t = h + ':' + (m < 10 ? '0' : '') + m;
       return { type: 'num', ans: ang, correct: String(ang),
         html: '<p>A clock shows <b>' + t + '</b>. What is the <b>smaller</b> angle between the hour hand and the minute hand? (Give the number of degrees.)</p>',
@@ -1107,6 +1091,11 @@ const __def = (function (NX, P) {
     }
   ];
   XG['2.3'] = [
+    function thirdAngle(l) {
+      const a = ri(25, 90), b = ri(20, 175 - a - 10), c = 180 - a - b;
+      return { type: 'num', ans: c, correct: String(c), html: '<p>Two angles of a triangle are <b>' + a + '°</b> and <b>' + b + '°</b>. How large is the third angle?</p>',
+        hint: 'The three angles of a triangle add up to 180°.', steps: '180° − ' + a + '° − ' + b + '° = ' + c + '°.' };
+    },
     function diagonalsPattern() {   // challenge, still at most a pentagon: where do the diagonals cross?
       const V = [0, 1, 2, 3, 4].map(k => { const t = (90 + 72 * k + 144) * Math.PI / 180; return [+(5.5 * Math.cos(t)).toFixed(2), +(5.5 * Math.sin(t)).toFixed(2)]; });
       const segs = []; for (let i = 0; i < 5; i++) for (let j = i + 2; j < 5; j++) if (!(i === 0 && j === 4)) segs.push({ a: V[i], b: V[j], color: '#16803c' });
@@ -1117,7 +1106,7 @@ const __def = (function (NX, P) {
     },
     function circlesMeet() {
       const r1 = ri(2, 5), r2 = ri(2, 5), mode = ri(0, 2), d = mode === 0 ? r1 + r2 : mode === 1 ? Math.abs(r1 - r2) + ri(1, Math.min(r1, r2) * 2 - 1) : r1 + r2 + ri(1, 3);
-      if (mode === 1 && (d <= Math.abs(r1 - r2) || d >= r1 + r2)) return XG['2.3'][1]();
+      if (mode === 1 && (d <= Math.abs(r1 - r2) || d >= r1 + r2)) return GN('2.3', 'circlesMeet')();
       const ans = d === r1 + r2 ? 1 : d < r1 + r2 ? 2 : 0, o = ['0 points', '1 point', '2 points'];
       return { type: 'choice', opts: o, ans, correct: ans,
         html: '<p>Points A and C are <b>' + d + ' cm</b> apart. You draw a circle with centre A and radius <b>' + r1 + ' cm</b>, and a circle with centre C and radius <b>' + r2 + ' cm</b>. How many points do the two circles have in common?</p>',
@@ -1142,12 +1131,21 @@ const __def = (function (NX, P) {
     },
   ];
   XG['2.4'] = [
+    function canMake(l) {
+      const yes = Math.random() < .5; let a, b, c;
+      if (yes) { do { a = ri(2, 9); b = ri(2, 9); c = ri(2, 9); } while (Math.max(a, b, c) >= a + b + c - Math.max(a, b, c)); }
+      else { a = ri(2, 6); b = ri(2, 6); c = a + b + (l === 0 ? ri(1, 5) : l === 1 ? pick([0, 1, 2]) : pick([0, 0, 1])); }
+      const t = shuffle([a, b, c]);
+      return { type: 'choice', opts: ['Yes, you can make this triangle', 'No, you cannot make this triangle'], ans: yes ? 0 : 1, correct: yes ? 0 : 1,
+        html: '<p>Can you construct a triangle with sides of <b>' + t.join(' cm, ') + ' cm</b>?</p>', hint: 'The longest side must be less than the sum of the other two sides.',
+        steps: 'Longest side: ' + Math.max(a, b, c) + ' cm. The other two: ' + (a + b + c - Math.max(a, b, c)) + ' cm. ' + (yes ? 'The longest side is smaller, so yes.' : 'The longest side is not smaller, so no.') };
+    },
     function thirdSide() {
       const a = ri(3, 6), b = a + ri(2, 6), lo = b - a, hi = a + b;
       const bad = pick([lo - 1 > 0 ? lo - 1 : 1, lo, hi, hi + ri(1, 3)]), good = [];
       for (let v = lo + 1; v < hi; v++) good.push(v);
       const g3 = shuffle(good).slice(0, 3);
-      if (g3.length < 3 || g3.includes(bad)) return XG['2.4'][0]();
+      if (g3.length < 3 || g3.includes(bad)) return GN('2.4', 'thirdSide')();
       const o = shuffle(g3.concat([bad])), ans = o.indexOf(bad);
       return { type: 'choice', opts: o.map(v => v + ' cm'), ans, correct: ans,
         html: '<p>A triangle has two sides of <b>' + a + ' cm</b> and <b>' + b + ' cm</b>. Which length can the <b>third side NOT</b> be?</p>',
@@ -1180,13 +1178,13 @@ const __def = (function (NX, P) {
     { id: 'L3', title: 'Lesson 3 · 2.2 Measuring and drawing angles', sub: 'Tue 6 Oct', date: '2026-10-06',
       gens: [['2.2', 'drawAngle'], ['2.2', 'readAngle'], ['2.2', 'pickReading'], ['2.2', 'complete'], ['2.4', 'tools']], xg: [['2.2', 'twoArms'], ['2.2', 'angleReason']] },
     { id: 'L4', title: 'Lesson 4 · 2.3 Triangles', sub: 'Wed 7 Oct', date: '2026-10-07',
-      gens: [['2.3', 'triByAngles'], ['2.3', 'triBySidesFromAngles'], ['2.3', 'triBySides'], ['2.3', 'thirdAngle']], xg: [['2.3', 'isosceles'], ['2.4', 'thirdSide']] },
+      gens: [['2.3', 'triByAngles'], ['2.3', 'triBySidesFromAngles'], ['2.3', 'triBySides']], xg: [['2.3', 'thirdAngle'], ['2.3', 'isosceles'], ['2.4', 'thirdSide']] },
     { id: 'L5', title: 'Lesson 5 · 2.3 Quadrilaterals and circles', sub: 'Thu 8 Oct', date: '2026-10-08',
       gens: [['2.3', 'quadName'], ['2.3', 'alwaysSometimes'], ['2.3', 'circleConv'], ['2.3', 'diagonals']], xg: [['2.3', 'radiiTriangle'], ['2.3', 'circlesMeet'], ['2.3', 'diagonalsPattern']] },
     { id: 'L6', title: 'Lesson 6 · 2.4 Constructing triangles', sub: 'Fri 9 Oct', date: '2026-10-09',
-      gens: [['2.4', 'canMake'], ['2.4', 'tools'], ['2.3', 'thirdAngle']], xg: [['2.4', 'thirdSide'], ['2.3', 'isosceles']] },
+      gens: [['2.4', 'tools'], ['2.4', 'compassCircle'], ['2.3', 'triBySides']], xg: [['2.4', 'canMake'], ['2.3', 'thirdAngle'], ['2.4', 'thirdSide'], ['2.3', 'isosceles']] },
     { id: 'L7', title: 'Lesson 7 · 2.4 Constructing with a compass', sub: 'Tue 27 Oct', date: '2026-10-27',
-      gens: [['2.4', 'tools'], ['2.4', 'compassCircle'], ['2.4', 'rhombusFacts'], ['2.4', 'canMake']], xg: [['2.3', 'circlesMeet'], ['2.4', 'thirdSide']] },
+      gens: [['2.4', 'tools'], ['2.4', 'compassCircle'], ['2.4', 'rhombusFacts']], xg: [['2.4', 'canMake'], ['2.3', 'circlesMeet'], ['2.4', 'thirdSide']] },
     { id: 'L8', title: 'Lesson 8 · 2.4 Reflecting in a point', sub: 'Wed 28 Oct', date: '2026-10-28',
       gens: [['2.4', 'reflectPoint'], ['2.4', 'midpoint'], ['2.4', 'whereIsP'], ['2.4', 'mirrorDist']], xg: [['2.4', 'doubleReflect']] },
     { id: 'L9', title: 'Lesson 9 · 2.4 Reflecting in a line', sub: 'Thu 29 Oct', date: '2026-10-29',
