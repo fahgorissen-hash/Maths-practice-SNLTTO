@@ -722,7 +722,7 @@ G['2.3'] = [
     const pool = l === 0 ? EDGES : l === 1 ? EDGES.concat(FD) : EDGES.concat(FD, SD);
     let a, b, r; for (let t = 0; t < 100; t++) { a = pick(l === 0 ? EDGES : pool); b = pick(pool); if (same(a, b)) continue; r = relation(a, b); const want = pick(['parallel', 'intersecting', 'skew']); if (r === want) break; }
     const opts = ['parallel', 'intersecting', 'skew']; const rightName = r;
-    return ch(p('The figure shows a cuboid ABCD.EFGH. How are the lines <b>' + a + '</b> and <b>' + b + '</b> positioned relative to each other?') + cuboidSVG([a, b]), rightName, opts.filter(x => x !== rightName), 'Parallel: same direction, never meet. Intersecting: they meet in a point. Skew: not parallel, and they never meet (they are in different planes).', 'Lines ' + a + ' and ' + b + ' are ' + rightName + '.', { keys: [] });
+    return ch(p('The figure shows a cuboid ABCD.EFGH. How are the lines <b>' + a + '</b> and <b>' + b + '</b> positioned relative to each other?') + cuboidSVG([]), rightName, opts.filter(x => x !== rightName), 'Parallel: same direction, never meet. Intersecting: they meet in a point. Skew: not parallel, and they never meet (they are in different planes).', 'Lines ' + a + ' and ' + b + ' are ' + rightName + '.', { keys: [] });
   },
   function countParallel(l) {
     const e = pick(EDGES); const par = EDGES.filter(x => !same(x, e) && relation(e, x) === 'parallel').length;
