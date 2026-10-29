@@ -757,13 +757,21 @@ G['2.4'] = [
     const g = randGrid(l === 0 ? 2 : 3, l === 0 ? 2 : 3, l === 2 ? 4 : 3); const t = g.flat().reduce((a, b) => a + b, 0);
     return nu(p('This <b>top view</b> of a building of cubes shows how many cubes are stacked on each square. How many cubes are there in total?') + stackSVG(g), t, 'Add all the numbers in the top view.', g.map(r => r.join(' + ')).join(' + ') + ' = ' + t + ' cubes.');
   },
-  function frontView(l) {
-    const g = randGrid(l === 0 ? 2 : 3, 3, l === 2 ? 4 : 3); const cm = colMax(g);
-    return Object.assign(nu(p('This top view shows the number of cubes on each square. Give the <b>front view</b>: the highest stack in each column, from <b>left to right</b>.') + stackSVG(g), cm, 'In the front view you see, for each column, the tallest stack in that column.', 'Column maxima, left to right: ' + cm.join(', ') + '.'), { type: 'multi', fields: cm.map((_, i) => 'column ' + (i + 1) + ' (' + (i === 0 ? 'left' : i === cm.length - 1 ? 'right' : 'middle') + ')'), ans: cm });
+  function frontView(l) {   // build the view by clicking squares (Frank, 2026-10-29)
+    const g = randGrid(l === 0 ? 2 : 3, 3, l === 2 ? 4 : 3), cm = colMax(g), H = l === 2 ? 4 : 3, C = cm.length;
+    const tg = []; cm.forEach((h, c) => { for (let y = 0; y < h; y++) tg.push([c, y]); });
+    return clickQ(p('This top view shows the number of cubes on each square. <b>Draw the front view</b>: click the squares you see from the front.') + stackSVG(g) +
+      GR({ xmin: 0, xmax: C - 1, ymin: 0, ymax: H - 1, cells: true, click: true, u: 34 }), tg, { segs: [], pts: tg },
+      'From the front you see, for each column, the tallest stack. Click that many squares above each other, starting at the bottom.',
+      'Column maxima, left to right: ' + cm.join(', ') + '. Click that many squares in each column.');
   },
   function sideView(l) {
-    const g = randGrid(l === 0 ? 2 : 3, l === 0 ? 2 : 3, l === 2 ? 4 : 3); const rm = rowMaxFront(g);
-    return Object.assign(nu(p('This top view shows the number of cubes on each square. Give the <b>side view from the right</b>: the highest stack in each row. Start with the row nearest to you (the <b>front</b>) on the left.') + stackSVG(g), rm, 'Looking from the right you see, for each row, the tallest stack in that row. The front row is on your left.', 'Row maxima from front to back: ' + rm.join(', ') + '.'), { type: 'multi', fields: rm.map((_, i) => 'row ' + (i + 1) + (i === 0 ? ' (front)' : i === rm.length - 1 ? ' (back)' : '')), ans: rm });
+    const g = randGrid(l === 0 ? 2 : 3, l === 0 ? 2 : 3, l === 2 ? 4 : 3), rm = rowMaxFront(g), H = l === 2 ? 4 : 3, C = rm.length;
+    const tg = []; rm.forEach((h, c) => { for (let y = 0; y < h; y++) tg.push([c, y]); });
+    return clickQ(p('This top view shows the number of cubes on each square. <b>Draw the side view from the right</b>: click the squares you see. The row nearest to you (the <b>front</b>) goes on the <b>left</b>.') + stackSVG(g) +
+      GR({ xmin: 0, xmax: C - 1, ymin: 0, ymax: H - 1, cells: true, click: true, u: 34 }), tg, { segs: [], pts: tg },
+      'Looking from the right you see, for each row, the tallest stack in that row. The front row is on your left.',
+      'Row maxima from front to back: ' + rm.join(', ') + '. Click that many squares in each column, starting at the bottom.');
   },
   function viewsToTop(l) {   // front view and side view drawn as figures (Frank, 2026-10-29)
     const R = l === 2 ? 3 : 2, C = l === 0 ? 2 : 3; let g, cm, rm;
@@ -902,14 +910,6 @@ G['2.5'].push(function clickNet(l) {
     'One correct net has the square' + (m > 1 ? 's' : '') + ' shown in green. A net of a cube always has 6 squares that fold into 6 different faces.',
     u => u.length === m && netOK(fixed.concat(u)), { ans: miss });
 });
-G['2.4'].push(function clickFront(l) {
-  const g = randGrid(l === 0 ? 2 : 3, 3, l === 2 ? 4 : 3), cm = colMax(g), H = l === 2 ? 4 : 3, C = cm.length;
-  const tg = []; cm.forEach((h, c) => { for (let y = 0; y < h; y++) tg.push([c, y]); });
-  return clickQ(p('This top view shows the number of cubes on each square. <b>Draw the front view</b>: click the squares you see from the front.') + stackSVG(g) +
-    GR({ xmin: 0, xmax: C - 1, ymin: 0, ymax: H - 1, cells: true, click: true, u: 34 }), tg, { segs: [], pts: tg },
-    'From the front you see, for each column, the tallest stack. Click that many squares above each other, starting at the bottom.',
-    'Column maxima, left to right: ' + cm.join(', ') + '. Click that many squares in each column.');
-});
 
 const SECTIONS = [
   { id: '2.1', title: '2.1 Solids and their parts', sub: 'Names, faces, edges, vertices, diagonals' },
@@ -947,7 +947,7 @@ else LESSONS = [
 LESSONS.forEach(le => { le.gens = le.gens.filter(g => !SKIP.includes(g[1])); le.xg = le.xg.filter(g => !SKIP.includes(g[1])); });
 return { key: 'nx-' + P.cls.toLowerCase() + '-ch2-v1', SECTIONS, LESSONS, G, XG, TEST: { skip: ['totalCubes', 'solidName', 'lineKind', 'baseShape', 'countParallel', 'cylinderNet'] }, defaultMode: 'lesson' };
 }))(NX,{"cls": "2HT"}));
-window.Ch3.GOALS=[["2.1", "I can name solids and their parts (faces, edges, vertices)", ["solidName", "lineKind", "countParts", "baseShape", "isPrism"]], ["2.2", "I can calculate the volume of prisms and cylinders", ["volPrism", "volCylinder"], "Volume = area of the base × height. Check the units."], ["2.2", "I can calculate the volume of pyramids, cones and spheres", ["volPyramid", "volCone", "volSphere", "volHemisphere", "volComposite", "volReverse"], "Pyramid and cone have a factor ⅓."], ["2.3", "I can describe how two lines in space are related (parallel, intersecting, skew)", ["lineRelation", "countParallel", "pickSkew"]], ["2.4", "I can read front, side and top views of cube buildings", ["totalCubes", "frontView", "sideView", "viewsToTop", "clickFront"]], ["2.5", "I can recognise nets of cubes and dice", ["cubeNet", "diceNet", "clickNet"]], ["2.5", "I can calculate surface areas of solids", ["surfCuboid", "surfPrism", "surfCylinder", "surfSphere", "surfCone", "wrapping", "cylinderNet"], "Surface area is in square units (cm²)."]];
+window.Ch3.GOALS=[["2.1", "I can name solids and their parts (faces, edges, vertices)", ["solidName", "lineKind", "countParts", "baseShape", "isPrism"]], ["2.2", "I can calculate the volume of prisms and cylinders", ["volPrism", "volCylinder"], "Volume = area of the base × height. Check the units."], ["2.2", "I can calculate the volume of pyramids, cones and spheres", ["volPyramid", "volCone", "volSphere", "volHemisphere", "volComposite", "volReverse"], "Pyramid and cone have a factor ⅓."], ["2.3", "I can describe how two lines in space are related (parallel, intersecting, skew)", ["lineRelation", "countParallel", "pickSkew"]], ["2.4", "I can read front, side and top views of cube buildings", ["totalCubes", "frontView", "sideView", "viewsToTop"]], ["2.5", "I can recognise nets of cubes and dice", ["cubeNet", "diceNet", "clickNet"]], ["2.5", "I can calculate surface areas of solids", ["surfCuboid", "surfPrism", "surfCylinder", "surfSphere", "surfCone", "wrapping", "cylinderNet"], "Surface area is in square units (cm²)."]];
 </script>
 <script>
 (function(){
