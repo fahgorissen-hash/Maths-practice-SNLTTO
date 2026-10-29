@@ -213,7 +213,7 @@
       return { type: 'click', rel, dir: d, base: A, targets: [C, D], correct: [C, D], example: true,
         html: '<p>Click <b>two points</b> that a line <b>' + word + '</b> to line <b>m</b> would pass through' + (rel === 'par' ? ' (not m itself)' : '') + '.</p>' + grp({ segs: [m], click: true }),
         hint: rel === 'par' ? 'A parallel line has the same direction as m. Look at how m goes: steps right and up or down. Start at a point and take the same steps.' : 'A perpendicular line meets m at 90°. Swap the steps of m: if m goes 2 right and 1 up, a perpendicular line goes 1 right and 2 down (or 1 left and 2 up).',
-        steps: 'Many answers are correct. The green lines show some possible lines; any two points on one of them are right.',
+        steps: 'Many answers are correct. The green lines show some possible lines; any two (or more) points on one of them are right.',
         reveal: (() => { const L = [revLine(C, e)]; for (let i = 0; i < 2; i++) { let P2, tr = 0; do { P2 = [ri(-5, 5), ri(-5, 5)]; tr++; } while (tr < 50 && (rel === 'par' && (P2[0] - A[0]) * d[1] - (P2[1] - A[1]) * d[0] === 0)); L.push(revLine(P2, e)); } return { segs: L.map(x => x.seg), pts: [].concat(...L.map(x => x.pts)) }; })() };
     }
   ];
@@ -653,18 +653,18 @@
   /* ---------- NX glue ---------- */
   const __gradeOld = (q, u) => {   // grading of the older engine for the question types NX does not know
     if (q.type === 'proto') return typeof u === 'number' && Math.abs(u - q.target) <= q.tol;
-    if (q.type === 'click' && q.rel && q.through) {
-      if (!Array.isArray(u) || u.length !== 1) return false;
-      const v = [u[0][0] - q.through[0], u[0][1] - q.through[1]]; if (!v[0] && !v[1]) return false;
-      return q.rel === 'perp' ? v[0] * q.dir[0] + v[1] * q.dir[1] === 0 : v[0] * q.dir[1] - v[1] * q.dir[0] === 0;
-    }
-    if (q.type === 'click' && q.rel) {
-      if (!Array.isArray(u) || u.length !== 2) return false;
-      const v = [u[1][0] - u[0][0], u[1][1] - u[0][1]]; if (!v[0] && !v[1]) return false;
-      const d = q.dir;
-      if (q.rel === 'perp') return v[0] * d[0] + v[1] * d[1] === 0;
-      const onM = (u[0][0] - q.base[0]) * d[1] - (u[0][1] - q.base[1]) * d[0] === 0;
-      return v[0] * d[1] - v[1] * d[0] === 0 && !onM;
+    if (q.type === 'click' && q.rel) {   // parallel/perpendicular line: any number of clicked points (at least the number asked), all on one line in the right direction
+      const pts = Array.isArray(u) ? u : [], d = q.dir, e = q.rel === 'perp' ? [-d[1], d[0]] : d;
+      const word = q.rel === 'perp' ? 'perpendicular' : 'parallel', no = msg => ({ ok: false, why: 'form', msg });
+      const off = (p, o) => (p[0] - o[0]) * e[1] - (p[1] - o[1]) * e[0];   // 0 when p lies on the line through o in direction e
+      if (q.through) {
+        if (!pts.some(p => p[0] !== q.through[0] || p[1] !== q.through[1])) return no('Click a point on line n other than P.');
+        return pts.every(p => off(p, q.through) === 0) || no('Not all your points are on line n. Line n goes through P and is ' + word + ' to m.');
+      }
+      if (pts.length < 2) return no('Click at least two points.');
+      if (!pts.every(p => off(p, pts[0]) === 0)) return no('Your points are not all on one line that is ' + word + ' to m.');
+      if (q.rel === 'par' && off(pts[0], q.base) === 0) return no('Those points are on m itself. Choose points on a different line.');
+      return true;
     }
     return false;
   };
