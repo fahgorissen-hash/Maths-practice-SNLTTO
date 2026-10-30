@@ -68,6 +68,10 @@ G['4.1'] = [
   },
   function twoWayPercent(l) {
     const gA = ri(14, 32), gB = ri(14, 32), fA = ri(2, gA - 4), fB = ri(2, gB - 4), which = pick(['A', 'B']), f = which === 'A' ? fA : fB, g = which === 'A' ? gA : gB;
+    if (l >= 2) {   // spicy: a percentage of a column, not of a row
+      const F = fA + fB, inA = Math.random() < .5, x = inA ? fA : fB;
+      return nu(p('Two classes did the same test.') + vtbl(['', 'passed', 'failed', 'total'], [['class A', gA - fA, fA, gA], ['class B', gB - fB, fB, gB]]) + p('What percentage of all students who <b>failed</b> is in class ' + (inA ? 'A' : 'B') + '? Round to 1 decimal.'), rd(x / F * 100, 1), 'Now the whole is the number of students who failed, in both classes together.', p('failed in total: ' + fA + ' + ' + fB + ' = ' + F) + p(x + ' / ' + F + ' · 100%' + ap(x / F * 100, 1) + '%'), { tol: .051 });
+    }
     return nu(p('Two classes did the same test.') + vtbl(['', 'passed', 'failed', 'total'], [['class A', gA - fA, fA, gA], ['class B', gB - fB, fB, gB]]) + p('What percentage of class ' + which + ' failed? Round to 1 decimal.'), rd(f / g * 100, 1), 'Use the total of class ' + which + ', not the total of both classes.', f + ' / ' + g + ' · 100%' + ap(f / g * 100, 1) + '%', { tol: .051 });
   },
   function relativelyMost(l) {
@@ -93,11 +97,14 @@ G['4.2'] = [
   },
   function pieBack(l) {
     let tot, ang; do { tot = pick([24, 30, 36, 48, 60, 72, 120, 180, 240]); ang = pick([30, 45, 60, 72, 90, 105, 120, 150, 195, 210]); } while (!Number.isInteger(ang / 360 * tot));
+    if (l >= 2) return nu(p('In a pie chart, a sector of ' + ang + '° stands for ' + ang / 360 * tot + ' people. How many people are in the whole pie chart?'), tot, 'Find how many people 1° stands for, or how many times ' + ang + '° fits in 360°.', ang / 360 * tot + ' / ' + ang + ' · 360 = ' + tot + ' people');   // spicy: from one sector back to the total
     return nu(p('A pie chart shows the answers of ' + tot + ' people. One sector has an angle of ' + ang + '°. How many people does this sector stand for?'), ang / 360 * tot, 'The sector is ' + ang + '/360 part of the circle.', ang + ' / 360 · ' + tot + ' = ' + ang / 360 * tot + ' people');
   },
   function readBars(l) {
     const cats = ['A', 'B', 'C', 'D'], i = ri(0, 3); let v, j; do { v = cats.map(() => ri(1, 9) * 2); } while (new Set(v).size < 2); do { j = ri(0, 3); } while (j === i || v[j] === v[i]);
-    const ask = pick(['diff', 'pct']);
+    const ask = l === 0 ? 'diff' : l === 1 ? pick(['diff', 'pct']) : pick(['pct', 'more']);
+    if (ask === 'more') { const hi = Math.max(v[i], v[j]), lo = Math.min(v[i], v[j]), H = cats[v[i] > v[j] ? i : j], L = cats[v[i] > v[j] ? j : i];   // spicy: percentage more than
+      return nu(p('The bar chart shows how many students chose each answer. How many <b>percent more</b> students chose ' + H + ' than ' + L + '? Round to 1 decimal.') + bars(cats, v, { step: 2 }), rd((hi - lo) / lo * 100, 1), 'Compare the difference with ' + L + ' (the old number).', p(H + ': ' + hi + ', ' + L + ': ' + lo + ', difference ' + (hi - lo)) + p((hi - lo) + ' / ' + lo + ' · 100%' + ap((hi - lo) / lo * 100, 1) + '%'), { tol: .051 }); }
     if (ask === 'diff') return nu(p('The bar chart shows how many students chose each answer. How many more students chose ' + cats[i] + ' than ' + cats[j] + '? <small>(A negative answer means fewer.)</small>') + bars(cats, v, { step: 2 }), v[i] - v[j], 'Read the height of both bars.', cats[i] + ': ' + v[i] + ', ' + cats[j] + ': ' + v[j] + '. ' + v[i] + ' − ' + v[j] + ' = ' + (v[i] - v[j]), { noStep: true });
     const t = sum(v);
     return nu(p('The bar chart shows how many students chose each answer. What percentage chose ' + cats[i] + '? Round to 1 decimal.') + bars(cats, v, { step: 2 }), rd(v[i] / t * 100, 1), 'Add up all bars for the total.', p('total = ' + v.join(' + ') + ' = ' + t) + p(v[i] + ' / ' + t + ' · 100%' + ap(v[i] / t * 100, 1) + '%'), { tol: .051 });
@@ -110,6 +117,10 @@ G['4.2'] = [
   function percentBack(l) {
     const old = ri(8, 30) * 4, pc = pick([125, 120, 150, 80, 75, 110]), now = old * pc / 100;
     if (!Number.isInteger(now)) return G['4.2'][4](l);
+    if (l >= 2) {   // spicy: a percentage decrease or increase is given, not 'x% of'
+      const ch_ = pick([-15, -12, -5, 8, 15, 35]), o2 = ri(10, 60) * 20, n2 = o2 * (100 + ch_) / 100; if (!Number.isInteger(n2)) return G['4.2'][4](l);
+      return nu(p('A line graph shows the number of members of a club. In 2024 the club had ' + n2 + ' members. That is ' + Math.abs(ch_) + '% ' + (ch_ < 0 ? 'fewer' : 'more') + ' than in 2020. How many members did the club have in 2020?'), o2, Math.abs(ch_) + '% ' + (ch_ < 0 ? 'fewer' : 'more') + ' means 2024 is ' + (100 + ch_) + '% of 2020.', n2 + ' is ' + (100 + ch_) + '% of 2020.<br>' + n2 + ' / ' + (100 + ch_) + ' · 100 = ' + o2 + ' members');
+    }
     return nu(p('A line graph shows the number of members of a club. In 2024 the club had ' + now + ' members. That was ' + pc + '% of the number of members in 2020. How many members did the club have in 2020?'), old, pc + '% is ' + now + ' members. Find 1% first, then 100%.', now + ' / ' + pc + ' · 100 = ' + old + ' members');
   }
 ];
@@ -186,8 +197,10 @@ G['4.4'] = [
     return nu(p('A student has these marks:') + vtbl(['mark', 'weight'], m.map((v, i) => [v, w[i]])) + p('Calculate the weighted mean. Round to 1 decimal.'), r, 'Multiply each mark by its weight, add, and divide by the sum of the weights.', p('(' + m.map((v, i) => w[i] + ' · ' + v).join(' + ') + ') / (' + w.join(' + ') + ')') + p('= ' + s + ' / ' + W + ap(s / W, 1)), { tol: .051 });
   },
   function groupedMean(l) {
-    const w = pick([10, 5]), a0 = ri(2, 5) * w, f = Array.from({ length: 4 }, () => ri(2, 12)), mids = f.map((_, i) => a0 + i * w + w / 2), n = sum(f), s = sum(mids.map((m, i) => m * f[i]));
-    return nu(p('Estimate the mean speed (km/h) with the class midpoints. Round to 1 decimal.') + vtbl(['speed (km/h)', 'frequency'], f.map((v, i) => [(a0 + i * w) + ' –< ' + (a0 + (i + 1) * w), v])), rd(s / n, 1), 'Use the class midpoint for every value in a class.', p('midpoints: ' + mids.join(', ')) + p('(' + mids.map((m, i) => f[i] + ' · ' + m).join(' + ') + ') / ' + n + ' = ' + s + ' / ' + n + ap(s / n, 1)), { tol: .051 });
+    const w = pick([10, 5]), a0 = ri(2, 5) * w, f = Array.from({ length: 4 }, () => ri(2, 12)), n = sum(f);
+    const bd = l >= 2 ? [a0, a0 + w, a0 + w + w / 2, a0 + 2 * w, a0 + 4 * w] : [0, 1, 2, 3, 4].map(i => a0 + i * w);   // spicy: classes of different widths
+    const mids = f.map((_, i) => (bd[i] + bd[i + 1]) / 2), s = sum(mids.map((m, i) => m * f[i]));
+    return nu(p('Estimate the mean speed (km/h) with the class midpoints. Round to 1 decimal.' + (l >= 2 ? ' <small>(Careful: the classes are not all equally wide.)</small>' : '')) + vtbl(['speed (km/h)', 'frequency'], f.map((v, i) => [bd[i] + ' –< ' + bd[i + 1], v])), rd(s / n, 1), 'Use the class midpoint for every value in a class.', p('midpoints: ' + mids.join(', ')) + p('(' + mids.map((m, i) => f[i] + ' · ' + m).join(' + ') + ') / ' + n + ' = ' + s + ' / ' + n + ap(s / n, 1)), { tol: .051 });
   }
 ];
 XG['4.4'] = [
@@ -210,7 +223,8 @@ G['4.5'] = [
     return nu(p('Calculate the <b>interquartile range</b> (IQR) of these numbers.') + list(vals), rd(q3 - q1), 'Order the numbers. Q<sub>1</sub> is the median of the lower half, Q<sub>3</sub> of the upper half.' + (n % 2 ? ' Leave the middle value out of both halves.' : ''), p('In order: ' + a.join(', ')) + p('lower half: ' + a.slice(0, h).join(', ') + ', so Q<sub>1</sub> = ' + neg(q1)) + p('upper half: ' + a.slice(n - h).join(', ') + ', so Q<sub>3</sub> = ' + neg(q3)) + p('IQR = ' + neg(q3) + ' − ' + neg(q1) + ' = ' + neg(rd(q3 - q1))));
   },
   function fiveNumbers(l) {
-    const n = pick([9, 10, 11, 12]), vals = Array.from({ length: n }, () => ri(10, 50)), a = sorted(vals), [q1, m, q3] = quart(a), h = Math.floor(n / 2);
+    // spicy: more data, temperatures below zero
+    const n = l >= 2 ? pick([14, 15, 16, 17]) : pick([9, 10, 11, 12]), vals = Array.from({ length: n }, () => l >= 2 ? ri(-8, 15) : ri(10, 50)), a = sorted(vals), [q1, m, q3] = quart(a), h = Math.floor(n / 2);
     return mu(p('Give the five numbers you need for a boxplot of these data.') + list(vals), ['min =', 'Q1 =', 'median =', 'Q3 =', 'max ='], [a[0], q1, m, q3, a[n - 1]], 'Order the data. The median splits the data in two halves; Q<sub>1</sub> and Q<sub>3</sub> are the medians of the halves.', p('In order: ' + a.join(', ')) + p('median: ' + medTxt(a)) + p('Q<sub>1</sub> = median of ' + a.slice(0, h).join(', ') + ' = ' + neg(q1)) + p('Q<sub>3</sub> = median of ' + a.slice(n - h).join(', ') + ' = ' + neg(q3)), { ansText: a[0] + ', ' + neg(q1) + ', ' + neg(m) + ', ' + neg(q3) + ', ' + a[n - 1] });
   },
   function readBoxplot(l) {
@@ -221,7 +235,10 @@ G['4.5'] = [
   },
   function boxPercent(l) {
     const st = 5, f = sorted(Array.from({ length: 5 }, () => ri(1, 20) * st)); if (new Set(f).size < 5) return G['4.5'][3](l);
-    const N = pick([40, 80, 120, 200, 60]), dir = pick(['more', 'less']), k = dir === 'more' ? ri(1, 3) : ri(0, 2), cut = f[k + (dir === 'more' ? 0 : 1)], pc = dir === 'more' ? 100 - 25 * (k) : 25 * (k + 1);
+    const N = pick([40, 80, 120, 200, 60]);
+    if (l >= 2) { const i = ri(0, 2), j = ri(i + 2, 4), pc2 = 25 * (j - i);   // spicy: between two values of the boxplot
+      return nu(p('The boxplot shows the scores of ' + N + ' students. About how many students scored between ' + f[i] + ' and ' + f[j] + '?') + boxplot(f, f[0] - st, f[4] + st, st), N * pc2 / 100, 'Each of the four parts of a boxplot (whisker, half box, half box, whisker) holds about 25% of the data.', p('From ' + f[i] + ' to ' + f[j] + ' are ' + (j - i) + ' parts of 25%: ' + pc2 + '%.') + p(pc2 + ' / 100 · ' + N + ' = ' + N * pc2 / 100 + ' students'), { noStep: true }); }
+    const dir = pick(['more', 'less']), k = dir === 'more' ? ri(1, 3) : ri(0, 2), cut = f[k + (dir === 'more' ? 0 : 1)], pc = dir === 'more' ? 100 - 25 * (k) : 25 * (k + 1);
     return nu(p('The boxplot shows the scores of ' + N + ' students. About how many students scored ' + (dir === 'more' ? 'more than ' : 'less than ') + cut + '?') + boxplot(f, f[0] - st, f[4] + st, st), N * pc / 100, 'Each of the four parts of a boxplot (whisker, half box, half box, whisker) holds about 25% of the data.', p((dir === 'more' ? 'Above ' : 'Below ') + cut + ' are ' + pc / 25 + ' parts of 25%: ' + pc + '%.') + p(pc + ' / 100 · ' + N + ' = ' + N * pc / 100 + ' students'), { noStep: true });
   },
   function shiftScale(l) {

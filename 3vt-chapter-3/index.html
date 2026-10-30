@@ -663,7 +663,7 @@ G['3.2'] = [
     const a = pick([3.5, 2, 1, 0.5, -0.01, -1, -2, 25]), pp = nz(-9, 9), q = pick([-8, -5, -2, 0, 3, 7, 1]), up = a > 0;
     const n = q === 0 ? 1 : (up && q < 0) || (!up && q > 0) ? 2 : 0, f = (a === 1 ? '' : a === -1 ? '−' : neg(a)) + '(' + lin(1, -pp) + ')²' + (q ? (q < 0 ? ' − ' : ' + ') + Math.abs(q) : '');
     const right = n === 0 ? 'no points' : n === 1 ? 'one point' : 'two points';
-    return ch(p('The graph of ' + Y + ' = ' + f + ' has vertex ' + P2(pp, q) + '. In how many points does it intersect the ' + X() + '-axis?'), right, ['no points', 'one point', 'two points'].filter(o => o !== right), 'Opens it upwards or downwards? Is the vertex above, on or below the ' + X() + '-axis?', 'The parabola opens ' + (up ? 'upwards' : 'downwards') + ' (' + X('a') + ' = ' + neg(a) + ') and the vertex ' + P2(pp, q) + ' lies ' + (q === 0 ? 'on' : q > 0 ? 'above' : 'below') + ' the ' + X() + '-axis, so ' + right + '.');
+    return ch(p('The graph of ' + Y + ' = ' + f + (l >= 2 ? '' : ' has vertex ' + P2(pp, q) + '.') + (l >= 2 ? '. ' : ' ') + 'In how many points does it intersect the ' + X() + '-axis?'), right, ['no points', 'one point', 'two points'].filter(o => o !== right), 'Opens it upwards or downwards? Is the vertex above, on or below the ' + X() + '-axis?', 'The parabola opens ' + (up ? 'upwards' : 'downwards') + ' (' + X('a') + ' = ' + neg(a) + ') and the vertex ' + P2(pp, q) + ' lies ' + (q === 0 ? 'on' : q > 0 ? 'above' : 'below') + ' the ' + X() + '-axis, so ' + right + '.');
   }
 ];
 XG['3.2'] = [
@@ -704,6 +704,10 @@ G['3.3'] = [
   },
   function sqrtStart(l) {
     const a = ri(-6, 9), b = ri(-5, 5), f = '√(' + lin(1, -a) + ')' + (b ? (b < 0 ? ' − ' : ' + ') + Math.abs(b) : '');
+    if (l >= 2) {   // spicy: a number in front of x under the root, and a factor in front of the root
+      const k = pick([2, 3, 4]), c = pick([-3, -2, 2, 3]), f2 = (c === -1 ? '−' : neg(c)) + '√(' + lin(k, -k * a) + ')' + (b ? (b < 0 ? ' − ' : ' + ') + Math.abs(b) : '');
+      return pt(p('What is the starting point of the graph of ' + Y + ' = ' + f2 + '?'), a, b, 'The graph starts where the number under the root is 0.', p(lin(k, -k * a) + ' = 0 gives ' + lin(k, 0) + ' = ' + neg(k * a) + ', so ' + X() + ' = ' + neg(a) + '.') + p(Y + ' = ' + neg(c) + ' · √0' + (b ? (b < 0 ? ' − ' : ' + ') + Math.abs(b) : '') + ' = ' + neg(b) + '. The starting point is ' + P2(a, b) + '.'));
+    }
     return pt(p('What is the starting point of the graph of ' + Y + ' = ' + f + '?'), a, b, 'The graph starts where the number under the root is 0.', p(lin(1, -a) + ' = 0 gives ' + X() + ' = ' + neg(a) + '.') + p(Y + ' = √0' + (b ? (b < 0 ? ' − ' : ' + ') + Math.abs(b) : '') + ' = ' + neg(b) + '. The starting point is ' + P2(a, b) + '.'));
   },
   function sqrtValue(l) {
@@ -744,6 +748,11 @@ G['3.4'] = [
   },
   function whichTransform(l) {
     const m = pick([2, 3, -0.5, 0.5]), b = nz(-5, 5), kind = pick(['up', 'mult']), k = kind === 'up' ? nz(-6, 6) : pick([2, 3, -1, -3]);
+    if (l >= 2) {   // spicy: a parabola, shifted to the left or right
+      const h = nz(-5, 5), c = nz(-6, 6), sq = hh => '(' + lin(1, -hh) + ')²', from = X() + '²' + (c < 0 ? ' − ' : ' + ') + Math.abs(c), to = sq(h) + (c < 0 ? ' − ' : ' + ') + Math.abs(c);
+      const r2_ = 'translate ' + U(h) + ' to the ' + (h > 0 ? 'right' : 'left'), w2 = ['translate ' + U(h) + ' to the ' + (h > 0 ? 'left' : 'right'), 'translate ' + U(h * h) + ' up', 'translate ' + U(h) + ' ' + (h > 0 ? 'down' : 'up')];
+      return ch(p('Which transformation changes ' + Y + ' = ' + from + ' into ' + Y + ' = ' + to + '?'), r2_, w2, 'Where is the vertex before and after?', 'The vertex moves from ' + P2(0, c) + ' to ' + P2(h, c) + ': ' + r2_ + '.');
+    }
     const nm = kind === 'up' ? rd(m) : rd(m * k), nb = kind === 'up' ? b + k : rd(b * k);
     const right = kind === 'up' ? 'translate ' + U(k) + ' ' + (k > 0 ? 'up' : 'down') : 'multiply by ' + neg(k) + ' with respect to the ' + X() + '-axis';
     const wr = ['translate ' + U(k) + ' ' + (k > 0 ? 'down' : 'up'), 'multiply by ' + neg(kind === 'up' ? k : -k) + ' with respect to the ' + X() + '-axis', 'translate ' + U(k) + ' to the right', 'multiply by ' + neg(k) + ' with respect to the ' + X() + '-axis', 'translate ' + U(k) + ' ' + (k > 0 ? 'up' : 'down')].filter(o => o !== right);
@@ -780,10 +789,18 @@ G['3.5'] = [
   },
   function frequency(l) {
     const ms = pick([2, 2.5, 4, 5, 0.5, 1.25, 8]), f = rd(1000 / ms, 2);
+    if (l >= 2) {   // spicy: the other way round, from frequency to period in ms
+      const hz = pick([440, 262, 330, 50, 120, 880]), per = rd(1000 / hz, 2);
+      return nu(p('A tone has a frequency of ' + hz + ' Hz. Calculate the period in ms (milliseconds). <small>(Round to 2 decimals.)</small>'), per, 'period = 1 / frequency gives seconds. 1 s = 1000 ms.', 'period = 1 / ' + hz + ' ≈ ' + rd(1 / hz, 5) + ' s<br>= ' + rd(1 / hz, 5) + ' · 1000 ≈ ' + per + ' ms', { tol: .006 });
+    }
     return nu(p('A tuning fork vibrates with a period of ' + ms + ' ms (milliseconds). Calculate the frequency in Hz (vibrations per second).'), f, '1 s = 1000 ms. Frequency = 1 / period (period in seconds).', 'period = ' + ms + ' ms = ' + rd(ms / 1000) + ' s<br>frequency = 1 / ' + rd(ms / 1000) + ' = ' + f + ' Hz', { tol: .01 });
   },
   function heartbeat(l) {
     const T = pick([0.75, 0.8, 0.9, 1.2, 0.6]), bpm = rd(60 / T, 0);
+    if (l >= 2) {   // spicy: from beats per minute back to the period
+      const b2 = pick([55, 64, 72, 84, 96, 110]), T2 = rd(60 / b2, 2);
+      return nu(p('A heart beats ' + b2 + ' times per minute. What is the period of the heartbeat in seconds? Round to 2 decimals.'), T2, 'One minute is 60 seconds, shared by ' + b2 + ' beats.', '60 : ' + b2 + ' ≈ ' + T2 + ' s', { tol: .006 });
+    }
     return nu(p('The period of a heartbeat is ' + T + ' s. How many heartbeats is that per minute? Round to a whole number.'), bpm, 'One minute is 60 seconds. How many periods fit in 60 s?', '60 : ' + T + ' ≈ ' + bpm + ' beats per minute', { tol: .51 });
   }
 ];
@@ -834,7 +851,7 @@ if (VT) {
       return nu(p('Given the power function ' + F('f', X()) + ' = ' + aTxt(a) + X() + '<sup>' + n + '</sup>. Calculate ' + F('f', neg(x)) + '.'), y, 'Calculate the power first, then multiply by ' + neg(a) + '.', F('f', neg(x)) + ' = ' + (a === 1 ? '' : a === -1 ? '−' : neg(a) + ' · ') + par(x) + '<sup>' + n + '</sup> = ' + (a === 1 ? '' : a === -1 ? '−' : neg(a) + ' · ') + par(Math.pow(x, n)) + ' = ' + neg(y), { needStep: a !== 1 });
     },
     function asymptotes(l) {
-      const a = nz(-12, 12), h = ri(-7, 7), q = ri(-6, 6), den = h === 0 ? X() : lin(1, -h);
+      const a = nz(-12, 12), h = ri(-7, 7), q = ri(-6, 6), k = l >= 2 ? pick([2, 3]) : 1, den = h === 0 ? lin(k, 0) : lin(k, -k * h);   // spicy: a number in front of x
       return mu(p('Give the equations of the asymptotes of the graph of ' + F('f', X()) + ' = ' + neg(a) + ' / (' + den + ')' + (q ? (q < 0 ? ' − ' : ' + ') + Math.abs(q) : '') + '.'), ['vertical: x =', 'horizontal: y ='], [h, q], 'Vertical asymptote: where the denominator is 0. Horizontal asymptote: the fraction gets close to 0, so ' + X('y') + ' gets close to the number that is added.', p('Denominator ' + den + ' = 0 gives ' + X() + ' = ' + neg(h) + ': vertical asymptote ' + X() + ' = ' + neg(h) + '.') + p('The fraction is never 0, so ' + F('f', X()) + ' never reaches ' + neg(q) + ': horizontal asymptote ' + X('y') + ' = ' + neg(q) + '.'), { ansText: X() + ' = ' + neg(h) + ' and ' + X('y') + ' = ' + neg(q) });
     },
     function rootEndpoint(l) {
@@ -847,6 +864,10 @@ if (VT) {
     function transformFunc(l) {
       const a = nz(-9, 9), q = nz(-5, 5), k = pick([2, 3, 4, -1, -2, 0.5]), add = nz(-6, 6), mult = Math.random() < .5, type = pick(['rat', 'root']);
       const fmt = (A, Q) => type === 'rat' ? neg(A) + ' / ' + X() + (Q ? (Q < 0 ? ' − ' : ' + ') + neg(Math.abs(Q)) : '') : (A === 1 ? '' : A === -1 ? '−' : neg(A)) + '√' + X() + (Q ? (Q < 0 ? ' − ' : ' + ') + neg(Math.abs(Q)) : '');
+      if (l >= 2) {   // spicy: first multiply, then add
+        const R2 = fmt(rd(k * a), rd(k * q + add)), W2 = [fmt(rd(k * a), rd(k * (q + add))), fmt(rd(k * a), rd(q + add)), fmt(rd(k * a + add), rd(k * q))].filter(w => w !== R2);
+        return ch(p('Given ' + F('f', X()) + ' = ' + fmt(a, q) + ' and ' + F('g', X()) + ' = ' + neg(k) + ' · ' + F('f', X()) + (add < 0 ? ' − ' : ' + ') + Math.abs(add) + '. Which formula belongs to ' + X('g') + '?'), F('g', X()) + ' = ' + R2, W2.map(w => F('g', X()) + ' = ' + w), 'First multiply every term of ' + F('f', X()) + ' by ' + neg(k) + '. Then add ' + neg(add) + ' to the number at the end.', F('g', X()) + ' = ' + neg(k) + '(' + fmt(a, q) + ')' + (add < 0 ? ' − ' : ' + ') + Math.abs(add) + ' = ' + fmt(rd(k * a), rd(k * q)) + (add < 0 ? ' − ' : ' + ') + Math.abs(add) + ' = ' + R2);
+      }
       const right = mult ? fmt(rd(k * a), rd(k * q)) : fmt(a, q + add), wr = mult ? [fmt(rd(k * a), q), fmt(a, rd(k * q)), fmt(rd(a + k), rd(q + k))] : [fmt(rd(a + add), q), fmt(a, rd(q - add)), fmt(rd(a + add), rd(q + add))];
       const how = mult ? F('g', X()) + ' = ' + neg(k) + ' · ' + F('f', X()) : F('g', X()) + ' = ' + F('f', X()) + (add < 0 ? ' − ' : ' + ') + Math.abs(add);
       return ch(p('Given ' + F('f', X()) + ' = ' + fmt(a, q) + ' and ' + how + '. Which formula belongs to ' + X('g') + '?'), F('g', X()) + ' = ' + right, wr.filter(w => w !== right).map(w => F('g', X()) + ' = ' + w), mult ? 'Multiply every term of ' + F('f', X()) + ' by ' + neg(k) + '.' : 'Only the number at the end changes.', mult ? F('g', X()) + ' = ' + neg(k) + '(' + fmt(a, q) + ') = ' + right : F('g', X()) + ' = ' + fmt(a, q) + (add < 0 ? ' − ' : ' + ') + Math.abs(add) + ' = ' + right);
@@ -863,7 +884,15 @@ if (VT) {
         [() => X() + '³ + ' + X() + '⁵', 'odd', F('f', '−' + X()) + ' = −' + X() + '³ − ' + X() + '⁵ = −' + F('f', X()) + '.'],
         [() => X() + '³ + ' + X() + '²', 'neither', 'one odd and one even power: for example ' + F('f', '1') + ' = 2 and ' + F('f', '−1') + ' = 0.'],
         [() => aTxt(a) + X() + '⁴ − ' + X() + '²', 'even', 'only even powers of ' + X() + ', so ' + F('f', '−' + X()) + ' = ' + F('f', X()) + '.']
-      ], t = pick(T), right = t[1] === 'even' ? 'even: symmetric in the y-axis' : t[1] === 'odd' ? 'odd: point symmetric in the origin' : 'neither even nor odd';
+      ], T2 = [   // spicy: work out brackets or a fraction first
+        [() => X() + '(' + X() + '² + ' + Math.abs(c) + ')', 'odd', F('f', '−' + X()) + ' = −' + X() + '((−' + X() + ')² + ' + Math.abs(c) + ') = −' + F('f', X()) + '.'],
+        [() => '(' + X() + ' − ' + Math.abs(c) + ')²', 'neither', 'for example ' + F('f', '1') + ' = ' + (1 - Math.abs(c)) ** 2 + ' and ' + F('f', '−1') + ' = ' + (1 + Math.abs(c)) ** 2 + ': not equal and not opposite.'],
+        [() => '(' + X() + ' + ' + Math.abs(c) + ')(' + X() + ' − ' + Math.abs(c) + ')', 'even', 'this is ' + X() + '² − ' + c * c + ': only even powers, so ' + F('f', '−' + X()) + ' = ' + F('f', X()) + '.'],
+        [() => neg(a) + ' / ' + X() + '²', 'even', F('f', '−' + X()) + ' = ' + neg(a) + ' / (−' + X() + ')² = ' + F('f', X()) + '.'],
+        [() => X() + ' / (' + X() + '² + ' + Math.abs(c) + ')', 'odd', F('f', '−' + X()) + ' = −' + X() + ' / (' + X() + '² + ' + Math.abs(c) + ') = −' + F('f', X()) + '.'],
+        [() => X() + '² · ' + X() + '³', 'odd', 'this is ' + X() + '⁵: an odd power, so ' + F('f', '−' + X()) + ' = −' + F('f', X()) + '.'],
+        [() => '(' + X() + '² + ' + Math.abs(c) + ')' + '³', 'even', F('f', '−' + X()) + ' = ((−' + X() + ')² + ' + Math.abs(c) + ')³ = ' + F('f', X()) + '.']
+      ], t = pick(l >= 2 ? T2 : T), right = t[1] === 'even' ? 'even: symmetric in the y-axis' : t[1] === 'odd' ? 'odd: point symmetric in the origin' : 'neither even nor odd';
       return ch(p('Is ' + F('f', X()) + ' = ' + t[0]() + ' even, odd or neither?'), right, ['even: symmetric in the y-axis', 'odd: point symmetric in the origin', 'neither even nor odd'].filter(o => o !== right), 'Calculate ' + F('f', '−' + X()) + '. Even: ' + F('f', '−' + X()) + ' = ' + F('f', X()) + '. Odd: ' + F('f', '−' + X()) + ' = −' + F('f', X()) + '.', right.charAt(0).toUpperCase() + right.slice(1) + ': ' + t[2]);
     }
   );

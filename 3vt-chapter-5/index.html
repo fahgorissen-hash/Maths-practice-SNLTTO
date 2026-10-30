@@ -641,7 +641,8 @@ H.a1 = [
     return solQ(p('Solve: ' + first), s.n, s.d, 'x', 'First remove the brackets: multiply ' + neg(k) + ' by both terms inside. Then use the balance method.', bal([[first, 'remove brackets']].concat(s.rows)));
   },
   function intersect(l) {
-    const x0 = ri(-5, 5), y0 = ri(-6, 6); let m1, m2; do { m1 = nz(-4, 4); m2 = nz(-4, 4); } while (m1 === m2);
+    let x0 = ri(-5, 5), y0 = ri(-6, 6), m1, m2; do { m1 = nz(-4, 4); m2 = nz(-4, 4); } while (m1 === m2 || (l >= 2 && (m1 - m2) % 2 !== 0));
+    if (l >= 2) { x0 = (2 * ri(-4, 3) + 1) / 2; y0 = m1 * x0 + ri(-6, 6); }   // spicy: the point of intersection is not on grid points
     const b1 = y0 - m1 * x0, b2 = y0 - m2 * x0, s = solveLin(m1, b1, m2, b2);
     return Object.assign({ type: 'point', ans: [x0, y0], html: p('Calculate the coordinates of the point of intersection of the lines ' + X('k') + ': ' + X('y') + ' = ' + lin(m1, b1) + ' and ' + X('m') + ': ' + X('y') + ' = ' + lin(m2, b2) + '.') + p('<small>Type your answer like (2, −5).</small>'), hint: 'Make the two formulas equal and solve the equation. Then put the ' + X() + ' you found into one of the formulas to find ' + X('y') + '.', steps: bal(s.rows) + p(X('y') + ' = ' + neg(m1) + ' · ' + (x0 < 0 ? '(' + neg(x0) + ')' : x0) + (b1 < 0 ? ' − ' + -b1 : ' + ' + b1) + ' = ' + neg(y0)) + p('The point of intersection is (' + neg(x0) + ', ' + neg(y0) + ').'), noStep: true });
   },
@@ -700,6 +701,10 @@ H.b1 = [
   },
   function signTurn(l) {
     const a = nz(-6, 6), sym = pick(['<', '>', '≤', '≥']), c = nz(-20, 20) * Math.abs(a);
+    if (l >= 2) {   // spicy: the whole inequality, x on both sides
+      const a1 = ri(1, 5), a2 = a1 + ri(1, 5), x0 = ri(-8, 8), b1 = nz(-12, 12), b2 = b1 + (a1 - a2) * x0, L = lin(a1, b1) + ' ' + ineqSym[sym] + ' ' + lin(a2, b2), R2 = X() + ' ' + ineqSym[flip(sym)] + ' ' + neg(x0);
+      return ch(p('Solve: ' + L + '. Which answer is correct?'), R2, [X() + ' ' + ineqSym[sym] + ' ' + neg(x0), X() + ' ' + ineqSym[flip(sym)] + ' ' + neg(-x0)], 'Bring the ' + X() + '-terms to the left. You will divide by a negative number: the sign turns around.', bal([[L, '− ' + lin(a2, 0)], [lin(a1 - a2, b1) + ' ' + ineqSym[sym] + ' ' + neg(b2), b1 > 0 ? '− ' + b1 : '+ ' + -b1], [lin(a1 - a2, 0) + ' ' + ineqSym[sym] + ' ' + neg(b2 - b1), ': (' + neg(a1 - a2) + ') — the sign turns around!'], [R2]]));
+    }
     return ch(p('You solve ' + lin(a, 0) + ' ' + ineqSym[sym] + ' ' + neg(c) + ' by dividing both sides by ' + neg(a) + '. Which answer is correct?'), X() + ' ' + ineqSym[a < 0 ? flip(sym) : sym] + ' ' + neg(c / a), [X() + ' ' + ineqSym[a < 0 ? sym : flip(sym)] + ' ' + neg(c / a), X() + ' ' + ineqSym[a < 0 ? flip(sym) : sym] + ' ' + neg(-c / a)], 'Dividing by a negative number turns the inequality sign around. Dividing by a positive number does not.', neg(c) + ' : ' + (a < 0 ? '(' + neg(a) + ')' : a) + ' = ' + neg(c / a) + '. ' + (a < 0 ? 'You divide by a negative number, so ' + ineqSym[sym] + ' becomes ' + ineqSym[flip(sym)] + '.' : 'You divide by a positive number, so the sign stays the same.'));
   }
 ];
@@ -815,10 +820,10 @@ H.b2 = [
   },
   function rearrange(l) {
     let r1, r2_; do { r1 = nz(-8, 8); r2_ = nz(-8, 8); } while (r1 === r2_);
-    const S = -(r1 + r2_), P = r1 * r2_, m = nz(-6, 6), k = ri(-12, 12);
-    // x² + (S+m)x + (P+k) = m x + k
-    const left = quad(1, S + m, P + k), right = lin(m, k);
-    [r1, r2_].forEach(x => must(x * x + (S + m) * x + P + k, m * x + k));
+    const S = -(r1 + r2_), P = r1 * r2_, m = nz(-6, 6), k = ri(-12, 12), e = l >= 2 ? ri(1, 3) : 0;   // spicy: x² on both sides
+    // (1+e)x² + (S+m)x + (P+k) = e x² + m x + k
+    const left = quad(1 + e, S + m, P + k), right = e ? quad(e, m, k) : lin(m, k);
+    [r1, r2_].forEach(x => must((1 + e) * x * x + (S + m) * x + P + k, e * x * x + m * x + k));
     return multi(p('Solve: ' + left + ' = ' + right), r1, r2_, 'First make the right side 0: bring all terms to the left. Then use product-sum.', p(quad(1, S, P) + ' = 0') + psTable(P, S) + p(fac(r1) + fac(r2_) + ' = 0') + p(X() + ' = ' + neg(r1) + ' or ' + X() + ' = ' + neg(r2_)));
   }
 ];
@@ -874,10 +879,11 @@ G['5.3'] = [
   },
   function abcRearrange(l) {
     let a, b, c, D; do { a = nz(-4, 5); b = ri(-9, 9); c = nz(-9, 9); D = b * b - 4 * a * c; } while (D <= 0 || Number.isInteger(Math.sqrt(D)));
-    const m = nz(-3, 3), k = ri(-6, 6);   // a x² + b x + c = 0 written as (a+... ) = m x + k  ->  left side a x² + (b+m) x + (c+k)
-    const left = quad(a, b + m, c + k), right = lin(m, k);
+    const m = nz(-3, 3), k = ri(-6, 6), e = l >= 2 ? nz(-2, 2) : 0;   // a x² + b x + c = 0 written as (a+e) x² + (b+m) x + (c+k) = e x² + m x + k; spicy: x² on both sides
+    if (a + e === 0) return abcRearrange(l);
+    const left = quad(a + e, b + m, c + k), right = e ? quad(e, m, k) : lin(m, k);
     const x1 = (-b - Math.sqrt(D)) / (2 * a), x2 = (-b + Math.sqrt(D)) / (2 * a), rs = [x1, x2].map(r2);
-    must(a * x1 * x1 + (b + m) * x1 + c + k, m * x1 + k);
+    must((a + e) * x1 * x1 + (b + m) * x1 + c + k, e * x1 * x1 + m * x1 + k);
     return multi(p('Solve: ' + left + ' = ' + right + '. Round your answers <b>to 2 decimal places</b>.'), rs[0], rs[1], 'First make the right side 0. Then use the quadratic formula.', p(left + ' = ' + right) + p(quad(a, b, c) + ' = 0') + solveSteps(a, b, c, rs, false), { tol: .0051, ansText: X() + ' ≈ ' + Math.min(...rs) + ' or ' + X() + ' ≈ ' + Math.max(...rs) });
   }
 ];
@@ -915,7 +921,7 @@ G['5.4'] = [
   function readIneq(l) {
     let r1, r2_; do { r1 = ri(-6, 4); r2_ = ri(-4, 6); } while (r2_ - r1 < 2);
     const a = pick([1, -1]), f = x => a * (x - r1) * (x - r2_), want = pick(['&gt; 0', '&lt; 0', '≥ 0', '≤ 0']), strict = want[0] === '&', pos = want.includes('&gt;') || want.includes('≥'), inside = (a > 0) !== pos;
-    return intervalQ(p('The graph of ' + X('f') + '(' + X() + ') = ' + (a < 0 ? '−' : '') + fac(r1) + fac(r2_) + ' is shown. Solve ' + X('f') + '(' + X() + ') ' + want + '.') + parabolaFig(f, r1, r2_), r1, r2_, strict, inside, (pos ? 'Above' : 'Below') + ' the ' + X() + '-axis: where is the graph ' + (pos ? 'above' : 'below') + ' the ' + X() + '-axis?' + (strict ? '' : ' The zeros themselves count too.'), p('The graph crosses the ' + X() + '-axis at ' + X() + ' = ' + neg(r1) + ' and ' + X() + ' = ' + neg(r2_) + '.') + p('It opens ' + (a > 0 ? 'upwards' : 'downwards') + ', so it is ' + (pos ? 'above' : 'below') + ' the axis ' + (inside ? 'between the zeros' : 'outside the zeros') + '.') + p('Solution: ' + (inside ? intervals(r1, r2_, strict).inside : intervals(r1, r2_, strict).outside)));
+    return intervalQ(p((l >= 2 ? 'Given ' : 'The graph of ') + X('f') + '(' + X() + ') = ' + (a < 0 ? '−' : '') + fac(r1) + fac(r2_) + (l >= 2 ? '. Solve ' : ' is shown. Solve ') + X('f') + '(' + X() + ') ' + want + '.' + (l >= 2 ? ' <small>(No graph: make a sketch yourself.)</small>' : '')) + (l >= 2 ? '' : parabolaFig(f, r1, r2_)), r1, r2_, strict, inside, (pos ? 'Above' : 'Below') + ' the ' + X() + '-axis: where is the graph ' + (pos ? 'above' : 'below') + ' the ' + X() + '-axis?' + (strict ? '' : ' The zeros themselves count too.'), p('The graph crosses the ' + X() + '-axis at ' + X() + ' = ' + neg(r1) + ' and ' + X() + ' = ' + neg(r2_) + '.') + p('It opens ' + (a > 0 ? 'upwards' : 'downwards') + ', so it is ' + (pos ? 'above' : 'below') + ' the axis ' + (inside ? 'between the zeros' : 'outside the zeros') + '.') + p('Solution: ' + (inside ? intervals(r1, r2_, strict).inside : intervals(r1, r2_, strict).outside)));
   },
   function solveIneq(l) {
     let r1, r2_; do { r1 = nz(-8, 8); r2_ = nz(-8, 8); } while (r1 >= r2_);
@@ -929,8 +935,9 @@ G['5.4'] = [
   function rearrangeIneq(l) {
     let r1, r2_; do { r1 = nz(-7, 7); r2_ = nz(-7, 7); } while (r1 >= r2_);
     const a = pick([-1, 1]), S = -(r1 + r2_), P = r1 * r2_, m = nz(-5, 5), k = ri(-9, 9), sym = pick(['&lt;', '&gt;', '≤', '≥']), strict = sym[0] === '&', pos = sym === '&gt;' || sym === '≥', inside = (a > 0) !== pos;
-    // a(x² + Sx + P) + (m x + k) sym m x + k
-    const left = quad(a, a * S + m, a * P + k), right = lin(m, k);
+    // a(x² + Sx + P) + (e x² + m x + k) sym e x² + m x + k; spicy: x² on both sides
+    const e = l >= 2 ? nz(-2, 2) : 0; if (a + e === 0) return rearrangeIneq(l);
+    const left = quad(a + e, a * S + m, a * P + k), right = e ? quad(e, m, k) : lin(m, k);
     return intervalQ(p('Solve: ' + left + ' ' + sym + ' ' + right), r1, r2_, strict, inside, 'Make the right side 0 first. Then solve the equation, and sketch the parabola.', p(quad(a, a * S, a * P) + ' ' + sym + ' 0') + p('Equation: ' + quad(a, a * S, a * P) + ' = 0 gives ' + X() + ' = ' + neg(r1) + ' or ' + X() + ' = ' + neg(r2_) + '.') + p('The parabola opens ' + (a > 0 ? 'upwards' : 'downwards') + ', so it is ' + (pos ? 'above' : 'below') + ' the ' + X() + '-axis ' + (inside ? 'between' : 'outside') + ' these values.') + p('Solution: ' + (inside ? intervals(r1, r2_, strict).inside : intervals(r1, r2_, strict).outside)));
   },
   function alwaysNever(l) {
@@ -951,10 +958,18 @@ const sup = n => ({ 2: '²', 3: '³', 4: '⁴', 5: '⁵', 6: '⁶', 7: '⁷' })[
 G['5.5'] = [
   function oddPower(l) {
     let n, r; do { n = pick([3, 3, 5]); r = n === 3 ? nz(-9, 9) : nz(-4, 4); } while (Math.abs(r) < 2); const c = Math.pow(r, n);
+    if (l >= 2) {   // spicy: a number in front and a number added
+      const k = pick([2, 3, 4, -2]), d = nz(-20, 20), rhs = k * c + d, e2 = neg(k) + X() + sup(n) + (d < 0 ? ' − ' + -d : ' + ' + d);
+      return nu(p('Solve: ' + e2 + ' = ' + neg(rhs)), r, 'First get ' + X() + sup(n) + ' on its own with the balance method. Then take the ' + n + 'th root.', bal([[e2 + ' = ' + neg(rhs), d > 0 ? '− ' + d : '+ ' + -d], [neg(k) + X() + sup(n) + ' = ' + neg(k * c), ': ' + (k < 0 ? '(' + neg(k) + ')' : k)], [X() + sup(n) + ' = ' + neg(c), '<sup>' + n + '</sup>√'], [X() + ' = ' + neg(r)]]), { noStep: true, ansText: X() + ' = ' + neg(r) });
+    }
     return nu(p('Solve: ' + X() + sup(n) + ' = ' + neg(c)), r, 'For an odd power there is exactly one solution: ' + X() + ' = <sup>' + n + '</sup>√(' + neg(c) + ').', p('Check: ' + (r < 0 ? '(' + neg(r) + ')' : r) + sup(n) + ' = ' + neg(c) + '.') + p(X() + ' = <sup>' + n + '</sup>√(' + neg(c) + ') = ' + neg(r)), { noStep: true, ansText: X() + ' = ' + neg(r) });
   },
   function evenPower(l) {
     const n = pick([2, 4, 4, 6]), r = n === 6 ? ri(1, 3) : n === 4 ? ri(1, 5) : ri(2, 12), c = Math.pow(r, n);
+    if (l >= 2) {   // spicy: a number in front and a number subtracted
+      const k = pick([2, 3, 5]), d = ri(1, 30), rhs = k * c - d, e2 = k + X() + sup(n) + ' − ' + d;
+      return multi(p('Solve: ' + e2 + ' = ' + neg(rhs)), -r, r, 'First get ' + X() + sup(n) + ' on its own. The power is even: two solutions.', bal([[e2 + ' = ' + neg(rhs), '+ ' + d], [k + X() + sup(n) + ' = ' + k * c, ': ' + k], [X() + sup(n) + ' = ' + c, '±<sup>' + n + '</sup>√'], [X() + ' = ' + neg(-r) + ' or ' + X() + ' = ' + r]]));
+    }
     return multi(p('Solve: ' + X() + sup(n) + ' = ' + c), -r, r, 'For an even power and a positive number there are two solutions: ± <sup>' + n + '</sup>√' + c + '.', p(X() + ' = −<sup>' + n + '</sup>√' + c + ' or ' + X() + ' = <sup>' + n + '</sup>√' + c) + p(X() + ' = ' + neg(-r) + ' or ' + X() + ' = ' + r));
   },
   function howManyPower(l) {
@@ -963,12 +978,17 @@ G['5.5'] = [
   },
   function powerRounded(l) {
     const n = pick([3, 4, 5]), k = pick([2, 3, 4, 5]); let c; do { c = k * ri(3, 60); } while (Number.isInteger(rd(Math.pow(c / k, 1 / n), 6)));
-    const v = c / k, r = rd(Math.pow(v, 1 / n), 2);
-    if (n % 2) return nu(p('Solve: ' + k + X() + sup(n) + ' = ' + c + '. Round to 2 decimals.'), r, 'Divide by ' + k + ' first. Then take the ' + n + 'th root.', p(X() + sup(n) + ' = ' + c + ' : ' + k + ' = ' + rd(v, 4)) + p(X() + ' = <sup>' + n + '</sup>√' + rd(v, 4) + ' ≈ ' + r), { tol: .0051, ansText: X() + ' ≈ ' + r });
-    return multi(p('Solve: ' + k + X() + sup(n) + ' = ' + c + '. Round to 2 decimals.'), -r, r, 'Divide by ' + k + ' first. The power is even: two solutions.', p(X() + sup(n) + ' = ' + c + ' : ' + k + ' = ' + rd(v, 4)) + p(X() + ' = −<sup>' + n + '</sup>√' + rd(v, 4) + ' or ' + X() + ' = <sup>' + n + '</sup>√' + rd(v, 4)) + p(X() + ' ≈ ' + neg(-r) + ' or ' + X() + ' ≈ ' + r), { tol: .0051, ansText: X() + ' ≈ ' + neg(-r) + ' or ' + X() + ' ≈ ' + r });
+    const d = l >= 2 ? nz(-15, 15) : 0, cc = c + d, lhs = k + X() + sup(n) + (d ? (d < 0 ? ' − ' + -d : ' + ' + d) : '');   // spicy: a number added on the left
+    const v = c / k, r = rd(Math.pow(v, 1 / n), 2), first = d ? p(k + X() + sup(n) + ' = ' + cc + (d > 0 ? ' − ' + d : ' + ' + -d) + ' = ' + c) : '';
+    if (n % 2) return nu(p('Solve: ' + lhs + ' = ' + cc + '. Round to 2 decimals.'), r, (d ? 'Get ' + k + X() + sup(n) + ' on its own first. ' : '') + 'Divide by ' + k + ' first. Then take the ' + n + 'th root.', first + p(X() + sup(n) + ' = ' + c + ' : ' + k + ' = ' + rd(v, 4)) + p(X() + ' = <sup>' + n + '</sup>√' + rd(v, 4) + ' ≈ ' + r), { tol: .0051, ansText: X() + ' ≈ ' + r });
+    return multi(p('Solve: ' + lhs + ' = ' + cc + '. Round to 2 decimals.'), -r, r, (d ? 'Get ' + k + X() + sup(n) + ' on its own first. ' : '') + 'Divide by ' + k + ' first. The power is even: two solutions.', first + p(X() + sup(n) + ' = ' + c + ' : ' + k + ' = ' + rd(v, 4)) + p(X() + ' = −<sup>' + n + '</sup>√' + rd(v, 4) + ' or ' + X() + ' = <sup>' + n + '</sup>√' + rd(v, 4)) + p(X() + ' ≈ ' + neg(-r) + ' or ' + X() + ' ≈ ' + r), { tol: .0051, ansText: X() + ' ≈ ' + neg(-r) + ' or ' + X() + ' ≈ ' + r });
   },
   function shiftedPower(l) {
     const h = nz(-8, 8), n = pick([3, 3, 4]), r = n === 3 ? nz(-4, 4) : ri(1, 3), c = Math.pow(r, n), base = '(' + lin(1, h) + ')' + sup(n);
+    if (l >= 2 && n === 3) {   // spicy: a number in front of the brackets
+      const k = pick([2, 3, -2]), b2 = neg(k) + base;
+      return nu(p('Solve: ' + b2 + ' = ' + neg(k * c)), r - h, 'First divide by ' + neg(k) + '. Then take the cube root.', bal([[b2 + ' = ' + neg(k * c), ': ' + (k < 0 ? '(' + neg(k) + ')' : k)], [base + ' = ' + neg(c), '<sup>3</sup>√'], [lin(1, h) + ' = ' + neg(r), h > 0 ? '− ' + h : '+ ' + -h], [X() + ' = ' + neg(r - h)]]), { noStep: true, ansText: X() + ' = ' + neg(r - h) });
+    }
     if (n === 3) return nu(p('Solve: ' + base + ' = ' + neg(c)), r - h, 'First find what is inside the brackets: ' + lin(1, h) + ' = <sup>3</sup>√(' + neg(c) + ').', bal([[base + ' = ' + neg(c), '<sup>3</sup>√'], [lin(1, h) + ' = ' + neg(r), h > 0 ? '− ' + h : '+ ' + -h], [X() + ' = ' + neg(r - h)]]), { noStep: true, ansText: X() + ' = ' + neg(r - h) });
     return multi(p('Solve: ' + base + ' = ' + c), -r - h, r - h, 'The power is even: ' + lin(1, h) + ' = ± <sup>4</sup>√' + c + '.', bal([[base + ' = ' + c, '±<sup>4</sup>√'], [lin(1, h) + ' = ' + neg(-r) + ' or ' + lin(1, h) + ' = ' + r, h > 0 ? '− ' + h : '+ ' + -h], [X() + ' = ' + neg(-r - h) + ' or ' + X() + ' = ' + neg(r - h)]]));
   }
