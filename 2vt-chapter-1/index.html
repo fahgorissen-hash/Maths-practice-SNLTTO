@@ -661,6 +661,11 @@ G['1.2'] = [
   function compareNeg(l) {
     const a = pick([2, 3, 4, 5]), b = pick([2, 3, 4, 5].filter(x => x !== a)), e1 = LR(l, 2, 3), e2 = LR(l, 2, 3); const v1 = Math.pow(a, -e1), v2 = Math.pow(b, -e2); if (Math.abs(v1 - v2) < 1e-12) return G['1.2'][6](l);
     const s1 = a + '^(-' + e1 + ')', s2 = b + '^(-' + e2 + ')'; const bigger = v1 > v2 ? s1 : s2;
+    if (l >= 2) {   // spicy: a fraction to a negative power against a positive power
+      const f1 = Math.pow(a, e1), f2 = Math.pow(b, LR(1, 2, 3)), t1 = '(1/' + a + ')^(-' + e1 + ')', t2 = b + '^' + Math.round(Math.log(f2) / Math.log(b)); if (f1 === f2) return compareNeg(l);
+      const big2 = f1 > f2 ? t1 : t2;
+      return ch(p('Which is <b>larger</b>: ' + M(t1) + ' or ' + M(t2) + '?'), M(big2), [M(f1 > f2 ? t2 : t1), 'They are equal'], 'A negative exponent turns the fraction upside down: (1/a)^(−n) = a^n.', M(t1) + ' = ' + M(a + '^' + e1) + ' = ' + f1 + ' and ' + M(t2) + ' = ' + f2 + '. So ' + M(big2) + ' is larger.');
+    }
     return ch(p('Which is <b>larger</b>: ' + M(s1) + ' or ' + M(s2) + '?'), M(bigger), [M(v1 > v2 ? s2 : s1), 'They are equal'], 'Rewrite both as fractions with 1 on top: x^(−n) = 1/x^n. The one with the smaller denominator is larger.', M(s1) + ' = ' + M('1/' + Math.pow(a, e1)) + ' and ' + M(s2) + ' = ' + M('1/' + Math.pow(b, e2)) + '. So ' + M(bigger) + ' is larger.');
   }
 ];
@@ -844,7 +849,7 @@ G['1.5'] = [
     return ex(p('Calculate ' + M(src, { noVars: true }) + ' and give the answer in scientific notation. (Type for example <b>6·10^9</b>.)'), ans, 'sci', 'Multiply (or divide) the numbers, and add (or subtract) the exponents. If the number is not between 1 and 10, adjust it.', M(src, { noVars: true }) + ' = ' + M(ans, { noVars: true }) + '.', { noVars: true, keys: ['·', '^', '-'] });
   },
   function words(l) {
-    const t = pick([['4 billion', '4*10^9'], ['6 millionths', '6*10^-6'], ['25 million', '2.5*10^7'], ['7 thousandths', '7*10^-3'], ['800 000', '8*10^5'], ['3 trillion', '3*10^12'], ['9 billionths', '9*10^-9'], ['120 thousand', '1.2*10^5']]);
+    const t = l >= 2 ? pick([['0.4 million', '4*10^5'], ['35 thousandths', '3.5*10^-2'], ['0.06 billion', '6*10^7'], ['450 millionths', '4.5*10^-4'], ['72 hundredths', '7.2*10^-1'], ['0.3 trillion', '3*10^11'], ['15 billionths', '1.5*10^-8'], ['2500 million', '2.5*10^9']]) : pick([['4 billion', '4*10^9'], ['6 millionths', '6*10^-6'], ['25 million', '2.5*10^7'], ['7 thousandths', '7*10^-3'], ['800 000', '8*10^5'], ['3 trillion', '3*10^12'], ['9 billionths', '9*10^-9'], ['120 thousand', '1.2*10^5']]);
     return ex(p('Write <b>' + t[0] + '</b> in scientific notation. (1 billion = 1 000 000 000.)'), t[1], 'sci', 'Write the number with all its zeros first, then count the places the comma moves.', t[0] + ' = ' + M(t[1], { noVars: true }) + '.', { noVars: true, keys: ['·', '^', '-'] });
   }
 ];

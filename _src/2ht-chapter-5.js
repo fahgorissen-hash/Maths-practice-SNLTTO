@@ -150,6 +150,10 @@ G['5.1'] = [
     const a = LR(l, 1, 4), b = LR(l, 2, 5), n = a + b, area = a * a + b * b;
     const pts = [[a, 0], [n, a], [b, n], [0, b]];
     const fig = gridBox({ xmin: 0, xmax: n, ymin: 0, ymax: n, noAxes: true, u: 26, polys: [{ pts, fill: 'rgba(209,71,31,.25)', stroke: '#d1471f' }] }, 40 + 26 * n);
+    if (l >= 2) {   // spicy: the perimeter, via the length of one side
+      const side = Math.sqrt(area);
+      return nr(p('A tilted square is drawn on grid paper (each box is 1 by 1). Calculate the <b>perimeter</b> of the tilted square, rounded <b>to 1 decimal place</b>.') + fig, 4 * side, 1, 'Use Pythagoras for one side: it is the long side of a right-angled triangle with sides ' + a + ' and ' + b + '. Round only at the end.' + HINT_TYPE, 'side² = ' + a + '² + ' + b + '² = ' + a * a + ' + ' + b * b + ' = ' + area + '<br>side = √' + area + ' ≈ ' + rd(side, 3) + '<br>perimeter = 4 · √' + area + ' ≈ ' + sp(rd(4 * side, 1)));
+    }
     return nu(p('A tilted square is drawn on grid paper (each box is 1 by 1). What is the <b>area</b> of the tilted square?') + fig, area, 'Draw the box around it (' + n + ' by ' + n + '). Subtract the four right-angled triangles in the corners. Or use Pythagoras for one side.', 'Box: ' + n + ' · ' + n + ' = ' + n * n + '.<br>Each corner triangle: ½ · ' + a + ' · ' + b + ' = ' + (a * b / 2) + '.<br>Area = ' + n * n + ' − 4 · ' + (a * b / 2) + ' = ' + area + '.<br>(Check: side² = ' + a + '² + ' + b + '² = ' + area + '.)', { needStep: true });
   }
 ];
@@ -203,6 +207,11 @@ G['5.2'] = [
   },
   function gridDistance(l) {
     let x1, y1, x2, y2; do { x1 = ri(-4, 3); y1 = ri(-4, 3); x2 = x1 + ri(1, 6) * pick([1, -1]); y2 = y1 + ri(1, 6) * pick([1, -1]); } while (Math.abs(x2) > 6 || Math.abs(y2) > 6 || (l === 0 && !isSq((x2 - x1) ** 2 + (y2 - y1) ** 2) && Math.random() < .6));
+    if (l >= 2) {   // spicy: larger coordinates and no picture
+      x1 = ri(-15, 10); y1 = ri(-15, 10); x2 = x1 + ri(4, 18) * pick([1, -1]); y2 = y1 + ri(4, 18) * pick([1, -1]);
+      const ex = Math.abs(x2 - x1), ey = Math.abs(y2 - y1), w = ex * ex + ey * ey, m = n => n < 0 ? '(' + n + ')' : n;
+      return nr(p('A = (' + x1 + ', ' + y1 + ') and B = (' + x2 + ', ' + y2 + '). Calculate the length of line segment AB' + (isSq(w) ? '.' : ', rounded <b>to 1 decimal place</b>.') + ' <small>(There is no picture: make a sketch.)</small>'), Math.sqrt(w), isSq(w) ? 0 : 1, 'Horizontal difference: subtract the x-coordinates. Vertical difference: subtract the y-coordinates. Then use Pythagoras.' + HINT_TYPE, 'Horizontal: ' + Math.max(x1, x2) + ' − ' + m(Math.min(x1, x2)) + ' = ' + ex + '. Vertical: ' + Math.max(y1, y2) + ' − ' + m(Math.min(y1, y2)) + ' = ' + ey + '.<br>AB² = ' + ex + '² + ' + ey + '² = ' + ex * ex + ' + ' + ey * ey + ' = ' + w + '<br>AB = √' + w + (isSq(w) ? ' = ' + Math.sqrt(w) : ' ≈ ' + rd(Math.sqrt(w), 1)));
+    }
     const dx = Math.abs(x2 - x1), dy = Math.abs(y2 - y1), v = dx * dx + dy * dy;
     const fig = gridBox({ xmin: -6, xmax: 6, ymin: -6, ymax: 6, u: 18, pts: [{ x: x1, y: y1, label: 'A' }, { x: x2, y: y2, label: 'B' }], segs: [{ a: [x1, y1], b: [x2, y2], color: '#d1471f' }, { a: [x1, y1], b: [x2, y1], dash: 1, color: '#7d8fa3', w: 1.6 }, { a: [x2, y1], b: [x2, y2], dash: 1, color: '#7d8fa3', w: 1.6 }] }, 300);
     const st = 'Horizontal: ' + Math.max(x1, x2) + ' − ' + (Math.min(x1, x2) < 0 ? '(' + Math.min(x1, x2) + ')' : Math.min(x1, x2)) + ' = ' + dx + '. Vertical: ' + Math.max(y1, y2) + ' − ' + (Math.min(y1, y2) < 0 ? '(' + Math.min(y1, y2) + ')' : Math.min(y1, y2)) + ' = ' + dy + '.<br>AB² = ' + dx + '² + ' + dy + '² = ' + dx * dx + ' + ' + dy * dy + ' = ' + v + '<br>AB = √' + v + (isSq(v) ? ' = ' + Math.sqrt(v) : ' ≈ ' + rd(Math.sqrt(v), 1));

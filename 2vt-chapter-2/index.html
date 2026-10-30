@@ -625,7 +625,8 @@ G['2.1'] = [
   },
   function isPrism(l) {
     const S = [['A prism always has an even number of vertices.', true], ['A cone has no edges.', false], ['A cube is a special cuboid.', true], ['A sphere has one face and no vertices.', true], ['A pyramid always has the same number of faces as vertices.', true], ['A cylinder is a prism.', false], ['A cuboid has 8 edges.', false], ['A cuboid has four space diagonals.', true]];
-    const t = pick(S); return ch(p('True or false? <b>' + t[0] + '</b>'), t[1] ? 'True' : 'False', [t[1] ? 'False' : 'True'], 'Count faces, vertices and edges, or think of the shape.', t[0] + ' is ' + (t[1] ? 'true' : 'false') + '.', { keys: [] });
+    const S2 = [['A prism with 7 faces has 15 edges.', true], ['A pyramid with 12 edges has 7 vertices.', true], ['A prism can have 9 vertices.', false], ['A pyramid with 6 vertices has 10 edges.', true], ['A prism with 18 edges has 8 faces.', true], ['An octagonal prism has 16 edges.', false], ['A pyramid with 9 faces has 9 vertices.', true], ['A prism with 12 vertices has 6 faces.', false]];   // spicy: work out the base shape first
+    const t = pick(l >= 2 ? S2 : S); return ch(p('True or false? <b>' + t[0] + '</b>'), t[1] ? 'True' : 'False', [t[1] ? 'False' : 'True'], 'Count faces, vertices and edges, or think of the shape.', t[0] + ' is ' + (t[1] ? 'true' : 'false') + '.', { keys: [] });
   }
 ];
 XG['2.1'] = [
@@ -829,6 +830,10 @@ G['2.5'] = [
   },
   function surfPrism(l) {
     const T = pick([[3, 4, 5], [6, 8, 10], [5, 12, 13], [9, 12, 15]]), L = LR(l, 4, 12); const base = T[0] * T[1] / 2, per = T[0] + T[1] + T[2];
+    if (l >= 2) {   // spicy: an isosceles triangle as base; the height is given, the slanted sides too
+      const I = pick([[6, 4, 5], [8, 3, 5], [10, 12, 13], [16, 6, 10], [24, 5, 13], [12, 8, 10]]), b2 = I[0] * I[1] / 2, p2 = I[0] + 2 * I[2];
+      return nu(p('A prism has an <b>isosceles triangle</b> as its base. The base of the triangle is <b>' + I[0] + '</b> cm, the two equal sides are <b>' + I[2] + '</b> cm and the height of the triangle is <b>' + I[1] + '</b> cm. The prism is <b>' + L + '</b> cm long. What is its surface area in cm²?'), 2 * b2 + p2 * L, 'Surface area = 2 · (area of the base) + (perimeter of the base) · (length of the prism). The height of the triangle is only needed for its area.', 'One triangle: ' + I[0] + ' · ' + I[1] + ' : 2 = ' + b2 + ', two triangles: ' + 2 * b2 + '. Perimeter: ' + I[0] + ' + ' + I[2] + ' + ' + I[2] + ' = ' + p2 + '. Rectangles: ' + p2 + ' · ' + L + ' = ' + p2 * L + '. Total = ' + (2 * b2 + p2 * L) + ' cm².');
+    }
     return nu(p('A prism has a right-angled triangle as its base, with sides <b>' + T.join(', ') + '</b> cm. The prism is <b>' + L + '</b> cm long. What is its surface area in cm²?'), 2 * base + per * L, 'Surface area = 2 · (area of the base) + (perimeter of the base) · (length of the prism).', 'Two triangles: 2 · ' + base + ' = ' + 2 * base + '. Three rectangles: ' + per + ' · ' + L + ' = ' + per * L + '. Total = ' + (2 * base + per * L) + ' cm².');
   },
   function surfCylinder(l) {

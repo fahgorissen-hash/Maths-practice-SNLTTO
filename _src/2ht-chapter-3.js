@@ -121,10 +121,10 @@
         steps: 'm = (' + f(y2) + ' − ' + par(y1) + ') / (' + f(x2) + ' − ' + par(x1) + ') = ' + f(rnd2(y2 - y1)) + ' / ' + f(dx) + ' = ' + f(m) };
     },
     function formulaFromGraph(l) {
-      const m = l === 0 ? ri(1, 3) : nz(-3, 3), b = l === 0 ? ri(-3, 3) : ri(-4, 4);
+      const m = l === 0 ? ri(1, 3) : nz(-3, 3), b = l === 0 ? ri(-3, 3) : ri(-4, 4), help = l < 2;   // spicy: no helper points
       return { type: 'multi', fields: ['m', 'b'], ans: [m, b], correct: [String(m), String(b)],
-        html: '<p>The graph of the line <b>y = mx + b</b> is shown. Find <b>m</b> and <b>b</b>.</p>' + grid({ xmin: -5, xmax: 5, ymin: -8, ymax: 8, curves: [{ f: x => m * x + b }], pts: [{ x: 0, y: b, color: '#16803c' }, { x: 1, y: m + b, color: '#16803c' }] }),
-        hint: 'b is where the line crosses the y-axis. For m: go 1 to the right and see how much y changes.',
+        html: '<p>The graph of the line <b>y = mx + b</b> is shown. Find <b>m</b> and <b>b</b>.</p>' + grid({ xmin: -5, xmax: 5, ymin: -8, ymax: 8, curves: [{ f: x => m * x + b }], pts: help ? [{ x: 0, y: b, color: '#16803c' }, { x: 1, y: m + b, color: '#16803c' }] : [] }),
+        hint: (help ? '' : 'Find two grid points on the line first. ') + 'b is where the line crosses the y-axis. For m: go 1 to the right and see how much y changes.',
         steps: 'b = ' + f(b) + ' (at x = 0). At x = 1, y = ' + f(m + b) + ', so m = ' + f(m + b) + ' − ' + par(b) + ' = ' + f(m) + '.' };
     },
     function tableLinear(l) {
@@ -283,6 +283,13 @@
     },
     function maxHeight(l) {
       const xv = pick([50, 100, 150, 200]), bb = xv / 25, h = 2 * xv * xv / 100;
+      if (l >= 2) {   // spicy: another number in front of x², and a start height
+        const a = pick([0.01, 0.04, 0.05, 0.1]), x2 = pick([10, 20, 30, 40]), b2 = Math.round(2 * a * x2 * 100) / 100, c = pick([1, 1.5, 2, 2.5]), h2 = Math.round((-a * x2 * x2 + b2 * x2 + c) * 100) / 100;
+        return { type: 'num', ans: h2, correct: String(h2),
+          html: '<p>A ball is thrown. Its height is <b>h = −' + a + 'x² + ' + b2 + 'x + ' + c + '</b> (h and x in metres, x is the horizontal distance). What is the maximum height of the ball?</p>',
+          hint: 'The maximum is at the vertex. First x = −b / (2a), then calculate h for that x.',
+          steps: 'x = −' + b2 + ' / (2 · −' + a + ') = ' + x2 + '<br>h = −' + a + ' · ' + x2 + '² + ' + b2 + ' · ' + x2 + ' + ' + c + ' = ' + h2 + ' m' };
+      }
       return { type: 'num', ans: h, correct: String(h),
         html: '<p>A ball is kicked. Its height is <b>h = −0.02x² + ' + bb + 'x</b> (h and x in metres, x is the horizontal distance). What is the maximum height of the ball?</p>',
         hint: 'The maximum is at the vertex. First x = −b / (2a), then calculate h for that x.',
@@ -309,8 +316,8 @@
         steps: f(y1) + ' = a(' + f(x1) + ' − ' + par(p) + ')² + ' + par(q) + '<br>' + f(y1 - q) + ' = ' + (x1 - p) * (x1 - p) + 'a, so a = ' + f(a) };
     },
     function isInverse(l) {
-      const inv = Math.random() < .5, k = pick([12, 24, 36, 60]), xs = pick([[1, 2, 3, 4], [2, 3, 4, 6], [1, 2, 4, 6]].filter(s => s.every(v => k % v === 0)));
-      const ys = xs.map(x => inv ? k / x : k / x + 2);
+      const inv = Math.random() < .5, k = pick([12, 24, 36, 60]), xs = l >= 2 ? [0.5, 2, 2.5, 4] : pick([[1, 2, 3, 4], [2, 3, 4, 6], [1, 2, 4, 6]].filter(s => s.every(v => k % v === 0)));
+      const ys = xs.map((x, i) => inv ? k / x : l >= 2 ? (i === 3 ? k / x + 1 : k / x) : k / x + 2);   // spicy: decimals, and only one pair breaks the rule
       return { type: 'choice', opts: ['Yes, inversely proportional', 'No, not inversely proportional'], ans: inv ? 0 : 1, correct: inv ? 0 : 1,
         html: '<p>Is this an inversely proportional relationship?</p>' + tbl(xs, ys),
         hint: 'Calculate x · y for every pair. If the product is always the same, it is inversely proportional.',
@@ -318,18 +325,36 @@
     },
     function findKInv(l) {
       const k = pick([12, 20, 24, 30, 36, 40, 60]), xs = [1, 2, 3, 4, 5, 6, 10, 12, 15, 20].filter(v => k % v === 0).slice(0, 4);
+      if (l >= 2) {   // spicy: find k, then a missing value that is not a whole number
+        const xm = pick([8, 16, 25, 32, 50].filter(v => k % v !== 0)), ym = Math.round(k / xm * 100) / 100;
+        return { type: 'num', ans: ym, correct: String(ym), tol: .0051,
+          html: '<p>The table shows an inversely proportional relationship <b>y = k / x</b>. Calculate the missing number. <small>(Round to 2 decimals if needed.)</small></p>' + tbl(xs.concat([xm]), xs.map(x => k / x).concat([null])),
+          hint: 'First find k = x · y. Then y = k / x.', steps: 'k = ' + xs[1] + ' · ' + (k / xs[1]) + ' = ' + k + '<br>y = ' + k + ' / ' + xm + (Math.abs(k / xm - ym) < 1e-9 ? ' = ' : ' ≈ ') + ym };
+      }
       return { type: 'num', ans: k, correct: String(k),
         html: '<p>The table shows an inversely proportional relationship <b>y = k / x</b>. Find <b>k</b>.</p>' + tbl(xs, xs.map(x => k / x)),
         hint: 'k = x · y. Multiply x and y for one pair.', steps: 'k = ' + xs[1] + ' · ' + (k / xs[1]) + ' = ' + k };
     },
     function inverseValue(l) {
       const k = pick([12, 24, 36, 48, 60]), x1 = pick([2, 3, 4, 6]), x2 = pick([1, 2, 3, 4, 6, 8, 12].filter(v => v !== x1 && k % v === 0)), askY = Math.random() < .6, y1 = k / x1;
+      if (l >= 2) {   // spicy: decimals
+        const xa = pick([0.4, 1.5, 2.5, 0.8]), ya = 10 * ri(2, 9), kk = Math.round(xa * ya * 100) / 100, xb = pick([3, 6, 7, 9, 16].filter(v => v !== xa)), yb = Math.round(kk / xb * 100) / 100;
+        return { type: 'num', ans: yb, correct: String(yb), tol: .0051,
+          html: '<p><b>y</b> is inversely proportional to <b>x</b>. When x = ' + xa + ', y = ' + ya + '. Calculate y when x = ' + xb + '. <small>(Round to 2 decimals if needed.)</small></p>',
+          hint: 'First find k = x · y. Then use y = k / x.', steps: 'k = ' + xa + ' · ' + ya + ' = ' + kk + '. y = ' + kk + ' / ' + xb + (Math.abs(kk / xb - yb) < 1e-9 ? ' = ' : ' ≈ ') + yb };
+      }
       return { type: 'num', ans: askY ? k / x2 : x2, correct: String(askY ? k / x2 : x2),
         html: '<p><b>y</b> is inversely proportional to <b>x</b>. When x = ' + x1 + ', y = ' + y1 + '. ' + (askY ? 'Calculate y when x = ' + x2 + '.' : 'Calculate x when y = ' + (k / x2) + '.') + '</p>',
         hint: 'First find k = x · y. Then use y = k / x.', steps: 'k = ' + x1 + ' · ' + y1 + ' = ' + k + '. ' + (askY ? 'y = ' + k + ' / ' + x2 + ' = ' + (k / x2) : 'x = ' + k + ' / ' + (k / x2) + ' = ' + x2) };
     },
     function inverseContext(l) {
       const km = pick([120, 180, 240, 360]), v = pick([40, 60, 80, 90, 120].filter(s => km % s === 0)), t = km / v;
+      if (l >= 2) {   // spicy: the time is given in hours and minutes, the speed is asked
+        const d2 = pick([90, 150, 180, 210, 270, 300]), t2 = pick([1.25, 1.5, 2.25, 2.5, 3.75, 2.4]), v2 = Math.round(d2 / t2 * 10) / 10, hh = Math.floor(t2), mm = Math.round((t2 - hh) * 60);
+        return { type: 'num', ans: v2, correct: String(v2), tol: .051,
+          html: '<p>A car drives ' + d2 + ' km. The travel time is <b>t = ' + d2 + ' / v</b>, where v is the speed in km/h and t the time in hours. The trip takes <b>' + hh + ' hours and ' + mm + ' minutes</b>. Calculate the speed. <small>(Round to 1 decimal if needed.)</small></p>',
+          hint: 'First write the time in hours (' + mm + ' minutes = ' + mm + '/60 hour). Then v = ' + d2 + ' / t.', steps: hh + ' h ' + mm + ' min = ' + t2 + ' hours<br>' + t2 + ' = ' + d2 + ' / v, so v = ' + d2 + ' / ' + t2 + (Math.abs(d2 / t2 - v2) < 1e-9 ? ' = ' : ' ≈ ') + v2 + ' km/h' };
+      }
       return { type: 'num', ans: t, correct: String(t),
         html: '<p>A car drives ' + km + ' km. The travel time is <b>t = ' + km + ' / v</b>, where v is the speed in km/h and t the time in hours. Calculate the time when the speed is <b>' + v + ' km/h</b>.</p>',
         hint: 'Substitute v in the formula.', steps: 't = ' + km + ' / ' + v + ' = ' + t + ' hours' };

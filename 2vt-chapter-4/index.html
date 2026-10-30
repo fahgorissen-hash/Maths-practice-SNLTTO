@@ -718,6 +718,10 @@ G['4.2'] = [
   function vennRead(l) {
     const A = ri(3, 12), B = ri(3, 12), AB = ri(1, 6), O = ri(2, 9), names = pick([['Football', 'Hockey'], ['Dutch', 'French'], ['Tea', 'Coffee'], ['Cats', 'Dogs']]), k = pick(['inA', 'only', 'union', 'total']);
     const fig = vennSVG(A, AB, B, O, names[0], names[1]), who = 'This Venn diagram shows how many of the students in a class like ' + names[0].toLowerCase() + ' and ' + names[1].toLowerCase() + '. The number outside the circles is the number who like neither.';
+    if (l >= 2) {   // spicy: a probability from the diagram
+      const N = A + AB + B + O, kk = pick(['onlyB', 'notA', 'one']), Q = { onlyB: ['only ' + names[1].toLowerCase(), B, 'The part of the ' + names[1] + ' circle outside the overlap: ' + B + '.'], notA: ['<b>not</b> ' + names[0].toLowerCase(), B + O, 'Everything outside the ' + names[0] + ' circle: ' + B + ' + ' + O + ' = ' + (B + O) + '.'], one: ['<b>exactly one</b> of the two', A + B, 'Only ' + names[0].toLowerCase() + ' or only ' + names[1].toLowerCase() + ': ' + A + ' + ' + B + ' = ' + (A + B) + '.'] }[kk];
+      return frq(p(who) + fig + p('A student from this class is picked at random. What is the probability that this student likes ' + Q[0] + '?'), Q[1], N, 'P = (number of students you want) / (number of students in the class). First add all four numbers.', Q[2] + ' Class: ' + A + ' + ' + AB + ' + ' + B + ' + ' + O + ' = ' + N + '. P = ' + fr(Q[1], N) + (gcd(Q[1], N) > 1 ? ' = ' + fl(Q[1], N) : '') + '.', { needStep: true });
+    }
     const q = { inA: ['How many students like ' + names[0].toLowerCase() + ' (including those who like both)?', A + AB, 'Add the part that is only ' + names[0].toLowerCase() + ' and the overlap.', A + ' + ' + AB + ' = ' + (A + AB) + '.'],
       only: ['How many students like <b>only</b> ' + names[1].toLowerCase() + '?', B, 'Look at the part of the ' + names[1] + ' circle that is not in the overlap.', 'The number in that part is ' + B + '.'],
       union: ['How many students like <b>at least one</b> of the two?', A + AB + B, 'Add the three numbers inside the circles. Do not add the number outside.', A + ' + ' + AB + ' + ' + B + ' = ' + (A + AB + B) + '.'],
@@ -725,7 +729,8 @@ G['4.2'] = [
     return nu(p(who) + fig + p(q[0]), q[1], q[2], q[3]);
   },
   function vennCalc(l) {
-    const AB = ri(2, 6), A = ri(AB + 2, AB + 12), B = ri(AB + 2, AB + 12), U = A + B - AB, O = ri(2, 9), N = U + O, nm = pick([['football', 'hockey'], ['Dutch', 'French'], ['tea', 'coffee']]), kind = pick(['neither', 'onlyA', 'both']);
+    const AB = ri(2, 6), A = ri(AB + 2, AB + 12), B = ri(AB + 2, AB + 12), U = A + B - AB, O = ri(2, 9), N = U + O, nm = pick([['football', 'hockey'], ['Dutch', 'French'], ['tea', 'coffee']]), kind = l >= 2 ? pick(['both', 'probOnly']) : pick(['neither', 'onlyA', 'both']);   // spicy: the overlap must be found first
+    if (kind === 'probOnly') return frq(p('In a class of <b>' + N + '</b> students, ' + A + ' like ' + nm[0] + ' and ' + B + ' like ' + nm[1] + '. ' + O + ' students like neither. A student is picked at random. What is the probability that this student likes <b>only ' + nm[0] + '</b>?'), A - AB, N, 'First find how many like both (a Venn diagram helps). Then how many like only ' + nm[0] + '.', 'At least one: ' + N + ' − ' + O + ' = ' + U + '. Both: ' + A + ' + ' + B + ' − ' + U + ' = ' + AB + '. Only ' + nm[0] + ': ' + A + ' − ' + AB + ' = ' + (A - AB) + '. P = ' + fr(A - AB, N) + (gcd(A - AB, N) > 1 ? ' = ' + fl(A - AB, N) : '') + '.', { needStep: true });
     if (kind === 'neither') return nu(p('In a class of <b>' + N + '</b> students, ' + A + ' like ' + nm[0] + ', ' + B + ' like ' + nm[1] + ' and ' + AB + ' like both. How many students like <b>neither</b>?'), O, 'The students who like both are counted twice if you add ' + A + ' and ' + B + '. Take them away once.', 'At least one: ' + A + ' + ' + B + ' − ' + AB + ' = ' + U + '. Neither: ' + N + ' − ' + U + ' = ' + O + '.');
     if (kind === 'onlyA') return nu(p('In a class, ' + A + ' students like ' + nm[0] + ', ' + B + ' like ' + nm[1] + ' and ' + AB + ' like both. How many students like <b>only ' + nm[0] + '</b>?'), A - AB, 'Those who like both are inside the ' + nm[0] + ' group. Take them out.', A + ' − ' + AB + ' = ' + (A - AB) + '.');
     return nu(p('In a class of <b>' + N + '</b> students, ' + A + ' like ' + nm[0] + ' and ' + B + ' like ' + nm[1] + '. ' + O + ' students like neither. How many like <b>both</b>?'), AB, 'First find how many like at least one. Then compare ' + A + ' + ' + B + ' with that number.', 'At least one: ' + N + ' − ' + O + ' = ' + U + '. Both: ' + A + ' + ' + B + ' − ' + U + ' = ' + AB + '.');
@@ -884,6 +889,10 @@ G['4.4'] = [
     const e1 = bi => bi === 0 ? pa[0] + '/' + pa[1] : (pa[1] - pa[0]) + '/' + pa[1], e2 = bi => bi === 0 ? pb[0] + '/' + pb[1] : (pb[1] - pb[0]) + '/' + pb[1];
     const fig = treeSVG({ stages: [['R', 'B'], ['R', 'B']], edge: (st, path, bi) => st === 0 ? e1(bi) : e2(bi), leaf: path => path.join(''), leafW: 100 });
     const i1 = k[0] === 'A' ? 0 : 1, i2 = k[1] === 'A' ? 0 : 1, n1 = i1 === 0 ? pa[0] : pa[1] - pa[0], n2 = i2 === 0 ? pb[0] : pb[1] - pb[0], num = n1 * n2, den = pa[1] * pb[1], w = ['R', 'B'];
+    if (l >= 2) {   // spicy: two branches, one of each colour
+      const r1 = pa[0], b1 = pa[1] - pa[0], r2 = pb[0], b2 = pb[1] - pb[0], nn = r1 * b2 + b1 * r2;
+      return frq(p('The tree diagram shows two independent spins: first spinner 1, then spinner 2. Each spin lands on R (red) or B (blue). What is the probability of <b>one red and one blue</b> (in any order)?') + fig, nn, den, 'Two branches fit: RB and BR. Multiply along each branch, then add.', 'P(RB) = ' + fr(r1, pa[1]) + ' · ' + fr(b2, pb[1]) + ' = ' + fr(r1 * b2, den) + '. P(BR) = ' + fr(b1, pa[1]) + ' · ' + fr(r2, pb[1]) + ' = ' + fr(b1 * r2, den) + '. P = ' + fr(r1 * b2, den) + ' + ' + fr(b1 * r2, den) + ' = ' + fr(nn, den) + (gcd(nn, den) > 1 ? ' = ' + fl(nn, den) : '') + '.', { needStep: true });
+    }
     return frq(p('The tree diagram shows two independent spins: first spinner 1, then spinner 2. Each spin lands on R (red) or B (blue). What is the probability of <b>' + w[i1] + ' on the first spin and ' + w[i2] + ' on the second spin</b>?') + fig, num, den, 'Follow the branch for ' + w[i1] + w[i2] + ' and multiply the two probabilities on it.', 'P = ' + fr(n1, pa[1]) + ' · ' + fr(n2, pb[1]) + ' = ' + fr(num, den) + (gcd(num, den) > 1 ? ' = ' + fl(num, den) : '') + '.', { needStep: true });
   }
 ];
@@ -918,6 +927,10 @@ G['4.5'] = [
   function cardsTwo(l) {
     const t = pick([['two aces', 4, 3], ['two hearts', 13, 12], ['two kings', 4, 3], ['two red cards', 26, 25], ['two picture cards (jack, queen or king)', 12, 11], ['two spades', 13, 12]]);
     const num = t[1] * t[2], den = 52 * 51;
+    if (l >= 2) {   // spicy: two different kinds, in any order
+      const u = pick([['an ace and a king', 'ace', 'king', 4, 4], ['a heart and a spade', 'heart', 'spade', 13, 13], ['a king and a queen', 'king', 'queen', 4, 4], ['an ace and a heart that is not an ace', 'ace', 'heart (not an ace)', 4, 12]]), nn = 2 * u[3] * u[4];
+      return frq(p('You draw <b>two cards</b> from a standard deck of 52 cards, without putting the first back. What is the probability of drawing <b>' + u[0] + '</b> (in any order)?'), nn, den, 'Two orders are possible: first the ' + u[1] + ', or first the ' + u[2] + '. Calculate both and add.', 'P(' + u[1] + ', then ' + u[2] + ') = ' + fr(u[3], 52) + ' · ' + fr(u[4], 51) + ' = ' + fr(u[3] * u[4], den) + '. The other order gives the same. P = 2 · ' + fr(u[3] * u[4], den) + ' = ' + fr(nn, den) + (gcd(nn, den) > 1 ? ' = ' + fl(nn, den) : '') + '.', { needStep: true });
+    }
     return frq(p('You draw <b>two cards</b> from a standard deck of 52 cards, without putting the first back. What is the probability of drawing <b>' + t[0] + '</b>?'), num, den, 'After the first card, there are 51 cards left, and one fewer of the kind you want.', 'P = ' + fr(t[1], 52) + ' · ' + fr(t[2], 51) + ' = ' + fr(num, den) + (gcd(num, den) > 1 ? ' = ' + fl(num, den) : '') + '.', { needStep: true });
   },
   function atLeastOneWithout(l) {
@@ -926,6 +939,10 @@ G['4.5'] = [
   },
   function lotTickets(l) {
     const n = pick([20, 25, 30, 40, 50]), pz = ri(3, Math.floor(n / 4)), num = n * (n - 1) - (n - pz) * (n - pz - 1), den = n * (n - 1);
+    if (l >= 2) {   // spicy: three tickets
+      const q = n - pz, d3 = n * (n - 1) * (n - 2), no = q * (q - 1) * (q - 2);
+      return frq(p('A lottery has <b>' + n + '</b> tickets, of which <b>' + pz + '</b> win a prize. You buy <b>3</b> tickets. What is the probability that you win <b>at least one prize</b>? (A ticket cannot be drawn twice.)'), d3 - no, d3, 'Use the opposite: no prize with all three tickets.', 'P(no prize) = ' + fr(q, n) + ' · ' + fr(q - 1, n - 1) + ' · ' + fr(q - 2, n - 2) + ' = ' + fr(no, d3) + '. P(at least one prize) = 1 − ' + fr(no, d3) + ' = ' + fl(d3 - no, d3) + '.', { needStep: true });
+    }
     return frq(p('A lottery has <b>' + n + '</b> tickets, of which <b>' + pz + '</b> win a prize. You buy <b>2</b> tickets. What is the probability that you win <b>at least one prize</b>? (A ticket cannot be drawn twice.)'), num, den, 'Use the opposite: no prize with both tickets. After the first ticket, one non-winning ticket fewer is left.', 'P(no prize) = ' + fr(n - pz, n) + ' · ' + fr(n - pz - 1, n - 1) + ' = ' + fr((n - pz) * (n - pz - 1), den) + '. P(at least one prize) = 1 − ' + fr((n - pz) * (n - pz - 1), den) + ' = ' + fl(num, den) + '.', { needStep: true });
   },
   function secondDraw(l) {
@@ -938,6 +955,10 @@ G['4.5'] = [
     const e = (st, path, bi) => { const col = bi === 0 ? 'R' : 'B'; const rem = st === 0 ? { R: r, B: b } : { R: r - (path[0] === 'R' ? 1 : 0), B: b - (path[0] === 'B' ? 1 : 0) }; return rem[col] + '/' + (st === 0 ? n : n - 1); };
     const fig = treeSVG({ stages: [['R', 'B'], ['R', 'B']], edge: e, leaf: path => path.join(''), leafW: 100 });
     const a1 = c[k[0]], a2 = c[k[1]] - (k[0] === k[1] ? 1 : 0), num = a1 * a2, den = n * (n - 1);
+    if (l >= 2) {   // spicy: two branches (same colour twice)
+      const rr = r * (r - 1), bb = b * (b - 1);
+      return frq(p(bagText(['marbles', 'marble', 'a bag'], [['red (R)', r], ['blue (B)', b]]) + ' Two marbles are taken one after the other, <b>without</b> putting the first back. The tree diagram shows the probabilities. What is the probability that both marbles have <b>the same colour</b>?') + fig, rr + bb, den, 'Two branches fit: RR and BB. Multiply along each branch, then add.', 'P(RR) = ' + fr(r, n) + ' · ' + fr(r - 1, n - 1) + ' = ' + fr(rr, den) + '. P(BB) = ' + fr(b, n) + ' · ' + fr(b - 1, n - 1) + ' = ' + fr(bb, den) + '. P = ' + fr(rr + bb, den) + (gcd(rr + bb, den) > 1 ? ' = ' + fl(rr + bb, den) : '') + '.', { needStep: true });
+    }
     return frq(p(bagText(['marbles', 'marble', 'a bag'], [['red (R)', r], ['blue (B)', b]]) + ' Two marbles are taken one after the other, <b>without</b> putting the first back. The tree diagram shows the probabilities. What is the probability of <b>' + (k[0] === 'R' ? 'red' : 'blue') + ' first and then ' + (k[1] === 'R' ? 'red' : 'blue') + '</b>?') + fig, num, den, 'Follow the branch ' + k + ' and multiply the two probabilities on it.', 'P = ' + fr(a1, n) + ' · ' + fr(a2, n - 1) + ' = ' + fr(num, den) + (gcd(num, den) > 1 ? ' = ' + fl(num, den) : '') + '.', { needStep: true });
   }
 ];
