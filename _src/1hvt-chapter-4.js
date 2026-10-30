@@ -44,15 +44,20 @@ G['4.1'] = [
     return nu(p('Calculate the mean of these numbers: ' + xs.join('; ') + '. <small>(Round to 2 decimals if needed.)</small>'), m, 'Add all numbers. Divide by how many numbers there are.', '(' + xs.join(' + ') + ') : ' + n + ' = ' + tot + ' : ' + n + (rd(tot / n) === m ? ' = ' : ' ≈ ') + m, { tol: .0051, needStep: true });
   },
   function totalFreq(l) {
-    const xs = [1, 2, 3, 4, 5], fs = xs.map(() => ri(1, 9)), ask = pick(['n', 'max', 'atleast']);
+    const xs = [1, 2, 3, 4, 5], fs = xs.map(() => ri(1, 9)), ask = l === 0 ? 'n' : l === 1 ? pick(['n', 'max', 'atleast']) : pick(['max', 'mean', 'mean']);
     const t = tbl('goals', 'matches', xs, fs);
     if (ask === 'n') return nu(p('A football team kept a frequency table of the number of goals in a match. How many matches did they play?') + t, sum(fs), 'Add all the frequencies.', fs.join(' + ') + ' = ' + sum(fs));
     if (ask === 'max') { const tot = sum(xs.map((x, i) => x * fs[i])); return nu(p('How many goals did the team score in total?') + t, tot, 'Multiply every number of goals by its frequency and add.', xs.map((x, i) => fs[i] + ' · ' + x).join(' + ') + ' = ' + tot, { needStep: true }); }
+    if (ask === 'mean') { const tot = sum(xs.map((x, i) => x * fs[i])), N = sum(fs), m = rd(tot / N, 1); return nu(p('A football team kept a frequency table of the number of goals in a match. Calculate the <b>mean</b> number of goals per match. <small>(Round to 1 decimal.)</small>') + t, m, 'First calculate the total number of goals and the number of matches.', 'goals: ' + xs.map((x, i) => fs[i] + ' · ' + x).join(' + ') + ' = ' + tot + '<br>matches: ' + fs.join(' + ') + ' = ' + N + '<br>mean = ' + tot + ' : ' + N + (rd(tot / N) === m ? ' = ' : ' ≈ ') + m, { needStep: true, tol: .051 }); }
     const k = ri(3, 4), c = sum(fs.slice(k - 1)); return nu(p('In how many matches did the team score at least ' + k + ' goals?') + t, c, 'At least ' + k + ' means ' + k + ' or more.', fs.slice(k - 1).join(' + ') + ' = ' + c);
   },
   function missingValue(l) {
     const n = ri(4, 6), m = ri(5, 15), xs = Array.from({ length: n - 1 }, () => ri(m - 4, m + 4)), last = n * m - sum(xs);
     if (last < 0) return missingValue(l);
+    if (l >= 2) {   // spicy: one number is added and the mean changes
+      const m2 = m + pick([-2, -1, 1, 2, 3]), x = (n + 1) * m2 - n * m; if (x < 0) return missingValue(l);
+      return nu(p('The mean of ' + n + ' test scores is ' + m + '. One more score is added. Now the mean of the ' + (n + 1) + ' scores is ' + m2 + '. Which score was added?'), x, 'Calculate the total of the ' + n + ' scores and the total of the ' + (n + 1) + ' scores.', 'total before = ' + n + ' · ' + m + ' = ' + n * m + '<br>total after = ' + (n + 1) + ' · ' + m2 + ' = ' + (n + 1) * m2 + '<br>added score = ' + (n + 1) * m2 + ' − ' + n * m + ' = ' + x, { needStep: true });
+    }
     return nu(p('The mean of ' + n + ' numbers is ' + m + '. Four' .replace('Four', n - 1 === 4 ? 'Four' : String(n - 1)) + ' of the numbers are ' + xs.join(', ') + '. What is the last number?'), last, 'The total of all ' + n + ' numbers is ' + n + ' · ' + m + '.', 'total = ' + n + ' · ' + m + ' = ' + n * m + '<br>' + n * m + ' − (' + xs.join(' + ') + ') = ' + n * m + ' − ' + sum(xs) + ' = ' + last, { needStep: true });
   }
 ];
@@ -67,16 +72,31 @@ G['4.2'] = [
   },
   function roundContext(l) {
     const k = ri(0, 3);
+    if (l >= 2 && k < 2) {   // spicy: first calculate the area, two layers of paint
+      const a = ri(4, 9), b = pick([2.4, 2.5, 2.6, 3]), per = pick([6, 8, 10]), A = rd(a * b * 2, 2); if (Number.isInteger(A / per)) return roundContext(l); const c = Math.ceil(A / per);
+      return nu(p('A wall is ' + a + ' m long and ' + b + ' m high. You paint it with <b>two layers</b>. One can of paint is enough for ' + per + ' m². How many cans do you need?'), c, 'Calculate the area of the wall first. Two layers means twice that area.', 'area = ' + a + ' · ' + b + ' = ' + rd(a * b, 2) + ' m²<br>two layers: 2 · ' + rd(a * b, 2) + ' = ' + A + ' m²<br>' + A + ' : ' + per + ' ≈ ' + rd(A / per, 2) + '. Round up: ' + c + ' cans.', { needStep: true });
+    }
     if (k === 0) { const area = ri(25, 90), per = pick([6, 8, 10, 12]); if (area % per === 0) return roundContext(l); const c = Math.ceil(area / per); return nu(p('One can of paint is enough for ' + per + ' m². You want to paint ' + area + ' m². How many cans do you need?'), c, 'Divide. Can you round down here, or do you need to round up?', area + ' : ' + per + ' ≈ ' + rd(area / per, 2) + '. With ' + Math.floor(area / per) + ' cans you cannot paint everything, so round up: ' + c + ' cans.', { needStep: true }); }
     if (k === 1) { const money = ri(30, 90), pr = pick([4, 6, 7, 8, 9]); if (money % pr === 0) return roundContext(l); const c = Math.floor(money / pr); return nu(p('A poster costs £' + pr + '. You have £' + money + '. How many posters can you buy?'), c, 'Divide. Can you buy part of a poster?', money + ' : ' + pr + ' ≈ ' + rd(money / pr, 2) + '. You cannot buy part of a poster, so round down: ' + c + ' posters.', { needStep: true }); }
     if (k === 2) { const st = ri(200, 600), seat = pick([50, 60, 75]); if (st % seat === 0) return roundContext(l); const c = Math.ceil(st / seat); return nu(p(st + ' students and teachers go on a school trip. One bus has ' + seat + ' seats. How many buses are needed?'), c, 'Everybody needs a seat. Round up or down?', st + ' : ' + seat + ' ≈ ' + rd(st / seat, 2) + '. Round up: ' + c + ' buses.', { needStep: true }); }
     const len = ri(20, 60), car = pick([4.5, 5, 5.5, 6]); if (Number.isInteger(len / car)) return roundContext(l); const c = Math.floor(len / car); return nu(p('A parking strip is ' + len + ' m long. Every car needs ' + car + ' m. How many cars can park there at most?'), c, 'Divide. A car cannot park in half a space.', len + ' : ' + car + ' ≈ ' + rd(len / car, 2) + '. Round down: ' + c + ' cars.', { needStep: true });
   },
   function roundBounds(l) {
-    const r = ri(100, 999) * 100, lo = r - 50, hi = r + 49, ask = Math.random() < .5;
+    const ask = Math.random() < .5;
+    if (l >= 2) {   // spicy: rounded to thousands, or a length rounded to 1 decimal
+      if (Math.random() < .5) { const r = ri(10, 99) * 1000, lo = r - 500, hi = r + 499; return nu(p('After rounding to <b>thousands</b>, a newspaper says ' + sp(r) + ' visitors came. What is the ' + (ask ? 'smallest' : 'largest') + ' possible real number of visitors?'), ask ? lo : hi, 'Which whole numbers round to ' + sp(r) + '?', 'All numbers from ' + sp(lo) + ' to ' + sp(hi) + ' round to ' + sp(r) + '. The ' + (ask ? 'smallest is ' + sp(lo) : 'largest is ' + sp(hi)) + '.'); }
+      const r = rd(ri(12, 89) / 10, 1), lo = rd(r - .05, 2);
+      return nu(p('A length is <b>' + r + ' m</b>, rounded to tenths of a metre. What is the smallest length (in m) that gives ' + r + ' m after rounding?'), lo, 'Which lengths round to ' + r + '? Look at the second decimal.', 'From ' + lo + ' m the length rounds up to ' + r + ' m. Lengths just below ' + lo + ' round to ' + rd(r - .1, 1) + '. The smallest is ' + lo + ' m.');
+    }
+    const r = ri(100, 999) * 100, lo = r - 50, hi = r + 49;
     return nu(p('After rounding to hundreds, a newspaper says ' + sp(r) + ' visitors came. What is the ' + (ask ? 'smallest' : 'largest') + ' possible real number of visitors?'), ask ? lo : hi, 'Which whole numbers round to ' + sp(r) + '?', 'All numbers from ' + sp(lo) + ' to ' + sp(hi) + ' round to ' + sp(r) + '. The ' + (ask ? 'smallest is ' + sp(lo) : 'largest is ' + sp(hi)) + '.');
   },
   function weightedMean(l) {
+    if (l >= 2) {   // spicy: the mean of two groups together
+      const n1 = ri(8, 20), n2 = ri(8, 20), m1 = rd(ri(40, 90) / 10, 1), m2 = rd(ri(40, 90) / 10, 1), t1 = rd(n1 * m1, 1), t2 = rd(n2 * m2, 1), m = rd((t1 + t2) / (n1 + n2), 1);
+      if (m1 === m2) return weightedMean(l);
+      return nu(p('Class A has ' + n1 + ' students. Their mean mark is ' + m1 + '. Class B has ' + n2 + ' students. Their mean mark is ' + m2 + '. Calculate the mean mark of all ' + (n1 + n2) + ' students together. <small>(Round to 1 decimal.)</small>'), m, 'You cannot just take the mean of ' + m1 + ' and ' + m2 + '. First calculate the total of all marks in each class.', p('class A: ' + n1 + ' · ' + m1 + ' = ' + t1) + p('class B: ' + n2 + ' · ' + m2 + ' = ' + t2) + p('mean = (' + t1 + ' + ' + t2 + ') : ' + (n1 + n2) + ' = ' + rd(t1 + t2, 1) + ' : ' + (n1 + n2) + (rd((t1 + t2) / (n1 + n2)) === m ? ' = ' : ' ≈ ') + m), { tol: .051, needStep: true });
+    }
     const v = [ri(1, 4), ri(5, 9), ri(10, 14)], f = v.map(() => ri(2, 15)), tot = sum(v.map((x, i) => x * f[i])), N = sum(f), m = rd(tot / N, 1);
     return nu(p('In a bird count, ' + f[0] + ' people counted ' + v[0] + ' birds, ' + f[1] + ' people counted ' + v[1] + ' birds and ' + f[2] + ' people counted ' + v[2] + ' birds. Calculate the mean number of birds per person. <small>(Round to 1 decimal.)</small>'), m, 'Multiply each number by how many people counted it. Divide by the total number of people.', p(f.map((x, i) => x + ' · ' + v[i]).join(' + ') + ' = ' + tot) + p(f.join(' + ') + ' = ' + N) + p(tot + ' : ' + N + (rd(tot / N) === m ? ' = ' : ' ≈ ') + m), { tol: .051, needStep: true });
   }
@@ -101,6 +121,10 @@ G['4.3'] = [
   },
   function share(l) {
     const r = [ri(1, 3), ri(1, 4), ri(1, 5)], n = sum(r), tot = n * ri(25, 150), i = ri(0, 2), names = ['sugar', 'butter', 'flour'], amt = tot * r[i] / n;
+    if (l >= 2) {   // spicy: you know one ingredient, find another one (or the total)
+      let j = ri(0, 2); if (j === i || r[j] === r[i]) return share(l); const per = tot / n, toTot = Math.random() < .3, a2 = toTot ? tot : per * r[j];
+      return nu(p('Cookie dough has sugar, butter and flour in the ratio ' + r.join(' : ') + '. You use <b>' + per * r[i] + ' grams of ' + names[i] + '</b>. How many grams of ' + (toTot ? 'dough do you make in total' : '<b>' + names[j] + '</b> do you need') + '?'), a2, names[i] + ' is ' + r[i] + ' part' + (r[i] > 1 ? 's' : '') + '. How many grams is 1 part?', '1 part = ' + per * r[i] + ' : ' + r[i] + ' = ' + per + ' g<br>' + (toTot ? 'total: ' + n + ' parts = ' + n + ' · ' + per + ' = ' + tot + ' g' : names[j] + ': ' + r[j] + ' · ' + per + ' = ' + a2 + ' g'), { needStep: true });
+    }
     return nu(p('Cookie dough has sugar, butter and flour in the ratio ' + r.join(' : ') + '. You make ' + tot + ' grams of dough. How many grams of <b>' + names[i] + '</b> do you need?'), amt, 'Together there are ' + r.join(' + ') + ' = ' + n + ' parts.', r.join(' + ') + ' = ' + n + ' parts<br>1 part = ' + tot + ' : ' + n + ' = ' + tot / n + ' g<br>' + names[i] + ': ' + r[i] + ' · ' + tot / n + ' = ' + amt + ' g', { needStep: true });
   },
   function scaleMap(l) {
@@ -138,9 +162,17 @@ G['4.4'] = [
   },
   function vat(l) {
     const pr = ri(5, 80) * 10, pc = pick([9, 21]), v = rd(pr * pc / 100), tot = rd(pr + v);
+    if (l >= 2) {   // spicy: a discount first, then VAT
+      const dc = pick([10, 15, 20, 25]), d = rd(pr * dc / 100, 2), net = rd(pr - d, 2), v2 = rd(net * pc / 100, 2), t2 = rd(net + v2, 2);
+      return nu(p('A product costs £' + pr + ' without VAT. In the sale you get <b>' + dc + '% discount</b> on this price. Then ' + pc + '% VAT is added. What do you pay? <small>(Round to 2 decimals.)</small>'), t2, 'First calculate the price after the discount. Then add the VAT to that new price.', 'discount = ' + dc + '/100 × ' + pr + ' = ' + d + '<br>new price = ' + pr + ' − ' + d + ' = ' + net + '<br>VAT = ' + pc + '/100 × ' + net + ' = ' + v2 + '<br>you pay ' + net + ' + ' + v2 + ' = ' + t2, { needStep: true, tol: .0051 });
+    }
     return nu(p('A product costs £' + pr + ' without VAT. The VAT is ' + pc + '%. What is the price including VAT?'), tot, 'Calculate the VAT and add it. Or: multiply by ' + rd(1 + pc / 100) + '.', 'VAT = ' + pc + '/100 × ' + pr + ' = ' + v + '<br>price = ' + pr + ' + ' + v + ' = ' + tot, { needStep: true });
   },
   function whatPercent(l) {
+    if (l >= 2) {   // spicy: not a nice percentage, round
+      const tot = ri(110, 380), part = ri(Math.round(tot * .1), Math.round(tot * .9)), pc = rd(part / tot * 100, 1); if (Number.isInteger(part / tot * 100)) return whatPercent(l);
+      return nu(p(part + ' of the ' + tot + ' students passed their exams. What percentage is that? <small>(Round to 1 decimal.)</small>'), pc, 'part / whole × 100%.', part + '/' + tot + ' × 100% ≈ ' + pc + '%', { needStep: true, tol: .051, ansText: pc + '%' });
+    }
     const tot = pick([20, 25, 40, 50, 80, 120, 180, 200]), pc = pick([10, 15, 20, 25, 30, 45, 60, 75, 90, 95].filter(q => Number.isInteger(tot * q / 100))), part = tot * pc / 100;
     return nu(p(part + ' of the ' + tot + ' students passed their exams. What percentage is that?'), pc, 'part / whole × 100%.', part + '/' + tot + ' × 100% = ' + rd(part / tot) + ' × 100% = ' + pc + '%', { needStep: true, ansText: pc + '%' });
   }
@@ -157,6 +189,10 @@ G['4.5'] = [
   function pieAngle(l) {
     const tot = pick([20, 24, 36, 40, 60, 72, 90, 120]), part = ri(1, tot - 1), ang = rd(part / tot * 360, 1);
     if (l === 0 && !Number.isInteger(ang)) return pieAngle(l);
+    if (l >= 2) {   // spicy: from the angle back to the number of students
+      const t2 = pick([24, 30, 36, 40, 45, 60, 72, 90]), k = ri(1, t2 - 1), a2 = k * 360 / t2; if (!Number.isInteger(a2)) return pieAngle(l);
+      return nu(p('In a survey, ' + t2 + ' students chose their favourite island. In the pie chart the Texel sector has an angle of <b>' + a2 + '°</b>. How many students chose Texel?'), k, 'The whole circle (360°) stands for all ' + t2 + ' students.', a2 + '/360 × ' + t2 + ' = ' + k + ' students', { needStep: true });
+    }
     return nu(p('In a class survey, ' + part + ' of the ' + tot + ' students chose Texel. Calculate the angle of the Texel sector in a pie chart. <small>(Round to 1 decimal.)</small>'), ang, 'The whole circle is 360°. The part is ' + part + '/' + tot + ' of the circle.', part + '/' + tot + ' × 360°' + (Number.isInteger(ang) ? ' = ' : ' ≈ ') + ang + '°', { needStep: true, tol: .051, ansText: ang + '°' });
   },
   function percentAngle(l) {
@@ -169,7 +205,7 @@ G['4.5'] = [
     return nu(p('A pie chart shows ' + sp(tot) + ' members of sports clubs. The football sector has an angle of ' + ang + '°. About how many members play football?' + (Number.isInteger(n) ? '' : ' <small>(Round to a whole number.)</small>')), Math.round(n), 'The part is ' + ang + '/360 of the whole.', ang + '/360 × ' + sp(tot) + (Number.isInteger(n) ? ' = ' : ' ≈ ') + sp(Math.round(n)), { needStep: true, tol: .5 });
   },
   function barRead(l) {
-    const labs = ['Q1', 'Q2', 'Q3', 'Q4'], vals = labs.map(() => ri(2, 14)), k = ri(0, 2);
+    const labs = ['Q1', 'Q2', 'Q3', 'Q4'], vals = labs.map(() => ri(2, 14)), k = l === 0 ? 0 : l === 1 ? ri(0, 1) : 2;
     const fig = bars(labs, vals, 2);
     if (k === 0) return nu(p('The bar chart shows the number of e-bikes a shop sold in each quarter. How many e-bikes were sold in total?') + fig, sum(vals), 'Read every bar and add.', vals.join(' + ') + ' = ' + sum(vals));
     if (k === 1) { let i, j; do { i = ri(0, 3); j = ri(0, 3); } while (i === j || vals[i] === vals[j]); return nu(p('How many more e-bikes were sold in ' + labs[Math.max(vals[i], vals[j]) === vals[i] ? i : j] + ' than in ' + labs[Math.max(vals[i], vals[j]) === vals[i] ? j : i] + '?') + fig, Math.abs(vals[i] - vals[j]), 'Read both bars and subtract.', Math.max(vals[i], vals[j]) + ' − ' + Math.min(vals[i], vals[j]) + ' = ' + Math.abs(vals[i] - vals[j])); }

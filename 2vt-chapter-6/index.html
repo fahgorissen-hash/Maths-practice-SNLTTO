@@ -617,6 +617,12 @@ G['6.1'] = [
     return nu(p('Solve: ' + lin(a, b) + ' = ' + lin(c, d)), x, 'Decimals work the same as whole numbers. You can also first multiply both sides by 4 (or 2) to get rid of the decimals.', bal(st), { noStep: true, eqStep: 'x', ansText: X() + ' = ' + neg(x) });
   },
   function withFractions(l) {
+    if (l >= 2) {   // spicy: a fraction in front of brackets
+      const q = pick([2, 3, 4, 5]), pp = ri(2, q + 2), t = nz(-5, 6) * q, r = nz(-7, 7), x = t - r, s = pp * t / q;
+      if (gcd(pp, q) !== 1) return withFractions(l);
+      const first = fr(pp, q) + '(' + lin(1, r) + ') = ' + neg(s);
+      return solQ(p('Solve: ' + first), x, 1, 'x', 'First multiply both sides by ' + q + '. Then divide by ' + pp + ' (or remove the brackets).', bal([[first, '× ' + q], [pp + '(' + lin(1, r) + ') = ' + neg(s * q), ': ' + pp], [lin(1, r) + ' = ' + neg(t), r > 0 ? '− ' + r : '+ ' + -r], [X() + ' = ' + neg(x)]]));
+    }
     // (p/q)x + r = s with nice numbers: multiply by q
     const q = pick([2, 3, 4, 5]), pp = l === 0 ? 1 : ri(1, q - 1), x = ri(-6, 9) * q, r = nz(-8, 8), s = pp * x / q + r;
     if (gcd(pp, q) !== 1) return G['6.1'][3](l);
@@ -641,12 +647,17 @@ G['6.1'] = [
     return solQ(p('Solve: ' + first), s.n, s.d, 'x', 'First remove the brackets: multiply ' + neg(k) + ' by both terms inside. Then use the balance method.', bal([[first, 'remove brackets']].concat(s.rows)));
   },
   function intersect(l) {
-    const x0 = ri(-5, 5), y0 = ri(-6, 6); let m1, m2; do { m1 = nz(-4, 4); m2 = nz(-4, 4); } while (m1 === m2);
+    let x0 = ri(-5, 5), y0 = ri(-6, 6), m1, m2; do { m1 = nz(-4, 4); m2 = nz(-4, 4); } while (m1 === m2 || (l >= 2 && (m1 - m2) % 2 !== 0));
+    if (l >= 2) { x0 = (2 * ri(-4, 3) + 1) / 2; y0 = m1 * x0 + ri(-6, 6); }   // spicy: the point of intersection is not on grid points
     const b1 = y0 - m1 * x0, b2 = y0 - m2 * x0, s = solveLin(m1, b1, m2, b2);
     return Object.assign({ type: 'point', ans: [x0, y0], html: p('Calculate the coordinates of the point of intersection of the lines ' + X('k') + ': ' + X('y') + ' = ' + lin(m1, b1) + ' and ' + X('m') + ': ' + X('y') + ' = ' + lin(m2, b2) + '.') + p('<small>Type your answer like (2, −5).</small>'), hint: 'Make the two formulas equal and solve the equation. Then put the ' + X() + ' you found into one of the formulas to find ' + X('y') + '.', steps: bal(s.rows) + p(X('y') + ' = ' + neg(m1) + ' · ' + (x0 < 0 ? '(' + neg(x0) + ')' : x0) + (b1 < 0 ? ' − ' + -b1 : ' + ' + b1) + ' = ' + neg(y0)) + p('The point of intersection is (' + neg(x0) + ', ' + neg(y0) + ').'), noStep: true });
   },
   function rectangleEq(l) {
     const w = ri(3, 20), dd = ri(2, 9), len = w + dd, P = 2 * (w + len);
+    if (l >= 2) {   // spicy: the length is a multiple of the width plus a bit
+      const k = ri(2, 4), L2 = k * w + dd, P2 = 2 * (w + L2);
+      return nu(p('The length of a rectangle is <b>' + dd + ' cm more than ' + ['', '', 'twice', 'three times', 'four times'][k] + ' the width</b>. Its perimeter is <b>' + P2 + ' cm</b>. Use ' + X() + ' for the width. Set up an equation and calculate the <b>length</b> (in cm).'), L2, 'The length is ' + k + X() + ' + ' + dd + '. Perimeter = 2 · width + 2 · length. Do not forget to calculate the length at the end.', p('2' + X() + ' + 2(' + k + X() + ' + ' + dd + ') = ' + P2) + bal([[(2 + 2 * k) + X() + ' + ' + 2 * dd + ' = ' + P2, '− ' + 2 * dd], [(2 + 2 * k) + X() + ' = ' + (P2 - 2 * dd), ': ' + (2 + 2 * k)], [X() + ' = ' + w]]) + p('The length is ' + k + ' · ' + w + ' + ' + dd + ' = ' + L2 + ' cm.'), { noStep: true, eqStep: 'x' });
+    }
     return nu(p('A rectangle is <b>' + dd + ' cm</b> longer than it is wide. Its perimeter is <b>' + P + ' cm</b>. Use ' + X() + ' for the width. Set up an equation and calculate the <b>width</b> (in cm).'), w, 'The length is ' + X() + ' + ' + dd + '. Perimeter = 2 · width + 2 · length.', p('2' + X() + ' + 2(' + X() + ' + ' + dd + ') = ' + P) + bal([['2' + X() + ' + 2' + X() + ' + ' + 2 * dd + ' = ' + P, '− ' + 2 * dd], ['4' + X() + ' = ' + (P - 2 * dd), ': 4'], [X() + ' = ' + w]]) + p('The length is ' + len + ' cm and the width is ' + w + ' cm.'), { noStep: true, eqStep: 'x' });
   }
 ];
@@ -815,10 +826,10 @@ G['6.4'] = [
   },
   function rearrange(l) {
     let r1, r2_; do { r1 = nz(-8, 8); r2_ = nz(-8, 8); } while (r1 === r2_);
-    const S = -(r1 + r2_), P = r1 * r2_, m = nz(-6, 6), k = ri(-12, 12);
-    // x² + (S+m)x + (P+k) = m x + k
-    const left = quad(1, S + m, P + k), right = lin(m, k);
-    [r1, r2_].forEach(x => must(x * x + (S + m) * x + P + k, m * x + k));
+    const S = -(r1 + r2_), P = r1 * r2_, m = nz(-6, 6), k = ri(-12, 12), e = l >= 2 ? ri(1, 3) : 0;   // spicy: x² on both sides
+    // (1+e)x² + (S+m)x + (P+k) = e x² + m x + k
+    const left = quad(1 + e, S + m, P + k), right = e ? quad(e, m, k) : lin(m, k);
+    [r1, r2_].forEach(x => must((1 + e) * x * x + (S + m) * x + P + k, e * x * x + m * x + k));
     return multi(p('Solve: ' + left + ' = ' + right), r1, r2_, 'First make the right side 0: bring all terms to the left. Then use product-sum.', p(quad(1, S, P) + ' = 0') + psTable(P, S) + p(fac(r1) + fac(r2_) + ' = 0') + p(X() + ' = ' + neg(r1) + ' or ' + X() + ' = ' + neg(r2_)));
   }
 ];
@@ -875,10 +886,11 @@ if (VT) {
     },
     function abcRearrange(l) {
       let a, b, c, D; do { a = nz(-4, 5); b = ri(-9, 9); c = nz(-9, 9); D = b * b - 4 * a * c; } while (D <= 0 || Number.isInteger(Math.sqrt(D)));
-      const m = nz(-3, 3), k = ri(-6, 6);   // a x² + b x + c = 0 written as (a+... ) = m x + k  ->  left side a x² + (b+m) x + (c+k)
-      const left = quad(a, b + m, c + k), right = lin(m, k);
+      const m = nz(-3, 3), k = ri(-6, 6), e = l >= 2 ? nz(-2, 2) : 0;   // a x² + b x + c = 0 written as (a+e) x² + (b+m) x + (c+k) = e x² + m x + k; spicy: x² on both sides
+      if (a + e === 0) return abcRearrange(l);
+      const left = quad(a + e, b + m, c + k), right = e ? quad(e, m, k) : lin(m, k);
       const x1 = (-b - Math.sqrt(D)) / (2 * a), x2 = (-b + Math.sqrt(D)) / (2 * a), rs = [x1, x2].map(r2);
-      must(a * x1 * x1 + (b + m) * x1 + c + k, m * x1 + k);
+      must((a + e) * x1 * x1 + (b + m) * x1 + c + k, e * x1 * x1 + m * x1 + k);
       return multi(p('Solve: ' + left + ' = ' + right + '. Round your answers <b>to 2 decimal places</b>.'), rs[0], rs[1], 'First make the right side 0. Then use the quadratic formula.', p(left + ' = ' + right) + p(quad(a, b, c) + ' = 0') + solveSteps(a, b, c, rs, false), { tol: .0051, ansText: X() + ' ≈ ' + Math.min(...rs) + ' or ' + X() + ' ≈ ' + Math.max(...rs) });
     }
   ];
@@ -1005,6 +1017,10 @@ if (P.cls === '1HVT') {
     },
     function patternEq(l) {
       const k = ri(2, 6), s0 = ri(1, 6), n = ri(8, 40), tot = k * n + s0;
+      if (l >= 2) {   // spicy: two patterns, x on both sides
+        const k1 = ri(2, 4), k2 = k1 + ri(1, 3), n2 = ri(4, 15), s2 = ri(1, 8), s1 = s2 + (k2 - k1) * n2, d2 = k2 * n2 + s2;
+        return nu(p('Pattern A: figure ' + X('f') + ' has ' + X('d') + ' = ' + k1 + X('f') + ' + ' + s1 + ' dots. Pattern B: figure ' + X('f') + ' has ' + X('d') + ' = ' + k2 + X('f') + ' + ' + s2 + ' dots. For which figure do A and B have the <b>same</b> number of dots?'), n2, 'Solve ' + k1 + X('f') + ' + ' + s1 + ' = ' + k2 + X('f') + ' + ' + s2 + ' with the balance method.', bal([[k1 + X('f') + ' + ' + s1 + ' = ' + k2 + X('f') + ' + ' + s2, '− ' + k1 + X('f')], [s1 + ' = ' + (k2 - k1 === 1 ? '' : k2 - k1) + X('f') + ' + ' + s2, '− ' + s2], [(s1 - s2) + ' = ' + (k2 - k1 === 1 ? '' : k2 - k1) + X('f'), k2 - k1 === 1 ? '' : ': ' + (k2 - k1)], [X('f') + ' = ' + n2]]) + p('Check: both have ' + d2 + ' dots.'), { noStep: true, eqStep: 'f' });
+      }
       return nu(p('In a pattern, figure ' + X('f') + ' has ' + X('d') + ' = ' + k + X('f') + ' + ' + s0 + ' dots. Which figure has ' + tot + ' dots?'), n, 'Solve ' + k + X('f') + ' + ' + s0 + ' = ' + tot + ' with the balance method.', bal([[k + X('f') + ' + ' + s0 + ' = ' + tot, '− ' + s0], [k + X('f') + ' = ' + (tot - s0), ': ' + k], [X('f') + ' = ' + n]]), { noStep: true, eqStep: 'f' });
     }
   ];

@@ -196,10 +196,10 @@
         steps: 'At x = ' + f(k) + ' the line is at y = ' + f(ev(a, b, k)) + '.' };
     },
     function lineFormula(l) {
-      const a = l === 0 ? pick([1, 2, 3]) : nz(-3, 3), b = l === 0 ? 0 : ri(-4, 4);
+      const a = l === 0 ? pick([1, 2, 3]) : nz(-3, 3), b = l === 0 ? 0 : l === 1 ? ri(-4, 4) : nz(-5, 5), help = l < 2;   // spicy: no helper points, read them yourself
       return { type: 'multi', fields: ['m (y goes up/down by ... when x goes up 1)', 'b (where the line crosses the y-axis)'], ans: [a, b], correct: [String(a), String(b)],
-        html: '<p>The line has the formula <b>y = mx + b</b>. Find <b>m</b> and <b>b</b>.</p>' + grid({ xmin: -5, xmax: 5, ymin: -8, ymax: 8, curves: [{ f: x => ev(a, b, x) }], pts: [{ x: 0, y: b, color: '#16803c' }, { x: 1, y: a + b, color: '#16803c' }] }),
-        hint: 'b = the y-value at x = 0 (green point). m = how much y changes if you go 1 to the right (compare the two green points).',
+        html: '<p>The line has the formula <b>y = mx + b</b>. Find <b>m</b> and <b>b</b>.</p>' + grid({ xmin: -5, xmax: 5, ymin: -8, ymax: 8, curves: [{ f: x => ev(a, b, x) }], pts: help ? [{ x: 0, y: b, color: '#16803c' }, { x: 1, y: a + b, color: '#16803c' }] : [] }),
+        hint: help ? 'b = the y-value at x = 0 (green point). m = how much y changes if you go 1 to the right (compare the two green points).' : 'b = the y-value where the line crosses the y-axis (x = 0). m = how much y changes if you go 1 to the right. Read two grid points on the line.',
         steps: 'At x = 0: y = ' + f(b) + ', so b = ' + f(b) + '.<br>At x = 1: y = ' + f(a + b) + ', so m = ' + f(a + b) + ' − ' + par(b) + ' = ' + f(a) + '.<br>y = ' + linTxt(a, b) };
     },
     function plotLine(l) {
@@ -306,13 +306,21 @@
         hint: 'Put ' + c.v + ' = ' + x + ' in the formula. Multiply first.', steps: c.y + ' = ' + s + ' + ' + r + ' · ' + x + ' = ' + s + ' + ' + (r * x) + ' = ' + (s + r * x) };
     },
     function timeFor(l) {
-      const c = pick(CTX), s = ri(2, 12), r = ri(2, 7), x = ri(3, 14), tot = s + r * x;
+      const c = pick(CTX), sp = l >= 2, s = ri(2, 12), r = sp ? ri(1, 6) + pick([0.25, 0.75]) : ri(2, 7), x = ri(3, 14), tot = Math.round((s + r * x) * 100) / 100;   // spicy: decimals and you write the formula yourself
       return { type: 'num', ans: x, correct: String(x), eqStep: c.v,
-        html: '<p>' + c.t(s, r) + ' The formula is <b>' + c.y + ' = ' + s + ' + ' + r + c.v + '</b>. For which ' + c.v + ' is <b>' + c.y + ' = ' + tot + '</b>?</p>',
-        hint: 'Solve ' + s + ' + ' + r + c.v + ' = ' + tot + '. First subtract ' + s + ' on both sides.', steps: r + c.v + ' = ' + tot + ' − ' + s + ' = ' + (tot - s) + '<br>' + c.v + ' = ' + (tot - s) + ' : ' + r + ' = ' + x };
+        html: '<p>' + c.t(s, r) + (sp ? ' Write a formula for <b>' + c.y + '</b> with the variable <b>' + c.v + '</b>' + ' (' + c.xn + '). For which ' + c.v + ' is <b>' + c.y + ' = ' + tot + '</b>?</p>' : ' The formula is <b>' + c.y + ' = ' + s + ' + ' + r + c.v + '</b>. For which ' + c.v + ' is <b>' + c.y + ' = ' + tot + '</b>?</p>'),
+        hint: 'Solve ' + s + ' + ' + r + c.v + ' = ' + tot + '. First subtract ' + s + ' on both sides.', steps: (sp ? 'The formula is ' + c.y + ' = ' + s + ' + ' + r + c.v + '.<br>' + s + ' + ' + r + c.v + ' = ' + tot + '<br>' : '') + r + c.v + ' = ' + tot + ' − ' + s + ' = ' + Math.round((tot - s) * 100) / 100 + '<br>' + c.v + ' = ' + Math.round((tot - s) * 100) / 100 + ' : ' + r + ' = ' + x };
     },
     function meaning(l) {
       const c = pick(CTX), s = ri(2, 12), r = ri(2, 7), askStart = Math.random() < .5;
+      if (l >= 2) {   // spicy: what does a number in a worked-out calculation mean?
+        const x = ri(3, 12), tot = s + r * x, askX = Math.random() < .5, what = 'the ' + c.yn.replace(/ \(.*\)/, '') + ' after ' + x + ' ' + c.xn;
+        const o2 = [c.sn, c.rn, 'the number of ' + c.xn, what], a2 = askX ? 2 : 3;
+        return { type: 'choice', opts: o2, ans: a2, correct: a2,
+          html: '<p>' + c.t(s, r) + ' The formula is <b>' + c.y + ' = ' + s + ' + ' + r + c.v + '</b>. Tom calculates <b>' + c.y + ' = ' + s + ' + ' + r + ' × ' + x + ' = ' + tot + '</b>. What does the number <b>' + (askX ? x : tot) + '</b> mean?</p>',
+          hint: 'Look at where the number is in the formula: ' + c.v + ' stands for the number of ' + c.xn + ', ' + c.y + ' is the result.',
+          steps: askX ? x + ' is put in for ' + c.v + ', so it is the number of ' + c.xn + '.' : tot + ' is the result ' + c.y + ' for ' + c.v + ' = ' + x + ', so it is ' + what + '.' };
+      }
       const opts = [c.sn, c.rn, 'the total after ' + c.xn];
       const ans = askStart ? 0 : 1;
       return { type: 'choice', opts, ans, correct: ans,

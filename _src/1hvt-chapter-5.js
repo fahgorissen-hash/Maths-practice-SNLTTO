@@ -107,6 +107,10 @@ G['5.3'] = [
     return nu(p('A triangle has base ' + b + ' cm and height ' + h + ' cm. Calculate the area.') + triFig(b, h, b * .35, b + ' cm', h + ' cm'), A, 'area of a triangle = ½ × base × height.', '½ × ' + b + ' × ' + h + ' = ' + A + ' cm²', { needStep: true });
   },
   function rightTriArea(l) {
+    if (l >= 2) {   // spicy: use the area twice to find the height on the long side
+      const t = pick([[3, 4, 5], [6, 8, 10], [5, 12, 13], [9, 12, 15], [8, 15, 17], [12, 16, 20]]), A = t[0] * t[1] / 2, h = rd(2 * A / t[2], 2);
+      return nu(p('In triangle PQR the angle at P is 90°. PQ = ' + t[0] + ', PR = ' + t[1] + ' and QR = ' + t[2] + '. Calculate the <b>height from P</b> on side QR. <small>(Round to 2 decimals if needed.)</small>'), h, 'First calculate the area with PQ and PR. Then use the same area with base QR.', 'area = ½ × ' + t[0] + ' × ' + t[1] + ' = ' + A + '<br>½ × ' + t[2] + ' × h = ' + A + '<br>' + rd(t[2] / 2) + ' × h = ' + A + ' → h = ' + A + ' : ' + rd(t[2] / 2) + (rd(2 * A / t[2], 6) === h ? ' = ' : ' ≈ ') + h, { needStep: true, tol: .0051 });
+    }
     const a = ri(3, 16), b = ri(3, 16), A = rd(a * b / 2);
     return nu(p('In triangle PQR the angle at P is 90°. PQ = ' + a + ' and PR = ' + b + '. Calculate the area.'), A, 'In a right-angled triangle the two sides next to the right angle are base and height.', 'area = ½ × PQ × PR = ½ × ' + a + ' × ' + b + ' = ' + A, { needStep: true });
   },
@@ -145,10 +149,20 @@ G['5.4'] = [
   function exactPi(l) {
     const r = ri(2, 12), area = Math.random() < .5, right = area ? r * r + PI : 2 * r + PI;
     const wr = area ? [2 * r + PI, r * r * 2 + PI, r + PI] : [r * r + PI, r + PI, 4 * r + PI];
+    if (l >= 2) {   // spicy: the diameter is given (and sometimes half a circle)
+      const d = 2 * r, half = Math.random() < .4, A2 = r * r, R2 = half ? (A2 % 2 ? A2 + '/2' : A2 / 2) + PI : (area ? A2 + PI : d + PI);
+      const W2 = half ? [A2 + PI, d * d / 2 + PI, r + PI] : area ? [d * d + PI, d + PI, 2 * d + PI] : [d * d + PI, r + PI, 2 * d + PI];
+      return ch(p('A circle has <b>diameter</b> ' + d + '. What is the exact ' + (half ? 'area of <b>half</b> of the circle' : area ? 'area' : 'circumference') + '?'), R2, W2, 'First find the radius: half of the diameter.', 'r = ' + d + ' : 2 = ' + r + '<br>' + (half ? 'half the area = π × ' + r + '² : 2 = ' + A2 + PI + ' : 2 = ' + R2 : area ? 'π × ' + r + '² = ' + R2 : '2 × π × ' + r + ' = ' + R2));
+    }
     return ch(p('A circle has radius ' + r + '. What is the exact ' + (area ? 'area' : 'circumference') + '?'), right, wr, area ? 'area = π × r². Write the answer with π.' : 'circumference = 2 × π × r. Write the answer with π.', area ? 'π × ' + r + '² = ' + r * r + PI : '2 × π × ' + r + ' = ' + 2 * r + PI);
   },
   function radiusBack(l) {
     const r = ri(2, 12), area = Math.random() < .5, give = area ? r * r + PI : 2 * r + PI;
+    if (l >= 2) {   // spicy: a measured circumference or area, not a nice multiple of pi
+      const C = rd(ri(150, 900) / 10, 1);
+      if (area) { const Ar = rd(Math.PI * r * r, 1); return nu(p('The area of a circle is ' + Ar + ' cm² (rounded). Calculate the radius.'), r, 'π × r² = ' + Ar + '. First divide by π. Which number squared gives that?', 'π × r² = ' + Ar + '<br>r² = ' + Ar + ' : π ≈ ' + r * r + '<br>r = ' + r + ' cm, because ' + r + '² = ' + r * r, { tol: .051, needStep: true }); }
+      const rr = rd(C / (2 * Math.PI), 1); return nu(p('The circumference of a round table is ' + C + ' cm. Calculate the radius. <small>(Round to 1 decimal.)</small>'), rr, '2 × π × r = ' + C + '. Divide by 2 × π.', '2 × π × r = ' + C + '<br>r = ' + C + ' : (2 × π) ≈ ' + rr + ' cm', { tol: .051, needStep: true });
+    }
     return nu(p('The ' + (area ? 'area' : 'circumference') + ' of a circle is ' + give + '. Calculate the radius.'), r, area ? 'π × r² = ' + give + ', so r² = ' + r * r + '.' : '2 × π × r = ' + give + ', so 2r = ' + 2 * r + '.', area ? 'π × r² = ' + give + '<br>r² = ' + r * r + '<br>r = ' + r : '2 × π × r = ' + give + '<br>2r = ' + 2 * r + '<br>r = ' + r);
   }
 ];
@@ -198,6 +212,10 @@ G['5.5'] = [
   },
   function surfaceArea(l) {
     const a = ri(2, 10), b = ri(2, 8), c = ri(2, 8), S = 2 * (a * b + a * c + b * c);
+    if (l >= 2) {   // spicy: a box without a lid
+      const S2 = a * b + 2 * a * c + 2 * b * c;
+      return nu(p('A box has the shape of a cuboid <b>without a lid</b>. The bottom is ' + a + ' cm by ' + b + ' cm, and the box is ' + c + ' cm high. How much cardboard (in cm²) do you need for the box?'), S2, 'Without a lid the box has only 5 faces: the bottom, the front and back, and two sides.', a + ' · ' + b + ' + 2 · ' + a + ' · ' + c + ' + 2 · ' + b + ' · ' + c + ' = ' + a * b + ' + ' + 2 * a * c + ' + ' + 2 * b * c + ' = ' + S2 + ' cm²', { needStep: true });
+    }
     return nu(p('A cuboid is ' + a + ' cm by ' + b + ' cm by ' + c + ' cm. Calculate the total area of all its faces (the surface area).'), S, 'A cuboid has 6 faces: 2 on top and bottom, 2 at the front and back, 2 at the sides.', '2 · ' + a + ' · ' + b + ' + 2 · ' + a + ' · ' + c + ' + 2 · ' + b + ' · ' + c + ' = ' + 2 * a * b + ' + ' + 2 * a * c + ' + ' + 2 * b * c + ' = ' + S + ' cm²', { needStep: true });
   },
   function volumeUnit(l) {

@@ -89,6 +89,10 @@ G['7.1'] = [
   },
   function isoTri(l) {
     const n = pick(LET), top = 2 * ri(10, 70), base = (180 - top) / 2, askBase = Math.random() < .5;
+    if (l >= 2) {   // spicy: the angle outside the triangle at a base corner is given
+      const ext = 180 - base;
+      return angQ(p('Triangle ' + n + ' is isosceles with ' + n[0] + n[1] + ' = ' + n[0] + n[2] + '. Side ' + n[2] + n[1] + ' is extended beyond ' + n[1] + '. The angle outside the triangle at ' + n[1] + ' is ' + deg(ext) + '. Calculate the top angle ' + A_(n[0]) + '.'), top, 'First the angle inside at ' + n[1] + ' (straight angle). The base angles are equal.' + HINT_STEP.replace('180 − 36 − 119', '180 − 2 · ' + base), A_(n[1]) + ' = 180° − ' + deg(ext) + ' = ' + deg(base) + ' (straight angle)<br>' + A_(n[2]) + ' = ' + A_(n[1]) + ' = ' + deg(base) + ' (isosceles triangle)<br>' + A_(n[0]) + ' = 180° − ' + deg(base) + ' − ' + deg(base) + ' = ' + deg(top) + ' (sum of the angles in a triangle)', true);
+    }
     const fig = triFig(n.slice(1) + n[0], base, base, askBase ? ['?', '', deg(top)] : [deg(base), '', '?'], { ticks: [[n[0], n[1]], [n[0], n[2]]] });
     if (askBase) return angQ(p('Triangle ' + n + ' is isosceles with ' + n[0] + n[1] + ' = ' + n[0] + n[2] + '. The top angle ' + A_(n[0]) + ' = ' + deg(top) + '. Calculate ' + A_(n[1]) + '.') + fig, base, 'The two base angles are equal. Together they are 180° − ' + deg(top) + '.' + HINT_STEP.replace('180 − 36 − 119', '(180 − ' + top + ') / 2'), A_(n[1]) + ' + ' + A_(n[2]) + ' = 180° − ' + deg(top) + ' = ' + deg(180 - top) + ' (sum of the angles in a triangle)<br>' + A_(n[1]) + ' = ' + A_(n[2]) + ' = ' + deg(180 - top) + ' : 2 = ' + deg(base) + ' (isosceles triangle)', true);
     return angQ(p('Triangle ' + n + ' is isosceles with ' + n[0] + n[1] + ' = ' + n[0] + n[2] + '. The base angle ' + A_(n[1]) + ' = ' + deg(base) + '. Calculate the top angle ' + A_(n[0]) + '.') + fig, top, 'In an isosceles triangle the base angles are equal.' + HINT_STEP.replace('180 − 36 − 119', '180 − 2 · ' + base), A_(n[2]) + ' = ' + A_(n[1]) + ' = ' + deg(base) + ' (isosceles triangle)<br>' + A_(n[0]) + ' = 180° − ' + deg(base) + ' − ' + deg(base) + ' = ' + deg(top) + ' (sum of the angles in a triangle)', true);
@@ -110,7 +114,8 @@ G['7.1'] = [
     return angQ(p('Two angles lie next to each other on a straight line. One of them is ' + deg(a) + '. How big is the other one?'), 180 - a, 'Angles on a straight line add up to 180°.' + HINT_STEP.replace('180 − 36 − 119', '180 − ' + a), 'other angle = 180° − ' + deg(a) + ' = ' + deg(180 - a) + ' (straight angle)', true);
   },
   function parallel(l) {
-    const th = pick([40, 45, 50, 55, 58, 62, 65, 70, 72, 75]), i = ri(1, 4), j = ri(1, 4), given = angAt(th, i), ans = angAt(th, j), calc = given !== ans;
+    const th = pick([40, 45, 50, 55, 58, 62, 65, 70, 72, 75]), i = ri(1, 4); let j = ri(1, 4); while (l >= 2 && j === i) j = ri(1, 4);   // spicy: not the same angle number
+    const given = angAt(th, i), ans = angAt(th, j), calc = given !== ans;
     const show = {}; show['A' + i] = deg(given); show['B' + j] = '?';
     let st; if (i === j) st = A_('B') + j + ' = ' + A_('A') + i + ' = ' + deg(ans) + ' (corresponding angles)';
     else if (PAIR.name(i, j, false) && PAIR.name(i, j, false).startsWith('alternate')) st = A_('B') + j + ' = ' + A_('A') + i + ' = ' + deg(ans) + ' (alternate angles)';
@@ -135,6 +140,10 @@ XG['7.1'] = [
   function parallelTriangle(l) {
     // triangle ADE with DE parallel to BC: ∠B given, ∠C... book ex. 12
     const b = ri(45, 80), c = ri(40, 80), a = 180 - b - c;
+    if (l >= 2) {   // spicy: the angle on the other side of D or E (two steps)
+      const atE = Math.random() < .5, v = atE ? c : b, nmA = atE ? 'DEC' : 'BDE', nmB = atE ? 'AED' : 'ADE';
+      return angQ(p('In triangle ABC, DE is parallel to BC (D on AB, E on AC). ' + A_('B') + ' = ' + deg(b) + ' and ' + A_('C') + ' = ' + deg(c) + '. Calculate ' + A_(nmA) + '.') + ptFig(b, c), 180 - v, 'First find ∠' + nmB + ' with F-angles. ∠' + nmA + ' lies next to it on a straight line.' + HINT_STEP.replace('180 − 36 − 119', '180 − ' + v), A_(nmB) + ' = ' + A_(atE ? 'C' : 'B') + ' = ' + deg(v) + ' (corresponding angles, DE ∥ BC)<br>' + A_(nmA) + ' = 180° − ' + deg(v) + ' = ' + deg(180 - v) + ' (straight angle)', true);
+    }
     return angQ(p('In triangle ABC, DE is parallel to BC (D on AB, E on AC). ' + A_('B') + ' = ' + deg(b) + ' and ' + A_('C') + ' = ' + deg(c) + '. Calculate ' + A_('ADE') + '.') + ptFig(b, c), b, '∠ADE and ∠B are corresponding angles (F-angles).', A_('ADE') + ' = ' + A_('B') + ' = ' + deg(b) + ' (corresponding angles, DE ∥ BC)', false);
   },
   function isoParallel(l) {
@@ -200,6 +209,10 @@ G['7.3'] = [
   },
   function cubeEnlarge(l) {
     const r = ri(2, 6), k = ri(2, 5), ask = pick(['area', 'volume']);
+    if (l >= 2) {   // spicy: start from the surface area, end with the volume (or the other way round)
+      const A0 = 6 * r * r, V0 = r ** 3, fromA = Math.random() < .5, ans2 = fromA ? V0 * k ** 3 : A0 * k * k;
+      return nu(p('A cube has a ' + (fromA ? 'surface area of ' + A0 + ' cm²' : 'volume of ' + V0 + ' cm³') + '. It is enlarged with scale factor ' + k + '. Calculate the <b>' + (fromA ? 'volume' : 'surface area') + '</b> of the enlarged cube (in ' + (fromA ? 'cm³' : 'cm²') + ').'), ans2, 'First find the edge of the original cube.', (fromA ? 'one face: ' + A0 + ' : 6 = ' + r * r + ' cm², so the edge is ' + r + ' cm' : 'edge: ' + r + ' cm, because ' + r + ' · ' + r + ' · ' + r + ' = ' + V0) + '<br>new edge: ' + k + ' · ' + r + ' = ' + k * r + ' cm<br>' + (fromA ? 'volume: ' + k * r + ' · ' + k * r + ' · ' + k * r + ' = ' + ans2 + ' cm³' : 'surface area: 6 · ' + k * r + ' · ' + k * r + ' = ' + ans2 + ' cm²'), { needStep: true });
+    }
     const A = 6 * r * r, V = r ** 3, ans = ask === 'area' ? A * k * k : V * k ** 3;
     return nu(p('A cube with edges of ' + r + ' cm is enlarged with scale factor ' + k + '. Calculate the ' + (ask === 'area' ? 'surface area' : 'volume') + ' of the enlarged cube (in ' + (ask === 'area' ? 'cm²' : 'cm³') + ').'), ans, 'First the ' + (ask === 'area' ? 'surface area' : 'volume') + ' of the original cube. Then multiply by k' + (ask === 'area' ? '²' : '³') + '. (Or first enlarge the edge.)', ask === 'area' ? 'original: 6 · ' + r + ' · ' + r + ' = ' + A + ' cm²<br>new: ' + k + '² · ' + A + ' = ' + ans + ' cm²' : 'original: ' + r + ' · ' + r + ' · ' + r + ' = ' + V + ' cm³<br>new: ' + k + '³ · ' + V + ' = ' + ans + ' cm³', { needStep: true });
   }
@@ -235,6 +248,9 @@ G['7.4'] = [
   function missingAngle(l) {
     const a = ri(60, 120), b = ri(60, 120), c = ri(60, 120), d = 360 - a - b - c;
     if (d < 40 || d > 170) return G['7.4'][2](l);
+    if (l >= 2) {   // spicy: the letters do not match in the same order
+      return angQ(p('Quadrilateral KLMN is similar to quadrilateral PQRS with <b>K ↔ Q, L ↔ R, M ↔ S, N ↔ P</b>. ' + A_('K') + ' = ' + deg(a) + ', ' + A_('L') + ' = ' + deg(b) + ' and ' + A_('S') + ' = ' + deg(c) + '. Calculate ' + A_('P') + '.'), d, 'Write down which angles are equal first: ∠Q = ∠K, ∠R = ∠L, ∠S = ∠M, ∠P = ∠N.' + HINT_STEP.replace('180 − 36 − 119', '360 − ' + a + ' − ' + b + ' − ' + c), A_('M') + ' = ' + A_('S') + ' = ' + deg(c) + '<br>' + A_('N') + ' = 360° − ' + deg(a) + ' − ' + deg(b) + ' − ' + deg(c) + ' = ' + deg(d) + ' (sum of the angles in a quadrilateral)<br>' + A_('P') + ' = ' + A_('N') + ' = ' + deg(d), true);
+    }
     return angQ(p('Quadrilateral KLMN is similar to quadrilateral PQRS (K ↔ P, L ↔ Q, M ↔ R, N ↔ S). ' + A_('K') + ' = ' + deg(a) + ', ' + A_('L') + ' = ' + deg(b) + ' and ' + A_('R') + ' = ' + deg(c) + '. Calculate ' + A_('S') + '.'), d, 'Corresponding angles are equal: ∠P = ∠K, ∠Q = ∠L, ∠M = ∠R. Then use the angle sum 360°.' + HINT_STEP.replace('180 − 36 − 119', '360 − ' + a + ' − ' + b + ' − ' + c), A_('P') + ' = ' + A_('K') + ' = ' + deg(a) + ', ' + A_('Q') + ' = ' + A_('L') + ' = ' + deg(b) + '<br>' + A_('S') + ' = 360° − ' + deg(a) + ' − ' + deg(b) + ' − ' + deg(c) + ' = ' + deg(d) + ' (sum of the angles in a quadrilateral)', true);
   },
   function polySide(l) {
@@ -268,6 +284,10 @@ G['7.5'] = [
   },
   function shadow(l) {
     const stick = pick([1, 1.5, 2]), ss = pick([0.8, 1.2, 1.5, 2, 2.5, 3]), tsh = ri(5, 25), h = stick * tsh / ss, exact = Number.isInteger(rd(h * 10, 6));
+    if (l >= 2) {   // spicy: mixed units (cm and m), and the shadow is asked
+      const me = ri(150, 190), tree = ri(6, 18), tS = rd(tree * pick([0.6, 0.8, 1.2, 1.5]), 2), mS = rd(me / 100 * tS / tree, 2);
+      return nu(p('A tree of <b>' + tree + ' m</b> casts a shadow of <b>' + dec(tS) + ' m</b>. At the same moment you stand next to it. You are <b>' + me + ' cm</b> tall. How long is your shadow, in m? <small>(Round to 2 decimals.)</small>'), mS, 'The two triangles are similar. Use the same unit (m) everywhere.', 'you: ' + me + ' cm = ' + dec(me / 100) + ' m<br>' + ratioTable('tree', 'you', [['height', tree, 'height', dec(me / 100)], ['shadow', dec(tS), 'shadow', '?']]) + 'scale factor = ' + dec(me / 100) + ' : ' + tree + '<br>shadow = ' + dec(tS) + ' · ' + dec(me / 100) + ' : ' + tree + ' ≈ ' + dec(mS) + ' m', { noStep: true, tol: .0051 });
+    }
     return nu(p('A stick of <b>' + stick + ' m</b> casts a shadow of <b>' + ss + ' m</b>. At the same moment a tree casts a shadow of <b>' + tsh + ' m</b>. How tall is the tree' + (exact ? ' (in m)?' : ', rounded to 1 decimal place?')), exact ? rd(h, 4) : rd(h, 1), 'The sun makes the same angle at the same moment, so the two triangles are similar.', ratioTable('stick', 'tree', [['height', stick, 'height', '?'], ['shadow', ss, 'shadow', tsh]]) + 'scale factor = ' + tsh + ' : ' + ss + ' = ' + dec(rd(tsh / ss, 4)) + '<br>tree = ' + dec(rd(tsh / ss, 4)) + ' · ' + stick + (exact ? ' = ' + dec(h) : ' ≈ ' + rd(h, 1)) + ' m', Object.assign({ noStep: true }, exact ? {} : { tol: .051 }));
   },
   function whySimilar(l) {
@@ -282,6 +302,10 @@ G['7.5'] = [
   },
   function nestedPart(l) {
     const sm = ri(3, 8), k = pick([1.4, 1.5, 2, 2.5, 3]), sq = rd(sm * k, 4), ml = ri(4, 12), qr = rd(ml * k, 4);
+    if (l >= 2) {   // spicy: MQ is known, SM is asked (SQ = SM + MQ)
+      const mq = rd(sq - sm, 4);
+      return nu(p('In triangle SQR, line ML ∥ QR, with M on SQ and L on SR. MQ = ' + dec(mq) + ', ML = ' + ml + ' and QR = ' + dec(qr) + '. Calculate <b>SM</b>.'), sm, 'ΔSML ∼ ΔSQR. QR is ' + dec(qr - ml) + ' longer than ML: that difference belongs to MQ.', 'scale factor = ' + dec(qr) + ' : ' + ml + ' = ' + dec(k) + ', so SQ = ' + dec(k) + ' · SM<br>SQ − SM = MQ: ' + dec(rd(k - 1, 4)) + ' · SM = ' + dec(mq) + '<br>SM = ' + dec(mq) + ' : ' + dec(rd(k - 1, 4)) + ' = ' + sm, { needStep: true });
+    }
     return nu(p('In triangle SQR, line ML ∥ QR, with M on SQ and L on SR. SM = ' + sm + ', ML = ' + ml + ' and QR = ' + dec(qr) + '. Calculate <b>MQ</b>.'), rd(sq - sm, 4), 'ΔSML ∼ ΔSQR (F-angles). Use the scale factor to find SQ first, then MQ = SQ − SM.', ratioTable('ΔSML', 'ΔSQR', [['SM', sm, 'SQ', '?'], ['ML', ml, 'QR', dec(qr)]]) + 'scale factor = ' + dec(qr) + ' : ' + ml + ' = ' + dec(k) + '<br>SQ = ' + dec(k) + ' · ' + sm + ' = ' + dec(sq) + '<br>MQ = ' + dec(sq) + ' − ' + sm + ' = ' + dec(rd(sq - sm, 4)), { needStep: true });
   }
 ];
@@ -439,6 +463,10 @@ if (P.cls === '1HVT') {
   const T2 = [
     byN('quadAngles'),
     function quadSum(l) {
+      if (l >= 2) {   // spicy: a kite, the two other angles are equal
+        const a = ri(50, 150), c = ri(40, 130), rest = 360 - a - c; if (rest % 2 || rest / 2 < 30 || rest / 2 > 150) return quadSum(l);
+        return angQ(p('ABCD is a <b>kite</b> with AB = AD and CB = CD, so ' + A_('B') + ' = ' + A_('D') + '. ' + A_('A') + ' = ' + deg(a) + ' and ' + A_('C') + ' = ' + deg(c) + '. Calculate ' + A_('B') + '.'), rest / 2, 'The angles of a quadrilateral add up to 360°. ∠B and ∠D share what is left.' + HS('(360 − ' + a + ' − ' + c + ') : 2'), A_('B') + ' + ' + A_('D') + ' = 360° − ' + deg(a) + ' − ' + deg(c) + ' = ' + deg(rest) + ' (sum of the angles in a quadrilateral)<br>' + A_('B') + ' = ' + deg(rest) + ' : 2 = ' + deg(rest / 2) + ' (∠B = ∠D in a kite)', true);
+      }
       let a, b, c; do { a = ri(40, 150); b = ri(40, 150); c = ri(40, 150); } while (360 - a - b - c < 25 || 360 - a - b - c > (l === 2 ? 280 : 170));
       const d = 360 - a - b - c, n = pick(['ABCD', 'EFGH', 'KLMN', 'PQRS']);
       return angQ(p('In quadrilateral ' + n + ', ' + A_(n[0]) + ' = ' + deg(a) + ', ' + A_(n[1]) + ' = ' + deg(b) + ' and ' + A_(n[2]) + ' = ' + deg(c) + '. Calculate ' + A_(n[3]) + '.'), d, 'The angles of a quadrilateral add up to 360°.' + HS('360 − ' + a + ' − ' + b + ' − ' + c), A_(n[3]) + ' = 360° − ' + deg(a) + ' − ' + deg(b) + ' − ' + deg(c) + ' = ' + deg(d) + ' (sum of the angles in a quadrilateral)', true);
@@ -456,14 +484,22 @@ if (P.cls === '1HVT') {
   const T3 = [
     byN('straightVert'),
     function bisector(l) {
-      const nm = pick(['A', 'B', 'K', 'P']), whole = 2 * ri(15, 75), k = ri(0, 2);
+      const nm = pick(['A', 'B', 'K', 'P']), whole = 2 * ri(15, 75), k = l === 0 ? ri(0, 1) : l === 1 ? ri(0, 2) : 2;
       if (k === 0) return angQ(p('Line ' + nm + 'D is the angle bisector of ' + A_(nm) + '. ' + A_(nm) + ' = ' + deg(whole) + '. Calculate ' + A_(nm) + '<sub>1</sub>.'), whole / 2, 'An angle bisector divides an angle into two equal angles.' + HS(whole + ' : 2'), A_(nm) + '<sub>1</sub> = ' + A_(nm) + '<sub>2</sub> = ' + deg(whole) + ' : 2 = ' + deg(whole / 2) + ' (equal angles)', true);
       if (k === 1) return angQ(p('Line ' + nm + 'D is the angle bisector of ' + A_(nm) + '. ' + A_(nm) + '<sub>1</sub> = ' + deg(whole / 2) + '. Calculate ' + A_(nm) + '.'), whole, 'An angle bisector divides an angle into two equal angles.' + HS(whole / 2 + ' + ' + whole / 2), A_(nm) + '<sub>2</sub> = ' + A_(nm) + '<sub>1</sub> = ' + deg(whole / 2) + ' (equal angles)<br>' + A_(nm) + ' = ' + deg(whole / 2) + ' + ' + deg(whole / 2) + ' = ' + deg(whole), true);
       let a, c; do { a = ri(25, 80); c = ri(25, 80); } while (a + c > 150 || (180 - a - c) % 2);
       const b = 180 - a - c;
+      if (l >= 2 && Math.random() < .6) {   // spicy: three steps, the angle at D
+        const adb = 180 - a - b / 2;
+        return angQ(p('In triangle ABC, ' + A_('A') + ' = ' + deg(a) + ' and ' + A_('C') + ' = ' + deg(c) + '. BD is the angle bisector of ' + A_('B') + ', with D on side AC. Calculate ' + A_('ADB') + '.') + triFig('ABC', a, b, [deg(a), '', deg(c)]), adb, 'First calculate ∠B, then ∠B<sub>1</sub>. Then use the angle sum in triangle ABD.' + HS('180 − ' + a + ' − ' + b / 2), A_('B') + ' = 180° − ' + deg(a) + ' − ' + deg(c) + ' = ' + deg(b) + ' (sum of the angles in a triangle)<br>' + A_('B') + '<sub>1</sub> = ' + deg(b) + ' : 2 = ' + deg(b / 2) + ' (equal angles)<br>' + A_('ADB') + ' = 180° − ' + deg(a) + ' − ' + deg(b / 2) + ' = ' + deg(adb) + ' (sum of the angles in triangle ABD)', true);
+      }
       return angQ(p('In triangle ABC, ' + A_('A') + ' = ' + deg(a) + ' and ' + A_('C') + ' = ' + deg(c) + '. BD is the angle bisector of ' + A_('B') + '. Calculate ' + A_('B') + '<sub>1</sub>.') + triFig('ABC', a, b, [deg(a), '', deg(c)]), b / 2, 'First calculate ' + A_('B') + '. Then halve it.' + HS('(180 − ' + a + ' − ' + c + ') : 2'), A_('B') + ' = 180° − ' + deg(a) + ' − ' + deg(c) + ' = ' + deg(b) + ' (sum of the angles in a triangle)<br>' + A_('B') + '<sub>1</sub> = ' + A_('B') + '<sub>2</sub> = ' + deg(b) + ' : 2 = ' + deg(b / 2) + ' (equal angles)', true);
     },
     function crossing(l) {
+      if (l >= 2) {   // spicy: the difference of two neighbouring angles is given
+        const dlt = 2 * ri(5, 60), big = (180 + dlt) / 2;
+        return angQ(p('Two lines cross at point S and make four angles: ' + A_('S') + '<sub>1</sub>, ' + A_('S') + '<sub>2</sub>, ' + A_('S') + '<sub>3</sub> and ' + A_('S') + '<sub>4</sub> (in this order, going around). ' + A_('S') + '<sub>1</sub> is <b>' + dlt + '° bigger</b> than ' + A_('S') + '<sub>2</sub>. Calculate ' + A_('S') + '<sub>3</sub>.'), big, '∠S<sub>1</sub> + ∠S<sub>2</sub> = 180°. Take away the difference first, then halve.' + HS('(180 − ' + dlt + ') : 2 + ' + dlt), A_('S') + '<sub>1</sub> + ' + A_('S') + '<sub>2</sub> = 180° (straight angle)<br>' + A_('S') + '<sub>2</sub> = (180° − ' + deg(dlt) + ') : 2 = ' + deg(180 / 2 - dlt / 2) + '<br>' + A_('S') + '<sub>1</sub> = ' + deg(90 - dlt / 2) + ' + ' + deg(dlt) + ' = ' + deg(big) + '<br>' + A_('S') + '<sub>3</sub> = ' + A_('S') + '<sub>1</sub> = ' + deg(big) + ' (vertically opposite angles)', true);
+      }
       const s1 = ri(25, 155), j = ri(2, 4), ans = j === 3 ? s1 : 180 - s1;
       const show = { A1: deg(s1) }; show['A' + j] = '?';
       const fig = parFig(s1 <= 90 ? s1 : 180 - s1, null);
@@ -479,6 +515,10 @@ if (P.cls === '1HVT') {
   const T4 = [ORIG.find(f => f.name === 'parallel'), ORIG.find(f => f.name === 'angleName'), XG['7.1'][0],
     function parallelQuad(l) {
       const a = ri(50, 130), nm = pick(['parallelogram', 'trapezium']);
+      if (l >= 2) {   // spicy: the difference of two angles is given
+        const dlt = 2 * ri(5, 50), big = (180 + dlt) / 2;
+        return angQ(p('ABCD is a parallelogram. ' + A_('A') + ' is <b>' + dlt + '° bigger</b> than ' + A_('B') + '. Calculate ' + A_('C') + '.'), big, '∠A + ∠B = 180° (F-angle and straight angle). Opposite angles of a parallelogram are equal.' + HS('(180 − ' + dlt + ') : 2 + ' + dlt), A_('A') + ' + ' + A_('B') + ' = 180°<br>' + A_('B') + ' = (180° − ' + deg(dlt) + ') : 2 = ' + deg(90 - dlt / 2) + '<br>' + A_('A') + ' = ' + deg(90 - dlt / 2) + ' + ' + deg(dlt) + ' = ' + deg(big) + '<br>' + A_('C') + ' = ' + A_('A') + ' = ' + deg(big) + ' (opposite angles of a parallelogram)', true);
+      }
       if (nm === 'parallelogram') return angQ(p('ABCD is a parallelogram, so AB ∥ DC and AD ∥ BC. ' + A_('A') + ' = ' + deg(a) + '. Calculate ' + A_('B') + '.'), 180 - a, 'Extend side AB beyond B. The angle outside at B is a corresponding angle (F-angle) of ∠A. Then use a straight angle.' + HS('180 − ' + a), 'Angle outside at B = ' + A_('A') + ' = ' + deg(a) + ' (corresponding angles, AD ∥ BC)<br>' + A_('B') + ' = 180° − ' + deg(a) + ' = ' + deg(180 - a) + ' (straight angle)', true);
       return angQ(p('ABCD is a trapezium with AB ∥ DC. ' + A_('D') + ' = ' + deg(a) + '. Calculate ' + A_('A') + '.'), 180 - a, 'Extend side DA beyond A. The angle outside at A is an alternate angle (Z-angle) of ∠D. Then use a straight angle.' + HS('180 − ' + a), 'Angle outside at A = ' + A_('D') + ' = ' + deg(a) + ' (alternate angles, AB ∥ DC)<br>' + A_('A') + ' = 180° − ' + deg(a) + ' = ' + deg(180 - a) + ' (straight angle)', true);
     }
@@ -507,6 +547,8 @@ if (P.cls === '1HVT') {
     },
     function otherHeight(l) {
       let a, b, h1, A, h2; do { a = ri(5, 14); b = ri(4, a); h1 = ri(2, b - 1); A = a * h1; h2 = rd(A / b, 2); } while (h2 >= a || !Number.isInteger(h2 * 10));
+      if (l >= 2 && b === a) return otherHeight(l);
+      if (l >= 2) return nu(p('Parallelogram PQRS has PQ = ' + a + '. The height on side PQ is ' + h1 + ' and the height on side QR is ' + h2 + '. Calculate the length of <b>QR</b>.'), b, 'Both bases with their heights give the same area.', 'area = ' + a + ' × ' + h1 + ' = ' + A + '<br>QR × ' + h2 + ' = ' + A + '<br>QR = ' + A + ' : ' + h2 + ' = ' + b, { needStep: true });   // spicy: find a side from the two heights
       return nu(p('Parallelogram PQRS has PQ = ' + a + ', QR = ' + b + ' and the height on side PQ is ' + h1 + '. Calculate the height on side QR.'), h2, 'First calculate the area with base PQ. The area is the same with base QR.', 'area = ' + a + ' × ' + h1 + ' = ' + A + '<br>' + b + ' × height = ' + A + '<br>height = ' + A + ' : ' + b + ' = ' + h2, { needStep: true });
     }
   ];
