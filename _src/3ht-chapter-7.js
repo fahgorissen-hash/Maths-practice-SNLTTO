@@ -101,6 +101,8 @@ G['7.2'] = [
   },
   function completeTable(l) {
     const g = pick([1.2, 1.5, 0.8, 0.9, 1.1, 0.6, 2, 3]), b = pick([50, 100, 200, 400, 800, 1000]), k = ri(3, 5), v = b * Math.pow(g, k);
+    if (l >= 2) { const mins = pick([30, 90, 150, 45, 135]), th = mins / 60, v2 = b * Math.pow(g, th);   // spicy: the time is in minutes, the growth factor per hour
+      return nr(p('A quantity grows exponentially with growth factor ' + g + ' per hour. At ' + X('t') + ' = 0 it is ' + b + '. Calculate the quantity after <b>' + mins + ' minutes</b>. Round to 1 decimal.'), v2, 1, 'Write the time in hours first: ' + mins + ' minutes = ' + mins + '/60 hour.', p(mins + ' min = ' + th + ' hour') + p(b + ' · ' + pw(g, th) + ap(v2, 1)), { needStep: true }); }
     return nr(p('A quantity grows exponentially with growth factor ' + g + ' per hour. At ' + X('t') + ' = 0 it is ' + b + '. Calculate the quantity at ' + X('t') + ' = ' + k + '. Round to 1 decimal.'), v, 1, 'Multiply ' + k + ' times by ' + g + ': ' + b + ' · ' + pw(g, k) + '.', b + ' · ' + pw(g, k) + ap(v, 1), { needStep: true });
   },
   function percentToFactor(l) {
@@ -132,6 +134,8 @@ G['7.3'] = [
   },
   function makeFormula(l) {
     const up = Math.random() < .5, pc = pick([2, 4, 5, 6.5, 8, 10, 15, 20, 25]), v = up ? pc : -pc, b = pick([150, 500, 1200, 2450, 25, 80]), t = ri(3, 15), N = b * Math.pow(mult(v), t);
+    if (l >= 2) { const y0 = ri(2012, 2020);   // spicy: years instead of t, choose t yourself
+      return nr(p('In ' + y0 + ' a population is ' + b + '. It ' + (up ? 'grows' : 'decreases') + ' by ' + pc + '% per year. Make a formula ' + X('N') + ' = ' + X('b') + ' · ' + pw(X('g'), X('t')) + ' (choose what ' + X('t') + ' means) and calculate the population in ' + (y0 + t) + '. Round to whole numbers.'), N, 0, 'Let ' + X('t') + ' = 0 be the year ' + y0 + '. Then ' + (y0 + t) + ' is ' + X('t') + ' = ' + t + '.', p(X('t') + ' = years since ' + y0 + ', so ' + (y0 + t) + ' is ' + X('t') + ' = ' + t) + p(X('g') + ' = ' + multTxt(v)) + p(X('N') + ' = ' + b + ' · ' + pw(mult(v), t) + ' ≈ ' + sp(rd(N, 0))), { needStep: true }); }
     return nr(p('A population is ' + b + ' at ' + X('t') + ' = 0 and ' + (up ? 'grows' : 'decreases') + ' by ' + pc + '% per year. Make the formula ' + X('N') + ' = ' + X('b') + ' · ' + pw(X('g'), X('t')) + ' and calculate ' + X('N') + ' for ' + X('t') + ' = ' + t + '. Round to whole numbers.'), N, 0, X('b') + ' = ' + b + ' and ' + X('g') + ' = (100 ' + (up ? '+' : '−') + ' ' + pc + ') / 100.', p(X('g') + ' = ' + multTxt(v)) + p(X('N') + ' = ' + b + ' · ' + pw(mult(v), X('t'))) + p(X('N') + ' = ' + b + ' · ' + pw(mult(v), t) + ' ≈ ' + sp(rd(N, 0))), { needStep: true });
   },
   function factorToPercent(l) {

@@ -257,6 +257,8 @@ if (P.cls === '3VT') {
     },
     function lineThrough(l) {
       const m = nz(-4, 4), x1 = ri(-5, 5), y1 = ri(-8, 8), b = y1 - m * x1;
+      if (l >= 2) { const c = nz(-9, 9), given = (m === -1 ? '' : m === 1 ? '−' : neg(-m)) + X() + ' + ' + X('y') + ' = ' + neg(c);   // spicy: parallel to a line that is not written as y = ...
+        return ex(p('Line ' + X('k') + ' is parallel to the line ' + given + ' and passes through ' + PT(x1, y1) + '. Give the formula of ' + X('k') + ' as ' + X('y') + ' = … <small>Type only the right side.</small>'), m + '*x' + (b ? '+(' + b + ')' : ''), 'poly', 'Write the given line as ' + X('y') + ' = …: then you see the gradient. Parallel lines have the same gradient.', X('y') + ' = ' + lin(m, c) + ', so the gradient is ' + neg(m) + '.<br>' + X('y') + ' − ' + par(y1) + ' = ' + neg(m) + '(' + X() + ' − ' + par(x1) + ')<br>' + X('y') + ' = ' + lin(m, b), { keys: ['(', ')'], ansText: X('y') + ' = ' + lin(m, b) }); }
       return ex(p('Line ' + X('k') + ' has gradient ' + neg(m) + ' and passes through ' + PT(x1, y1) + '. Give the formula of ' + X('k') + ' as ' + X('y') + ' = … <small>Type only the right side.</small>'), m + '*x' + (b ? '+(' + b + ')' : ''), 'poly', 'Use ' + X('y') + ' − ' + X('y') + '<sub>1</sub> = ' + X('m') + '(' + X() + ' − ' + X() + '<sub>1</sub>).', X('y') + ' − ' + par(y1) + ' = ' + neg(m) + '(' + X() + ' − ' + par(x1) + ')<br>' + X('y') + ' = ' + lin(m, b), { keys: ['(', ')'], ansText: X('y') + ' = ' + lin(m, b) });
     },
     function parPerp(l) {

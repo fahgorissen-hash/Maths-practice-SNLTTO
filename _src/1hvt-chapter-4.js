@@ -134,6 +134,8 @@ G['4.3'] = [
   },
   function findScale(l) {
     const real = pick([2, 3, 4, 5, 8]), k = pick([5, 10, 20, 25]), draw = real * k;
+    if (l >= 2) { const km = pick([1.5, 2, 3, 4.5, 6, 7.5]), cm = pick([3, 4, 5, 6, 8, 10]), sc = km * 100000 / cm; if (!Number.isInteger(sc)) return findScale(l);   // spicy: a map, km and cm
+      return nu(p('On a map, a road of ' + km + ' km is ' + cm + ' cm long. The scale of the map is 1 : … What number goes on the dots?'), sc, 'Use the same unit: write ' + km + ' km in cm (1 km = 100 000 cm).', km + ' km = ' + sp(km * 100000) + ' cm<br>' + sp(km * 100000) + ' : ' + cm + ' = ' + sp(sc) + '<br>The scale is 1 : ' + sp(sc) + '.', { needStep: true }); }
     return nu(p('A flea is ' + real + ' mm long. In a drawing it is ' + draw / 10 + ' cm long. The scale is … : 1. What number goes on the dots?'), k, 'Use the same unit: ' + draw / 10 + ' cm = ' + draw + ' mm. Then divide drawing by reality.', draw / 10 + ' cm = ' + draw + ' mm<br>' + draw + ' : ' + real + ' = ' + k + '<br>The scale is ' + k + ' : 1, so the answer is ' + k + '.');
   }
 ];
@@ -201,6 +203,8 @@ G['4.5'] = [
   },
   function angleToCount(l) {
     const tot = pick([360, 720, 1800, 5000000, 1200]), ang = pick([30, 45, 60, 72, 90, 120, 40, 82]), n = rd(tot * ang / 360);
+    if (l >= 2) { const t2 = pick([360, 720, 1800, 1200]), a1 = pick([72, 90, 120, 135]), a2 = pick([30, 45, 60]), dd = t2 * (a1 - a2) / 360; if (!Number.isInteger(dd)) return angleToCount(l);   // spicy: compare two sectors
+      return nu(p('A pie chart shows ' + sp(t2) + ' members of sports clubs. The football sector has an angle of ' + a1 + '° and the hockey sector ' + a2 + '°. How many <b>more</b> members play football than hockey?'), dd, 'The difference of the two angles stands for the difference in members.', (a1 - a2) + '/360 × ' + sp(t2) + ' = ' + sp(dd), { needStep: true }); }
     if (!Number.isInteger(n) && tot < 10000) return angleToCount(l);
     return nu(p('A pie chart shows ' + sp(tot) + ' members of sports clubs. The football sector has an angle of ' + ang + '°. About how many members play football?' + (Number.isInteger(n) ? '' : ' <small>(Round to a whole number.)</small>')), Math.round(n), 'The part is ' + ang + '/360 of the whole.', ang + '/360 × ' + sp(tot) + (Number.isInteger(n) ? ' = ' : ' ≈ ') + sp(Math.round(n)), { needStep: true, tol: .5 });
   },

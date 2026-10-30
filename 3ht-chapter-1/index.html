@@ -688,6 +688,7 @@ XG['1.2'] = [
 G['1.3'] = [
   function mulDiv(l) {
     const v = V(), a = LR(l, 2, 8), b = LR(l, 2, 6); const t = pick(['m', 'd']);
+    if (a + b > 12) return mulDiv(l);   // exponents above 12 cannot be typed
     const src = t === 'm' ? pw(v, a) + '*' + pw(v, b) : pw(v, a + b) + '÷' + pw(v, b); return alg(p('Simplify: ' + M(src) + '. (Type for example <b>' + v + '^6</b>.)'), src.replace('÷', '/'), 'mono', 'Multiplying powers with the same base: add the exponents. Dividing: subtract the exponents.', '', { src });
   },
   function powerOfPower(l) {

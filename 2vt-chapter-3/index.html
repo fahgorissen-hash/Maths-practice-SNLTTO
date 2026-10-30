@@ -692,7 +692,8 @@ const __def = (function (NX, P) {
         steps: 'm = ' + f(m) + '. ' + f(y0) + ' = ' + f(m) + ' · ' + par(x0) + ' + b, so b = ' + f(y0) + ' − ' + par(m * x0) + ' = ' + f(b) + '.' };
     },
     function xIntercept(l) {
-      const m = nz(-4, 4), x = nz(-6, 6), b = -m * x;
+      let m = nz(-4, 4), x = nz(-6, 6), b = -m * x;
+      if (l >= 2) { m = pick([2, -2, 4, -4]); b = (2 * ri(-6, 5) + 1) * (Math.abs(m) / 2); x = -b / m; }   // spicy: the answer is not a whole number
       return { type: 'num', ans: x, correct: String(x),
         html: '<p>At which <b>x</b> does the line <b>y = ' + poly([[m, 'x'], [b, '']]) + '</b> intersect the x-axis?</p>',
         hint: 'On the x-axis y = 0. Solve ' + poly([[m, 'x'], [b, '']]) + ' = 0.',

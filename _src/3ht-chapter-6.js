@@ -210,10 +210,14 @@ XG['6.3'] = [
 G['6.4'] = [
   function slopePercent(l) {
     const run = pick([100, 200, 250, 400, 500, 800]), rise = ri(2, l === 0 ? 20 : 60) * run / 100, pc = rd(rise / run * 100, 1);
+    if (l >= 2) { const L = pick([100, 150, 200, 250, 400]), up = ri(5, Math.round(L / 3)), hz = Math.sqrt(L * L - up * up), pc2 = rd(up / hz * 100, 1);   // spicy: the length along the road is given
+      return nu(p('A road is ' + L + ' m long (measured along the road) and rises ' + up + ' m. What is the slope percentage? Round to 1 decimal.'), pc2, 'slope percentage = vertical / horizontal · 100%. First the horizontal distance with Pythagoras.', p('horizontal = √(' + L + '² − ' + up + '²) ≈ ' + rd(hz, 2) + ' m') + p(up + ' / ' + rd(hz, 2) + ' · 100% ≈ ' + pc2 + '%'), { needStep: true, tol: .051, ansText: pc2 + '%' }); }
     return nu(p('A road rises ' + rise + ' m over a horizontal distance of ' + run + ' m. What is the slope percentage?'), pc, 'slope percentage = vertical / horizontal · 100%.', rise + ' / ' + run + ' · 100% = ' + pc + '%', { needStep: true, ansText: pc + '%' });
   },
   function inclinationFromPercent(l) {
     const pc = pick([5, 8, 10, 12, 14, 20, 25, 40, 60, 75, 100]), a = INV.tan(pc / 100);
+    if (l >= 2) { const L = pick([4, 5, 6, 8, 12]), up = rd(L * pick([0.08, 0.12, 0.15, 0.2, 0.25]), 2), a2 = INV.sin(up / L);   // spicy: the ramp length and the height are given
+      return nr(p('A ramp is ' + L + ' m long and rises ' + up + ' m. Calculate the angle of inclination. Round to 1 decimal.'), a2, 1, 'The ramp itself is the hypotenuse, the height is opposite the angle: use sin<sup>−1</sup>.', p('sin(angle) = ' + up + ' / ' + L) + p('angle = sin<sup>−1</sup>(' + up + ' / ' + L + ') ≈ ' + rd(a2, 1) + '°'), { keys: KEYS, ansText: rd(a2, 1) + '°' }); }
     return nr(p('A ramp has a slope of ' + pc + '%. Calculate the angle of inclination. Round to whole degrees.'), a, 0, pc + '% means ' + pc + ' up for every 100 along: tan(angle) = ' + pc + '/100.', p('tan(angle) = ' + pc + ' / 100 = ' + rd(pc / 100)) + p('angle = tan<sup>−1</sup>(' + rd(pc / 100) + ') ≈ ' + rd(a, 0) + '°'), { keys: KEYS, ansText: rd(a, 0) + '°' });
   },
   function percentFromAngle(l) {
