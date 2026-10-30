@@ -448,8 +448,9 @@ function engine(def) {
     if (lesson) { gens = lesson.gens.map(e => [e[1], fnOf(G, e[0], e[1])]).filter(e => e[1]); xgs = (lesson.xg || []).map(e => [e[1], fnOf(XG, e[0], e[1])]).filter(e => e[1]); }
     else { gens = (G[key] || []).map(x => [x.name, x]); xgs = (XG[key] || []).map(x => [x.name, x]); }
     let q, e;
-    if (lvl === 3 && xgs.length && Math.random() < 0.7) { e = pick(xgs); q = e[1](2); }
-    else { e = pick(gens); q = e[1](Math.min(lvl, 2)); }
+    const easy = new Set(((def.TEST || {}).skip) || []), hard = gens.filter(g => !easy.has(g[0]));   // extra spicy never serves the trivial items that test prep skips (Frank, 2026-10-30)
+    if (lvl === 3 && xgs.length && (Math.random() < 0.7 || !hard.length)) { e = pick(xgs); q = e[1](2); }
+    else { e = pick(lvl === 3 && hard.length ? hard : gens); q = e[1](Math.min(lvl, 2)); }
     q.gen = e[0]; q.sec = key; q.lvl = lvl; q.mix = mixq; return numOrder(q);
   }
   function numOrder(q) {   // number options (2, 3, 1 or 120°, 60°) are shown from small to large
