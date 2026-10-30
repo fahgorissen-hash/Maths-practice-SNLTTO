@@ -623,14 +623,35 @@ G['1.1'] = [
     return ch(p('Which symbol makes this true (&lt; or &gt;)? <b>' + f(a) + ' ? ' + f(b) + '</b>'), right, [right === '<' ? '>' : '<'], 'The number that is further to the right on the number line is bigger. Example: −2 is to the right of −5, so −2 &gt; −5.', f(a) + ' lies ' + (a < b ? 'to the left of ' : 'to the right of ') + f(b) + ' on the number line, so ' + f(a) + ' ' + right + ' ' + f(b) + '.');
   },
   function orderNumbers(l) {
-    const set = new Set(); while (set.size < 4) set.add(l === 0 ? ri(-9, 9) : rd(ri(-60, 60) / (l === 1 ? 10 : 100)));
-    const arr = [...set]; const asc = arr.slice().sort((x, y) => x - y); const right = asc.map(f).join(' ; ');
-    const wrongs = [asc.slice().reverse(), asc.slice().sort((x, y) => Math.abs(x) - Math.abs(y)), shuffle(asc), shuffle(asc)].map(a => a.map(f).join(' ; '));
+    const set = new Set();
+    if (l === 2) {   // extra spicy: close negatives with different numbers of decimals (Frank, 2026-10-30)
+      const X = ri(2, 8) / 10, c = shuffle([-X, -rd(X + 0.04), -rd(X + 0.004), -rd(X - 0.05), -rd(X + 0.05), rd(X / 10), -rd(X / 10)]);
+      c.slice(0, 4).forEach(v => set.add(v)); if ([...set].filter(v => v < 0).length < 3) set.delete([...set].find(v => v > 0)), set.add(-rd(X + 0.04)), set.add(-X);
+      while (set.size < 4) set.add(-rd(X + 0.004));
+    } else while (set.size < 4) set.add(l === 0 ? ri(-9, 9) : rd(ri(-60, 60) / (l === 1 ? 10 : 100)));
+    const arr = [...set].slice(0, 4); const asc = arr.slice().sort((x, y) => x - y); const right = asc.map(f).join(' ; ');
+    const dl = v => (String(Math.abs(v)).split('.')[1] || '').length;
+    const wrongs = (l === 2 ? [asc.slice().sort((x, y) => Math.abs(x) - Math.abs(y)), asc.filter(v => v < 0).sort((x, y) => y - x).concat(asc.filter(v => v >= 0)), asc.slice().sort((x, y) => dl(x) - dl(y) || x - y), asc.slice().sort((x, y) => (x < 0) - (y < 0) || dl(x) - dl(y))].concat([0, 1, 2].map(i => { const a = asc.slice(); [a[i], a[i + 1]] = [a[i + 1], a[i]]; return a; })) :
+      [asc.slice().reverse(), asc.slice().sort((x, y) => Math.abs(x) - Math.abs(y)), shuffle(asc), shuffle(asc)]).map(a => a.map(f).join(' ; ')).filter((w, i, A) => w !== right && A.indexOf(w) === i).slice(0, 3);
     return ch(p('Which list is in order from <b>smallest to largest</b>?<br>' + shuffle(arr).map(f).join(' ; ')), right, wrongs, 'The smallest number is the one furthest to the left on the number line (the most negative).', 'Negative numbers first: the bigger the number after the minus, the smaller the number. Order: ' + right + '.');
   },
   function numberBetween(l) {
     let a, b, right, wr; if (l === 0) { a = ri(-9, -3); b = a + ri(3, 6); right = ri(a + 1, b - 1); wr = [a - 1, b + 1, a, b]; }
-    else { a = rd(ri(-60, -10) / 10); b = rd(a + 0.1); right = rd(a + 0.05); wr = [rd(a - 0.05), rd(b + 0.05), a, b]; }
+    else if (l === 1) { a = rd(ri(-60, -10) / 10); b = rd(a + 0.1); right = rd(a + 0.05); wr = [rd(a - 0.05), rd(b + 0.05), a, b]; }
+    else if (Math.random() < 0.4) {   // extra spicy: count the numbers with two decimals in between (Frank, 2026-10-30)
+      const lo = -ri(110, 590), hi = lo + pick([ri(3, 9), 10, ri(11, 20)]), n = hi - lo - 1, h = v => f(rd(v / 100));
+      return nu(p('How many numbers with <b>two decimals</b> lie <b>between ' + f(rd(lo / 100)) + ' and ' + f(rd(hi / 100)) + '</b>? (Do not count ' + f(rd(lo / 100)) + ' and ' + f(rd(hi / 100)) + ' themselves.)'), n,
+        'Write both numbers with two decimals, for example ' + h(hi) + ' = ' + (hi < 0 ? '−' : '') + (Math.abs(hi) / 100).toFixed(2) + '. Then count the steps of 0.01 in between.',
+        'With two decimals: ' + (lo < 0 ? '−' : '') + (Math.abs(lo) / 100).toFixed(2) + ' and ' + (hi < 0 ? '−' : '') + (Math.abs(hi) / 100).toFixed(2) + '. The numbers in between are ' + h(lo + 1) + ', ' + h(lo + 2) + ', …, ' + h(hi - 1) + ': ' + (hi - lo) + ' − 1 = ' + n + ' numbers.');
+    }
+    else {   // extra spicy: different numbers of decimals and look-alike traps (−1.87, −1.08, −1.807)
+      const A = ri(11, 59), tB = A - 1; a = -A / 10; b = -tB / 10;
+      const ins = [rd(b - 0.05), rd(b - 0.08), rd(b - 0.01), rd(b - 0.005), rd(b - 0.099), rd(b - 0.03), rd(a + 0.002)];
+      right = pick(ins);
+      const ip = Math.floor(A / 10), td = A % 10, sw = s => { const m = /^(\d+)\.(\d)(\d)$/.exec(s); return m ? -parseFloat(m[1] + '.' + m[3] + m[2]) : null; };
+      const pool = shuffle([a, b, sw(Math.abs(right).toFixed(2)), -rd(ip + td / 100), rd(a - 0.007), rd(a - 0.05), rd(b + 0.01), rd(b + 0.05), -rd(ip + tB / 100)]).filter(v => v != null && !(v > a && v < b) && v !== right);
+      wr = [...new Set(pool)].slice(0, 4);
+    }
     return ch(p('Which number lies <b>between ' + f(a) + ' and ' + f(b) + '</b>?'), f(right), wr.map(f), 'Between means: larger than the smaller number and smaller than the larger one.', f(a) + ' < ' + f(right) + ' < ' + f(b) + '.');
   },
   function addInt(l) {
