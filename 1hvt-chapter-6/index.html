@@ -1296,7 +1296,7 @@ function wireExpr(){
 }
 function drawMarks(sv){
   const u=+sv.dataset.u,pad=+sv.dataset.pad,xmin=+sv.dataset.xmin,ymax=+sv.dataset.ymax;
-  sv.querySelector('.marks').innerHTML=clicked.map(p=>{const cx=pad+(p[0]-xmin)*u,cy=pad+(ymax-p[1])*u;return sv.dataset.cell?'<rect x="'+(cx-u/2+1)+'" y="'+(cy-u/2+1)+'" width="'+(u-2)+'" height="'+(u-2)+'" fill="#f4a58a" stroke="#d1471f" stroke-width="2"/>':'<circle cx="'+cx+'" cy="'+cy+'" r="9" fill="none" stroke="#d1471f" stroke-width="3"/><circle cx="'+cx+'" cy="'+cy+'" r="3.5" fill="#d1471f"/>'}).join('');
+  sv.querySelector('.marks').innerHTML=clicked.map(p=>{const cx=pad+(p[0]-xmin)*u,cy=pad+(ymax-p[1])*u;return sv.dataset.cell?'<rect x="'+(cx-u/2+1)+'" y="'+(cy-u/2+1)+'" width="'+(u-2)+'" height="'+(u-2)+'" fill="#f4a58a" stroke="#d1471f" stroke-width="2"/>':'<circle cx="'+cx+'" cy="'+cy+'" r="6" fill="#d1471f" stroke="#fff" stroke-width="1.5"/>'}).join('');
 }
 function userAns(q){
   if(q.type==='proto')return protoAngle;
