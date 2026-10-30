@@ -637,6 +637,28 @@
     },
   ];
   XG['2.3'] = [
+    /* angle sum: master mix / extra spicy only, with the 180° reminder in the question (Frank, 2026-10-30) */
+    function thirdAngle(l) {
+      const a = ri(25, 90), b = ri(20, 175 - a - 10), c = 180 - a - b;
+      return { type: 'num', ans: c, correct: String(c), html: '<p>The three angles of a triangle add up to 180°. Two angles of a triangle are <b>' + a + '°</b> and <b>' + b + '°</b>. How large is the third angle?</p>',
+        hint: 'The three angles of a triangle add up to 180°.', steps: '180° − ' + a + '° − ' + b + '° = ' + c + '°.' };
+    },
+    function isosceles() {
+      const apex = pick([20, 30, 40, 50, 70, 80, 100, 110, 120, 140]), base = (180 - apex) / 2, rev = Math.random() < .5;
+      return rev ? { type: 'num', ans: apex, correct: String(apex),
+        html: '<p>The three angles of a triangle add up to 180°. Triangle ABC is <b>isosceles</b> with <b>AB = AC</b>. The angles at B and C are both <b>' + base + '°</b>. How big is angle <b>A</b>? (Give the number of degrees.)</p>',
+        hint: 'The three angles of a triangle add up to 180°.', steps: '180 − ' + base + ' − ' + base + ' = ' + apex + '°.' }
+        : { type: 'num', ans: base, correct: String(base),
+        html: '<p>The three angles of a triangle add up to 180°. Triangle ABC is <b>isosceles</b> with <b>AB = AC</b>. Angle <b>A = ' + apex + '°</b>. How big is angle <b>B</b>? (Give the number of degrees.)</p>',
+        hint: 'AB = AC, so the angles at B and C are equal. Together they make 180° − ' + apex + '°.', steps: '180 − ' + apex + ' = ' + (180 - apex) + '°. Then ' + (180 - apex) + ' : 2 = ' + base + '°.' };
+    },
+    function radiiTriangle() {
+      const th = pick([40, 50, 60, 70, 80, 100, 120, 140]), base = (180 - th) / 2;
+      return { type: 'num', ans: base, correct: String(base),
+        html: '<p>The three angles of a triangle add up to 180°. O is the centre of a circle. A and B lie on the circle and the angle <b>AOB = ' + th + '°</b>. How big is angle <b>OAB</b>? (Give the number of degrees.)</p>',
+        hint: 'OA and OB are both radii, so they are equally long. What kind of triangle is OAB? Its base angles are equal.',
+        steps: 'Triangle OAB is isosceles (OA = OB). The other two angles together: 180 − ' + th + ' = ' + (180 - th) + '°. So each is ' + (180 - th) + ' : 2 = ' + base + '°.' };
+    },
     function diagonalsPattern() {   // challenge, still at most a pentagon: where do the diagonals cross?
       const V = [0, 1, 2, 3, 4].map(k => { const t = (90 + 72 * k + 144) * Math.PI / 180; return [+(5.5 * Math.cos(t)).toFixed(2), +(5.5 * Math.sin(t)).toFixed(2)]; });
       const segs = []; for (let i = 0; i < 5; i++) for (let j = i + 2; j < 5; j++) if (!(i === 0 && j === 4)) segs.push({ a: V[i], b: V[j], color: '#16803c' });
@@ -704,9 +726,9 @@
     { id: 'L3', title: 'Lesson 3 · 2.2 Measuring and drawing angles', sub: 'Tue 6 Oct', date: '2026-10-06',
       gens: [['2.2', 'drawAngle'], ['2.2', 'readAngle'], ['2.2', 'pickReading'], ['2.4', 'tools']], xg: [['2.2', 'angleReason']] },
     { id: 'L4', title: 'Lesson 4 · 2.3 Triangles', sub: 'Wed 7 Oct', date: '2026-10-07',
-      gens: [['2.3', 'triByAngles'], ['2.3', 'triBySidesFromAngles'], ['2.3', 'triBySides'], ['2.3', 'triBoth']], xg: [['2.4', 'thirdSide']] },
+      gens: [['2.3', 'triByAngles'], ['2.3', 'triBySidesFromAngles'], ['2.3', 'triBySides'], ['2.3', 'triBoth']], xg: [['2.3', 'thirdAngle'], ['2.3', 'isosceles'], ['2.4', 'thirdSide']] },
     { id: 'L5', title: 'Lesson 5 · 2.3 Quadrilaterals and circles', sub: 'Thu 8 Oct', date: '2026-10-08',
-      gens: [['2.3', 'quadName'], ['2.3', 'alwaysSometimes'], ['2.3', 'circleConv'], ['2.3', 'circlesInRect'], ['2.3', 'fourthVertex'], ['2.3', 'diagonals']], xg: [['2.3', 'circlesMeet'], ['2.3', 'diagonalsPattern']] },
+      gens: [['2.3', 'quadName'], ['2.3', 'alwaysSometimes'], ['2.3', 'circleConv'], ['2.3', 'circlesInRect'], ['2.3', 'fourthVertex'], ['2.3', 'diagonals']], xg: [['2.3', 'radiiTriangle'], ['2.3', 'circlesMeet'], ['2.3', 'diagonalsPattern']] },
     { id: 'L6', title: 'Lesson 6 · 2.4 Constructing triangles', sub: 'Fri 9 Oct', date: '2026-10-09',
       gens: [['2.4', 'tools'], ['2.4', 'compassCircle'], ['2.3', 'triBySides']], xg: [['2.4', 'canMake'], ['2.4', 'thirdSide']] },
     { id: 'L7', title: 'Lesson 7 · 2.4 Constructing with a compass', sub: 'Tue 27 Oct', date: '2026-10-27',
