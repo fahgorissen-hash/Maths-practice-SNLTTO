@@ -666,19 +666,19 @@ G['2.2'] = [
 ];
 XG['2.2'] = [
   function ratioTable(l) {
-    const a = ri(3, 9), b = ri(3, 9), k = pick([2, 3, 4]); const x = ri(2, 9);
-    return nu(p('Triangle ABC ~ triangle DEF. AB = ' + a + ', BC = ' + b + ', DE = ' + a * k + '. Calculate EF.'), b * k, 'AB corresponds to DE, so the scale factor is DE ÷ AB.', 'Scale factor ' + k + '. EF = ' + b + ' × ' + k + ' = ' + b * k + '.');
+    const a = 2 * ri(2, 6), b = 2 * ri(2, 6), k = pick([1.5, 2.5, 3, 0.5]);
+    return nu(p('Triangle ABC ~ triangle EFD, so A ↔ E, B ↔ F and C ↔ D. AB = ' + a + ', BC = ' + b + ' and EF = ' + f(a * k) + '. Calculate <b>FD</b>.'), b * k, 'Make a ratio table: AB corresponds to EF, and BC corresponds to FD.', 'AB ↔ EF, so the scale factor is ' + f(a * k) + ' ÷ ' + a + ' = ' + f(k) + '. BC ↔ FD, so FD = ' + b + ' × ' + f(k) + ' = ' + f(b * k) + '.', { tol: .001 });
   },
   function areaFactor(l) {
     const k = pick([2, 3, 4]); const A = ri(2, 9) * 2; return nu(p('Triangle B is a scaled version of triangle A with scale factor ' + k + '. The area of A is ' + A + ' cm². What is the area of B?'), A * k * k, 'Lengths scale by k, areas scale by k².', A + ' × ' + k + '² = ' + A * k * k + ' cm².');
   },
   function shadow(l) {
-    const h = pick([1.5, 1.8, 2, 1.6]), s = pick([2, 3, 2.5]), S = pick([12, 15, 20, 30]);
-    return nu(p('A person of ' + h + ' m casts a shadow of ' + s + ' m. At the same moment a tree casts a shadow of ' + S + ' m. How tall is the tree (in m)?'), Math.round(h / s * S * 100) / 100, 'The sun makes two similar triangles. Use the ratio height : shadow.', 'Height = ' + h + ' ÷ ' + s + ' × ' + S + ' = ' + f(Math.round(h / s * S * 100) / 100) + ' m.', { tol: .01 });
+    const h = pick([1.5, 1.8, 2, 1.6]), s = pick([2, 3, 2.5]), d = pick([10, 12, 15, 20]), S = s + d, H = Math.round(h / s * S * 100) / 100;
+    return nu(p('A person of ' + h + ' m casts a shadow of ' + s + ' m. At the same moment the shadow of a tree is <b>' + d + ' m longer</b> than the shadow of the person. How tall is the tree (in m)? <small>(Round to 2 decimals if needed.)</small>'), H, 'First the length of the tree\'s shadow. The sun makes two similar triangles: use the ratio height : shadow.', 'Shadow of the tree = ' + s + ' + ' + d + ' = ' + f(S) + ' m. Height = ' + h + ' ÷ ' + s + ' × ' + f(S) + ' = ' + f(H) + ' m.', { tol: .01 });
   },
   function nestedTri(l) {
-    const a = ri(2, 5), b = ri(2, 5), k = ri(2, 3); const w = ri(3, 7);
-    return nu(p('In triangle ABC, DE ∥ BC with D on AB and E on AC. AD = ' + a + ', DB = ' + a * (k - 1) + ', DE = ' + w + '. Calculate BC.'), w * k, 'Triangle ADE ~ triangle ABC (aa). AB = AD + DB.', 'AB = ' + a * k + ', scale factor = ' + a * k + ' ÷ ' + a + ' = ' + k + ', BC = ' + w + ' × ' + k + ' = ' + w * k + '.');
+    const a = 2 * ri(1, 4), k = pick([1.5, 2.5, 3, 4]), w = 2 * ri(2, 5), db = a * (k - 1);
+    return nu(p('In triangle ABC, DE ∥ BC with D on AB and E on AC. AD = ' + a + ', DE = ' + w + ' and BC = ' + f(w * k) + '. Calculate <b>DB</b>.'), db, 'Triangle ADE ~ triangle ABC (aa). Find AB with the scale factor, then DB = AB − AD.', 'Scale factor = ' + f(w * k) + ' ÷ ' + w + ' = ' + f(k) + '. AB = ' + a + ' × ' + f(k) + ' = ' + f(a * k) + '. DB = ' + f(a * k) + ' − ' + a + ' = ' + f(db) + '.', { tol: .001 });
   }
 ];
 
@@ -730,7 +730,9 @@ XG['2.3'] = [
     const k = pick([[3, 5], [5, 13], [8, 17], [7, 25]]); const m = ri(2, 6); return nu(p('sin α = <b>' + k[0] + '/' + k[1] + '</b>. The side opposite α is <b>' + k[0] * m + ' cm</b>. How long is the hypotenuse (in cm)?'), k[1] * m, 'hypotenuse = opposite ÷ sin α.', k[0] * m + ' ÷ ' + k[0] + '/' + k[1] + ' = ' + k[1] * m + ' cm.');
   },
   function exactTrig(l) {
-    const a = ri(2, 6) * 2; return nu(p('A right-angled triangle has legs ' + a + ' and ' + a + '. What is tan of the angle between a leg and the hypotenuse?'), 1, 'Both legs are equal, so opposite ÷ adjacent = 1 (the angle is 45°).', 'tan = ' + a + '/' + a + ' = 1.');
+    const a = ri(2, 9), kind = pick(['hyp', 'legs']), small = Math.random() < .5;
+    if (kind === 'hyp') return nu(p('In triangle ABC the angle at C is 90°. AB = ' + 2 * a + ' and BC = ' + a + '. How big is the angle at ' + (small ? 'A' : 'B') + ' (in °)? <small>(Without a calculator.)</small>'), small ? 30 : 60, 'sin A = BC / AB. Which special angle has this sine?', 'sin A = ' + a + '/' + 2 * a + ' = ½, so ∠A = 30° and ∠B = 90° − 30° = 60°.');
+    return nu(p('In triangle ABC the angle at C is 90°. BC = ' + a + ' and AC = ' + a + '√3. How big is the angle at ' + (small ? 'A' : 'B') + ' (in °)? <small>(Without a calculator.)</small>'), small ? 30 : 60, 'tan A = BC / AC. Which special angle has this tangent?', 'tan A = ' + a + '/(' + a + '√3) = 1/√3, so ∠A = 30° and ∠B = 60°.');
   }
 ];
 

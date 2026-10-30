@@ -726,7 +726,7 @@ G['1.5'] = [
 ];
 XG['1.5'] = [
   function euclidBig(l) { const g = pick([13, 17, 19, 23, 29, 31]), a = ri(12, 40), b = ri(5, a - 1); if (gcd(a, b) > 1) return XG['1.5'][0](l); let x = g * a, y = g * b, n = 0; while (y) { [x, y] = [y, x % y]; n++; } return nu(p('Use the Euclidean algorithm for the HCF of <b>' + g * a + '</b> and <b>' + g * b + '</b>.'), g, 'Repeat "divide and take the remainder" until the remainder is 0.', 'HCF = ' + g + ' (found in ' + n + ' divisions).'); },
-  function threeNumbers(l) { const g = pick([6, 12, 15]); const m = [ri(2, 5), ri(2, 5), ri(2, 5)]; if (gcd(gcd(m[0], m[1]), m[2]) > 1) return XG['1.5'][1](l); return nu(p('Calculate the HCF of <b>' + m.map(x => g * x).join(', ') + '</b>.'), g, 'First take out the common factor of all three.', 'HCF = ' + g + '.'); },
+  function threeNumbers(l) { const g = pick([6, 12, 14, 15, 18, 21]); const m = [ri(2, 9), ri(2, 9), ri(2, 9)]; if (gcd(gcd(m[0], m[1]), m[2]) > 1 || new Set(m).size < 3) return XG['1.5'][1](l); return nu(p('Calculate the HCF of <b>' + m.map(x => g * x).join(', ') + '</b>.'), g, 'First take out the common factor of all three.', 'HCF = ' + g + '.'); },
   function lcmHcfSum(l) { const a = pick([12, 18, 24, 30, 36, 48]), b = pick([20, 27, 28, 32, 42, 45, 50]); const g = gcd(a, b), L2 = a * b / g; return nu(p('Calculate LCM(' + a + ', ' + b + ') + HCF(' + a + ', ' + b + ').'), L2 + g, 'Find both separately, then add.', 'LCM = ' + L2 + ', HCF = ' + g + ', sum = ' + (L2 + g) + '.'); }
 ];
 

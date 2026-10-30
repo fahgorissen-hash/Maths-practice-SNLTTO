@@ -202,6 +202,11 @@ XG['7.4'] = [
     return nr(p('A spoon of ' + m + ' g instant coffee dissolves in water. Every second the amount that is not yet dissolved is multiplied by ' + g + '. How many grams have dissolved after ' + t + ' seconds? Round to 1 decimal.'), m - left, 1, 'First calculate what is NOT dissolved yet.', p('not dissolved: ' + m + ' · ' + pw(g, t) + ' ≈ ' + rd(left, 3) + ' g') + p('dissolved: ' + m + ' − ' + rd(left, 3) + ' ≈ ' + rd(m - left, 1) + ' g'), { needStep: true });
   }
 ];
+XG['7.4'].push(function townsMeet(l) {
+  let A, B, ga, gb, t; do { A = ri(8, 15) * 1000; B = A + ri(3, 10) * 1000; ga = pick([2, 3, 4, 5]); gb = pick([-1, -2, -3, 1]); t = 0; while (A * Math.pow(mult(ga), t) <= B * Math.pow(mult(gb), t) && t < 60) t++; } while (t < 3 || t > 40 || ga <= gb);
+  const fA = x => A * Math.pow(mult(ga), x), fB = x => B * Math.pow(mult(gb), x);
+  return nu(p('Town A has ' + sp(A) + ' inhabitants and grows by ' + ga + '% per year. Town B has ' + sp(B) + ' inhabitants and ' + (gb < 0 ? 'shrinks by ' + -gb : 'grows by ' + gb) + '% per year. After how many whole years does town A have <b>more</b> inhabitants than town B for the first time?'), t, 'Write a formula for each town. Use a table (or the graphs) on your calculator and compare year by year.', p('A = ' + sp(A) + ' · ' + pw(mult(ga), X('t')) + ' and B = ' + sp(B) + ' · ' + pw(mult(gb), X('t'))) + p(X('t') + ' = ' + (t - 1) + ': A ≈ ' + sp(Math.round(fA(t - 1))) + ', B ≈ ' + sp(Math.round(fB(t - 1)))) + p(X('t') + ' = ' + t + ': A ≈ ' + sp(Math.round(fA(t))) + ', B ≈ ' + sp(Math.round(fB(t)))) + p('So after ' + t + ' years.'));
+});
 
 /* ======================= 7.5 Exponential equations ======================= */
 G['7.5'] = [
@@ -241,6 +246,10 @@ XG['7.5'] = [
     return nu(p('You save €' + sp(A) + ' at ' + r + '% interest per year. After how many whole years do you have at least €' + sp(goal) + ' for the first time?'), t, 'B = ' + A + ' · ' + pw(mult(r), X('t')) + '. Try values.', p(X('t') + ' = ' + (t - 1) + ': €' + sp(rd(A * Math.pow(mult(r), t - 1), 2))) + p(X('t') + ' = ' + t + ': €' + sp(rd(A * Math.pow(mult(r), t), 2))) + p('After ' + t + ' years.'), { noStep: true });
   }
 ];
+XG['7.5'].push(function percentFromTime(l) {
+  const k = pick([2, 3, 0.5]), T = pick([5, 8, 10, 12, 15, 20]), g = Math.pow(k, 1 / T), pc = rd(Math.abs(g - 1) * 100, 1);
+  return nu(p('A quantity ' + (k === 2 ? 'doubles' : k === 3 ? 'becomes three times as big' : 'halves') + ' every ' + T + ' years (exponential ' + (k < 1 ? 'decay' : 'growth') + '). By what percentage does it ' + (k < 1 ? 'decrease' : 'increase') + ' per year? <small>(Round to 1 decimal.)</small>'), pc, 'Find the growth factor per year: ' + pw(X('g'), T) + ' = ' + k + ', so ' + X('g') + ' = ' + pw(k, '1/' + T) + '.', p(X('g') + ' = ' + pw(k, '1/' + T) + ' ≈ ' + rd(g, 4)) + p((k < 1 ? '1 − ' + rd(g, 4) + ' = ' + rd(1 - g, 4) : rd(g, 4) + ' − 1 = ' + rd(g - 1, 4)) + ' → ' + pc + '% per year'), { tol: .051, needStep: true });
+});
 
 const SECTIONS = [
   { id: '7.1', title: '7.1 Percentages and multipliers', sub: 'Multipliers, percentage change, repeated change' },
@@ -314,6 +323,6 @@ if (P.cls === '3VT') {
       {"id": "D13", "title": "Lesson · 6.5 C Exponential equations", "sub": "Tue 18 May · ex 90, 91, 92", "date": "2027-05-18", "gens": [["6.5", "trialRound"], ["6.5", "doublingTime"], ["6.5", "whenBelow"]], "xg": [["6.5", "savingsGoal"]]},
       {"id": "D14", "title": "Test prep · chapter 6", "sub": "Thu 20 May", "date": "2027-05-20", "gens": [["6.1", "multiplier"], ["6.1", "newAmount"], ["6.1", "original"], ["6.1", "percentChange"], ["6.1", "repeated"], ["6.2", "linOrExp"], ["6.2", "growthFactor"], ["6.2", "completeTable"], ["6.2", "percentToFactor"], ["6.2", "checkQuotients"], ["6.2", "geometricMean"], ["6.3", "readFormula"], ["6.3", "makeFormula"], ["6.3", "factorToPercent"], ["6.3", "biggerUnit"], ["6.3", "smallerUnit"], ["6.3", "fracExponent"], ["6.4", "growthOrDecay"], ["6.4", "startValue"], ["6.4", "readGraph"], ["6.4", "whichGraph"], ["6.4", "tableFromFormula"], ["6.5", "exactPower"], ["6.5", "withFactor"], ["6.5", "trialRound"], ["6.5", "doublingTime"], ["6.5", "whenBelow"]], "xg": [["6.1", "vatBack"], ["6.1", "savings"], ["6.2", "backInTime"], ["6.2", "videoViews"], ["6.3", "halfLife"], ["6.3", "deerYears"], ["6.4", "coffeeDissolve"], ["6.5", "savingsGoal"]], "rev": true}
     ]
-  }[P.cls] || []).map(o => Object.assign({}, o, { gens: o.gens.filter(g => __has(G, g)), xg: o.xg.filter(g => __has(XG, g)) })).filter(o => o.gens.length);
+  }[P.cls] || []).map(o => Object.assign({}, o, { gens: o.gens.filter(g => __has(G, g)), xg: [...new Set(o.gens.map(g => g[0]))].reduce((a, s) => a.concat((XG[s] || []).map(f => [s, f.name])), []) })).filter(o => o.gens.length);
   /* ---------- end lessons ---------- */
 return { key: 'nx-' + P.cls.toLowerCase() + '-ch' + (P.cls === '3VT' ? 6 : 7) + '-v1', SECTIONS, LESSONS: __LESSONS, G, XG, TEST: { skip: ['multiplier', 'percentToFactor', 'growthOrDecay', 'startValue', 'whichGraph'] }, defaultMode: __LESSONS.length ? 'lesson' : 'para', GOALS };

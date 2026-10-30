@@ -401,7 +401,7 @@
         steps: 'm = (' + f(Q[1]) + ' − ' + par(P[1]) + ') : (' + f(x2) + ' − ' + par(x1) + ') = ' + f(Q[1] - P[1]) + ' : ' + (x2 - x1) + ' = ' + f(a) + '. Then b = ' + f(P[1]) + ' − ' + par(a) + ' · ' + par(x1) + ' = ' + f(b) + '. So y = ' + linTxt(a, b) };
     },
     function whereCrossesX() {
-      const a = nz(-3, 3), x0 = ri(-5, 5), b = -a * x0;
+      const a = pick([2, 4, -2, -4, 6]), x0 = (2 * ri(-5, 4) + 1) / 2, b = -a * x0;
       return { type: 'num', ans: x0, correct: String(x0),
         html: '<p>The graph of <b>y = ' + linTxt(a, b) + '</b> crosses the <b>x-axis</b>. At which <b>x</b>?</p>',
         hint: 'On the x-axis y = 0. Solve ' + linTxt(a, b) + ' = 0.',
@@ -501,6 +501,6 @@
       {"id": "D14", "title": "Lesson · 3.5 B Relations in context", "sub": "Fri 4 Dec · ex 77, 78, 79, 80, 81", "date": "2026-12-04", "gens": [["3.5", "valueAt"], ["3.5", "timeFor"], ["3.5", "meaning"]], "xg": [["3.5", "equalCost"], ["3.5", "candle"]]},
       {"id": "D15", "title": "Test prep · chapter 3", "sub": "Tue 8 Dec · ex 82, 83", "date": "2026-12-08", "gens": [["3.1", "readPoint"], ["3.1", "quadrant"], ["3.1", "clickPoint"], ["3.1", "rectangle"], ["3.1", "mirror"], ["3.1", "axisDist"], ["3.2", "substitute"], ["3.2", "table"], ["3.2", "solveX"], ["3.2", "onGraph"], ["3.2", "matchFormula"], ["3.3", "readLineY"], ["3.3", "lineFormula"], ["3.3", "plotLine"], ["3.3", "vertex"], ["3.3", "shape"], ["3.3", "yAxisCross"], ["3.4", "isLinear"], ["3.4", "nextValue"], ["3.4", "findFormula"], ["3.4", "changePer"], ["3.4", "growth"], ["3.5", "formulaFromText"], ["3.5", "valueAt"], ["3.5", "timeFor"], ["3.5", "meaning"], ["3.5", "breakEven"], ["3.5", "squareArea"]], "xg": [["3.1", "parallelogram"], ["3.1", "twoReflections"], ["3.2", "solveNeg"], ["3.2", "howManyOn"], ["3.3", "formulaFromPoints"], ["3.3", "whereCrossesX"], ["3.4", "farValue"], ["3.4", "whichIsLinear"], ["3.5", "equalCost"], ["3.5", "candle"]], "rev": true}
     ]
-  }[P.cls] || []).map(o => Object.assign({}, o, { gens: o.gens.filter(g => __has(G, g)), xg: o.xg.filter(g => __has(XG, g)) })).filter(o => o.gens.length);
+  }[P.cls] || []).map(o => Object.assign({}, o, { gens: o.gens.filter(g => __has(G, g)), xg: [...new Set(o.gens.map(g => g[0]))].reduce((a, s) => a.concat((XG[s] || []).map(f => [s, f.name])), []) })).filter(o => o.gens.length);
   /* ---------- end lessons ---------- */
   return { key: 'ch3-relations-v1', SECTIONS, LESSONS: __LESSONS, G, XG, TEST: { skip: ['quadrant', 'clickPoint', 'axisDist', 'readPoint', 'readLineY', 'yAxisCross', 'changePer', 'growth'] }, defaultMode: __LESSONS.length ? 'lesson' : 'para', GOALS };

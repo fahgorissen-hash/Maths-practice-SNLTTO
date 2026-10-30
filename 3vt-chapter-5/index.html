@@ -952,6 +952,11 @@ XG['5.4'] = [
     return intervalQ(p('A ball follows ' + X('h') + ' = ' + quad(a, b, c, 't') + ' with ' + X('h') + ' in metres and ' + X('t') + ' in seconds. When is the ball higher than ' + H0 + ' m?'), t1, t2, true, true, 'Solve ' + X('h') + ' = ' + H0 + ' first.', p(quad(a, b, c, 't') + ' = ' + H0) + p(quad(a, b, c - H0, 't') + ' = 0, divide by −5: ' + quad(1, -(t1 + t2), t1 * t2, 't') + ' = 0') + p(fac(t1, 't') + fac(t2, 't') + ' = 0, so ' + X('t') + ' = ' + t1 + ' or ' + X('t') + ' = ' + t2) + p('The parabola opens downwards, so it is higher than ' + H0 + ' between ' + t1 + ' and ' + t2 + '.').replace(/<i>x<\/i>/g, X('t')));
   }
 ];
+XG['5.4'].push(function profitIneq(l) {
+  let r1, r2_; do { r1 = ri(1, 8); r2_ = ri(r1 + 2, 20); } while (false);
+  const k = pick([1, 2, 5]), a = -k, b = k * (r1 + r2_), c = -k * r1 * r2_, at = pick(['&gt;', '≥']);
+  return intervalQ(p('A company sells ' + X('q') + ' hundred products. The profit (in thousands of euros) is ' + X('W') + ' = ' + quad(a, b, c, 'q') + '. For which ' + X('q') + ' is the profit ' + (at === '&gt;' ? 'positive' : 'at least 0') + '? <small>(Write the answer with ' + X() + ' for ' + X('q') + '.)</small>'), r1, r2_, at === '&gt;', true, 'Solve ' + quad(a, b, c, 'q') + ' = 0 first: divide by ' + neg(a) + ' and factorise. Then sketch: the parabola opens downwards.', p(quad(a, b, c, 'q') + ' = 0 → ' + quad(1, -(r1 + r2_), r1 * r2_, 'q') + ' = 0 → ' + X('q') + ' = ' + r1 + ' or ' + X('q') + ' = ' + r2_) + p('The parabola opens downwards, so it is above the axis between the zeros: ' + r1 + (at === '&gt;' ? ' &lt; ' : ' ≤ ') + X('q') + (at === '&gt;' ? ' &lt; ' : ' ≤ ') + r2_ + '.'));
+});
 
 /* ======================= 5.5 Higher powers ======================= */
 const sup = n => ({ 2: '²', 3: '³', 4: '⁴', 5: '⁵', 6: '⁶', 7: '⁷' })[n];
@@ -1099,6 +1104,15 @@ if (VT) {
       return nu(p('The moisture content of soil is ' + X('p') + ' = ' + fr(N, L + ' − ' + X('d')) + ' %, with ' + X('d') + ' the depth in cm. At what depth is the moisture content ' + pct + '%? <small>(Round to 2 decimals if needed.)</small>'), d, 'Write ' + fr(N, L + ' − ' + X('d')) + ' = ' + pct + ' and cross-multiply.', p(N + ' = ' + pct + '(' + L + ' − ' + X('d') + ')') + p(N + ' = ' + pct * L + ' − ' + pct + X('d')) + p(pct + X('d') + ' = ' + (pct * L - N)) + p(X('d') + ' = ' + d + ' cm'), { tol: .006, noStep: true });
     }
   ];
+  VX1.push(function cafePrices(l) {
+    let c, t, a1, b1, a2, b2; do { c = pick([2.2, 2.4, 2.5, 2.8, 3.1, 3.4]); t = pick([1.8, 1.9, 2.1, 2.3, 2.6]); a1 = ri(2, 5); b1 = ri(1, 4); a2 = ri(1, 4); b2 = ri(2, 6); } while (a1 * b2 === a2 * b1 || c === t);
+    const S1 = rd(a1 * c + b1 * t, 2), S2 = rd(a2 * c + b2 * t, 2);
+    return mu2(p(a1 + ' coffees and ' + b1 + ' tea' + (b1 > 1 ? 's' : '') + ' cost € ' + S1.toFixed(2) + '. ' + a2 + ' coffee' + (a2 > 1 ? 's' : '') + ' and ' + b2 + ' teas cost € ' + S2.toFixed(2) + '. What is the price of one coffee and of one tea?'), ['coffee = €', 'tea = €'], [c, t], 'Let ' + X('k') + ' = the price of a coffee and ' + X('t') + ' = the price of a tea. Write two equations and eliminate one letter.', sys(a1 + X('k') + ' + ' + b1 + X('t') + ' = ' + S1, a2 + X('k') + ' + ' + b2 + X('t') + ' = ' + S2) + p('Multiply the first equation by ' + a2 + ' and the second by ' + a1 + ', and subtract: ' + rd(a1 * b2 - a2 * b1) + X('t') + ' = ' + rd(a1 * S2 - a2 * S1, 2) + ', so ' + X('t') + ' = ' + t) + p(X('k') + ' = (' + S1 + ' − ' + b1 + ' · ' + t + ') : ' + a1 + ' = ' + c), { tol: .001 });
+  });
+  VX5.push(function crossCondition(l) {
+    let a, b, k, x; do { a = nz(-9, 9); b = nz(-9, 9); k = pick([2, 3, 4, -1, -2, -3]); x = (k * b - a) / (1 - k); } while (a === b || !Number.isInteger(x) || x === -b);
+    return nu(p('Solve: ' + fr(lin(1, a), lin(1, b)) + ' = ' + neg(k) + '. Check the condition.'), x, 'Condition: the denominator is not 0, so ' + X() + ' ≠ ' + neg(-b) + '. Then cross-multiply: ' + lin(1, a) + ' = ' + neg(k) + '(' + lin(1, b) + ').', p('condition: ' + X() + ' ≠ ' + neg(-b)) + p(lin(1, a) + ' = ' + neg(k) + '(' + lin(1, b) + ') = ' + lin(k, k * b)) + p(lin(1 - k, 0) + ' = ' + neg(k * b - a)) + p(X() + ' = ' + neg(x) + ' (this is not ' + neg(-b) + ', so it is a solution)'));
+  });
   const lin51 = H.a1.filter(f => f.name === 'intersect');
   G['5.1'] = V1.concat(lin51); XG['5.1'] = VX1;
   G['5.2'] = H.a2.concat(H.b2, G['5.3'], V2); XG['5.2'] = HX.a2.concat(HX.b2, XG['5.3']);
@@ -1170,7 +1184,7 @@ const GV = [
       {"id": "D15", "title": "Lesson · 5.5 C Fractional equations", "sub": "Fri 12 Mar · ex 91, 92, 93, 94, 95", "date": "2027-03-12", "gens": [["5.5", "notAllowed"], ["5.5", "fracZero"], ["5.5", "rationalZero"]], "xg": [["5.5", "soilMoisture"]]},
       {"id": "D16", "title": "Test prep · chapters 3 & 5", "sub": "Tue 16 Mar", "date": "2027-03-16", "gens": [["5.1", "slopeForm"], ["5.1", "axisIntercepts"], ["5.1", "substitution"], ["5.1", "elimination"], ["5.1", "checkSolution"], ["5.1", "intersect"], ["5.2", "howMany"], ["5.2", "squareEq"], ["5.2", "bracketSq"], ["5.2", "roundedSq"], ["5.2", "exactSq"], ["5.2", "productZero"], ["5.2", "commonFactor"], ["5.2", "commonFactorEq"], ["5.2", "productSum"], ["5.2", "factorTrinomial"], ["5.2", "rearrange"], ["5.2", "readABC"], ["5.2", "discriminant"], ["5.2", "numSolutions"], ["5.2", "abcExact"], ["5.2", "abcRounded"], ["5.2", "abcRearrange"], ["5.2", "completeSquare"], ["5.3", "ineqSimple"], ["5.3", "ineqBoth"], ["5.3", "ineqGraph"], ["5.3", "ineqContext"], ["5.3", "signTurn"], ["5.3", "readIneq"], ["5.3", "solveIneq"], ["5.3", "squareIneq"], ["5.3", "rearrangeIneq"], ["5.3", "alwaysNever"], ["5.4", "oddPower"], ["5.4", "evenPower"], ["5.4", "howManyPower"], ["5.4", "powerRounded"], ["5.4", "shiftedPower"], ["5.4", "rootEq"], ["5.4", "rootSolvable"], ["5.5", "crossMultiply"], ["5.5", "notAllowed"], ["5.5", "fracZero"], ["5.5", "rationalZero"]], "xg": [["5.1", "tickets"], ["5.2", "cubeArea"], ["5.2", "negSquare"], ["5.2", "areaEq"], ["5.2", "vertexFromZeros"], ["5.2", "oneSolution"], ["5.2", "parabolaLine"], ["5.3", "ineqFrac"], ["5.3", "ballHeight"], ["5.4", "boxVolume"], ["5.4", "sphereRadius"], ["5.4", "soundSpeed"], ["5.5", "soilMoisture"]], "rev": true}
     ]
-  }[P.cls] || []).map(o => Object.assign({}, o, { gens: o.gens.filter(g => __has(G, g)), xg: o.xg.filter(g => __has(XG, g)) })).filter(o => o.gens.length);
+  }[P.cls] || []).map(o => Object.assign({}, o, { gens: o.gens.filter(g => __has(G, g)), xg: [...new Set(o.gens.map(g => g[0]))].reduce((a, s) => a.concat((XG[s] || []).map(f => [s, f.name])), []) })).filter(o => o.gens.length);
   /* ---------- end lessons ---------- */
 return { key: 'nx-' + P.cls.toLowerCase() + '-ch5-v1', SECTIONS, LESSONS: __LESSONS, G, XG, TEST: { skip: ['signTurn', 'readABC', 'howManyPower', 'checkSolution'] }, defaultMode: __LESSONS.length ? 'lesson' : 'para', GOALS: VT ? GV : GOALS };
 

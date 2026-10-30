@@ -786,8 +786,9 @@ XG['1.2'] = [
     return nu(p('Calculate <b>(' + f(a) + ' − ' + pn(b) + ') × ' + pn(c) + ' + ' + pn(d) + ' × ' + pn(e) + ' − ' + pn(-b) + '</b>'), v, 'Brackets first. Then both multiplications. Then work from left to right.', '(' + f(a) + ' − ' + pn(b) + ') = ' + f(a - b) + '; ' + pn(a - b) + ' × ' + pn(c) + ' = ' + f((a - b) * c) + '; ' + pn(d) + ' × ' + pn(e) + ' = ' + f(d * e) + '; ' + f((a - b) * c) + ' + ' + pn(d * e) + ' − ' + pn(-b) + ' = ' + f(v) + '.', { needStep: true });
   },
   function decimalMul(l) {
-    const a = pick([-1, 1]) * rd(ri(11, 99) / 10), b = pick([-1, 1]) * pick([0.5, 0.2, 0.1, 2.5]); const r = rd(a * b);
-    return nu(p('Calculate <b>' + f(a) + ' × ' + pn(b) + '</b>'), r, 'First multiply without the minuses and without the comma. Then put the comma back. Then decide plus or minus. Example: −0,3 × 4: 3 × 4 = 12, so 1,2, and one minus gives −1,2.', 'The answer is ' + (r < 0 ? 'negative' : 'positive') + ': ' + f(r) + '.');
+    const a = pick([-1, 1]) * rd(ri(11, 99) / 10), b = pick([-1, 1]) * pick([0.5, 0.2, 0.4, 2.5, 1.5]), c = pick([-1, 1]) * pick([0.3, 1.2, 0.6, 4, 0.5]); const ab = rd(a * b), r = rd(ab * c);
+    const neg_ = [a, b, c].filter(x => x < 0).length;
+    return nu(p('Calculate <b>' + f(a) + ' × ' + pn(b) + ' × ' + pn(c) + '</b>'), r, 'Work from left to right. First multiply without the minuses and without the comma, then put the comma back. Count the minuses: an even number gives plus, an odd number gives minus.', f(a) + ' × ' + pn(b) + ' = ' + f(ab) + '<br>' + f(ab) + ' × ' + pn(c) + ' = ' + f(r) + '<br>(' + neg_ + ' minus' + (neg_ === 1 ? '' : 'es') + ', so the answer is ' + (r < 0 ? 'negative' : 'positive') + ')');
   }
 ];
 

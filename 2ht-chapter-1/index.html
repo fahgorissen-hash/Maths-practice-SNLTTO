@@ -867,7 +867,8 @@ XG['1.5'] = [
     return ex(p('Calculate ' + M(a + '*10^' + e + '+' + b + '*10^' + (e - 1), { noVars: true }) + ' and give the answer in scientific notation.'), ans, 'sci', 'Write both numbers with the same power of 10 first, then add the numbers in front.', b + '·10^' + (e - 1) + ' = ' + (b / 10) + '·10^' + e + '. So ' + a + ' + ' + (b / 10) + ' = ' + (a + b / 10) + ' and the answer is ' + M(ans, { noVars: true }) + '.', { noVars: true, keys: ['·', '^', '-'] });
   },
   function bigOrSmall(l) {
-    const e = ri(5, 9); return nu(p('The number <b>N</b> = ' + M('2*10^' + e, { noVars: true }) + '. How many zeros does N have when written as an ordinary number?'), e, 'Write 2 followed by the zeros that the power of 10 adds.', '2·10^' + e + ' = 2' + '0'.repeat(e) + ', which has ' + e + ' zeros.');
+    const [a, b] = pick([[4, 5], [2, 5], [5, 6], [8, 5], [2.5, 4], [1.25, 8]]), e = ri(3, 7), k = ri(2, 5), pr = a * b, z = (String(Math.round(pr * Math.pow(10, e + k))).match(/0/g) || []).length;
+    return nu(p('The number <b>N</b> = ' + M(a + '*10^' + e + '*' + b + '*10^' + k, { noVars: true }) + '. How many zeros does N have when written as an ordinary number?'), z, 'First write N in scientific notation: multiply the numbers and add the exponents.', a + ' · ' + b + ' = ' + pr + ', so N = ' + pr + ' · 10^' + (e + k) + ' = ' + String(pr * Math.pow(10, e + k)) + ', which has ' + z + ' zeros.');
   }
 ];
 

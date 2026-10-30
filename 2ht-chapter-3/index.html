@@ -948,9 +948,9 @@ const __def = (function (NX, P) {
     function recipe() {
       const per = pick([75, 40, 25, 30, 50]), n1 = ri(3, 6), n2 = n1 + ri(2, 5), g = per * n1, ask = Math.random() < .5;
       return ask
-        ? { type: 'num', ans: per * n2, correct: String(per * n2),
-            html: '<p>The amount of flour is directly proportional to the number of people. For <b>' + n1 + ' people</b> you need <b>' + g + ' g</b>. How many grams do you need for <b>' + n2 + ' people</b>?</p>',
-            hint: 'First find the amount for 1 person (that is the constant k). Then multiply.', steps: 'k = ' + g + ' : ' + n1 + ' = ' + per + ' g per person. For ' + n2 + ' people: ' + per + ' · ' + n2 + ' = ' + per * n2 + ' g.' }
+        ? { type: 'num', ans: Math.floor(1500 / per), correct: String(Math.floor(1500 / per)),
+            html: '<p>The amount of flour is directly proportional to the number of people. For <b>' + n1 + ' people</b> you need <b>' + g + ' g</b>. You have a bag of <b>1.5 kg</b> flour. For how many people can you bake <b>at most</b>?</p>',
+            hint: 'First find the amount for 1 person (that is the constant k). Write 1.5 kg in grams. Round down: you cannot bake for part of a person.', steps: 'k = ' + g + ' : ' + n1 + ' = ' + per + ' g per person. 1.5 kg = 1500 g. 1500 : ' + per + ' = ' + Math.round(1500 / per * 100) / 100 + ', so at most ' + Math.floor(1500 / per) + ' people.' }
         : { type: 'num', ans: n2, correct: String(n2),
             html: '<p>The amount of flour is directly proportional to the number of people. For <b>' + n1 + ' people</b> you need <b>' + g + ' g</b>. For how many people is <b>' + per * n2 + ' g</b> enough?</p>',
             hint: 'First find the amount for 1 person (that is the constant k). Then divide.', steps: 'k = ' + g + ' : ' + n1 + ' = ' + per + ' g per person. ' + per * n2 + ' : ' + per + ' = ' + n2 + ' people.' };
@@ -1069,7 +1069,7 @@ const __def = (function (NX, P) {
       {"id": "D10", "title": "Lesson · 3.4 B Vertex form and inverse", "sub": "Fri 4 Dec · ex 66, 68, 69, 70, 71, 72", "date": "2026-12-04", "gens": [["3.4", "isInverse"], ["3.4", "findKInv"], ["3.4", "inverseValue"], ["3.4", "inverseContext"]], "xg": [["3.4", "yIntercept"], ["3.4", "inverseSolveX"]]},
       {"id": "D11", "title": "Test prep · chapter 3", "sub": "Tue 8 Dec · ex 77, 78, 79, 80, 82, 84", "date": "2026-12-08", "gens": [["3.1", "gradientIntercept"], ["3.1", "direction"], ["3.1", "gradientTwoPoints"], ["3.1", "formulaFromGraph"], ["3.1", "tableLinear"], ["3.1", "parallel"], ["3.1", "xIntercept"], ["3.1", "missingCoord"], ["3.2", "isDirect"], ["3.2", "findK"], ["3.2", "valueFromPair"], ["3.2", "whichDirect"], ["3.2", "context"], ["3.2", "graphK"], ["3.2", "factor"], ["3.3", "abc"], ["3.3", "opening"], ["3.3", "vertexPoint"], ["3.3", "symmetryLine"], ["3.3", "yAxisCross"], ["3.3", "valueAt"], ["3.3", "xIntercepts"], ["3.3", "maxHeight"], ["3.4", "vertexForm"], ["3.4", "findA"], ["3.4", "isInverse"], ["3.4", "findKInv"], ["3.4", "inverseValue"], ["3.4", "inverseContext"], ["3.4", "factorInv"], ["3.4", "whichType"]], "xg": [["3.1", "formulaFromPoints"], ["3.1", "bFromGradientPoint"], ["3.2", "recipe"], ["3.2", "halfK"], ["3.3", "otherRoot"], ["3.3", "axisFromPoints"], ["3.4", "yIntercept"], ["3.4", "inverseSolveX"]], "rev": true}
     ]
-  }[P.cls] || []).map(o => Object.assign({}, o, { gens: o.gens.filter(g => __has(G, g)), xg: o.xg.filter(g => __has(XG, g)) })).filter(o => o.gens.length);
+  }[P.cls] || []).map(o => Object.assign({}, o, { gens: o.gens.filter(g => __has(G, g)), xg: [...new Set(o.gens.map(g => g[0]))].reduce((a, s) => a.concat((XG[s] || []).map(f => [s, f.name])), []) })).filter(o => o.gens.length);
   /* ---------- end lessons ---------- */
   return { key: P.cls === '2HT' ? 'ch3-2ht-relationships-v1' : 'nx-' + P.cls.toLowerCase() + '-ch3-v1', SECTIONS, LESSONS: __LESSONS, G, XG, TEST: { skip: ['direction', 'whichDirect', 'factor', 'abc', 'opening', 'factorInv', 'whichType'] }, defaultMode: __LESSONS.length ? 'lesson' : 'para', GOALS };
 

@@ -606,6 +606,10 @@ XG['8.1'] = [
     return nu(p('A company makes ' + X('q') + ' kg of product. The costs are ' + X('C') + ' = ' + sp(fix) + ' + ' + var_ + X('q') + ' euros. Calculate the average cost per kg for ' + X('q') + ' = ' + sp(q) + '.'), avg, 'Average cost = total cost / number of kg.', p(X('C') + ' = ' + sp(fix) + ' + ' + var_ + ' · ' + sp(q) + ' = ' + sp(C)) + p(sp(C) + ' / ' + sp(q) + ' = ' + avg + ' euros per kg'), { needStep: true, tol: .0051 });
   }
 ];
+XG['8.1'].push(function findEndpoint(l) {
+  const c = ri(-6, 6), a = ri(-3, 4), bb = a + ri(2, 7), r = a + bb + c, f = x => x * x + c * x;
+  return nu(p('Given ' + F('f', X()) + ' = ' + poly([[1, X() + '²'], [c, X()]]) + '. The average rate of change of ' + X('f') + ' on the interval [' + neg(a) + ', ' + X('b') + '] is ' + neg(r) + '. Calculate ' + X('b') + '.'), bb, 'average rate of change = (' + F('f', X('b')) + ' − ' + F('f', neg(a)) + ') / (' + X('b') + ' − ' + (a < 0 ? '(' + neg(a) + ')' : neg(a)) + '). Try values for ' + X('b') + ', or simplify the fraction.', p('Try ' + X('b') + ' = ' + bb + ': (' + neg(f(bb)) + ' − ' + (f(a) < 0 ? '(' + neg(f(a)) + ')' : neg(f(a))) + ') / (' + bb + ' − ' + (a < 0 ? '(' + neg(a) + ')' : neg(a)) + ') = ' + neg(f(bb) - f(a)) + ' / ' + (bb - a) + ' = ' + neg(r)) + p('(In general the fraction simplifies to ' + X('b') + ' + ' + (a < 0 ? '(' + neg(a) + ')' : neg(a)) + ' + ' + (c < 0 ? '(' + neg(c) + ')' : neg(c)) + '.)'));
+});
 
 /* ======================= 8.2 Counting ======================= */
 G['8.2'] = [
@@ -701,8 +705,9 @@ XG['8.3'] = [
     return nu(p('For every number ' + X('p') + ' you have the function ' + X('f') + '<sub>' + X('p') + '</sub>(' + X() + ') = ' + X() + '² + ' + X('p') + X() + (c ? (c < 0 ? ' − ' : ' + ') + Math.abs(c) : '') + '. For which ' + X('p') + ' is ' + X('f') + '<sub>' + X('p') + '</sub>(' + x + ') = ' + neg(target) + '?'), pp, 'Substitute ' + X() + ' = ' + x + ' and solve the equation for ' + X('p') + '.', p(x + '² + ' + X('p') + ' · ' + x + (c ? (c < 0 ? ' − ' : ' + ') + Math.abs(c) : '') + ' = ' + neg(target)) + p((x * x + c) + ' + ' + x + X('p') + ' = ' + neg(target)) + p(x + X('p') + ' = ' + neg(target - x * x - c)) + p(X('p') + ' = ' + neg(pp)), { noStep: true });
   },
   function newFunction(l) {
-    let a, b, k; do { a = nz(-6, 6); b = ri(-20, 20); k = nz(-12, 12); } while (b + k === 0);
-    return { type: 'expr', html: p('Given ' + F('g', X()) + ' = ' + poly([[b, ''], [a, X()]]) + ' and ' + F('h', X()) + ' = ' + F('g', X()) + (k < 0 ? ' − ' + -k : ' + ' + k) + '. Give the formula of ' + X('h') + ' as simple as possible. <small>Type only the right side.</small>'), ans: a + '*x+(' + (b + k) + ')', form: 'poly', hint: 'Write the formula of ' + X('g') + ' in place of ' + F('g', X()) + ' and add up the numbers.', steps: F('h', X()) + ' = ' + poly([[b, ''], [a, X()]]) + (k < 0 ? ' − ' + -k : ' + ' + k) + ' = ' + poly([[b + k, ''], [a, X()]]), keys: ['(', ')'], ansText: F('h', X()) + ' = ' + poly([[b + k, ''], [a, X()]]) };
+    let a, b, k, c; do { a = nz(-6, 6); b = ri(-20, 20); k = nz(-5, 5); c = pick([2, 3, -1, -2, 0.5]); } while (c * (a * k + b) === 0);
+    const A = rd(c * a), B = rd(c * (a * k + b)), inner = X() + (k < 0 ? ' − ' + -k : ' + ' + k);
+    return { type: 'expr', html: p('Given ' + F('g', X()) + ' = ' + poly([[b, ''], [a, X()]]) + ' and ' + F('h', X()) + ' = ' + (c === -1 ? '−' : c) + F('g', inner) + '. Give the formula of ' + X('h') + ' as simple as possible. <small>Type only the right side.</small>'), ans: A + '*x+(' + B + ')', form: 'poly', hint: 'In the formula of ' + X('g') + ', replace every ' + X() + ' by (' + inner + '). Then multiply by ' + neg(c) + '.', steps: F('g', inner) + ' = ' + poly([[b, ''], [a, '(' + inner + ')']]) + ' = ' + poly([[a * k + b, ''], [a, X()]]) + '<br>' + F('h', X()) + ' = ' + neg(c) + ' · (' + poly([[a * k + b, ''], [a, X()]]) + ') = ' + poly([[B, ''], [A, X()]]), keys: ['(', ')'], ansText: F('h', X()) + ' = ' + poly([[B, ''], [A, X()]]) };
   }
 ];
 
@@ -896,7 +901,7 @@ if (P.cls === '3VT') {
       {"id": "D7", "title": "Test prep · chapters 7 & 8", "sub": "Wed 16 Jun", "date": "2027-06-16", "gens": [["8.1", "intervalNotation"], ["8.1", "avgGradient"], ["8.1", "avgFromTable"], ["8.1", "gradientShape"], ["8.1", "avgSpeed"], ["8.2", "menu"], ["8.2", "codeRepeat"], ["8.2", "codeNoRepeat"], ["8.2", "arrange"], ["8.2", "roles"], ["8.2", "plates"], ["8.2", "whichCount"], ["8.3", "evalLinear"], ["8.3", "evalQuad"], ["8.3", "solveFx"], ["8.3", "difference"], ["8.3", "maxMin"], ["8.3", "maxMinFactored"], ["8.3", "onGraph"]], "xg": [["8.1", "averageCost"], ["8.2", "routesVia"], ["8.2", "samePawns"], ["8.3", "familyP"], ["8.3", "newFunction"]], "rev": true},
       {"id": "D8", "title": "Test prep · chapters 7 & 8", "sub": "Thu 17 Jun", "date": "2027-06-17", "gens": [["8.1", "intervalNotation"], ["8.1", "avgGradient"], ["8.1", "avgFromTable"], ["8.1", "gradientShape"], ["8.1", "avgSpeed"], ["8.2", "menu"], ["8.2", "codeRepeat"], ["8.2", "codeNoRepeat"], ["8.2", "arrange"], ["8.2", "roles"], ["8.2", "plates"], ["8.2", "whichCount"], ["8.3", "evalLinear"], ["8.3", "evalQuad"], ["8.3", "solveFx"], ["8.3", "difference"], ["8.3", "maxMin"], ["8.3", "maxMinFactored"], ["8.3", "onGraph"]], "xg": [["8.1", "averageCost"], ["8.2", "routesVia"], ["8.2", "samePawns"], ["8.3", "familyP"], ["8.3", "newFunction"]], "rev": true}
     ]
-  }[P.cls] || []).map(o => Object.assign({}, o, { gens: o.gens.filter(g => __has(G, g)), xg: o.xg.filter(g => __has(XG, g)) })).filter(o => o.gens.length);
+  }[P.cls] || []).map(o => Object.assign({}, o, { gens: o.gens.filter(g => __has(G, g)), xg: [...new Set(o.gens.map(g => g[0]))].reduce((a, s) => a.concat((XG[s] || []).map(f => [s, f.name])), []) })).filter(o => o.gens.length);
   /* ---------- end lessons ---------- */
 return { key: 'nx-' + P.cls.toLowerCase() + '-ch8-v1', SECTIONS, LESSONS: __LESSONS, G, XG, TEST: { skip: ['intervalNotation', 'whichCount', 'evalLinear'] }, defaultMode: __LESSONS.length ? 'lesson' : 'para', GOALS };
 

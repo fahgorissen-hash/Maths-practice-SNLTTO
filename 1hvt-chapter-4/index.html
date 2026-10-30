@@ -794,6 +794,41 @@ G['4.6'] = [
 ];
 XG['4.6'] = [];
 
+/* ---------- extra challenge items (Extra spicy) ---------- */
+XG['4.9'] = [
+  function meanFixError(l) {
+    const n = ri(6, 12), m = rd(ri(55, 75) / 10, 1), tot = rd(n * m, 1), wrong = ri(2, 4), right = ri(7, 10), nt = rd(tot - wrong + right, 1), nm = rd(nt / n, 2);
+    return nu(p('The mean of ' + n + ' test marks is ' + m + '. Later the teacher sees that one mark was typed in wrong: it is not a ' + wrong + ' but a ' + right + '. What is the correct mean? <small>(Round to 2 decimals.)</small>'), nm, 'First calculate the total of all marks. Then correct the total.', 'total = ' + n + ' · ' + m + ' = ' + tot + '<br>new total = ' + tot + ' − ' + wrong + ' + ' + right + ' = ' + nt + '<br>mean = ' + nt + ' : ' + n + ' ≈ ' + nm, { needStep: true, tol: .0051 });
+  },
+  function ratioAdd(l) {
+    let a, b; do { a = ri(1, 4); b = ri(2, 7); } while (gcd(a, b) !== 1 || a >= b); const k = ri(3, 8), r = a * k, bl = b * k, c = pick([[1, 1], [2, 3], [3, 4], [1, 2]].filter(q => q[0] * b > q[1] * a && (q[0] * bl) % q[1] === 0 && q[0] * bl / q[1] > r));
+    if (!c) return ratioAdd(l); const need = c[0] * bl / c[1] - r;
+    return nu(p('A bag has red and blue marbles in the ratio ' + a + ' : ' + b + '. There are ' + (r + bl) + ' marbles in the bag. How many <b>red</b> marbles must you add to make the ratio red : blue = ' + c[0] + ' : ' + c[1] + '?'), need, 'First find how many red and blue marbles there are now. The number of blue marbles does not change.', (a + b) + ' parts = ' + (r + bl) + ', 1 part = ' + k + '<br>red ' + r + ', blue ' + bl + '<br>red : ' + bl + ' = ' + c[0] + ' : ' + c[1] + ' → red = ' + (c[0] * bl / c[1]) + '<br>add ' + (c[0] * bl / c[1]) + ' − ' + r + ' = ' + need, { needStep: true });
+  },
+  function doubleDiscount(l) {
+    const pr = pick([40, 60, 80, 120, 150, 200, 250]), d1 = pick([20, 25, 30, 40]), d2 = pick([10, 20, 25]), pay = rd(pr * (1 - d1 / 100) * (1 - d2 / 100), 2), tot = rd(100 - pay / pr * 100, 2);
+    return nu(p('A jacket costs £' + pr + '. In the sale you get ' + d1 + '% discount. On the last day you get another ' + d2 + '% off the <b>sale price</b>. How many percent discount is that in total, compared with the original price?'), tot, 'It is not ' + d1 + ' + ' + d2 + ' = ' + (d1 + d2) + '%. Calculate what you pay at the end.', 'sale price = ' + (100 - d1) + '% of ' + pr + ' = ' + rd(pr * (1 - d1 / 100), 2) + '<br>last day = ' + (100 - d2) + '% of that = ' + pay + '<br>discount = ' + pr + ' − ' + pay + ' = ' + rd(pr - pay, 2) + '<br>' + rd(pr - pay, 2) + '/' + pr + ' × 100% = ' + tot + '%', { needStep: true, tol: .051, ansText: tot + '%' });
+  },
+  function pieMissing(l) {
+    const tot = pick([36, 40, 45, 60, 72, 90, 120]), a = [pick([90, 120, 72, 60]), pick([45, 30, 36, 54, 80])], cnt = a.map(x => x * tot / 360);
+    if (cnt.some(x => !Number.isInteger(x))) return pieMissing(l); const c = ri(2, Math.floor(tot / 6)), rest = tot - cnt[0] - cnt[1] - c; if (rest < 1) return pieMissing(l); const ang = rd(rest / tot * 360, 1);
+    return nu(p(tot + ' students chose a sport: football, hockey, tennis or swimming. In the pie chart the football sector is ' + a[0] + '° and the hockey sector is ' + a[1] + '°. ' + c + ' students chose tennis. The rest chose swimming. Calculate the angle of the swimming sector. <small>(Round to 1 decimal.)</small>'), ang, 'First calculate how many students chose football and hockey.', 'football: ' + a[0] + '/360 × ' + tot + ' = ' + cnt[0] + '<br>hockey: ' + a[1] + '/360 × ' + tot + ' = ' + cnt[1] + '<br>swimming: ' + tot + ' − ' + cnt[0] + ' − ' + cnt[1] + ' − ' + c + ' = ' + rest + '<br>' + rest + '/' + tot + ' × 360° ' + (Number.isInteger(ang) ? '= ' : '≈ ') + ang + '°', { needStep: true, tol: .051, ansText: ang + '°' });
+  },
+  function barGrowth(l) {
+    const labs = ['2021', '2022', '2023', '2024'], vals = labs.map(() => ri(3, 14) * 2); if (vals[3] <= vals[0]) return barGrowth(l); const pc = rd((vals[3] - vals[0]) / vals[0] * 100, 1);
+    return nu(p('The bar chart shows how many members (× 10) a chess club had. By how many percent did the number of members grow from 2021 to 2024? <small>(Round to 1 decimal.)</small>') + bars(labs, vals, 4), pc, 'growth / old value × 100%.', '2021: ' + vals[0] + ', 2024: ' + vals[3] + '<br>growth = ' + (vals[3] - vals[0]) + '<br>' + (vals[3] - vals[0]) + '/' + vals[0] + ' × 100% ≈ ' + pc + '%', { needStep: true, tol: .051, ansText: pc + '%' });
+  },
+  function meanFromGraph(l) {
+    const v = temps(), s = ri(0, 8), m = rd((v[s] + v[s + 1] + v[s + 2] + v[s + 3]) / 4, 2);
+    return nu(p('The line graph shows the average temperature (°C) in a town. Calculate the mean temperature of the four months ' + MON[s] + ' to ' + MON[s + 3] + '. <small>(Round to 2 decimals.)</small>') + lineGraph(v, 2, '°C'), m, 'Read the four values. Add them and divide by 4.', v.slice(s, s + 4).join(' + ') + ' = ' + (v[s] + v[s + 1] + v[s + 2] + v[s + 3]) + '<br>' + (v[s] + v[s + 1] + v[s + 2] + v[s + 3]) + ' : 4 = ' + m, { needStep: true, tol: .0051 });
+  },
+  function monthsAbove(l) {
+    const v = temps(), t = ri(Math.min(...v) + 3, Math.max(...v) - 3), n = v.filter(x => x > t).length, d = Math.max(...v) - Math.min(...v);
+    if (Math.random() < .5) return nu(p('The line graph shows the average temperature (°C) in a town. In how many months is it <b>warmer than ' + t + ' °C</b>?') + lineGraph(v, 2, '°C'), n, 'Imagine a horizontal line at ' + t + ' °C. Count the points above it (not on it).', 'Above ' + t + ' °C: ' + MON.filter((mm, i) => v[i] > t).join(', ') + ' → ' + n + ' months');
+    return nu(p('The line graph shows the average temperature (°C) in a town. How many degrees is the difference between the warmest and the coldest month?') + lineGraph(v, 2, '°C'), d, 'Find the highest and the lowest point.', 'warmest ' + Math.max(...v) + ' °C, coldest ' + Math.min(...v) + ' °C<br>' + Math.max(...v) + ' − ' + Math.min(...v) + ' = ' + d);
+  }
+];
+
 /* the book's paragraphs: 4.1 Data, 4.2 Ratios, 4.3 Percentages, 4.4 Graphs and charts, 4.5 Relationships and graphs */
 const by = (L, names) => names.map(n => L.find(f => f.name === n));
 const ALL = [].concat(...Object.values(G)), ALLX = [].concat(...Object.values(XG));
@@ -802,7 +837,7 @@ G['4.2'] = by(ALL, ['simplifyRatio', 'partWhole', 'share', 'scaleMap', 'findScal
 G['4.3'] = by(ALL, ['fracToPercent', 'percentOf', 'discount', 'vat', 'whatPercent']);
 G['4.4'] = by(ALL, ['pieAngle', 'percentAngle', 'angleToCount', 'barRead', 'whichDiagram', 'readLine']);
 G['4.5'] = by(ALL, ['maxRise', 'riseFall', 'axisChoice']); delete G['4.6'];
-XG['4.1'] = by(ALLX, ['neededMark']); XG['4.2'] = by(ALLX, ['whichSweeter']); XG['4.3'] = by(ALLX, ['backToWhole']); XG['4.4'] = []; XG['4.5'] = []; delete XG['4.6'];
+XG['4.1'] = by(ALLX, ['neededMark', 'meanFixError']); XG['4.2'] = by(ALLX, ['whichSweeter', 'ratioAdd']); XG['4.3'] = by(ALLX, ['backToWhole', 'doubleDiscount']); XG['4.4'] = by(ALLX, ['pieMissing', 'barGrowth']); XG['4.5'] = by(ALLX, ['meanFromGraph', 'monthsAbove']); delete XG['4.6']; delete XG['4.9'];
 const SECTIONS = [
   { id: '4.1', title: '4.1 Data', sub: 'Frequency tables, the mean, rounding' },
   { id: '4.2', title: '4.2 Ratios', sub: 'Simplifying, part-to-whole ratio, sharing, scale' },
@@ -839,7 +874,7 @@ const GOALS = [
       {"id": "D15", "title": "Lesson · 4.5 B Relationships and graphs", "sub": "Thu 21 Jan · ex 87, 88, 89, 90, 91", "date": "2027-01-21", "gens": [["4.5", "maxRise"], ["4.5", "riseFall"], ["4.5", "axisChoice"]], "xg": []},
       {"id": "D16", "title": "Test prep · chapter 4", "sub": "Tue 26 Jan · ex 96, 98, 100, 102, 104, 106, 108", "date": "2027-01-26", "gens": [["4.1", "tableMean"], ["4.1", "listMean"], ["4.1", "totalFreq"], ["4.1", "missingValue"], ["4.1", "roundNumber"], ["4.1", "roundContext"], ["4.1", "roundBounds"], ["4.1", "weightedMean"], ["4.2", "simplifyRatio"], ["4.2", "partWhole"], ["4.2", "share"], ["4.2", "scaleMap"], ["4.2", "findScale"], ["4.3", "fracToPercent"], ["4.3", "percentOf"], ["4.3", "discount"], ["4.3", "vat"], ["4.3", "whatPercent"], ["4.4", "pieAngle"], ["4.4", "percentAngle"], ["4.4", "angleToCount"], ["4.4", "barRead"], ["4.4", "whichDiagram"], ["4.4", "readLine"], ["4.5", "maxRise"], ["4.5", "riseFall"], ["4.5", "axisChoice"]], "xg": [["4.1", "neededMark"], ["4.2", "whichSweeter"], ["4.3", "backToWhole"]], "rev": true}
     ]
-  }[P.cls] || []).map(o => Object.assign({}, o, { gens: o.gens.filter(g => __has(G, g)), xg: o.xg.filter(g => __has(XG, g)) })).filter(o => o.gens.length);
+  }[P.cls] || []).map(o => Object.assign({}, o, { gens: o.gens.filter(g => __has(G, g)), xg: [...new Set(o.gens.map(g => g[0]))].reduce((a, s) => a.concat((XG[s] || []).map(f => [s, f.name])), []) })).filter(o => o.gens.length);
   /* ---------- end lessons ---------- */
 return { key: 'nx-1hvt-ch4-v1', SECTIONS, LESSONS: __LESSONS, G, XG, TEST: { skip: ['roundNumber', 'whichDiagram', 'axisChoice', 'percentAngle', 'fracToPercent', 'simplifyRatio', 'readLine'] }, defaultMode: __LESSONS.length ? 'lesson' : 'para', GOALS };
 

@@ -992,7 +992,7 @@ const GOALS = [
       {"id": "D7", "title": "Lesson · 5.5 A Right-angled or not?", "sub": "Tue 1 Jun · ex 65, 66, 68, 69, 70", "date": "2027-06-01", "gens": [["5.5", "isRight"], ["5.5", "classify"], ["5.5", "whichRight"]], "xg": [["5.5", "makeRight"], ["5.5", "maxSideAcute"]]},
       {"id": "D8", "title": "Lesson · 5.5 B Right-angled or not?", "sub": "Wed 2 Jun · ex 71, 72, 73, 74", "date": "2027-06-02", "gens": [["5.5", "isRight"], ["5.5", "classify"], ["5.5", "whichRight"]], "xg": [["5.5", "makeRight"], ["5.5", "maxSideAcute"]]}
     ]
-  }[P.cls] || []).map(o => Object.assign({}, o, { gens: o.gens.filter(g => __has(G, g)), xg: o.xg.filter(g => __has(XG, g)) })).filter(o => o.gens.length);
+  }[P.cls] || []).map(o => Object.assign({}, o, { gens: o.gens.filter(g => __has(G, g)), xg: [...new Set(o.gens.map(g => g[0]))].reduce((a, s) => a.concat((XG[s] || []).map(f => [s, f.name])), []) })).filter(o => o.gens.length);
   /* ---------- end lessons ---------- */
 return { key: 'nx-' + P.cls.toLowerCase() + '-ch5-v1', SECTIONS, LESSONS: __LESSONS, G, XG, TEST: { skip: ['hypName', 'writeFormula'] }, defaultMode: __LESSONS.length ? 'lesson' : 'para', GOALS };
 

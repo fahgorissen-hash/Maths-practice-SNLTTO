@@ -669,13 +669,13 @@ G['8.1'] = [
 ];
 XG['8.1'] = [
   function boxVolume(l) {
-    const v = V(), c1 = ri(2, 5), c2 = pick([1, 2, 3]), s = c1 + v + '*' + T(c2, v) + '*' + v;
-    return alg(p('A box is ' + M(c1 + v) + ' long, ' + M(T(c2, v)) + ' wide and ' + M(v) + ' high. Write the volume as short as possible.'), [s, c1 * c2 + '*' + v + '*' + v + '*' + v], 'mono', 'volume = length · width · height. Multiply the numbers, then the letters.');
+    const v = V(), c1 = ri(3, 6), c2 = ri(2, c1 - 1), c3 = pick([1, 2]), a = T(c1, v), b = T(c2, v), h = T(c3, v), s = '2*' + a + '*' + b + '+2*' + a + '*' + h + '+2*' + b + '*' + h;
+    return alg(p('A box is ' + M(a) + ' long, ' + M(b) + ' wide and ' + M(h) + ' high. Write the total <b>surface area</b> of the box as short as possible.'), [s, CS([T(2 * c1 * c2, v + '^2'), T(2 * c1 * c3, v + '^2'), T(2 * c2 * c3, v + '^2')])], 'mono', 'The box has 6 faces: two of each kind. Calculate the area of each kind of face, then add the like terms.');
   },
   function missingTerm(l) {
-    const v = V(), n = ri(2, 6), a = nz(-6, 6), b = nz(-9, 9); if (a === b) return XG['8.1'][1](l);
-    const left = T(a, pw(v, n)), part = T(b, pw(v, n));
-    return alg(p('Fill in the missing term: ' + M(left) + ' = … ' + (b < 0 ? '− ' : '+ ') + M(T(Math.abs(b), pw(v, n))) + '.'), [left + '-(' + part + ')'], 'mono', 'The missing term plus the given term must give ' + M(left) + '. So calculate ' + M(left + '-(' + part + ')') + '.');
+    const [v, w] = V2(), c1 = pick([2, 3, 4, -2, -3]), c2 = pick([2, 3, 5, -4, 6]), a1 = ri(1, 3), b1 = ri(1, 2), a2 = ri(1, 4), b2 = ri(0, 3);
+    const given = T(c1, pw(v, a1) + pw(w, b1)), miss = T(c2, pw(v, a2) + pw(w, b2)), prod = C(given + '*' + miss);
+    return alg(p('Fill in the missing term: ' + M(given) + ' · … = ' + M(prod) + '.'), [prod + '/(' + given + ')'], 'mono', 'Work backwards: divide the numbers, and for each letter subtract the exponents. Check by multiplying.');
   }
 ];
 
@@ -894,12 +894,29 @@ if (VT) {
       return multi(p('Solve by completing the square: ' + ME(qS(1, b, c) + '=0') + '.' + (exact ? '' : ' Round your answers <b>to 2 decimal places</b>.')), rs[0], rs[1], 'Write the left side as (x + p)² + q. Then (x + p)² = −q and take ± the square root.', p(ME(xpS(h) + '-' + h * h + (c ? pm(c) : '') + '=0')) + p(ME(xpS(h) + '=' + k)) + p(ME(L + '=-sqrt(' + k + ')') + ' or ' + ME(L + '=sqrt(' + k + ')')) + p('x ' + (exact ? '= ' : '≈ ') + neg(rs[0]) + ' or x ' + (exact ? '= ' : '≈ ') + neg(rs[1])), Object.assign({ ansText: 'x ' + (exact ? '= ' : '≈ ') + neg(Math.min(...rs)) + ' or x ' + (exact ? '= ' : '≈ ') + neg(Math.max(...rs)) }, exact ? {} : { tol: .0051 }));
     }
   ];
+  XG['8.4'] = [
+    function rootsCombined(l) {
+      const v = V(), k = pick([2, 3, 5]), a = ri(2, 5), b = ri(1, 4), sg = Math.random() < .3 ? -1 : 1; if (a === b) return XG['8.4'][0](l);
+      const s = 'sqrt(' + a * a * k + v + ')' + (sg < 0 ? '-' : '+') + 'sqrt(' + b * b * k + v + ')', c = a + sg * b, ans = T(c, 'sqrt(' + k + v + ')');
+      const q = ex(p('Simplify: ' + M(s) + '. (' + M(v) + ' is positive.)'), ans, null, 'First simplify each root: look for a square number inside. Then add like roots.', M(s) + ' = ' + M(a + 'sqrt(' + k + v + ')' + (sg < 0 ? '-' : '+') + (b === 1 ? '' : b) + 'sqrt(' + k + v + ')') + ' = ' + M(ans), { keys: ['√', '(', ')'] });
+      q.grade = ownGrade(q); return q;
+    },
+    function rootPowerNumber(l) {
+      const v = V(), k = pick([2, 3, 5, 6, 7]), a = ri(2, 5), n = pick([3, 5]), m = Math.floor(n / 2), s = 'sqrt(' + a * a * k + v + '^' + n + ')', ans = a + pw(v, m) + 'sqrt(' + k + v + ')';
+      const q = ex(p('Simplify: ' + M(s) + '. (' + M(v) + ' is positive.)'), ans, null, 'Split the number into a square number times ' + k + ', and the power into an even power times ' + M(v) + '.', M(s) + ' = ' + M('sqrt(' + a * a + '*' + v + '^' + (n - 1) + ')*sqrt(' + k + v + ')') + ' = ' + M(ans), { keys: ['√', '^', '(', ')'] });
+      q.grade = ownGrade(q); return q;
+    }
+  ];
   XG['8.5'] = [
     function csWithA(l) {
       const a = pick([2, 3, -2, 5]), h = nz(-5, 5), c = ri(-12, 12), q_ = c - a * h * h, b = 2 * a * h;
       return { type: 'multi', fields: ['a =', 'p =', 'q ='], ans: [a, h, q_], html: p('Write ' + M(qS(a, b, c)) + ' in the form ' + M('a(x+p)^2+q') + '.'), hint: 'First take ' + a + ' outside brackets for the x-terms. Then complete the square inside the brackets.', steps: p(eqs([qS(a, b, 0), a + '(' + qS(1, 2 * h, 0) + ')', a + '(' + xpS(h) + '-' + h * h + ')', a + xpS(h) + pm(-a * h * h)])) + p('Then ' + (c < 0 ? 'subtract ' + -c : 'add ' + c) + ': ' + M(a + xpS(h) + (q_ ? pm(q_) : ''))), noStep: true, ansText: 'a = ' + neg(a) + ', p = ' + neg(h) + ', q = ' + neg(q_) };
     }
   ];
+  XG['8.5'].push(function csExtreme(l) {
+    const a = pick([1, 1, -1, 2, -2]), h = nz(-6, 6), q_ = ri(-12, 15), b = 2 * a * h, c = a * h * h + q_, mx = a < 0;
+    return nu(p('Use completing the square. What is the ' + (mx ? '<b>largest</b>' : '<b>smallest</b>') + ' value of ' + M(qS(a, b, c)) + '?'), q_, 'Write it as ' + M('a(x+p)^2+q') + '. A square is never negative, so the ' + (mx ? 'largest' : 'smallest') + ' value is q (when the square is 0).', p(eqs([qS(a, b, c), (a === 1 ? '' : a === -1 ? '-' : a) + xpS(h) + pm(q_)])) + p('The square is 0 for ' + M('x=' + (-h)) + ', so the ' + (mx ? 'largest' : 'smallest') + ' value is ' + neg(q_) + '.'));
+  });
   XG['8.2'].push(function negFactor(l) {
     const v = V(), c = pick([2, 3, 4, 5]), n = ri(2, 3), s = '(' + c + v + '^-' + n + ')^-2', ans = pw(v, 2 * n) + '/' + c * c;
     return ex(p('Simplify: ' + M(s) + '. Write the answer without negative exponents.'), ans, 'lowest', 'A power −2 means 1 over the square: ' + M('(' + c + v + '^-' + n + ')^-2') + ' = ' + M('1/(' + c + v + '^-' + n + ')^2') + '.', M(s) + ' = ' + M(c + '^-2*' + v + '^(' + -n + '*-2)') + ' = ' + M('1/' + c * c + '*' + v + '^' + 2 * n) + ' = ' + M(ans));
@@ -1045,9 +1062,42 @@ if (P.cls === '1HVT') {
       return ch(p('Write ' + n + ' as a product of prime factors.'), right, [bad1, bad2, bad3].filter(w => w !== right), 'Keep dividing by the smallest prime number that fits: 2, 3, 5, 7, 11, …', n + ' = ' + f_.join(' · ') + ' = ' + right);
     }
   ];
-  const XH2 = [find('expandSimplify')];
+  const XH1 = [
+    function substituteTwo(l) {
+      const a = pick([-1, -2, -3, 2, 3]), b = pick([-2, -4, 2, 3, 5]), c1 = ri(2, 5), c2 = pick([-6, -5, -4, -3, -2, 2, 3, 4, 5, 6]), c3 = ri(2, 9), sx = c1 + 'a^2' + (c2 < 0 ? '-' : '+') + Math.abs(c2) + 'ab-' + c3 + 'b', v = c1 * a * a + c2 * a * b - c3 * b;
+      return nu(p('Calculate the value of ' + mt(sx) + ' for ' + mt('a = ' + a) + ' and ' + mt('b = ' + b) + '.'), v, 'Replace every letter by its number, in brackets. Powers first, then multiply, then add and subtract.', c1 + ' · ' + Pa(a) + '² ' + (c2 < 0 ? '− ' : '+ ') + Math.abs(c2) + ' · ' + Pa(a) + ' · ' + Pa(b) + ' − ' + c3 + ' · ' + Pa(b) + ' = ' + c1 * a * a + ' ' + (c2 * a * b < 0 ? '− ' + -c2 * a * b : '+ ' + c2 * a * b) + ' ' + (c3 * b < 0 ? '+ ' + -c3 * b : '− ' + c3 * b) + ' = ' + N_(v));
+    },
+    function lShape(l) {
+      const a = ri(3, 7), b = ri(1, a - 1), c = ri(2, 6), d = ri(1, c - 1), v = 'x';
+      // L-shape: outer a x by c x, a corner of (a − b) x by (c − d) x cut away; the perimeter equals that of the full rectangle
+      return alg(p('An L-shaped figure is a rectangle of ' + mt(a + v) + ' by ' + mt(c + v) + ' with a smaller rectangle of ' + mt((a - b === 1 ? '' : a - b) + v) + ' by ' + mt((c - d === 1 ? '' : c - d) + v) + ' cut out of one corner. Write a formula for the <b>area</b> of the L-shape as short as possible.'), [a + v + '*' + c + v + '-' + (a - b) + v + '*' + (c - d) + v, a * c + v + '^2-' + (a - b) * (c - d) + v + '^2'], 'mono', 'Area of the big rectangle minus the area of the piece that is cut out.');
+    }
+  ];
+  const XH2 = [find('expandSimplify'),
+    function twoBracketsEq(l) {
+      let a, b, c, d, x, k; do { a = ri(3, 7); c = ri(1, a - 1); b = nz(-6, 6); d = nz(-6, 6); x = ri(-6, 9); k = a * (x + b) - c * (x + d); } while (k === 0);
+      const L = a + '(' + lt(1, b) + ')-' + c + '(' + lt(1, d) + ')';
+      return nu(p('Solve: ' + mt(L) + ' = ' + N_(k) + '.'), x, 'Expand both brackets. Watch the minus before the second bracket: it changes both signs inside.', p(mt(L) + ' = ' + N_(k)) + p(mt(CS([T(a, 'x'), String(a * b), T(-c, 'x'), String(-c * d)])) + ' = ' + N_(k)) + p(mt(lt(a - c, a * b - c * d)) + ' = ' + N_(k)) + p(mt(T(a - c, 'x')) + ' = ' + N_(k - a * b + c * d)) + p(mt('x') + ' = ' + N_(x)), { noStep: true, eqStep: 'x', ansText: 'x = ' + N_(x) });
+    }];
+  XH3.push(function factorTwice(l) {
+    const g = pick([2, 3, 5, -2]); let r1, r2; do { r1 = nz(-7, 7); r2 = nz(-7, 7); } while (r1 + r2 === 0 || r1 === r2);
+    const right = (g < 0 ? '-' : '') + Math.abs(g) + fac('x', r1) + fac('x', r2), expr = C(right), inner = C(fac('x', r1) + fac('x', r2));
+    const wr = [(g < 0 ? '-' : '') + Math.abs(g) + fac('x', -r1) + fac('x', -r2), fac(Math.abs(g) + 'x', g * r1) + fac('x', r2), (g < 0 ? '-' : '') + Math.abs(g) + '(' + inner + ')'].filter(w => C(w) !== expr || w.split('(').length === 2);
+    return ch(p('Factorise as far as possible: ' + mt(expr) + '.'), mt(right), wr.map(mt), 'First take out the common factor ' + N_(g) + '. Then factorise what is left with the product-sum method.', mt(expr) + ' = ' + mt((g < 0 ? '-' : '') + Math.abs(g) + '(' + inner + ')') + ' = ' + mt(right));
+  });
+  const XH4 = [
+    function squaresDiff(l) {
+      const v = pick(['x', 'a', 'p']), a = ri(1, 9), b = ri(1, 9), sg = Math.random() < .5, s = '(' + v + '+' + a + ')^2-(' + v + (sg ? '-' : '+') + b + ')^2';
+      if (!sg && a === b) return XH4[0](l);
+      return alg(p('Expand and simplify: ' + mt(s) + '.'), [s, '(' + v + '^2+' + 2 * a + v + '+' + a * a + ')-(' + v + '^2' + (sg ? '-' : '+') + 2 * b + v + '+' + b * b + ')'], 'poly', 'Use (a + b)² and (a − b)² for each part. Keep the second result in brackets: the minus changes every sign.');
+    },
+    function squareHole(l) {
+      const v = 'x', a = ri(2, 9), b = ri(1, a - 1), s = '(' + v + '+' + a + ')^2-(' + v + '+' + b + ')(' + v + '-' + b + ')';
+      return alg(p('A square has sides ' + mt(v + '+' + a) + '. A rectangle of ' + mt(v + '+' + b) + ' by ' + mt(v + '-' + b) + ' is cut out. Write the area that is left as short as possible.'), [s, '(' + v + '^2+' + 2 * a + v + '+' + a * a + ')-(' + v + '^2-' + b * b + ')'], 'poly', 'Area of the square: (a + b)². Area of the hole: (a + b)(a − b) = a² − b². Subtract.');
+    }
+  ];
   G['8.1'] = H1; G['8.2'] = H2; G['8.3'] = H3; G['8.4'] = H4; delete G['8.5'];
-  XG['8.1'] = []; XG['8.2'] = XH2; XG['8.3'] = XH3; XG['8.4'] = []; delete XG['8.5'];
+  XG['8.1'] = XH1; XG['8.2'] = XH2; XG['8.3'] = XH3; XG['8.4'] = XH4; delete XG['8.5'];
   SECTIONS.splice(0, SECTIONS.length,
     { id: '8.1', title: '8.1 Substituting and simplifying', sub: 'Calculating values, like terms, multiplying terms' },
     { id: '8.2', title: '8.2 Expanding brackets', sub: 'One bracket, two brackets, equations with brackets' },
@@ -1107,7 +1157,7 @@ if (P.cls === '1HVT') {
       {"id": "D9", "title": "Lesson · 8.5 Completing the square", "sub": "Fri 16 Apr · ex 80, 81, 82, 83, 84, 85, 86", "date": "2027-04-16", "gens": [["8.5", "csForm"], ["8.5", "csVertex"], ["8.5", "csSolve"]], "xg": [["8.5", "csWithA"]]},
       {"id": "D10", "title": "Test prep · chapter 8", "sub": "Tue 11 May", "date": "2027-05-11", "gens": [["8.1", "writePower"], ["8.1", "bracketPower"], ["8.1", "substitute"], ["8.1", "productPower"], ["8.1", "likeTerms"], ["8.1", "multiplyTerms"], ["8.1", "likeChoice"], ["8.2", "productRule"], ["8.2", "quotientRule"], ["8.2", "powerOfPower"], ["8.2", "mixedRules"], ["8.2", "ruleChoice"], ["8.2", "negExponent"], ["8.2", "negToFraction"], ["8.3", "singleBracket"], ["8.3", "twoBrackets"], ["8.3", "doubleBracket"], ["8.3", "special"], ["8.3", "identifyForm"], ["8.3", "expandSimplify"], ["8.3", "areaExpr"], ["8.4", "likeRoots"], ["8.4", "mulRoots"], ["8.4", "rootSquare"], ["8.4", "rootOfPower"], ["8.4", "expandRoot"], ["8.5", "csForm"], ["8.5", "csVertex"], ["8.5", "csSolve"]], "xg": [["8.1", "boxVolume"], ["8.1", "missingTerm"], ["8.2", "baseChange"], ["8.2", "heightFromVolume"], ["8.2", "cubeOfPower"], ["8.2", "negFactor"], ["8.3", "threeFactors"], ["8.3", "numberSquare"], ["8.5", "csWithA"]], "rev": true}
     ]
-  }[P.cls] || []).map(o => Object.assign({}, o, { gens: o.gens.filter(g => __has(G, g)), xg: o.xg.filter(g => __has(XG, g)) })).filter(o => o.gens.length);
+  }[P.cls] || []).map(o => Object.assign({}, o, { gens: o.gens.filter(g => __has(G, g)), xg: [...new Set(o.gens.map(g => g[0]))].reduce((a, s) => a.concat((XG[s] || []).map(f => [s, f.name])), []) })).filter(o => o.gens.length);
   /* ---------- end lessons ---------- */
 return { key: 'nx-' + P.cls.toLowerCase() + '-ch8-v1', SECTIONS, LESSONS: __LESSONS, G, XG, TEST: { skip: ['likeChoice', 'ruleChoice', 'bracketPower', 'writePower', 'identifyForm', 'multiplyTerms', 'hcf'] }, defaultMode: __LESSONS.length ? 'lesson' : 'para', GOALS };
 

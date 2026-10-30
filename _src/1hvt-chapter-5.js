@@ -243,6 +243,32 @@ XG['5.5'] = [
   }
 ];
 
+/* ---------- extra challenge items (Extra spicy) ---------- */
+XG['5.1'].push(function trainTimes(l) {
+  const h0 = ri(6, 18), m0 = ri(0, 11) * 5, dur = ri(5, 40) * 5, v = pick([60, 72, 80, 90, 96, 120, 144]), km = rd(v * dur / 60, 1); if (!Number.isInteger(km * 2)) return trainTimes(l);
+  const h1 = Math.floor((h0 * 60 + m0 + dur) / 60), m1 = (m0 + dur) % 60, tt = (h, m) => h + ':' + String(m).padStart(2, '0');
+  return nu(p('A train leaves at ' + tt(h0, m0) + ' and arrives at ' + tt(h1, m1) + '. It travels ' + sp(km) + ' km. What is the average speed in <b>km/h</b>?'), v, 'First find the travel time. Write it in hours (as a decimal or a fraction).', 'travel time = ' + Math.floor(dur / 60) + ' h ' + dur % 60 + ' min = ' + dur + '/60 h<br>speed = ' + sp(km) + ' : ' + rd(dur / 60, 4) + ' = ' + v + ' km/h', { needStep: true, tol: .051 });
+});
+XG['5.2'] = [
+  function tilesFloor(l) {
+    const t = pick([20, 25, 30, 40, 50]), a = ri(8, 25) * t, b = ri(6, 20) * t, n = (a / t) * (b / t);
+    return nu(p('A floor is ' + sp(a / 100) + ' m by ' + sp(b / 100) + ' m. You cover it with square tiles of ' + t + ' cm by ' + t + ' cm. How many tiles do you need?'), n, 'Write everything in cm. How many tiles fit along each side?', sp(a / 100) + ' m = ' + a + ' cm → ' + a + ' : ' + t + ' = ' + a / t + ' tiles<br>' + sp(b / 100) + ' m = ' + b + ' cm → ' + b / t + ' tiles<br>' + a / t + ' · ' + b / t + ' = ' + n + ' tiles', { needStep: true });
+  },
+  function paintWall(l) {
+    const w = rd(ri(35, 70) / 10, 1), h = rd(ri(24, 30) / 10, 1), dw = .9, dh = 2.1, cov = pick([5, 6, 8, 10]), A = rd(w * h - dw * dh, 2), lit = Math.ceil(2 * A / cov - 1e-9);
+    if (Number.isInteger(2 * A / cov)) return paintWall(l);
+    return nu(p('A wall is ' + w + ' m wide and ' + h + ' m high. In the wall is a door of 0.9 m by 2.1 m. You paint the wall (not the door) <b>twice</b>: two layers of paint. One litre of paint covers ' + cov + ' m². Paint is sold in whole litres. How many litres do you need?'), lit, 'Area of the wall minus area of the door. Two layers: twice that area. Then divide by ' + cov + ' and round <b>up</b>.', 'wall: ' + w + ' · ' + h + ' = ' + rd(w * h, 2) + ' m²<br>door: 0.9 · 2.1 = 1.89 m²<br>paint: ' + rd(w * h, 2) + ' − 1.89 = ' + A + ' m²<br>two layers: 2 · ' + A + ' = ' + rd(2 * A, 2) + ' m²<br>' + rd(2 * A, 2) + ' : ' + cov + ' ≈ ' + rd(2 * A / cov, 2) + ' → ' + lit + ' litres', { needStep: true });
+  }
+];
+XG['5.3'].push(function baseTimesHeight(l) {
+  const h = ri(2, 10), k = pick([2, 3, 4]), b = k * h, A = b * h / 2; if (!Number.isInteger(A)) return baseTimesHeight(l);
+  return nu(p('A triangle has an area of ' + A + ' cm². The base is ' + k + ' times as long as the height. How long is the <b>height</b>? <small>(Try some numbers if you need to.)</small>'), h, 'Area = ½ · base · height = ½ · ' + k + ' · height · height. So height · height = …', '½ · ' + k + 'h · h = ' + A + ' → h · h = ' + (2 * A / k) + '<br>h = ' + h + ' cm (check: base ' + b + ', ½ · ' + b + ' · ' + h + ' = ' + A + ')', { needStep: true });
+});
+XG['5.5'].push(function waterHeight(l) {
+  const a = ri(4, 10) * 10, b = ri(3, 6) * 10, H = ri(4, 8) * 10, hh = ri(10, H / 10 * 10 - 5), V = a * b * hh / 1000; if (!Number.isInteger(V * 2)) return waterHeight(l);
+  return nu(p('An aquarium is ' + a + ' cm long, ' + b + ' cm wide and ' + H + ' cm high. You pour in ' + sp(V) + ' litres of water. How high is the water in the aquarium (in cm)?'), hh, '1 litre = 1 dm³ = 1000 cm³. Volume = length · width · height of the water.', sp(V) + ' litres = ' + sp(V * 1000) + ' cm³<br>' + a + ' · ' + b + ' = ' + a * b + ' cm²<br>' + sp(V * 1000) + ' : ' + a * b + ' = ' + hh + ' cm', { needStep: true });
+});
+
 const SECTIONS = [
   { id: '5.1', title: '5.1 Length, time and speed', sub: 'Metric units, converting time, km/h and m/s' },
   { id: '5.2', title: '5.2 Perimeter and area', sub: 'Rectangles, area units, are and hectare' },
@@ -274,6 +300,6 @@ const GOALS = [
       {"id": "D10", "title": "Lesson · 5.5 Volume", "sub": "Fri 2 Apr · ex 77, 79, 80, 81, 82, 83", "date": "2027-04-02", "gens": [["5.5", "cuboidVolume"], ["5.5", "surfaceArea"], ["5.5", "volumeUnit"], ["5.5", "litres"], ["5.5", "massUnit"]], "xg": [["5.5", "fillTime"]]},
       {"id": "D11", "title": "Test prep · chapter 5", "sub": "Tue 6 Apr · ex 86, 87, 88", "date": "2027-04-06", "gens": [["5.1", "lengthUnit"], ["5.1", "prefix"], ["5.1", "timeConvert"], ["5.1", "speedConvert"], ["5.1", "avgSpeed"], ["5.2", "perimeterRect"], ["5.2", "areaRect"], ["5.2", "areaUnit"], ["5.2", "areHectare"], ["5.2", "mixedPerimeter"], ["5.3", "triArea"], ["5.3", "rightTriArea"], ["5.3", "whichHeight"], ["5.3", "heightFromArea"], ["5.4", "circumference"], ["5.4", "circleArea"], ["5.4", "exactPi"], ["5.4", "radiusBack"], ["5.5", "cubeVolume"], ["5.5", "cuboidVolume"], ["5.5", "surfaceArea"], ["5.5", "volumeUnit"], ["5.5", "litres"], ["5.5", "massUnit"]], "xg": [["5.1", "runnerSpeed"], ["5.3", "boxMethod"], ["5.4", "semicircle"], ["5.4", "ringArea"], ["5.5", "fillTime"]], "rev": true}
     ]
-  }[P.cls] || []).map(o => Object.assign({}, o, { gens: o.gens.filter(g => __has(G, g)), xg: o.xg.filter(g => __has(XG, g)) })).filter(o => o.gens.length);
+  }[P.cls] || []).map(o => Object.assign({}, o, { gens: o.gens.filter(g => __has(G, g)), xg: [...new Set(o.gens.map(g => g[0]))].reduce((a, s) => a.concat((XG[s] || []).map(f => [s, f.name])), []) })).filter(o => o.gens.length);
   /* ---------- end lessons ---------- */
 return { key: 'nx-1hvt-ch5-v1', SECTIONS, LESSONS: __LESSONS, G, XG, TEST: { skip: ['prefix', 'lengthUnit', 'massUnit', 'areHectare', 'whichHeight', 'cubeVolume', 'areaRect'] }, defaultMode: __LESSONS.length ? 'lesson' : 'para', GOALS };

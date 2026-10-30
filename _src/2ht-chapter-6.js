@@ -179,6 +179,13 @@ XG['6.2'] = [
     return ineqChoice(p('Solve the inequality: ' + rows[0][0]), fs, val, 1, 'Multiply both sides by ' + q + ' first (a positive number, so the sign stays).', bal(rows));
   }
 ];
+XG['6.2'].push(function largestWhole(l) {
+  let a, h, c, k; do { a = ri(2, 5); h = nz(-6, 6); c = a + ri(1, 4); k = ri(-20, 20); } while ((a * h - k) % (c - a) === 0);
+  // a(x + h) > cx + k  ->  (a − c)x > k − ah  ->  x < (ah − k)/(c − a)
+  const bound = (a * h - k) / (c - a), ans = Math.floor(bound), L = a + '(' + lin(1, h) + ')', Rt = lin(c, k);
+  const rows = [[L + ' &gt; ' + Rt, 'remove brackets'], [lin(a, a * h) + ' &gt; ' + Rt, '− ' + lin(c, 0) + (a * h > 0 ? ', − ' + a * h : a * h < 0 ? ', + ' + -a * h : '')], [lin(a - c, 0) + ' &gt; ' + neg(k - a * h), ': (' + neg(a - c) + ') — the sign turns around!'], [X() + ' &lt; ' + fv(a * h - k, c - a, true)]];
+  return nu(p('What is the <b>largest whole number</b> ' + X() + ' for which ' + L + ' &gt; ' + Rt + '?'), ans, 'Solve the inequality first. You divide by a negative number, so the sign turns around. Then look for the largest whole number that fits.', bal(rows) + p('The largest whole number below ' + fv(a * h - k, c - a, true) + ' is ' + neg(ans) + '.'));
+});
 
 /* ======================= 6.3 Quadratic equations x² = c ======================= */
 const fields2 = ['smallest solution: x =', 'largest solution: x ='];
@@ -230,8 +237,8 @@ G['6.3'] = [
 ];
 XG['6.3'] = [
   function cubeArea(l) {
-    const z = pick([2, 3, 4, 5, 6, 7, 8, 10]), A = 6 * z * z;
-    return nu(p('A cube has a total surface area of <b>' + A + ' cm²</b>. How long is one edge of the cube (in cm)?'), z, 'A cube has 6 equal square faces: area = 6' + X('z') + '². Solve 6' + X('z') + '² = ' + A + '.', bal([['6' + X('z') + '² = ' + A, ': 6'], [X('z') + '² = ' + z * z, '±√'], [X('z') + ' = −' + z + ' or ' + X('z') + ' = ' + z]]) + p('A length cannot be negative, so the edge is ' + z + ' cm.'), { noStep: true });
+    const z = pick([3, 4, 5, 6, 7, 8, 9, 11, 12]), A = 6 * z * z;
+    return nu(p('A cube has a total surface area of <b>' + A + ' cm²</b>. Calculate the <b>volume</b> of the cube (in cm³).'), z * z * z, 'A cube has 6 equal square faces: area = 6' + X('z') + '². Solve 6' + X('z') + '² = ' + A + ' to find the edge first.', bal([['6' + X('z') + '² = ' + A, ': 6'], [X('z') + '² = ' + z * z, '±√'], [X('z') + ' = −' + z + ' or ' + X('z') + ' = ' + z]]) + p('A length cannot be negative, so the edge is ' + z + ' cm.') + p('volume = ' + z + '³ = ' + z * z * z + ' cm³'), { noStep: true });
   },
   function negSquare(l) {
     const pp = nz(-6, 6), r = ri(1, 6), k = ri(2, 4), m = ri(1, 20), c = m - k * r * r;
@@ -479,8 +486,57 @@ if (P.cls === '1HVT') {
       return nu(p('In a pattern, figure ' + X('f') + ' has ' + X('d') + ' = ' + k + X('f') + ' + ' + s0 + ' dots. Which figure has ' + tot + ' dots?'), n, 'Solve ' + k + X('f') + ' + ' + s0 + ' = ' + tot + ' with the balance method.', bal([[k + X('f') + ' + ' + s0 + ' = ' + tot, '− ' + s0], [k + X('f') + ' = ' + (tot - s0), ': ' + k], [X('f') + ' = ' + n]]), { noStep: true, eqStep: 'f' });
     }
   ];
+  const X1 = [
+    function taxiStart(l) {
+      const rate = pick([1.6, 1.8, 2.2, 2.4, 2.5]), st = pick([3.5, 4, 4.5, 5, 6]), k1 = ri(3, 9), k2 = k1 + ri(2, 8), c1 = Math.round((st + rate * k1) * 100) / 100, c2 = Math.round((st + rate * k2) * 100) / 100;
+      return nu(p('A taxi charges a fixed starting price plus a price per km. A ride of ' + k1 + ' km costs €' + c1.toFixed(2) + ' and a ride of ' + k2 + ' km costs €' + c2.toFixed(2) + '. What is the <b>starting price</b> (in €)?'), st, 'First calculate the price per km: the difference in price divided by the difference in km.', 'price per km = (' + c2.toFixed(2) + ' − ' + c1.toFixed(2) + ') : (' + k2 + ' − ' + k1 + ') = ' + rate.toFixed(2) + '<br>starting price = ' + c1.toFixed(2) + ' − ' + k1 + ' · ' + rate.toFixed(2) + ' = ' + st.toFixed(2), { tol: .001 });
+    },
+    function tableFar(l) {
+      const m = nz(-6, 6), b = ri(-12, 12), xs = [ri(-3, 1)]; xs.push(xs[0] + ri(2, 4)); xs.push(xs[1] + ri(3, 6)); const X3 = ri(15, 40);
+      return nu(p('The table belongs to a linear formula. Calculate the missing value.') + '<table class="tbl"><tr><th>' + X() + '</th>' + xs.concat([X3]).map(x => '<td>' + neg(x) + '</td>').join('') + '</tr><tr><th>' + X('y') + '</th>' + xs.map(x => '<td>' + neg(m * x + b) + '</td>').join('') + '<td>?</td></tr></table>', m * X3 + b, 'The steps in ' + X() + ' are not equal. First find how much ' + X('y') + ' changes when ' + X() + ' goes up by 1.', 'gradient = (' + neg(m * xs[1] + b) + ' − ' + par(m * xs[0] + b) + ') : (' + xs[1] + ' − ' + par(xs[0]) + ') = ' + neg(m) + '<br>' + yEq(m, b) + '<br>' + X() + ' = ' + X3 + ': ' + X('y') + ' = ' + neg(m) + ' · ' + X3 + (b < 0 ? ' − ' + -b : ' + ' + b) + ' = ' + neg(m * X3 + b));
+    }
+  ];
+  const X2 = [
+    function bracketsBoth(l) {
+      let a, h, c, k, d, x; do { a = ri(2, 6); c = ri(2, 6); h = nz(-7, 7); k = nz(-7, 7); x = ri(-6, 8); d = a * (x + h) - c * (x + k); } while (a === c || d === 0);
+      const L = a + '(' + lin(1, h) + ')', Rt = c + '(' + lin(1, k) + ')' + (d < 0 ? ' − ' + -d : ' + ' + d), s = solveLin(a, a * h, c, c * k + d);
+      return solQ(p('Solve: ' + L + ' = ' + Rt), s.n, s.d, 'x', 'Remove both pairs of brackets first. Then get the ' + X() + '-terms on one side.', bal([[L + ' = ' + Rt, 'remove brackets']].concat(s.rows)));
+    },
+    function ageEq(l) {
+      const b = ri(4, 12), k = pick([3, 4, 5]), t = ri(2, 15), a = k * b; if ((a + t) % (b + t) !== 0) return X2[1](l); const m = (a + t) / (b + t); if (m < 2 || m === k) return X2[1](l);
+      return nu(p('Mum is ' + k + ' times as old as Ben. In ' + t + ' years she will be ' + m + ' times as old as Ben. How old is Ben now?'), b, 'Call Ben\'s age ' + X('b') + '. Then Mum is ' + k + X('b') + '. Write both ages in ' + t + ' years.', bal([[k + X('b') + ' + ' + t + ' = ' + m + '(' + X('b') + ' + ' + t + ')', 'remove brackets'], [k + X('b') + ' + ' + t + ' = ' + m + X('b') + ' + ' + m * t, '− ' + m + X('b') + ', − ' + t], [lin(k - m, 0, 'b') + ' = ' + (m * t - t), (k - m === 1 ? '' : ': ' + (k - m))], [X('b') + ' = ' + b]]) + p('Check: Ben ' + b + ', Mum ' + a + '. In ' + t + ' years: ' + (b + t) + ' and ' + (a + t) + ' = ' + m + ' · ' + (b + t) + '.'));
+    }
+  ];
+  const X3 = [
+    function parallelThrough(l) {
+      const m = nz(-4, 4), b0 = ri(-8, 8), x0 = nz(-5, 5), y0 = ri(-9, 9), b = y0 - m * x0; if (b === b0) return X3[0](l);
+      return ex(p('Line ' + X('k') + ' is parallel to the line ' + yEq(m, b0) + ' and passes through the point (' + neg(x0) + ', ' + neg(y0) + '). Give the formula of ' + X('k') + '. <small>Type only the right side, for example 2x − 3.</small>'), fA(m, b), 'poly', 'Parallel lines have the same gradient. Then substitute the point to find ' + X('b') + '.', 'gradient = ' + neg(m) + '<br>' + neg(y0) + ' = ' + neg(m) + ' · ' + par(x0) + ' + ' + X('b') + ' → ' + X('b') + ' = ' + neg(b) + '<br>' + yEq(m, b), { ansText: yEq(m, b) });
+    },
+    function threePoints(l) {
+      let x1, x2, m, b; do { x1 = ri(-4, 3); x2 = x1 + ri(1, 4); m = pick([-3, -2, -1, 1, 2, 3, 4, -0.5, 0.5, 1.5]); b = ri(-8, 8); } while (!Number.isInteger(m * x1) || !Number.isInteger(m * x2));
+      const x3 = x2 + ri(3, 9) * 2, y1 = m * x1 + b, y2 = m * x2 + b, y3 = m * x3 + b;
+      return nu(p('The points (' + neg(x1) + ', ' + neg(y1) + '), (' + neg(x2) + ', ' + neg(y2) + ') and (' + x3 + ', ' + X('p') + ') lie on one straight line. Calculate ' + X('p') + '.'), y3, 'Calculate the gradient with the first two points. Then go on to ' + X() + ' = ' + x3 + '.', 'gradient = (' + neg(y2) + ' − ' + par(y1) + ') : (' + neg(x2) + ' − ' + par(x1) + ') = ' + hv(m) + '<br>from ' + X() + ' = ' + neg(x2) + ' to ' + X() + ' = ' + x3 + ' is ' + (x3 - x2) + ' steps: ' + X('p') + ' = ' + neg(y2) + ' + ' + (x3 - x2) + ' · ' + par(m) + ' = ' + neg(y3));
+    }
+  ];
+  const X4 = [
+    byN('fracBothSides'),
+    function twoFractions(l) {
+      const q1 = pick([2, 3, 4]), q2 = pick([3, 5, 6].filter(z => z !== q1 && z % q1 !== 0 && q1 % z !== 0)), a = nz(-6, 6), b = nz(-6, 6), c = nz(-4, 4), Lc = q1 * q2 / gcd(q1, q2);
+      // (x + a)/q1 − (x + b)/q2 = c
+      const A = Lc / q1 - Lc / q2, B = Lc / q1 * a - Lc / q2 * b; if (A === 0) return X4[1](l); const s = solveLin(A, B, 0, c * Lc);
+      const head = fr(lin(1, a), q1) + ' − ' + fr(lin(1, b), q2) + ' = ' + neg(c);
+      return solQ(p('Solve: ' + head), s.n, s.d, 'x', 'Multiply every term by ' + Lc + ' (the LCM of ' + q1 + ' and ' + q2 + '). Watch the minus sign before the second fraction.', bal([[head, '× ' + Lc], [(Lc / q1) + '(' + lin(1, a) + ') − ' + (Lc / q2) + '(' + lin(1, b) + ') = ' + neg(c * Lc), 'remove brackets']].concat(s.rows)));
+    }
+  ];
+  const X5 = [
+    byN('costCompare'),
+    function candles(l) {
+      const t = ri(4, 12), r1 = pick([2, 2.5, 3, 1.5]), r2 = pick([0.5, 1, 1.2, 0.8].filter(z => z < r1)), h2 = pick([15, 18, 20, 24]), h1 = Math.round((h2 + (r1 - r2) * t) * 10) / 10; if (h1 - r1 * t <= 0) return X5[1](l);
+      return nu(p('Candle A is ' + h1 + ' cm long and burns ' + r1 + ' cm per hour. Candle B is ' + h2 + ' cm long and burns ' + r2 + ' cm per hour. You light them at the same time. After how many hours are they equally long?'), t, 'Write a formula for each candle: length = start − burn · ' + X('t') + '. Make the formulas equal.', bal([[h1 + ' − ' + r1 + X('t') + ' = ' + h2 + ' − ' + r2 + X('t'), '+ ' + r1 + X('t') + ', − ' + h2], [Math.round((h1 - h2) * 10) / 10 + ' = ' + Math.round((r1 - r2) * 10) / 10 + X('t'), ': ' + Math.round((r1 - r2) * 10) / 10], [X('t') + ' = ' + t]]), { tol: .001 });
+    }
+  ];
   G['6.1'] = E1; G['6.2'] = E2; G['6.3'] = E3; G['6.4'] = E4; G['6.5'] = E5;
-  XG['6.1'] = []; XG['6.2'] = []; XG['6.3'] = []; XG['6.4'] = [byN('fracBothSides')]; XG['6.5'] = [byN('costCompare')];
+  XG['6.1'] = X1; XG['6.2'] = X2; XG['6.3'] = X3; XG['6.4'] = X4; XG['6.5'] = X5;
   SECTIONS.splice(0, SECTIONS.length,
     { id: '6.1', title: '6.1 Linear formulas', sub: 'Gradient, y-intercept, tables' },
     { id: '6.2', title: '6.2 The balance method', sub: 'Solving equations, brackets' },
@@ -546,6 +602,6 @@ if (P.cls === '1HVT') {
       {"id": "D14", "title": "Lesson · 6.5 The quadratic formula", "sub": "Fri 12 Mar · ex 80, 81, 82, 83, 84", "date": "2027-03-12", "gens": [["6.5", "readABC"], ["6.5", "discriminant"], ["6.5", "numSolutions"]], "xg": [["6.5", "oneSolution"], ["6.5", "parabolaLine"]]},
       {"id": "D15", "title": "Test prep · 6.3–6.5", "sub": "Tue 16 Mar", "date": "2027-03-16", "gens": [["6.3", "howMany"], ["6.3", "squareEq"], ["6.3", "bracketSq"], ["6.3", "roundedSq"], ["6.3", "exactSq"], ["6.4", "productZero"], ["6.4", "commonFactor"], ["6.4", "commonFactorEq"], ["6.4", "productSum"], ["6.4", "factorTrinomial"], ["6.4", "rearrange"], ["6.5", "readABC"], ["6.5", "discriminant"], ["6.5", "numSolutions"], ["6.5", "abcExact"], ["6.5", "abcRounded"], ["6.5", "abcRearrange"]], "xg": [["6.3", "cubeArea"], ["6.3", "negSquare"], ["6.4", "areaEq"], ["6.4", "vertexFromZeros"], ["6.5", "oneSolution"], ["6.5", "parabolaLine"]], "rev": true}
     ]
-  }[P.cls] || []).map(o => Object.assign({}, o, { gens: o.gens.filter(g => __has(G, g)), xg: o.xg.filter(g => __has(XG, g)) })).filter(o => o.gens.length);
+  }[P.cls] || []).map(o => Object.assign({}, o, { gens: o.gens.filter(g => __has(G, g)), xg: [...new Set(o.gens.map(g => g[0]))].reduce((a, s) => a.concat((XG[s] || []).map(f => [s, f.name])), []) })).filter(o => o.gens.length);
   /* ---------- end lessons ---------- */
 return { key: 'nx-' + P.cls.toLowerCase() + '-ch6-v1', SECTIONS, LESSONS: __LESSONS, G, XG, TEST: { skip: ['signTurn', 'readABC', 'gradIntercept', 'upDown', 'checkSol', 'onLine'] }, defaultMode: __LESSONS.length ? 'lesson' : 'para', GOALS };

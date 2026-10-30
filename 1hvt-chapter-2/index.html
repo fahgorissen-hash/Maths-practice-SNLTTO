@@ -1174,11 +1174,11 @@ const __def = (function (NX, P) {
       const dirs = ['North', 'North-east', 'East', 'South-east', 'South', 'South-west', 'West', 'North-west'];
       let i = ri(0, 7), pos = i, txt = [];
       const turns = [45, 90, 135, 180, 225, 270];
-      for (let n = 0; n < 2; n++) { const t = pick(turns), side = pick(['right', 'left']); pos = ((pos + (side === 'right' ? 1 : -1) * t / 45) % 8 + 8) % 8; txt.push(t + '° to the ' + side); }
+      for (let n = 0; n < 3; n++) { const t = pick(turns), side = pick(['right', 'left']); pos = ((pos + (side === 'right' ? 1 : -1) * t / 45) % 8 + 8) % 8; txt.push(t + '° to the ' + side); }
       const ans = pos, o = dirs;
       return { type: 'choice', opts: o, ans, correct: ans,
-        html: '<p>You face <b>' + dirs[i] + '</b>. First you turn <b>' + txt[0] + '</b>. Then you turn <b>' + txt[1] + '</b>. In which direction do you face now? (Clockwise = right.)</p>',
-        hint: 'Do the turns one at a time. Between North, East, South and West there is a 90° turn; 45° is half of that.', steps: 'Start ' + dirs[i] + '. After the two turns you face ' + dirs[ans] + '.' };
+        html: '<p>You face <b>' + dirs[i] + '</b>. First you turn <b>' + txt[0] + '</b>. Then you turn <b>' + txt[1] + '</b>. At the end you turn <b>' + txt[2] + '</b>. In which direction do you face now? (Clockwise = right.)</p>',
+        hint: 'Do the turns one at a time. Between North, East, South and West there is a 90° turn; 45° is half of that.', steps: 'Start ' + dirs[i] + '. After the three turns you face ' + dirs[ans] + '.' };
     },
   ];
   XG['2.3'] = [

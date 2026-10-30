@@ -149,6 +149,11 @@ G['6.2'] = [
     return nu(p('In triangle ' + n + ', ∠' + n[0] + ' = 90°, tan(∠' + n[1] + ') = ' + t[1] / g + '/' + t[0] / g + ' and ' + side(n, 0, 1) + ' = ' + adj + '. Calculate ' + side(n, 0, 2) + '.') + rt(n, t[0], t[1], [adj, '?', ''], ['•', ''], ROT(l)), opp, 'tan(∠' + n[1] + ') = opposite / adjacent = ' + side(n, 0, 2) + ' / ' + side(n, 0, 1) + '.', p('tan(∠' + n[1] + ') = ' + side(n, 0, 2) + ' / ' + side(n, 0, 1)) + p(t[1] / g + '/' + t[0] / g + ' = ' + side(n, 0, 2) + ' / ' + adj) + p(side(n, 0, 2) + ' = ' + adj + ' · ' + t[1] / g + ' / ' + t[0] / g + ' = ' + opp), { needStep: true });
   }
 ];
+XG['6.1'].push(function tvScreen(l) {
+  const [w, h] = pick([[16, 9], [4, 3], [21, 9]]), d = pick([32, 40, 43, 50, 55, 65]), k = d / Math.sqrt(w * w + h * h), W = rd(w * k, 1), H_ = rd(h * k, 1), askW = Math.random() < .5;
+  return nu(p('A TV screen has width : height = ' + w + ' : ' + h + '. The diagonal of the screen is ' + d + ' inch. Calculate the <b>' + (askW ? 'width' : 'height') + '</b> of the screen in inches. <small>(Round to 1 decimal.)</small>'), askW ? W : H_, 'Call the width ' + w + X_k + ' and the height ' + h + X_k + '. Use Pythagoras with the diagonal to find ' + X_k + '.', p('(' + w + X_k + ')² + (' + h + X_k + ')² = ' + d + '²') + p((w * w + h * h) + X_k + '² = ' + d * d + ' → ' + X_k + ' = √(' + d * d + ' : ' + (w * w + h * h) + ') ≈ ' + rd(k, 4)) + p((askW ? 'width = ' + w : 'height = ' + h) + ' · ' + rd(k, 4) + ' ≈ ' + (askW ? W : H_)), { tol: .051, needStep: true });
+});
+const X_k = '<i>k</i>';
 XG['6.2'] = [
   function hexagonArea(l) {
     const s = ri(2, 10), A = rd(6 * s * s * Math.sqrt(3) / 4, 1);
@@ -156,7 +161,11 @@ XG['6.2'] = [
   }
 ];
 
-/* ======================= 6.3 Calculating sides and angles ======================= */
+/* ======================= 6.3 Calculating sides and angles ======================= */XG['6.2'].push(function equilateralFromHeight(l) {
+  const h = pick([3, 4, 5, 6, 7.5, 9, 10]), side = 2 * h / Math.sqrt(3), A = h * h / Math.sqrt(3), askA = Math.random() < .5;
+  return nu(p('An equilateral triangle has a height of ' + h + ' cm. Calculate the ' + (askA ? '<b>area</b> (in cm²)' : 'length of a <b>side</b> (in cm)') + '. <small>(Round to 2 decimals.)</small>'), rd(askA ? A : side, 2), 'The height cuts the triangle into two 30°-60°-90° triangles. The height is the side opposite the 60° angle: half the side · √3.', p('half the side · √3 = ' + h + ' → half the side = ' + h + ' : √3 ≈ ' + rd(h / Math.sqrt(3), 4)) + p('side ≈ ' + rd(side, 4)) + (askA ? p('area = ½ · ' + rd(side, 4) + ' · ' + h + ' ≈ ' + rd(A, 2)) : ''), { tol: .0051, needStep: true });
+});
+
 G['6.3'] = [
   function trigValue(l) {
     const f = pick(['sin', 'cos', 'tan']), a = ri(5, 85);
@@ -275,6 +284,6 @@ const GOALS = [
       {"id": "D7", "title": "Lesson · 6.4 Applications", "sub": "Thu 11 Mar · ex 59, 60, 61, 62, 63, 64", "date": "2027-03-11", "gens": [["6.4", "slopePercent"], ["6.4", "inclinationFromPercent"], ["6.4", "percentFromAngle"]], "xg": [["6.4", "runFromSlope"], ["6.4", "isoscelesSide"]]},
       {"id": "D8", "title": "Test prep · chapters 5 & 6", "sub": "Fri 12 Mar", "date": "2027-03-12", "gens": [["6.1", "hypotenuse"], ["6.1", "leg"], ["6.1", "isRight"], ["6.1", "similarRight"], ["6.2", "tri3060"], ["6.2", "tri4545"], ["6.2", "nameRatio"], ["6.2", "exactRatio"], ["6.2", "tanSide"], ["6.3", "trigValue"], ["6.3", "whichRatio"], ["6.3", "sideMultiply"], ["6.3", "sideDivide"], ["6.3", "findAngle"], ["6.3", "otherAngle"], ["6.4", "slopePercent"], ["6.4", "inclinationFromPercent"], ["6.4", "percentFromAngle"], ["6.4", "ladderAngle"], ["6.4", "walkUp"]], "xg": [["6.1", "ladderWall"], ["6.2", "hexagonArea"], ["6.3", "treeHeight"], ["6.3", "rhombusAngle"], ["6.4", "runFromSlope"], ["6.4", "isoscelesSide"]], "rev": true}
     ]
-  }[P.cls] || []).map(o => Object.assign({}, o, { gens: o.gens.filter(g => __has(G, g)), xg: o.xg.filter(g => __has(XG, g)) })).filter(o => o.gens.length);
+  }[P.cls] || []).map(o => Object.assign({}, o, { gens: o.gens.filter(g => __has(G, g)), xg: [...new Set(o.gens.map(g => g[0]))].reduce((a, s) => a.concat((XG[s] || []).map(f => [s, f.name])), []) })).filter(o => o.gens.length);
   /* ---------- end lessons ---------- */
 return { key: 'nx-3ht-ch6-v1', SECTIONS, LESSONS: __LESSONS, G, XG, TEST: { skip: ['nameRatio', 'whichRatio', 'trigValue', 'otherAngle'] }, defaultMode: __LESSONS.length ? 'lesson' : 'para', GOALS };

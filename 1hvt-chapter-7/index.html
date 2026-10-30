@@ -735,6 +735,10 @@ XG['7.2'] = [
     return nu(p('A photo of ' + a + ' cm by ' + b + ' cm is enlarged. The <b>long</b> side of the enlargement is ' + L + ' cm. How long is the short side of the enlargement (in cm)?'), rd(b * k, 4), 'scale factor = ' + L + ' : ' + a + '.', 'scale factor = ' + L + ' : ' + a + ' = ' + dec(k) + '<br>short side = ' + dec(k) + ' · ' + b + ' = ' + dec(b * k) + ' cm', { noStep: true });
   }
 ];
+XG['7.2'].push(function copyTwice(l) {
+  const pc = pick([110, 120, 125, 150, 80, 75]), L = pick([4, 5, 6, 8, 10, 12]), k = pc / 100, r = rd(L * k * k, 4);
+  return nu(p('A copier ' + (pc > 100 ? 'enlarges' : 'reduces') + ' every copy to <b>' + pc + '%</b>. You copy a drawing, and then you copy the copy again. A line of ' + L + ' cm in the drawing: how long is it on the second copy (in cm)?'), r, pc + '% means scale factor ' + dec(k) + '. Copying twice means multiplying by ' + dec(k) + ' twice.', 'first copy: ' + dec(k) + ' · ' + L + ' = ' + dec(L * k) + ' cm<br>second copy: ' + dec(k) + ' · ' + dec(L * k) + ' = ' + dec(r) + ' cm<br>(together: scale factor ' + dec(k) + ' · ' + dec(k) + ' = ' + dec(k * k) + ')', { needStep: true, tol: .001 });
+});
 
 /* ======================= 7.3 Area and volume ======================= */
 G['7.3'] = [
@@ -802,6 +806,16 @@ G['7.4'] = [
     const k = kOf(l), s = [ri(2, 8), ri(2, 8), ri(2, 8), ri(2, 8), ri(2, 8)].map(x => x * k[1] * 2), t = s.map(x => x * k[0] / k[1]), known = ri(0, 4); let ask; do { ask = ri(0, 4); } while (ask === known);
     const n1 = 'ABCDE', n2 = 'PQRST', sd = (n, i) => n[i] + n[(i + 1) % 5];
     return nu(p('Pentagons ABCDE and PQRST are similar. ' + sd(n1, known) + ' = ' + dec(s[known]) + ', ' + sd(n2, known) + ' = ' + dec(t[known]) + ' and ' + sd(n1, ask) + ' = ' + dec(s[ask]) + '. Calculate <b>' + sd(n2, ask) + '</b>.'), rd(t[ask], 4), 'scale factor = ' + sd(n2, known) + ' : ' + sd(n1, known) + '.', 'scale factor = ' + dec(t[known]) + ' : ' + dec(s[known]) + ' = ' + dec(k[0] / k[1]) + '<br>' + sd(n2, ask) + ' = ' + dec(k[0] / k[1]) + ' · ' + dec(s[ask]) + ' = ' + dec(t[ask]), { noStep: true });
+  }
+];
+XG['7.4'] = [
+  function perimeterSide(l) {
+    const k = pick([[3, 2], [5, 2], [4, 3], [5, 3], [2, 3], [3, 5]]), P1 = ri(4, 12) * k[1] * 2, P2 = P1 * k[0] / k[1], s1 = k[1] * ri(2, Math.max(2, Math.floor(P1 / (3 * k[1])))) / 2, s2 = rd(s1 * k[0] / k[1], 4);
+    return nu(p('Hexagons ABCDEF and PQRSTU are similar. The perimeter of ABCDEF is ' + P1 + ' cm and the perimeter of PQRSTU is ' + P2 + ' cm. AB = ' + s1 + ' cm. Calculate PQ (in cm).'), s2, 'All sides are multiplied by the same scale factor, so the perimeter is too.', 'scale factor = ' + P2 + ' : ' + P1 + ' = ' + kTxt(k) + '<br>PQ = ' + kTxt(k) + ' · ' + s1 + ' = ' + dec(s2) + ' cm', { needStep: true, tol: .001 });
+  },
+  function sideFromArea(l) {
+    const k = pick([2, 3, 4, 1.5, 2.5]), A1 = pick([4, 6, 8, 10, 12, 20]), A2 = rd(A1 * k * k, 4), s1 = pick([2, 3, 4, 5, 6]), s2 = rd(s1 * k, 4);
+    return nu(p('Two similar pentagons have areas of ' + A1 + ' cm² and ' + dec(A2) + ' cm². A side of the small pentagon is ' + s1 + ' cm. How long is the corresponding side of the big pentagon (in cm)?'), s2, 'The areas are multiplied by k². Find k² first, then k.', 'k² = ' + dec(A2) + ' : ' + A1 + ' = ' + dec(k * k) + '<br>k = √' + dec(k * k) + ' = ' + dec(k) + '<br>side = ' + dec(k) + ' · ' + s1 + ' = ' + dec(s2) + ' cm', { needStep: true, tol: .001 });
   }
 ];
 
@@ -971,9 +985,45 @@ if (P.cls === '3VT') {
       return nu(p('A right-angled triangle has legs of ' + a + ' cm and ' + b + ' cm. Calculate the radius of its circumscribed circle. <small>(Round to 2 decimals.)</small>'), rr, 'The hypotenuse is a diameter of the circumscribed circle. Use Pythagoras.', p('hypotenuse = √(' + a + '² + ' + b + '²) = √' + (a * a + b * b) + (Number.isInteger(2 * r) ? ' = ' : ' ≈ ') + rd(2 * r, 2)) + p('radius = hypotenuse : 2' + (rd(r, 2) === rd(r, 6) ? ' = ' : ' ≈ ') + rr + ' cm'), { tol: .006, needStep: true });
     }
   ];
+  const sq1 = v => Number.isInteger(rd(v, 6)) ? String(rd(v, 6)) : String(rd(v, 1));
+  const VX3 = [
+    function bisectorAngleD(l) {
+      let a, b; do { a = 2 * ri(15, 50); b = ri(30, 80); } while (a + b >= 165);
+      const c = 180 - a - b, adc = 180 - a / 2 - c;
+      return angQ(p('In triangle ABC, ' + A_('A') + ' = ' + deg(a) + ' and ' + A_('B') + ' = ' + deg(b) + '. The bisector of angle A meets BC in D. Calculate ' + A_('ADC') + '.' + HINT_STEP), adc, 'First ∠C with the angle sum. The bisector halves ∠A. Then the angle sum in triangle ADC.', p(A_('C') + ' = 180° − ' + a + '° − ' + b + '° = ' + deg(c) + ' (angle sum)') + p(A_('DAC') + ' = ' + a + ' : 2 = ' + deg(a / 2) + ' (bisector)') + p(A_('ADC') + ' = 180° − ' + a / 2 + '° − ' + c + '° = ' + deg(adc) + ' (angle sum in ΔADC)'), true);
+    },
+    function equalDistanceAxis(l) {
+      let x1, y1, x2, y2, x; do { x1 = ri(-6, 6); y1 = nz7(); x2 = ri(-6, 6); y2 = nz7(); } while (x1 === x2 || (x2 * x2 + y2 * y2 - x1 * x1 - y1 * y1) % (2 * (x2 - x1)) !== 0);
+      x = (x2 * x2 + y2 * y2 - x1 * x1 - y1 * y1) / (2 * (x2 - x1));
+      return ptQ(p('Point P lies on the <b>' + X_('x') + '-axis</b> and on the perpendicular bisector of AB, with A' + P2(x1, y1) + ' and B' + P2(x2, y2) + '. Calculate the coordinates of P.'), x, 0, 'P is at the same distance from A and B. Write P = (' + X_('x') + ', 0) and make PA² = PB².', p('PA² = (' + X_('x') + ' − ' + Pa(x1) + ')² + ' + Pa(y1) + '² and PB² = (' + X_('x') + ' − ' + Pa(x2) + ')² + ' + Pa(y2) + '²') + p('PA² = PB² gives ' + X_('x') + ' = ' + N_(x) + ', so P' + P2(x, 0) + '.') + p('Check: PA² = ' + ((x - x1) * (x - x1) + y1 * y1) + ' and PB² = ' + ((x - x2) * (x - x2) + y2 * y2) + '.'));
+    }
+  ];
+  const nz7 = () => { let v = 0; while (v === 0) v = ri(-7, 7); return v; };
+  const VX4 = [
+    function medianLength(l) {
+      let A, B, C; do { A = [ri(-6, 6), ri(-6, 6)]; B = [ri(-6, 6), ri(-6, 6)]; C = [ri(-6, 6), ri(-6, 6)]; } while ((A[0] + B[0]) % 2 || (A[1] + B[1]) % 2 || (A[0] === B[0] && A[1] === B[1]) || ((B[0] - A[0]) * (C[1] - A[1]) - (B[1] - A[1]) * (C[0] - A[0])) === 0);
+      const M2 = [(A[0] + B[0]) / 2, (A[1] + B[1]) / 2], dx = C[0] - M2[0], dy = C[1] - M2[1], L = Math.hypot(dx, dy);
+      if (dx === 0 || dy === 0) return VX4[0](l);
+      return nu(p('Triangle ABC has A' + P2(A[0], A[1]) + ', B' + P2(B[0], B[1]) + ' and C' + P2(C[0], C[1]) + '. Calculate the length of the <b>median from C</b>. <small>(Round to 1 decimal.)</small>'), rd(L, 1), 'The median from C goes to the midpoint M of AB. Then use Pythagoras for CM.', p('M = ' + P2(M2[0], M2[1])) + p('CM = √(' + Math.abs(dx) + '² + ' + Math.abs(dy) + '²) = √' + (dx * dx + dy * dy) + ' ≈ ' + rd(L, 1)), { tol: .051, needStep: true });
+    },
+    function altitudeOnHyp(l) {
+      const t = pick([[3, 4, 5], [6, 8, 10], [5, 12, 13], [8, 15, 17], [9, 12, 15], [7, 24, 25], [12, 16, 20]]), h = rd(t[0] * t[1] / t[2], 2);
+      return nu(p('Triangle ABC has a right angle at C, with AC = ' + t[0] + ' and BC = ' + t[1] + '. Calculate the length of the altitude from C to AB. <small>(Round to 2 decimals if needed.)</small>'), h, 'First AB with Pythagoras. Then write the area in two ways: ½ · AC · BC = ½ · AB · altitude.', p('AB = √(' + t[0] + '² + ' + t[1] + '²) = ' + t[2]) + p('area = ½ · ' + t[0] + ' · ' + t[1] + ' = ' + t[0] * t[1] / 2) + p('½ · ' + t[2] + ' · h = ' + t[0] * t[1] / 2 + ' → h = ' + t[0] * t[1] + ' : ' + t[2] + (rd(t[0] * t[1] / t[2], 6) === h ? ' = ' : ' ≈ ') + h), { tol: .0051, needStep: true });
+    }
+  ];
+  const VX5 = [
+    function equilateralCentre(l) {
+      const a = pick([4, 6, 8, 9, 10, 12]), hgt = a * Math.sqrt(3) / 2, R_ = rd(hgt * 2 / 3, 2), askR = Math.random() < .5, ans = askR ? R_ : rd(hgt / 3, 2);
+      return nu(p('An equilateral triangle has sides of ' + a + ' cm. In an equilateral triangle the centres of the inscribed and the circumscribed circle are the same point: the centroid. Calculate the radius of the <b>' + (askR ? 'circumscribed' : 'inscribed') + '</b> circle (in cm, 2 decimals).'), ans, 'The medians are also altitudes. Calculate the altitude with Pythagoras. The centroid divides it 2 : 1.', p('altitude = √(' + a + '² − ' + sq1(a / 2) + '²) ≈ ' + rd(hgt, 3)) + p(askR ? 'circumscribed: ⅔ · ' + rd(hgt, 3) + ' ≈ ' + R_ : 'inscribed: ⅓ · ' + rd(hgt, 3) + ' ≈ ' + ans), { tol: .0051, needStep: true });
+    },
+    function circumCentre(l) {
+      let b, cx, cy, h, k; do { b = 2 * ri(2, 6); cx = ri(1, b - 1); cy = ri(2, 8); h = b / 2; k = (cx * cx + cy * cy - 2 * h * cx) / (2 * cy); } while (!Number.isInteger(k) || cx === h);
+      return ptQ(p('Triangle ABC has A(0, 0), B(' + b + ', 0) and C' + P2(cx, cy) + '. Calculate the centre M of the circumscribed circle.'), h, k, 'M lies on the perpendicular bisector of AB, so ' + X_('x') + ' = ' + h + '. Then MA = MC gives the ' + X_('y') + '-coordinate.', p('perpendicular bisector of AB: ' + X_('x') + ' = ' + h) + p('M = (' + h + ', ' + X_('k') + '), MA² = MC²: ' + h + '² + ' + X_('k') + '² = (' + h + ' − ' + cx + ')² + (' + X_('k') + ' − ' + cy + ')²') + p(X_('k') + ' = ' + N_(k) + ', so M' + P2(h, k) + '.'));
+    }
+  ];
   const G1 = G['7.1'].concat(V1), G2 = V2.concat(G['7.5']), X1 = XG['7.1'], X2 = XG['7.5'];
   G['7.1'] = G1; G['7.2'] = G2; G['7.3'] = V3; G['7.4'] = V4; G['7.5'] = V5;
-  XG['7.1'] = X1; XG['7.2'] = X2; XG['7.3'] = []; XG['7.4'] = []; XG['7.5'] = [];
+  XG['7.1'] = X1; XG['7.2'] = X2; XG['7.3'] = VX3; XG['7.4'] = VX4; XG['7.5'] = VX5;
   SECTIONS.splice(0, SECTIONS.length,
     { id: '7.1', title: '7.1 Reasoning with angles', sub: 'Definitions, theorems, angles in triangles and parallel lines' },
     { id: '7.2', title: '7.2 Similar and congruent triangles', sub: 'aa, sss, sas, ssr, calculating sides' },
@@ -1111,8 +1161,71 @@ if (P.cls === '1HVT') {
       return nu(p('A wall is made of a rectangle of ' + w + ' m by ' + h1 + ' m. On top is a trapezium with parallel sides ' + w + ' m and ' + top + ' m and height ' + h2 + ' m. On top of that is a triangle with base ' + top + ' m and height ' + h3 + ' m. Calculate the area of the wall in m².'), A, 'Calculate the three areas separately and add them.', 'rectangle: ' + w + ' × ' + h1 + ' = ' + rd(r, 3) + '<br>trapezium: ½ × (' + w + ' + ' + top + ') × ' + h2 + ' = ' + rd(t, 3) + '<br>triangle: ½ × ' + top + ' × ' + h3 + ' = ' + rd(tr, 3) + '<br>total = ' + rd(r, 3) + ' + ' + rd(t, 3) + ' + ' + rd(tr, 3) + ' = ' + A + ' m²', { needStep: true });
     }
   ];
+  const XT1 = [
+    function isoExterior(l) {
+      const base = ri(35, 80), ext = 180 - base, top = 180 - 2 * base, atTop = Math.random() < .4;
+      if (atTop) { const t2 = 2 * ri(20, 70), b2 = (180 - t2) / 2; return angQ(p('Triangle ABC is isosceles with AB = AC. Side BA is extended beyond A. The angle outside the triangle at A is ' + deg(180 - t2) + '. Calculate ' + A_('B') + '.'), b2, 'First ∠A (straight angle). Then the two base angles are equal.' + HS('(180 − ' + t2 + ') : 2'), A_('A') + ' = 180° − ' + deg(180 - t2) + ' = ' + deg(t2) + ' (straight angle)<br>' + A_('B') + ' = ' + A_('C') + ' = (180° − ' + deg(t2) + ') : 2 = ' + deg(b2), true); }
+      return angQ(p('Triangle ABC is isosceles with AB = AC. Side CB is extended beyond B. The angle outside the triangle at B is ' + deg(ext) + '. Calculate ' + A_('A') + '.'), top, 'First ∠B (straight angle). In this isosceles triangle ∠B = ∠C.' + HS('180 − 2 · ' + base), A_('B') + ' = 180° − ' + deg(ext) + ' = ' + deg(base) + ' (straight angle)<br>' + A_('C') + ' = ' + A_('B') + ' = ' + deg(base) + ' (isosceles)<br>' + A_('A') + ' = 180° − ' + base + '° − ' + base + '° = ' + deg(top), true);
+    },
+    function anglesWithX(l) {
+      const [k, d] = pick([[2, 20], [2, -20], [3, 10], [3, 15], [3, 20], [3, 25], [3, -10], [3, -20]]), a = (180 - d) / (k + 2);
+      return angQ(p('In triangle ABC, ' + A_('B') + ' is ' + k + ' times as big as ' + A_('A') + ', and ' + A_('C') + ' is ' + Math.abs(d) + '° ' + (d > 0 ? 'bigger' : 'smaller') + ' than ' + A_('A') + '. Calculate ' + A_('B') + '.'), k * a, 'Call ∠A = ' + X_1('x') + '. Then ∠B = ' + k + X_1('x') + ' and ∠C = ' + X_1('x') + (d > 0 ? ' + ' : ' − ') + Math.abs(d) + '. Together 180°.', X_1('x') + ' + ' + k + X_1('x') + ' + ' + X_1('x') + (d > 0 ? ' + ' : ' − ') + Math.abs(d) + ' = 180<br>' + (k + 2) + X_1('x') + ' = ' + (180 - d) + '<br>' + X_1('x') + ' = ' + a + '<br>' + A_('B') + ' = ' + k + ' · ' + a + ' = ' + deg(k * a), true);
+    }
+  ];
+  const X_1 = v => '<i>' + v + '</i>';
+  const PN = { 5: 'pentagon', 6: 'hexagon', 8: 'octagon', 9: 'nonagon', 10: 'decagon', 12: 'dodecagon (12 angles)' };
+  const XT2 = [
+    function regularAngle(l) {
+      const n = pick([5, 6, 8, 9, 10, 12]), a = (n - 2) * 180 / n;
+      return angQ(p('A <b>regular</b> ' + PN[n] + ' has ' + n + ' equal angles. How big is one angle?'), a, 'First the sum of all angles: divide the polygon into triangles from one vertex. Then share the sum equally.' + HS('(' + n + ' − 2) · 180 : ' + n), 'sum = ' + (n - 2) + ' · 180° = ' + (n - 2) * 180 + '°<br>one angle = ' + (n - 2) * 180 + ' : ' + n + ' = ' + deg(a), true);
+    },
+    function sidesFromSum(l) {
+      const n = ri(7, 16), S = (n - 2) * 180;
+      return nu(p('The angles of a polygon add up to ' + S + '°. How many angles (vertices) does the polygon have?'), n, 'A polygon with ' + X_1('n') + ' angles can be divided into ' + X_1('n') + ' − 2 triangles of 180°.', S + ' : 180 = ' + (n - 2) + ' triangles<br>' + (n - 2) + ' + 2 = ' + n + ' angles');
+    }
+  ];
+  const XT3 = [
+    function twoBisectors(l) {
+      let a, c; do { a = 2 * ri(15, 50); c = 2 * ri(15, 50); } while (a + c >= 160);
+      const s_ = 180 - a / 2 - c / 2;
+      return angQ(p('In triangle ABC, ' + A_('A') + ' = ' + deg(a) + ' and ' + A_('C') + ' = ' + deg(c) + '. The angle bisectors of ' + A_('A') + ' and ' + A_('C') + ' meet in point S. Calculate ' + A_('ASC') + '.'), s_, 'The bisectors halve ∠A and ∠C. Then use the angle sum in triangle ASC.' + HS('180 − ' + a / 2 + ' − ' + c / 2), A_('SAC') + ' = ' + a + ' : 2 = ' + deg(a / 2) + ' (angle bisector)<br>' + A_('SCA') + ' = ' + c + ' : 2 = ' + deg(c / 2) + ' (angle bisector)<br>' + A_('ASC') + ' = 180° − ' + a / 2 + '° − ' + c / 2 + '° = ' + deg(s_) + ' (angle sum)', true);
+    },
+    function threeOnLine(l) {
+      const k = pick([2, 3]), d = pick([10, 20, 30, -10]), x = (180 - d) / (k + 2); if (!Number.isInteger(x) || x + d <= 0) return XT3[1](l);
+      return angQ(p('Three angles lie next to each other on a straight line: ' + X_1('x') + ', ' + k + X_1('x') + ' and ' + X_1('x') + (d > 0 ? ' + ' : ' − ') + Math.abs(d) + '°. How big is the <b>largest</b> of the three angles?'), Math.max(k * x, x + d), 'Angles on a straight line add up to 180°.', X_1('x') + ' + ' + k + X_1('x') + ' + ' + X_1('x') + (d > 0 ? ' + ' : ' − ') + Math.abs(d) + ' = 180 (straight angle)<br>' + (k + 2) + X_1('x') + ' = ' + (180 - d) + ' → ' + X_1('x') + ' = ' + x + '<br>angles: ' + x + '°, ' + k * x + '°, ' + (x + d) + '° → largest ' + deg(Math.max(k * x, x + d)), true);
+    }
+  ];
+  const zigFig = (a, b) => {
+    const R = Math.PI / 180, yk = 40, yl = 170, H = yl - yk, dx = H / (Math.tan(a * R) + Math.tan(b * R)), xa = 70, Px = xa + dx, Py = yk + dx * Math.tan(a * R);
+    const ln = (x1, y1, x2, y2, c, w) => '<line x1="' + rd(x1, 1) + '" y1="' + rd(y1, 1) + '" x2="' + rd(x2, 1) + '" y2="' + rd(y2, 1) + '" stroke="' + c + '" stroke-width="' + w + '"/>';
+    let g = ln(20, yk, 320, yk, '#1b5fa8', 2.2) + ln(20, yl, 320, yl, '#1b5fa8', 2.2) + ln(xa, yk, Px, Py, '#d1471f', 2.2) + ln(xa, yl, Px, Py, '#d1471f', 2.2);
+    g += lab('k', 26, yk - 8, 13, 'start', true, '#1b5fa8') + lab('l', 26, yl - 8, 13, 'start', true, '#1b5fa8') + lab('A', xa - 4, yk - 8, 14, 'middle', true, '#1b5fa8') + lab('B', xa - 4, yl + 18, 14, 'middle', true, '#1b5fa8') + lab('P', Px + 14, Py + 5, 14, 'middle', true, '#1b5fa8');
+    const ra = Math.max(34, 26 / Math.sin(a * R / 2) / 2), rb = Math.max(34, 26 / Math.sin(b * R / 2) / 2);
+    g += lab(a + '°', xa + ra * Math.cos(a * R / 2), yk + ra * Math.sin(a * R / 2) + 4, 12, 'middle', true, '#223') + lab(b + '°', xa + rb * Math.cos(b * R / 2), yl - rb * Math.sin(b * R / 2) + 4, 12, 'middle', true, '#223');
+    return svg(340, 200, g);
+  };
+  const XT4 = [
+    function zigzag(l) {
+      const a = ri(25, 65), b = ri(25, 65);
+      return angQ(p('Lines ' + X_1('k') + ' and ' + X_1('l') + ' are parallel. ' + A_('A') + ' between line ' + X_1('k') + ' and AP is ' + deg(a) + '. ' + A_('B') + ' between line ' + X_1('l') + ' and BP is ' + deg(b) + '. Calculate ' + A_('APB') + '.') + zigFig(a, b), a + b, 'Draw an extra line through P, parallel to ' + X_1('k') + ' and ' + X_1('l') + '. Then use Z-angles twice.' + HS(a + ' + ' + b), 'Draw line ' + X_1('m') + ' through P parallel to ' + X_1('k') + '.<br>upper part of ' + A_('P') + ' = ' + deg(a) + ' (Z-angles, ' + X_1('m') + ' ∥ ' + X_1('k') + ')<br>lower part of ' + A_('P') + ' = ' + deg(b) + ' (Z-angles, ' + X_1('m') + ' ∥ ' + X_1('l') + ')<br>' + A_('APB') + ' = ' + a + '° + ' + b + '° = ' + deg(a + b), true);
+    },
+    function diagonalPar(l) {
+      let a, c; do { a = ri(25, 70); c = ri(25, 80); } while (a + c > 150);
+      const d = 180 - a - c;
+      return angQ(p('ABCD is a parallelogram with diagonal AC. ' + A_('BAC') + ' = ' + deg(a) + ' and ' + A_('ACB') + ' = ' + deg(c) + '. Calculate ' + A_('D') + '.'), d, 'First ∠B with the angle sum in triangle ABC. Opposite angles of a parallelogram are equal.' + HS('180 − ' + a + ' − ' + c), A_('B') + ' = 180° − ' + a + '° − ' + c + '° = ' + deg(d) + ' (angle sum in ΔABC)<br>' + A_('D') + ' = ' + A_('B') + ' = ' + deg(d) + ' (opposite angles of a parallelogram)', true);
+    }
+  ];
+  XT5.push(
+    function trapHeight(l) {
+      const a = ri(6, 16), c = ri(2, a - 1), h = ri(2, 12) + pick([0, 0, .5]), A = rd((a + c) * h / 2, 2);
+      return nu(p('A trapezium has parallel sides of ' + a + ' cm and ' + c + ' cm. Its area is ' + A + ' cm². How high is the trapezium (in cm)?'), h, 'area = ½ × (sum of the parallel sides) × height. Work backwards.', '½ × (' + a + ' + ' + c + ') = ' + rd((a + c) / 2, 2) + '<br>height = ' + A + ' : ' + rd((a + c) / 2, 2) + ' = ' + h, { needStep: true, tol: .001 });
+    },
+    function frameArea(l) {
+      const w = ri(4, 12) * 5, h = ri(3, 10) * 5, f = ri(2, 6), A = (w + 2 * f) * (h + 2 * f) - w * h;
+      return nu(p('A photo of ' + w + ' cm by ' + h + ' cm has a frame around it. The frame is ' + f + ' cm wide on every side. Calculate the area of the <b>frame</b> (in cm²).'), A, 'The outside of the frame is a bigger rectangle. Area of the frame = big rectangle − photo.', 'outside: (' + w + ' + 2 × ' + f + ') by (' + h + ' + 2 × ' + f + ') = ' + (w + 2 * f) + ' by ' + (h + 2 * f) + '<br>' + (w + 2 * f) * (h + 2 * f) + ' − ' + w * h + ' = ' + A + ' cm²', { needStep: true });
+    });
   G['7.1'] = T1; G['7.2'] = T2; G['7.3'] = T3; G['7.4'] = T4; G['7.5'] = T5;
-  XG['7.1'] = []; XG['7.2'] = []; XG['7.3'] = []; XG['7.4'] = []; XG['7.5'] = XT5;
+  XG['7.1'] = XT1; XG['7.2'] = XT2; XG['7.3'] = XT3; XG['7.4'] = XT4; XG['7.5'] = XT5;
   SECTIONS.splice(0, SECTIONS.length,
     { id: '7.1', title: '7.1 Triangles', sub: 'Sum of the angles, isosceles and equilateral triangles' },
     { id: '7.2', title: '7.2 Quadrilaterals', sub: 'Sum of the angles, special quadrilaterals, polygons' },
@@ -1176,7 +1289,7 @@ if (P.cls === '1HVT') {
       {"id": "D10", "title": "Lesson · 7.5 B Inscribed and circumscribed circles", "sub": "Tue 15 Jun · ex 69, 70, 71", "date": "2027-06-15", "gens": [["7.5", "whichCentre"], ["7.5", "rightCircumcentre"], ["7.5", "circumRadius"]], "xg": []},
       {"id": "D11", "title": "Test prep · chapter 7", "sub": "Thu 17 Jun", "date": "2027-06-17", "gens": [["7.1", "triSum"], ["7.1", "isoTri"], ["7.1", "quadAngles"], ["7.1", "straightVert"], ["7.1", "parallel"], ["7.1", "angleName"], ["7.1", "exteriorAngle"], ["7.1", "defOrTheorem"], ["7.2", "whichPostulate"], ["7.2", "congruentFactor"], ["7.2", "nested"], ["7.2", "hourglass"], ["7.2", "shadow"], ["7.2", "whySimilar"], ["7.2", "nestedPart"], ["7.3", "whichLocus"], ["7.3", "midpoint"], ["7.3", "bisectorsMeet"], ["7.4", "altitudeFromArea"], ["7.4", "centroidSplit"], ["7.4", "vertexFromCentroid"], ["7.4", "whichLine"], ["7.5", "whichCentre"], ["7.5", "rightCircumcentre"], ["7.5", "circumRadius"]], "xg": [["7.1", "parallelTriangle"], ["7.1", "isoParallel"], ["7.2", "similarPyth"], ["7.2", "towerShadow"]], "rev": true}
     ]
-  }[P.cls] || []).map(o => Object.assign({}, o, { gens: o.gens.filter(g => __has(G, g)), xg: o.xg.filter(g => __has(XG, g)) })).filter(o => o.gens.length);
+  }[P.cls] || []).map(o => Object.assign({}, o, { gens: o.gens.filter(g => __has(G, g)), xg: [...new Set(o.gens.map(g => g[0]))].reduce((a, s) => a.concat((XG[s] || []).map(f => [s, f.name])), []) })).filter(o => o.gens.length);
   /* ---------- end lessons ---------- */
 return { key: 'nx-' + P.cls.toLowerCase() + '-ch7-v1', SECTIONS, LESSONS: __LESSONS, G, XG, TEST: { skip: ['angleName', 'whichTrue', 'straightVert', 'corrSide', 'triFacts', 'quadProperty', 'reasonName', 'areaParallelogram', 'defOrTheorem', 'congruentFactor', 'whichLocus', 'whichLine', 'whichCentre'] }, defaultMode: __LESSONS.length ? 'lesson' : 'para', GOALS };
 
