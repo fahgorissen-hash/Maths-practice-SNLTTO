@@ -1465,14 +1465,14 @@ function modeBar(){
   if(mix||test)return '';
   const a=free===null&&!focus;
   let h='<div class="pmbar"><span class="pml">Practice:</span><button type="button" class="pm'+(a?' on':'')+'" data-f="a">Adaptive</button><span class="pml">Free practice:</span>'+LV.map((l,i)=>'<button type="button" class="pm l'+i+(free===i?' on':'')+'" data-f="'+i+'">'+l+'</button>').join('')+'</div>';
-  if(free!==null)h+='<div class="pmnote"><b>Free practice: '+LV[free]+'.</b> These questions do not count towards reaching the next level. <button type="button" class="btn alt sm" id="back2a">← Back to adaptive</button></div>';
+  if(free!==null)h+='<div class="pmnote"><b>Free practice: '+LV[free]+'.</b> '+(free<lvl()?'Correct answers count towards Done, but not towards the next level (you are already past this level).':'Correct answers count towards Done, and 3 in a row '+(free===3&&lvl()===3?'unlocks the Master Mix.':'moves your level up to '+LV[Math.min(3,free+1)]+'.'))+' <button type="button" class="btn alt sm" id="back2a">← Back to adaptive</button></div>';
   if(focus){const g=goalById(focus.ids[(focus.i-1+focus.ids.length)%focus.ids.length]);h+='<div class="pmnote"><b>Focused practice</b> on your weakest objectives'+(g?': '+esc(g.title):'')+'. These questions do not count towards the next level. <button type="button" class="btn alt sm" id="back2a">← Back to adaptive</button></div>'}
   return h;
 }
 function renderQ(){
   const m=$('#main'),q=cur;
   const lvLabel=free!==null?'Free practice · '+LV[q.lvl]:LV[q.lvl];
-  m.innerHTML='<div class="top">'+(q.mix?'<span class="badge lm">Master Mix</span> ':'')+'<span class="badge l'+q.lvl+'">'+lvLabel+'</span><span class="streak">'+(free!==null||focus?'Free practice':'In a row: '+[0,1,2].map(i=>'<span class="dot'+(i<streak?' on':'')+'"></span>').join('')+' &nbsp; Done: '+Math.min(GOAL,st.prog[st.sec]||0)+'/'+GOAL)+'</span></div>'+modeBar()+goalsPanel(q)+
+  m.innerHTML='<div class="top">'+(q.mix?'<span class="badge lm">Master Mix</span> ':'')+'<span class="badge l'+q.lvl+'">'+lvLabel+'</span><span class="streak">'+(focus?'Free practice':(free!==null&&free<lvl()?'':'In a row: '+[0,1,2].map(i=>'<span class="dot'+(i<streak?' on':'')+'"></span>').join('')+' &nbsp; ')+'Done: '+Math.min(GOAL,st.prog[st.sec]||0)+'/'+GOAL)+'</span></div>'+modeBar()+goalsPanel(q)+
    qHTML(q)+'<div class="btns"><button class="btn" id="chk">Check</button><button class="btn alt" id="hnt">Hint</button><button class="btn alt" id="sol" style="display:none">Show solution</button><button class="btn alt" id="nxt" style="display:none">Next question</button></div><label class="autoc"><input type="checkbox" id="autoc"'+(st.auto===false?'':' checked')+'> Go to the next question automatically after a correct answer</label><div class="fb" id="fb"></div><div id="hist"></div>'+logPanel();
   wire();wireChrome();
   const f=$('#in0');if(f)f.focus();
@@ -1709,21 +1709,21 @@ function check(){
   const R_=chk(q,u),ok=R_.ok;tries++;
   logAnswer(q,u,ok);
   const S=st.stat[st.sec]=st.stat[st.sec]||{n:0,ok:0};
-  const counts=free===null&&!focus;
+  const counts=free===null&&!focus,lift=free!==null&&!focus&&free>=lvl();   /* free practice at or above your level also counts for levelling up */
   if(ok){
-    done=true;if(counts)st.prog[st.sec]=(st.prog[st.sec]||0)+1;S.n++;if(tries===1)S.ok++;
+    done=true;if(!focus)st.prog[st.sec]=(st.prog[st.sec]||0)+1;S.n++;if(tries===1)S.ok++;
     const w=hintUsed?0.5:tries===1?1:0.75;record(q,w);
     let up='';
-    if(tries===1&&!hintUsed){row++;streak+=counts?1:0;wrongRun=0;if(row>st.bestRow)st.bestRow=row;up+=award('first');if(row>=5)up+=award('row5');if(row>=10)up+=award('row10')}else if(tries>1){row=0;if(counts)streak=0}
-    if(counts&&!mix&&streak>=3){streak=0;
-      if(lvl()<3){st.lvl[st.sec]=lvl()+1;st.best[st.sec]=Math.max(st.best[st.sec]||0,lvl());up+=' <b>Level up: '+LV[lvl()]+'!</b>'+(lvl()===3?' These are challenge questions.':'')+award('up');if(lvl()>=2)up+=award('spicy')}
+    if(tries===1&&!hintUsed){row++;streak+=counts||lift?1:0;wrongRun=0;if(row>st.bestRow)st.bestRow=row;up+=award('first');if(row>=5)up+=award('row5');if(row>=10)up+=award('row10')}else if(tries>1){row=0;if(counts||lift)streak=0}
+    if((counts&&!mix||lift)&&streak>=3){streak=0;
+      if(lvl()<3){st.lvl[st.sec]=lift?Math.min(3,free+1):lvl()+1;st.best[st.sec]=Math.max(st.best[st.sec]||0,lvl());up+=' <b>Level up: '+LV[lvl()]+'!</b>'+(lvl()===3?' These are challenge questions.':'')+award('up');if(lvl()>=2)up+=award('spicy')}
       else if(!st.done[st.sec]){st.done[st.sec]=true;up+=' <b>Extra spicy completed! ★ Master Mix is now unlocked for this section (see the menu).</b>'+award('mm')}}
     const g=goalOfQ(q);if(g&&goalScore(g).key==='mastered')up+=award('goal');
     const dg=q.type==='num'&&/°$/.test(E.answerText(q));
     if(stepLines.length&&(q.type==='num'||q.type==='expr'))drawSteps((q.eqStep?q.eqStep+' = ':'')+String(u).trim().replace(/\s*°$/,'')+(dg?'°':''));save();fb('ok','<b class="h">Correct!'+(tries>1?' (second try)':'')+(dg?' The answer is: '+E.answerText(q):'')+'</b>'+q.steps+up);finish();
     if(st.auto!==false&&!q.construct){clearTimeout(autoT);autoT=setTimeout(()=>{if(done&&cur===q&&!test&&!view)next(false)},1000)}
   }else if(tries===1){
-    row=0;if(counts)streak=0;
+    row=0;if(counts||lift)streak=0;
     $('#sol').style.display='';
     fb('no','<b class="h">Not yet. Try again.</b>'+(R_.why==='form'?(R_.msg||'That has the right value, but it is not in the form asked for.')+' ':calcWrong?'That calculation does not give the right answer. ':R_.why==='parse'?'I could not read that answer. ':'')+(q.hint?q.hint:''));
   }else{
@@ -1733,7 +1733,7 @@ function check(){
   }
 }
 function showSolution(){
-  if(done||test)return;const q=cur;done=true;row=0;if(free===null&&!focus)streak=0;
+  if(done||test)return;const q=cur;done=true;row=0;if(!focus)streak=0;
   const S=st.stat[st.sec]=st.stat[st.sec]||{n:0,ok:0};S.n++;record(q,0);
   attempts.push({a:'(solution shown)',ok:false});
   save();fb('no','<b class="h">Solution — the answer is: '+E.answerText(q)+'</b>'+q.steps+'<p><i>This question does not count as correct. Try the next one.</i></p>');finish();
