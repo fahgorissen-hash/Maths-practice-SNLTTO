@@ -640,7 +640,15 @@ G['2.2'] = [
       { q: 'Triangle 1 has sides ' + sides.join(', ') + ' cm. Triangle 2 has sides ' + sides.map(x => x * 2).join(', ') + ' cm.', r: 'Yes, ssr' },
       { q: 'Triangle 1 has angles ' + a + '° and ' + b + '°. Triangle 2 has angles ' + (a + 10) + '° and ' + b + '°.', r: 'No' }
     ];
-    const cs = pick(cases); return ch(p('Are the two triangles similar? ' + cs.q), cs.r, ['Yes, aa', 'Yes, ssr', 'No'].filter(x => x !== cs.r), 'aa: two equal angles are enough (the third is then equal too). ssr: all three sides must have the same ratio.', cs.r === 'No' ? 'The angles or the ratios of the sides are not all equal: not similar.' : 'This is a ' + cs.r.slice(5) + ' case: similar.');
+    if (l >= 2 && Math.abs(a - b) === 5) return aaOrSss(l);
+    const sh = shuffle(sides.map(x => x * 1.5)), bad = sides.map(x => x * 1.5); bad[2] += 1.5;
+    const cases2 = [   // spicy: calculate the third angle first, or the sides are in another order
+      { q: 'Triangle 1 has angles ' + a + '° and ' + b + '°. Triangle 2 has angles ' + c + '° and ' + a + '°.', r: 'Yes, aa' },
+      { q: 'Triangle 1 has angles ' + a + '° and ' + b + '°. Triangle 2 has angles ' + c + '° and ' + (b + 5) + '°.', r: 'No' },
+      { q: 'Triangle 1 has sides ' + sides.join(', ') + ' cm. Triangle 2 has sides ' + sh.map(f).join(', ') + ' cm.', r: 'Yes, ssr' },
+      { q: 'Triangle 1 has sides ' + sides.join(', ') + ' cm. Triangle 2 has sides ' + shuffle(bad).map(f).join(', ') + ' cm.', r: 'No' }
+    ];
+    const cs = pick(l >= 2 ? cases2 : cases); return ch(p('Are the two triangles similar? ' + cs.q), cs.r, ['Yes, aa', 'Yes, ssr', 'No'].filter(x => x !== cs.r), 'aa: two equal angles are enough (the third is then equal too). ssr: all three sides must have the same ratio.', cs.r === 'No' ? 'The angles or the ratios of the sides are not all equal: not similar.' : 'This is a ' + cs.r.slice(5) + ' case: similar.');
   },
   function anglePair(l) {
     const right = pick(['vertically opposite angles', 'alternate angles (Z-angles)', 'corresponding angles (F-angles)']);
@@ -681,17 +689,31 @@ G['2.3'] = [
   },
   function ratioFromTriangle(l) {
     const [o, a, h] = scaled(); const w = pick(['sin', 'cos', 'tan']); const num = w === 'sin' ? o : w === 'cos' ? a : o, den = w === 'sin' ? h : w === 'cos' ? h : a;
+    if (l >= 2) {   // spicy: no picture, angle A
+      const nA = w === 'sin' ? a : w === 'cos' ? o : a, dA = w === 'tan' ? o : h;
+      return nu(p('In triangle ABC, ∠C = 90°, AC = ' + o + ', BC = ' + a + ' and AB = ' + h + '. Calculate ' + M(w) + ' A. (Give a decimal, rounded to 2 decimals. Make a sketch.)'), r2(nA / dA), 'Seen from A: the opposite side is BC, the adjacent side is AC, the hypotenuse is AB.', w + ' A = ' + nA + '/' + dA + ' ≈ ' + r2(nA / dA) + '.', { tol: .006 });
+    }
     return nu(p('In the triangle: ' + M(w) + ' of angle B = ? (Give a decimal, rounded to 2 decimals.)') + rt(o, a, h, 'B'.length ? '∠B' : ''), r2(num / den), 'sin = opposite ÷ hypotenuse, cos = adjacent ÷ hypotenuse, tan = opposite ÷ adjacent (SOH CAH TOA). Angle B: opposite is AC = ' + o + ', adjacent is BC = ' + a + '.', w + ' B = ' + num + '/' + den + ' ≈ ' + r2(num / den) + '.', { tol: .006 });
   },
   function soh(l) {
     const [o, a, h] = scaled(); const w = pick(['sin', 'cos', 'tan']); const right = w === 'sin' ? o + '/' + h : w === 'cos' ? a + '/' + h : o + '/' + a; const all = [o + '/' + h, a + '/' + h, o + '/' + a, a + '/' + o, h + '/' + o];
+    if (l >= 2) {   // spicy: no picture, and the angle at A (opposite BC)
+      const rA = w === 'sin' ? a + '/' + h : w === 'cos' ? o + '/' + h : a + '/' + o, allA = [a + '/' + h, o + '/' + h, a + '/' + o, o + '/' + a, h + '/' + a];
+      return ch(p('In triangle ABC, ∠C = 90°, AC = ' + o + ', BC = ' + a + ' and AB = ' + h + '. Which fraction is ' + M(w) + ' of angle A? <small>(Make a sketch.)</small>'), M(rA), allA.filter(x => x !== rA).slice(0, 3).map(x => M(x)), 'Sketch the triangle. Seen from A: the opposite side is BC, the adjacent side is AC, the hypotenuse is AB.', 'Opposite A: BC = ' + a + ', adjacent: AC = ' + o + ', hypotenuse: AB = ' + h + '. ' + w + ' A = ' + rA + '.');
+    }
     return ch(p('Which fraction is ' + M(w) + ' of angle B?') + rt(o, a, h, '∠B'), M(right), all.filter(x => x !== right).slice(0, 3).map(x => M(x)), 'SOH-CAH-TOA: Sin = Opp/Hyp, Cos = Adj/Hyp, Tan = Opp/Adj.', w + ' B = ' + right + '.');
   },
   function tanFromSinCos(l) {
-    const t = pick([[3, 5, 4], [5, 13, 12], [8, 17, 15], [7, 25, 24]]); const s = t[0] / t[1], c = t[2] / t[1]; return nu(p('sin α = <b>' + t[0] + '/' + t[1] + '</b> and cos α = <b>' + t[2] + '/' + t[1] + '</b>. Calculate tan α (as a decimal, 2 decimals).'), r2(s / c), 'tan α = sin α ÷ cos α.', t[0] + '/' + t[1] + ' ÷ ' + t[2] + '/' + t[1] + ' = ' + t[0] + '/' + t[2] + ' ≈ ' + r2(s / c) + '.', { tol: .006 });
+    const t = pick([[3, 5, 4], [5, 13, 12], [8, 17, 15], [7, 25, 24]]); const s = t[0] / t[1], c = t[2] / t[1];
+    if (l >= 2) return nu(p('sin α = <b>' + t[0] + '/' + t[1] + '</b> (α is an acute angle). Calculate tan α (as a decimal, 2 decimals). <small>Do not calculate α itself.</small>'), r2(s / c), 'First find cos α with sin²α + cos²α = 1. Then tan α = sin α ÷ cos α.', 'cos²α = 1 − (' + t[0] + '/' + t[1] + ')² = ' + t[2] ** 2 + '/' + t[1] ** 2 + ', so cos α = ' + t[2] + '/' + t[1] + '.<br>tan α = ' + t[0] + '/' + t[1] + ' ÷ ' + t[2] + '/' + t[1] + ' = ' + t[0] + '/' + t[2] + ' ≈ ' + r2(s / c) + '.', { tol: .006 });   // spicy: cos must be found first
+    return nu(p('sin α = <b>' + t[0] + '/' + t[1] + '</b> and cos α = <b>' + t[2] + '/' + t[1] + '</b>. Calculate tan α (as a decimal, 2 decimals).'), r2(s / c), 'tan α = sin α ÷ cos α.', t[0] + '/' + t[1] + ' ÷ ' + t[2] + '/' + t[1] + ' = ' + t[0] + '/' + t[2] + ' ≈ ' + r2(s / c) + '.', { tol: .006 });
   },
   function identity(l) {
     const t = pick([[3, 5, 4], [5, 13, 12], [8, 17, 15], [7, 25, 24], [20, 29, 21]]); const askCos = Math.random() < .5; const a = askCos ? t[0] / t[1] : t[2] / t[1]; const ans = askCos ? t[2] / t[1] : t[0] / t[1];
+    if (l >= 2) {   // spicy: start from tan
+      const sn = t[0] / t[1];
+      return nu(p('tan α = <b>' + t[0] + '/' + t[2] + '</b> (α is an acute angle). Calculate sin α (decimal, 2 decimals) without calculating α. <small>Hint: draw a right-angled triangle with these sides.</small>'), r2(sn), 'tan α = opposite / adjacent. Draw a triangle with opposite ' + t[0] + ' and adjacent ' + t[2] + '. Find the hypotenuse with Pythagoras.', 'hypotenuse = √(' + t[0] + '² + ' + t[2] + '²) = √' + t[1] ** 2 + ' = ' + t[1] + '<br>sin α = ' + t[0] + '/' + t[1] + ' ≈ ' + r2(sn) + '.', { tol: .006 });
+    }
     return nu(p((askCos ? 'sin' : 'cos') + ' α = <b>' + t[askCos ? 0 : 2] + '/' + t[1] + '</b> (α is an acute angle). Use sin²α + cos²α = 1 to calculate ' + (askCos ? 'cos' : 'sin') + ' α (decimal, 2 decimals).'), r2(ans), 'cos²α = 1 − sin²α (or the other way round). Take the positive root.', '1 − (' + t[askCos ? 0 : 2] + '/' + t[1] + ')² = ' + (askCos ? t[2] : t[0]) ** 2 + '/' + t[1] ** 2 + ', so the answer is ' + (askCos ? t[2] : t[0]) + '/' + t[1] + ' ≈ ' + r2(ans) + '.', { tol: .006 });
   },
   function sameAngleSame(l) {
@@ -769,7 +791,12 @@ XG['2.4'] = [
 /* ---------- 2.5 Slopes, auxiliary lines, solids ---------- */
 G['2.5'] = [
   function slopePct(l) {
-    const run = pick([20, 25, 40, 50, 80, 100]), rise = LR(l, 2, 20); return nu(p('A road rises <b>' + rise + ' m</b> over a horizontal distance of <b>' + run + ' m</b>. What is the slope percentage?'), r1(rise / run * 100), 'Slope % = rise ÷ run × 100.', rise + ' ÷ ' + run + ' × 100 = ' + r1(rise / run * 100) + '%.', { tol: .051 });
+    const run = pick([20, 25, 40, 50, 80, 100]), rise = LR(l, 2, 20);
+    if (l >= 2) {   // spicy: the length of the road itself is given, not the horizontal distance
+      const L = pick([50, 80, 100, 120, 150, 200]), up = ri(4, Math.round(L / 3)), hz = Math.sqrt(L * L - up * up), pc = r1(up / hz * 100);
+      return nu(p('A road is <b>' + L + ' m</b> long (measured along the road) and rises <b>' + up + ' m</b>. What is the slope percentage? <small>(1 decimal)</small>'), pc, 'Slope % = rise ÷ horizontal distance × 100. First find the horizontal distance with Pythagoras.', 'horizontal = √(' + L + '² − ' + up + '²) ≈ ' + r2(hz) + ' m<br>' + up + ' ÷ ' + r2(hz) + ' × 100 ≈ ' + pc + '%.', { tol: .051 });
+    }
+    return nu(p('A road rises <b>' + rise + ' m</b> over a horizontal distance of <b>' + run + ' m</b>. What is the slope percentage?'), r1(rise / run * 100), 'Slope % = rise ÷ run × 100.', rise + ' ÷ ' + run + ' × 100 = ' + r1(rise / run * 100) + '%.', { tol: .051 });
   },
   function slopeToAngle(l) {
     const pct = PL(l, [10, 20, 25, 50, 100, 40, 75, 15, 12, 8, 5]); const ang = Math.round(Math.atan(pct / 100) / D * 10) / 10; return nu(p('A slope of <b>' + pct + '%</b>. What is the angle of inclination (in °, 1 decimal)?'), ang, 'tan(angle) = slope ÷ 100.', 'tan⁻¹(' + pct / 100 + ') ≈ ' + ang + '°.', { tol: .051 });
@@ -778,14 +805,22 @@ G['2.5'] = [
     const ang = PL(l, [10, 20, 30, 40, 35, 28, 22, 18, 12, 9, 6, 3]); const pct = Math.round(Math.tan(ang * D) * 1000) / 10; return nu(p('The angle of inclination of a road is <b>' + ang + '°</b>. What is the slope percentage (1 decimal)?'), pct, 'Slope % = tan(angle) × 100.', 'tan ' + ang + '° × 100 ≈ ' + pct + '%.', { tol: .11 });
   },
   function steeper(l) {
-    const cs = [['30%', Math.atan(.3) / D, '20°', 20], ['100%', 45, '50°', 50], ['4 m per 20 m', Math.atan(.2) / D, '10°', 10], ['15%', Math.atan(.15) / D, '9°', 9], ['60%', Math.atan(.6) / D, '28°', 28], ['25%', Math.atan(.25) / D, '15°', 15]]; const c = pick(cs); const right = c[1] > c[3] ? c[0] : c[2];
+    const cs = [['30%', Math.atan(.3) / D, '20°', 20], ['100%', 45, '50°', 50], ['4 m per 20 m', Math.atan(.2) / D, '10°', 10], ['15%', Math.atan(.15) / D, '9°', 9], ['60%', Math.atan(.6) / D, '28°', 28], ['25%', Math.atan(.25) / D, '15°', 15]];
+    let c = pick(cs);
+    if (l >= 2) { let pc, ag; do { pc = ri(8, 95); ag = Math.round(Math.atan(pc / 100) / D) + pick([-2, -1, 1, 2]); } while (ag < 3); c = [pc + '%', Math.atan(pc / 100) / D, ag + '°', ag]; }   // spicy: new numbers, close together
+    const right = c[1] > c[3] ? c[0] : c[2];
     return ch(p('Which slope is <b>steeper</b>: ' + c[0] + ' or ' + c[2] + '?'), right, [c[0], c[2]].filter(x => x !== right), 'Convert one of them: slope % → angle with tan⁻¹, or angle → slope % with tan.', c[0] + ' ≈ ' + r1(c[1]) + '°, compared with ' + c[3] + '°: ' + right + ' is steeper.');
   },
   function isoscelesBase(l) {
     const leg = LR(l, 6, 15), apex = LR(l, 5, 17) * 4; const base = 2 * leg * Math.sin(apex / 2 * D); return nu(p('An isosceles triangle has legs of <b>' + leg + ' cm</b> and an apex angle of <b>' + apex + '°</b>. How long is the base (in cm, 1 decimal)?'), r1(base), 'The altitude splits the triangle into two right-angled triangles with an angle of ' + apex / 2 + '° at the top.', 'Half the base = ' + leg + ' × sin ' + apex / 2 + '°, so the base = 2 × ' + leg + ' × sin ' + apex / 2 + '° ≈ ' + r1(base) + ' cm.', { tol: .051 });
   },
   function isoscelesAngle(l) {
-    const leg = ri(8, 16), base = ri(5, 2 * leg - 4); const ang = Math.round(Math.acos(base / 2 / leg) / D * 10) / 10; return nu(p('An isosceles triangle has legs of <b>' + leg + ' cm</b> and a base of <b>' + base + ' cm</b>. How big is a base angle (in °, 1 decimal)?'), ang, 'Draw the altitude to the base: cos(base angle) = (base ÷ 2) ÷ leg.', 'cos B = ' + base / 2 + ' / ' + leg + ' → B ≈ ' + ang + '°.', { tol: .051 });
+    const leg = ri(8, 16), base = ri(5, 2 * leg - 4); const ang = Math.round(Math.acos(base / 2 / leg) / D * 10) / 10;
+    if (l >= 2) {   // spicy: the other way round, the top angle is given
+      const top = ri(30, 120), b2 = Math.round(2 * leg * Math.sin(top / 2 * D) * 10) / 10;
+      return nu(p('An isosceles triangle has legs of <b>' + leg + ' cm</b>. The top angle (between the legs) is <b>' + top + '°</b>. How long is the base (in cm, 1 decimal)?'), b2, 'Draw the altitude from the top: it halves the top angle and the base. Use sin in one half.', 'half the top angle: ' + top / 2 + '°<br>half the base = ' + leg + ' · sin ' + top / 2 + '° ≈ ' + Math.round(leg * Math.sin(top / 2 * D) * 100) / 100 + '<br>base ≈ ' + b2 + ' cm', { tol: .051 });
+    }
+    return nu(p('An isosceles triangle has legs of <b>' + leg + ' cm</b> and a base of <b>' + base + ' cm</b>. How big is a base angle (in °, 1 decimal)?'), ang, 'Draw the altitude to the base: cos(base angle) = (base ÷ 2) ÷ leg.', 'cos B = ' + base / 2 + ' / ' + leg + ' → B ≈ ' + ang + '°.', { tol: .051 });
   },
   function cuboidDiag(l) {
     const a = LR(l, 3, 12), b = LR(l, 3, 12), c = LR(l, 3, 12); const d = Math.hypot(a, b); const ang = Math.round(Math.atan(c / d) / D * 10) / 10; return nu(p('A cuboid has base <b>' + a + ' × ' + b + '</b> and height <b>' + c + '</b>. What angle does the space diagonal make with the base (in °, 1 decimal)?'), ang, 'First the diagonal of the base (Pythagoras). Then the right-angled triangle with the height.', 'Base diagonal = √(' + a + '² + ' + b + '²) ≈ ' + r2(d) + '. tan⁻¹(' + c + '/' + r2(d) + ') ≈ ' + ang + '°.', { tol: .051 });
@@ -845,6 +880,10 @@ G['2.3'].push(
 );
 G['2.5'].push(function slopeRun(l) {
   const pct = pick([5, 8, 10, 12, 14, 20]); const rise = pick([10, 15, 20, 25, 30]); const run = rise * 100 / pct; if (l === 0 && !Number.isInteger(run)) return G['2.5'].find(g => g.name === 'slopeRun')(l);
+  if (l >= 2) {   // spicy: how long is the road itself?
+    const L = Math.sqrt(run * run + rise * rise);
+    return nu(p('A road has a slope of <b>' + pct + '%</b>. It rises <b>' + rise + ' m</b>. How long is the road itself (along the slope), in m, 1 decimal?'), Math.round(L * 10) / 10, 'First the horizontal distance: run = rise ÷ (slope% ÷ 100). Then Pythagoras.', 'Run = ' + rise + ' ÷ ' + (pct / 100) + ' = ' + f(Math.round(run * 100) / 100) + ' m.<br>Road = √(' + f(Math.round(run * 100) / 100) + '² + ' + rise + '²) ≈ ' + f(Math.round(L * 10) / 10) + ' m.', { tol: .051 });
+  }
   return nu(p('A road has a slope of <b>' + pct + '%</b>. It rises <b>' + rise + ' m</b>. What is the horizontal distance (in m, 1 decimal)?'), Math.round(run * 10) / 10, 'slope % = rise ÷ run × 100%. So run = rise ÷ (slope% ÷ 100).', 'Run = ' + rise + ' ÷ ' + (pct / 100) + ' ≈ ' + f(Math.round(run * 10) / 10) + ' m.');
 });
 
