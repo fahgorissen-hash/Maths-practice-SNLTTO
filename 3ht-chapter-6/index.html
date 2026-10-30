@@ -633,13 +633,21 @@ G['6.1'] = [
     return nr(p('In triangle ' + n + ', ∠' + n[0] + ' = 90°, ' + side(n, 0, 1) + ' = ' + A + ' and ' + H + ' = ' + C + '. Calculate ' + Bn + '. Round to 1 decimal.') + rt(n, A, b, [A, '?', C], null, ROT(l)), b, 1, 'You know the hypotenuse, so you subtract: ' + Bn + '² = ' + H + '² − ' + side(n, 0, 1) + '².', side(n, 0, 1) + '² + ' + Bn + '² = ' + H + '²<br>' + A + '² + ' + Bn + '² = ' + C + '²<br>' + A * A + ' + ' + Bn + '² = ' + C * C + '<br>' + Bn + '² = ' + C * C + ' − ' + A * A + ' = ' + b2 + '<br>' + Bn + ' = √' + b2 + (isSq(b2) ? ' = ' + b : ' ≈ ' + R1(b)));
   },
   function isRight(l) {
-    const t = pick(TRIPLES), k = pick([1, 1, 2, 0.5]), right = Math.random() < .5; let s = t.map(v => rd(v * k)); if (!right) s = [s[0], s[1] + pick([1, -1]), s[2]];
+    const t = pick(TRIPLES), k = l >= 2 ? pick([0.5, 1.5, 2.5, 0.3]) : pick([1, 1, 2, 0.5]), right = Math.random() < .5; let s = t.map(v => rd(v * k)); if (!right) s = [s[0], rd(s[1] + pick([1, -1]) * (l >= 2 ? 0.5 : 1)), s[2]];
+    if (l >= 2) {   // spicy: decimals, the longest side is not always last
+      const ok2 = rd(s[0] * s[0] + s[1] * s[1]) === rd(s[2] * s[2]), sh = shuffle(s.slice()), so = s.slice().sort((x, y) => x - y);
+      return ch(p('A triangle has sides ' + sh.join(', ') + '. Is it a right-angled triangle?'), ok2 ? 'yes' : 'no', [ok2 ? 'no' : 'yes'], 'Find the longest side first. Check if the two short sides squared add up to the longest side squared.', 'Longest side: ' + so[2] + '. ' + so[0] + '² + ' + so[1] + '² = ' + rd(so[0] * so[0]) + ' + ' + rd(so[1] * so[1]) + ' = ' + rd(so[0] * so[0] + so[1] * so[1]) + ' and ' + so[2] + '² = ' + rd(so[2] * so[2]) + '. ' + (ok2 ? 'These are equal: yes, right-angled.' : 'These are not equal: no.'));
+    }
     const ok = rd(s[0] * s[0] + s[1] * s[1]) === rd(s[2] * s[2]);
     return ch(p('A triangle has sides ' + s[0] + ', ' + s[1] + ' and ' + s[2] + '. Is it a right-angled triangle?'), ok ? 'yes' : 'no', [ok ? 'no' : 'yes'], 'Check if the two short sides squared add up to the longest side squared.', s[0] + '² + ' + s[1] + '² = ' + rd(s[0] * s[0]) + ' + ' + rd(s[1] * s[1]) + ' = ' + rd(s[0] * s[0] + s[1] * s[1]) + ' and ' + s[2] + '² = ' + rd(s[2] * s[2]) + '. ' + (ok ? 'These are equal: yes, right-angled.' : 'These are not equal: no.'));
   },
   function similarRight(l) {
     const t = pick(TRIPLES), k = pick([1.5, 2, 2.5, 3, 0.5]), n1 = 'ABC', n2 = 'DEF', ask = ri(0, 2), big = t.map(v => rd(v * k));
     const known = [0, 1, 2].filter(i => i !== ask), lbl = ['the short side', 'the other side next to the right angle', 'the hypotenuse'];
+    if (l >= 2) {   // spicy: BC is not given, so Pythagoras first (or after)
+      const j = ri(0, 1);
+      return nu(p('Triangles ABC and DEF are similar right-angled triangles (∠A = ∠D = 90° and ∠B = ∠E). AB = ' + t[0] + ', AC = ' + t[1] + ' and ' + ['DE', 'DF'][j] + ' = ' + big[j] + '. Calculate <b>EF</b>.'), big[2], 'Find BC with Pythagoras, or first find the other side of DEF. Then use the enlargement factor.', p('BC² = ' + t[0] + '² + ' + t[1] + '² = ' + t[2] * t[2] + ', so BC = ' + t[2]) + p('factor = ' + ['DE', 'DF'][j] + ' / ' + ['AB', 'AC'][j] + ' = ' + big[j] + ' / ' + t[j] + ' = ' + k) + p('EF = ' + k + ' · ' + t[2] + ' = ' + big[2]), { needStep: true });
+    }
     return nu(p('Triangles ABC and DEF are similar right-angled triangles (∠A = ∠D = 90° and ∠B = ∠E). AB = ' + t[0] + ', AC = ' + t[1] + ', BC = ' + t[2] + ' and ' + ['DE', 'DF', 'EF'][known[0]] + ' = ' + big[known[0]] + '. Calculate ' + ['DE', 'DF', 'EF'][ask] + '.'), big[ask], 'Find the enlargement factor from a pair of corresponding sides.', p('factor = ' + ['DE', 'DF', 'EF'][known[0]] + ' / ' + ['AB', 'AC', 'BC'][known[0]] + ' = ' + big[known[0]] + ' / ' + t[known[0]] + ' = ' + k) + p(['DE', 'DF', 'EF'][ask] + ' = ' + k + ' · ' + t[ask] + ' = ' + big[ask]), { needStep: true });
   }
 ];
@@ -679,6 +687,10 @@ G['6.2'] = [
   },
   function tanSide(l) {
     const n = pick(LET), t = pick(TRIPLES.slice(0, 6)), k = ri(1, 4), adj = t[0] * k, opp = t[1] * k, g = NX.gcd(t[0], t[1]);
+    if (l >= 2) {   // spicy: the hypotenuse is asked (tan, then Pythagoras)
+      const hyp = t[2] * k;
+      return nu(p('In triangle ' + n + ', ∠' + n[0] + ' = 90°, tan(∠' + n[1] + ') = ' + t[1] / g + '/' + t[0] / g + ' and ' + side(n, 0, 1) + ' = ' + adj + '. Calculate ' + side(n, 1, 2) + '.') + rt(n, t[0], t[1], [adj, '', '?'], ['•', ''], ROT(l)), hyp, 'First find ' + side(n, 0, 2) + ' with tan. Then use Pythagoras for ' + side(n, 1, 2) + '.', p(side(n, 0, 2) + ' = ' + adj + ' · ' + t[1] / g + ' / ' + t[0] / g + ' = ' + opp) + p(side(n, 1, 2) + '² = ' + adj + '² + ' + opp + '² = ' + hyp * hyp) + p(side(n, 1, 2) + ' = √' + hyp * hyp + ' = ' + hyp), { needStep: true });
+    }
     return nu(p('In triangle ' + n + ', ∠' + n[0] + ' = 90°, tan(∠' + n[1] + ') = ' + t[1] / g + '/' + t[0] / g + ' and ' + side(n, 0, 1) + ' = ' + adj + '. Calculate ' + side(n, 0, 2) + '.') + rt(n, t[0], t[1], [adj, '?', ''], ['•', ''], ROT(l)), opp, 'tan(∠' + n[1] + ') = opposite / adjacent = ' + side(n, 0, 2) + ' / ' + side(n, 0, 1) + '.', p('tan(∠' + n[1] + ') = ' + side(n, 0, 2) + ' / ' + side(n, 0, 1)) + p(t[1] / g + '/' + t[0] / g + ' = ' + side(n, 0, 2) + ' / ' + adj) + p(side(n, 0, 2) + ' = ' + adj + ' · ' + t[1] / g + ' / ' + t[0] / g + ' = ' + opp), { needStep: true });
   }
 ];
@@ -751,14 +763,20 @@ G['6.4'] = [
   },
   function percentFromAngle(l) {
     const a = ri(2, 35), pc = T.tan(a) * 100;
+    if (l >= 2) { const pc2 = ri(4, 60), a2 = Math.atan(pc2 / 100) / D;   // spicy: from the slope percentage back to the angle
+      return nr(p('A road has a slope of ' + pc2 + '%. Calculate the angle of inclination. Round to 1 decimal.'), a2, 1, 'tan(angle) = ' + pc2 + ' / 100. Use tan<sup>−1</sup>.', 'tan(α) = ' + pc2 / 100 + '<br>α = tan<sup>−1</sup>(' + pc2 / 100 + ') ≈ ' + R1(a2) + '°', { keys: KEYS, ansText: R1(a2) + '°' }); }
     return nr(p('A road has an angle of inclination of ' + a + '°. Calculate the slope percentage. Round to 1 decimal.'), pc, 1, 'slope percentage = tan(angle) · 100%.', 'tan(' + a + '°) · 100% ≈ ' + R1(pc) + '%', { keys: KEYS, ansText: R1(pc) + '%' });
   },
   function ladderAngle(l) {
     const L = pick([3, 4, 5, 6, 8]), a = ri(60, 78), kind = pick(['height', 'foot']), v = kind === 'height' ? L * T.sin(a) : L * T.cos(a);
+    if (l >= 2) { const H = rd(L * T.sin(a) - pick([0.3, 0.2, 0.1]), 1), ang = Math.asin(H / L) / D;   // spicy: the angle is asked
+      return nr(p('A ladder of ' + L + ' m reaches ' + H + ' m up a wall. What angle does the ladder make with the ground? Round to 1 decimal.'), ang, 1, 'The ladder is the hypotenuse, the height is opposite the angle: use sin<sup>−1</sup>.', p('sin(α) = ' + H + ' / ' + L) + p('α = sin<sup>−1</sup>(' + H + ' / ' + L + ') ≈ ' + R1(ang) + '°'), { keys: KEYS, ansText: R1(ang) + '°' }); }
     return nr(p('A ladder of ' + L + ' m makes an angle of ' + a + '° with the ground. ' + (kind === 'height' ? 'How high up the wall does it reach?' : 'How far is the foot of the ladder from the wall?') + ' Round to 2 decimals.'), v, 2, 'The ladder is the hypotenuse. The ' + (kind === 'height' ? 'height is opposite' : 'distance to the wall is adjacent to') + ' the angle.', p((kind === 'height' ? 'sin' : 'cos') + '(' + a + '°) = ? / ' + L) + p('? = ' + L + ' · ' + (kind === 'height' ? 'sin' : 'cos') + '(' + a + '°) ≈ ' + rd(v, 2) + ' m'), { keys: KEYS });
   },
   function walkUp(l) {
     const d = pick([200, 300, 400, 500, 800, 1000]), a = ri(3, 15), h = d * T.sin(a);
+    if (l >= 2) { const up = pick([25, 40, 60, 75, 120]), len = up / T.sin(a);   // spicy: the length of the path is asked
+      return nr(p('A straight path up a hill makes an angle of ' + a + '° with the horizontal. You climb ' + up + ' m in height. How long is the path? Round to whole metres.'), len, 0, 'The path is the hypotenuse; the height is opposite the angle. Now the hypotenuse is unknown: divide.', p('sin(' + a + '°) = ' + up + ' / ?') + p('? = ' + up + ' / sin(' + a + '°) ≈ ' + rd(len, 0) + ' m'), { keys: KEYS }); }
     return nr(p('You walk ' + d + ' m along a straight path up a hill. The path makes an angle of ' + a + '° with the horizontal. How many metres higher are you? Round to whole metres.'), h, 0, 'The path is the hypotenuse; the height is opposite the angle.', p('sin(' + a + '°) = ? / ' + d) + p('? = ' + d + ' · sin(' + a + '°) ≈ ' + rd(h, 0) + ' m'), { keys: KEYS });
   }
 ];

@@ -1,4 +1,4 @@
-const { ri, pick, shuffle } = NX;
+const { ri, pick, shuffle, nz } = NX;
 const ch = (html, right, wrongs, hint, steps, extra) => { let o = [right]; wrongs.forEach(w => { if (!o.includes(w)) o.push(w); }); const opts = shuffle(o); return Object.assign({ type: 'choice', opts, ans: opts.indexOf(right), html, hint, steps, keys: [] }, extra || {}); };
 const nu = (html, ans, hint, steps, extra) => Object.assign({ type: 'num', html, ans, hint, steps }, extra || {});
 const p = x => '<p>' + x + '</p>';
@@ -47,14 +47,26 @@ G['7.1'] = [
   },
   function original(l) {
     const up = Math.random() < .4, pc = pick([10, 15, 20, 25, 30, 40, 45, 21]), v = up ? pc : -pc, orig = ri(4, 60) * 5, now = rd(orig * mult(v), 2);
+    if (l >= 2) {   // spicy: two changes after each other
+      const dc = pick([10, 15, 20, 25, 30]), m2 = rd(mult(-dc) * 1.21, 4), n2 = rd(orig * m2, 2);
+      return nr(p('A shop first gives ' + dc + '% discount on a jacket. Then 21% VAT is added. Now the jacket costs €' + n2.toFixed(2) + '. What was the price before the discount and the VAT (in €)?'), orig, 2, 'Multiply the two multipliers. Then old = new : total multiplier.', p('total multiplier = ' + mult(-dc) + ' · 1.21 = ' + m2) + p(n2.toFixed(2) + ' : ' + m2 + ' = ' + orig), { needStep: true });
+    }
     return nr(p('After ' + (up ? 'an increase' : 'a discount') + ' of ' + pc + '% a jacket costs €' + now.toFixed(2) + '. What was the price before (in €)?'), orig, 2, 'new = old · multiplier, so old = new : multiplier.', p('multiplier = ' + multTxt(v)) + p(now.toFixed(2) + ' : ' + mult(v) + ' = ' + orig), { needStep: true });
   },
   function percentChange(l) {
     let a, b; do { a = ri(4, 80) * 5; b = a + ri(-15, 20) * 5; } while (b <= 0 || b === a);
     const pc = (b - a) / a * 100;
+    if (l >= 2) {   // spicy: back to the old value: the percentage is not the same
+      const hi = Math.max(a, b), lo = Math.min(a, b), back = (hi - lo) / lo * 100;
+      return nr(p('A price goes down from €' + hi + ' to €' + lo + '. By what percentage must the new price go up to be €' + hi + ' again? <small>(Round to 1 decimal.)</small>'), back, 1, 'Now the old value is ' + lo + '. multiplier = ' + hi + ' / ' + lo + '.', p('multiplier = ' + hi + ' / ' + lo + ap(hi / lo, 4)) + p(rd(hi / lo, 4) + ' · 100% − 100%' + ap(back, 1) + '%'), { needStep: true });
+    }
     return nr(p('A quantity changes from ' + a + ' to ' + b + '. What is the percentage change? <small>(Give a decrease as a negative number. Round to 1 decimal.)</small>'), pc, 1, 'multiplier = new / old. Then multiplier · 100% − 100%.', p('multiplier = ' + b + ' / ' + a + ap(b / a, 4)) + p(rd(b / a, 4) + ' · 100% − 100%' + ap(pc, 1) + '%'), { needStep: true });
   },
   function repeated(l) {
+    if (l >= 2) {   // spicy: the same change several years in a row
+      const q = pick([3, 4, 5, 6, 8, -5, -8, -12]), n = ri(3, 8), M2 = Math.pow(mult(q), n), pc2 = rd(M2 * 100 - 100, 1);
+      return nr(p('A price ' + (q > 0 ? 'goes up' : 'goes down') + ' by ' + Math.abs(q) + '% every year, for ' + n + ' years. What is the total percentage change? <small>(A decrease is negative. Round to 1 decimal.)</small>'), M2 * 100 - 100, 1, 'Multiply by the multiplier ' + n + ' times: use a power.', p(pw(mult(q), n) + ap(M2, 4)) + p(rd(M2, 4) + ' · 100% − 100%' + ap(M2 * 100 - 100, 1) + '%'), { needStep: true });
+    }
     const p1 = pick([10, 20, 30, 40, 15, 25]) * (Math.random() < .5 ? -1 : 1), p2 = pick([10, 20, 5, 8, 50, 15]) * (Math.random() < .6 ? 1 : -1), m = mult(p1) * mult(p2), pc = rd(m * 100 - 100, 2);
     return nr(p('A price first ' + (p1 > 0 ? 'goes up' : 'goes down') + ' by ' + Math.abs(p1) + '% and then ' + (p2 > 0 ? 'goes up' : 'goes down') + ' by ' + Math.abs(p2) + '%. What is the total percentage change? <small>(A decrease is negative.)</small>'), pc, 2, 'Multiply the two multipliers. You cannot just add the percentages.', p(mult(p1) + ' · ' + mult(p2) + ' = ' + rd(m, 4)) + p(rd(m, 4) + ' · 100% − 100% = ' + neg(pc) + '%'), { needStep: true });
   }
@@ -83,6 +95,8 @@ G['7.2'] = [
   },
   function growthFactor(l) {
     const g = pick([1.2, 1.5, 0.8, 0.9, 1.1, 0.75, 2, 1.25]), b = pick([100, 200, 400, 640, 1000, 250]), ys = [0, 1, 2, 3].map(t => rd(b * Math.pow(g, t), 2));
+    if (l >= 2) { const ts = [0, 2, 4, 6], y2 = ts.map(t => rd(b * Math.pow(g, t), 2));   // spicy: steps of 2 in the table
+      return nu(p('This table shows exponential growth. What is the growth factor per unit of ' + X('t') + '? <small>(Look carefully at the values of ' + X('t') + '.)</small>') + tbl(X('t'), X('N'), ts, y2.map(sp)), g, 'Two steps of ' + X('t') + ' give the quotient of two neighbouring values. One step: take the square root.', y2[1] + ' / ' + y2[0] + ' = ' + rd(g * g, 4) + ' per 2 units, so per unit: √' + rd(g * g, 4) + ' = ' + g, { noStep: true }); }
     return nu(p('This table shows exponential growth. What is the growth factor?') + tbl(X('t'), X('N'), [0, 1, 2, 3], ys.map(sp)), g, 'Divide a value by the value before it.', ys[1] + ' / ' + ys[0] + ' = ' + g + ' (and ' + ys[2] + ' / ' + ys[1] + ' = ' + g + ')', { noStep: true });
   },
   function completeTable(l) {
@@ -94,7 +108,7 @@ G['7.2'] = [
     return nu(p('A quantity ' + (up ? 'increases' : 'decreases') + ' by ' + pc + '% per year. What is the growth factor per year?'), mult(v), 'growth factor = (100 ± percentage) / 100.', 'g = ' + multTxt(v), { noStep: true });
   },
   function checkQuotients(l) {
-    const g = pick([1.15, 0.97, 1.08, 0.85]), b = ri(200, 600), exp = Math.random() < .5, ys = [0, 1, 2, 3].map(t => Math.round(b * Math.pow(g, t) * (exp ? 1 : 1 + (t === 3 ? .08 : t === 2 ? -.04 : 0))));
+    const g = pick([1.15, 0.97, 1.08, 0.85]), b = l >= 2 ? ri(2000, 6000) : ri(200, 600), exp = Math.random() < .5, dv = l >= 2 ? [0, 0, -.015, .02] : [0, 0, -.04, .08], ys = [0, 1, 2, 3].map(t => Math.round(b * Math.pow(g, t) * (exp ? 1 : 1 + dv[t])));   // spicy: a smaller difference
     const qs = ys.slice(1).map((y, i) => rd(y / ys[i], 3)), ok = Math.max(...qs) - Math.min(...qs) < .006;
     return ch(p('Is the growth approximately exponential? Calculate the quotients of successive values.') + tbl('year', 'number', [2021, 2022, 2023, 2024], ys), ok ? 'yes, the quotients are about equal' : 'no, the quotients differ too much', [ok ? 'no, the quotients differ too much' : 'yes, the quotients are about equal'], 'Divide each value by the value before it.', 'Quotients: ' + qs.join(', ') + '. ' + (ok ? 'These are about the same: approximately exponential with g ≈ ' + rd(qs[0], 2) + '.' : 'These differ too much: not exponential.'));
   }
@@ -113,8 +127,8 @@ XG['7.2'] = [
 /* ======================= 7.3 Exponential formulas ======================= */
 G['7.3'] = [
   function readFormula(l) {
-    const b = pick([15, 138, 500, 2000, 0.15, 1]), g = pick([0.78, 1.03, 1.158, 0.125, 3, 1.5]);
-    return { type: 'multi', fields: ['b =', 'g ='], ans: [b, g], html: p('The formula ' + X('N') + ' = ' + b + ' · ' + pw(g, X('t')) + ' has the form ' + X('N') + ' = ' + X('b') + ' · ' + pw(X('g'), X('t')) + '. Give the initial value ' + X('b') + ' and the growth factor ' + X('g') + '.'), hint: X('b') + ' is the value at ' + X('t') + ' = 0, ' + X('g') + ' is the number with the exponent.', steps: X('b') + ' = ' + b + ' and ' + X('g') + ' = ' + g + '. ' + (g > 1 ? 'g > 1: growth.' : 'g < 1: decay.'), noStep: true, ansText: X('b') + ' = ' + b + ', ' + X('g') + ' = ' + g };
+    const b = pick([15, 138, 500, 2000, 0.15, 1]), g = pick([0.78, 1.03, 1.158, 0.125, 3, 1.5]), sw = l >= 2;   // spicy: the factors are written the other way round
+    return { type: 'multi', fields: ['b =', 'g ='], ans: [b, g], html: p('The formula ' + X('N') + ' = ' + (sw ? pw(g, X('t')) + ' · ' + b : b + ' · ' + pw(g, X('t'))) + ' has the form ' + X('N') + ' = ' + X('b') + ' · ' + pw(X('g'), X('t')) + '. Give the initial value ' + X('b') + ' and the growth factor ' + X('g') + '.'), hint: X('b') + ' is the value at ' + X('t') + ' = 0, ' + X('g') + ' is the number with the exponent.', steps: X('b') + ' = ' + b + ' and ' + X('g') + ' = ' + g + '. ' + (g > 1 ? 'g > 1: growth.' : 'g < 1: decay.'), noStep: true, ansText: X('b') + ' = ' + b + ', ' + X('g') + ' = ' + g };
   },
   function makeFormula(l) {
     const up = Math.random() < .5, pc = pick([2, 4, 5, 6.5, 8, 10, 15, 20, 25]), v = up ? pc : -pc, b = pick([150, 500, 1200, 2450, 25, 80]), t = ri(3, 15), N = b * Math.pow(mult(v), t);
@@ -122,14 +136,20 @@ G['7.3'] = [
   },
   function factorToPercent(l) {
     const g = pick([1.065, 1.2, 0.85, 0.97, 1.004, 0.6, 2.5, 1.35]), pc = rd(g * 100 - 100, 2);
+    if (l >= 2) { const gm = pick([1.02, 1.015, 0.98, 1.05, 0.99]), Y = Math.pow(gm, 12), py = Y * 100 - 100;   // spicy: per month in the formula, per year asked
+      return nr(p('The formula is ' + X('N') + ' = 300 · ' + pw(gm, X('t')) + ' with ' + X('t') + ' in <b>months</b>. By what percentage does ' + X('N') + ' change per <b>year</b>? <small>(A decrease is negative. Round to 1 decimal.)</small>'), py, 1, 'First the growth factor per year: a year has 12 months.', p('per year: ' + pw(gm, 12) + ap(Y, 4)) + p(rd(Y, 4) + ' · 100% − 100%' + ap(py, 1) + '%'), { needStep: true, ansText: neg(rd(py, 1)) + '%' }); }
     return nu(p('The formula is ' + X('N') + ' = 300 · ' + pw(g, X('t')) + ' with ' + X('t') + ' in years. By what percentage does ' + X('N') + ' change per year? <small>(A decrease is negative.)</small>'), pc, 'percentage = g · 100% − 100%.', g + ' · 100% − 100% = ' + neg(pc) + '%', { noStep: true, ansText: neg(pc) + '%' });
   },
   function biggerUnit(l) {
     const g = pick([1.1, 1.05, 0.98, 1.02, 0.9, 1.12]), k = pick([2, 4, 7, 10, 12, 24]), unit = { 2: ['day', '2 days'], 4: ['quarter', 'year'], 7: ['day', 'week'], 10: ['year', 'decade'], 12: ['month', 'year'], 24: ['hour', 'day'] }[k], G_ = Math.pow(g, k);
+    if (l >= 2) { const q = rd(g * 100 - 100), P = G_ * 100 - 100;   // spicy: percentages in and out
+      return nr(p('A quantity ' + (q > 0 ? 'grows' : 'shrinks') + ' by ' + Math.abs(q) + '% per ' + unit[0] + '. By what percentage does it change per ' + unit[1] + '? <small>(A decrease is negative. Round to 1 decimal.)</small>'), P, 1, 'First the growth factor per ' + unit[0] + ', then multiply ' + k + ' times. Then back to a percentage.', p('g per ' + unit[0] + ' = ' + g) + p(pw(g, k) + ap(G_, 4)) + p(rd(G_, 4) + ' · 100% − 100%' + ap(P, 1) + '%'), { needStep: true }); }
     return nr(p('The growth factor per ' + unit[0] + ' is ' + g + '. Calculate the growth factor per ' + unit[1] + '. Round to 3 decimals.'), G_, 3, 'One ' + unit[1] + ' is ' + k + ' times one ' + unit[0] + ': multiply ' + k + ' times.', pw(g, k) + ap(G_, 3), { needStep: true });
   },
   function smallerUnit(l) {
     const g = pick([1.5, 2, 0.5, 0.8, 1.3, 3]), k = pick([2, 4, 7, 12, 10, 24]), unit = { 2: ['2 years', 'year'], 4: ['year', 'quarter'], 7: ['week', 'day'], 10: ['decade', 'year'], 12: ['year', 'month'], 24: ['day', 'hour'] }[k], G_ = Math.pow(g, 1 / k);
+    if (l >= 2) { const q = rd(g * 100 - 100), P = G_ * 100 - 100;   // spicy: percentages in and out
+      return nr(p('A quantity ' + (q > 0 ? 'grows' : 'shrinks') + ' by ' + Math.abs(q) + '% per ' + unit[0] + '. By what percentage does it change per ' + unit[1] + '? <small>(A decrease is negative. Round to 2 decimals.)</small>'), P, 2, 'First the growth factor per ' + unit[0] + ' (' + g + '). Then take the ' + k + 'th root. Then back to a percentage.', p(pw(g, '1/' + k) + ap(G_, 5)) + p(rd(G_, 5) + ' · 100% − 100%' + ap(P, 2) + '%'), { needStep: true }); }
     return nr(p('The growth factor per ' + unit[0] + ' is ' + g + '. Calculate the growth factor per ' + unit[1] + '. Round to 3 decimals.'), G_, 3, 'One ' + unit[0] + ' is ' + k + ' ' + unit[1] + 's: take the ' + k + 'th root, or ' + pw(g, '1/' + k) + '.', pw(g, '1/' + k) + ap(G_, 3), { needStep: true });
   }
 ];
@@ -157,7 +177,8 @@ G['7.4'] = [
   function readGraph(l) {
     const b = pick([2, 4, 5, 8, 10]), g = pick([2, 1.5, 0.5, 3]), f = t => b * Math.pow(g, t), top = Math.max(b, f(2)), ystep = top <= 6 ? 0.5 : top <= 12 ? 1 : top <= 24 ? 2 : top <= 60 ? 5 : 10, ymax = Math.ceil(top * 1.15 / ystep) * ystep;
     if (!Number.isInteger(f(1) * 2) || !Number.isInteger(f(2) * 2) || ymax / ystep > 16) return G['7.4'][2](l);
-    return { type: 'multi', fields: ['b =', 'g ='], ans: [b, g], html: p('The graph shows an exponential relationship ' + X('N') + ' = ' + X('b') + ' · ' + pw(X('g'), X('t')) + '. The marked points are on the graph at ' + X('t') + ' = 0, 1 and 2. Give ' + X('b') + ' and ' + X('g') + '.') + plot(f, 5, ymax, ystep, [[0, b], [1, f(1)], [2, f(2)]]), hint: X('b') + ' is the value at ' + X('t') + ' = 0. ' + X('g') + ' = value at ' + X('t') + ' = 1 divided by value at ' + X('t') + ' = 0.', steps: p('At ' + X('t') + ' = 0: ' + X('N') + ' = ' + b + ', so ' + X('b') + ' = ' + b + '.') + p('At ' + X('t') + ' = 1: ' + X('N') + ' = ' + f(1) + ', so ' + X('g') + ' = ' + f(1) + ' / ' + b + ' = ' + g + '.'), noStep: true, ansText: X('b') + ' = ' + b + ', ' + X('g') + ' = ' + g };
+    const two = l >= 2;   // spicy: only t = 0 and t = 2 are marked
+    return { type: 'multi', fields: ['b =', 'g ='], ans: [b, g], html: p('The graph shows an exponential relationship ' + X('N') + ' = ' + X('b') + ' · ' + pw(X('g'), X('t')) + '. The marked points are on the graph at ' + X('t') + (two ? ' = 0 and 2' : ' = 0, 1 and 2') + '. Give ' + X('b') + ' and ' + X('g') + '.') + plot(f, 5, ymax, ystep, two ? [[0, b], [2, f(2)]] : [[0, b], [1, f(1)], [2, f(2)]]), hint: X('b') + ' is the value at ' + X('t') + ' = 0. ' + X('g') + ' = value at ' + X('t') + ' = 1 divided by value at ' + X('t') + ' = 0.', steps: p('At ' + X('t') + ' = 0: ' + X('N') + ' = ' + b + ', so ' + X('b') + ' = ' + b + '.') + p('At ' + X('t') + ' = 1: ' + X('N') + ' = ' + f(1) + ', so ' + X('g') + ' = ' + f(1) + ' / ' + b + ' = ' + g + '.'), noStep: true, ansText: X('b') + ' = ' + b + ', ' + X('g') + ' = ' + g };
   },
   function whichGraph(l) {
     const g1 = pick([1.5, 2]), g2 = pick([1.2, 1.3]), b1 = pick([2, 3]), b2 = b1 + pick([2, 4]), colors = ['#1b5fa8', '#d1471f'];
@@ -166,6 +187,8 @@ G['7.4'] = [
   },
   function tableFromFormula(l) {
     const b = pick([150, 200, 1000, 64]), g = pick([1.5, 0.75, 0.5, 1.2]), t = ri(2, 5), v = b * Math.pow(g, t);
+    if (l >= 2) { const n1 = b * g, n2 = b * g * g;   // spicy: the start value is missing, find g first
+      return nr(p('The table belongs to ' + X('N') + ' = ' + X('b') + ' · ' + pw(X('g'), X('t')) + '. Calculate the missing number. Round to 1 decimal.') + tbl(X('t'), X('N'), [0, 1, 2], ['?', sp(rd(n1, 2)), sp(rd(n2, 2))]), b, 1, 'First find the growth factor ' + X('g') + ' from ' + X('t') + ' = 1 to ' + X('t') + ' = 2. Then go one step back.', p(X('g') + ' = ' + rd(n2, 2) + ' / ' + rd(n1, 2) + ' = ' + g) + p(X('N') + '(0) = ' + rd(n1, 2) + ' / ' + g + ap(b, 1)), { needStep: true }); }
     return nr(p('Complete the table for ' + X('N') + ' = ' + b + ' · ' + pw(g, X('t')) + '. Round to 1 decimal.') + tbl(X('t'), X('N'), [0, 1, t], [b, rd(b * g, 1), '?']), v, 1, 'Substitute ' + X('t') + ' = ' + t + '.', b + ' · ' + pw(g, t) + ap(v, 1), { needStep: true });
   }
 ];
@@ -180,10 +203,15 @@ XG['7.4'] = [
 G['7.5'] = [
   function exactPower(l) {
     const g = pick([2, 3, 4, 5, 10]), x = ri(1, g === 2 ? 9 : g === 10 ? 6 : 5), r = Math.pow(g, x);
+    if (l >= 2) { const k = nz(-3, 4), e = x - k; if (e < 1) return exactPower(l);   // spicy: an expression in the exponent
+      const ex_ = X() + (k < 0 ? ' − ' + -k : ' + ' + k);
+      return nu(p('Solve: ' + pw(g, ex_) + ' = ' + sp(r)), e, 'Which power of ' + g + ' gives ' + sp(r) + '? That number is ' + ex_ + '.', pw(g, x) + ' = ' + sp(r) + ', so ' + ex_ + ' = ' + x + ' and ' + X() + ' = ' + e + '.', { noStep: true }); }
     return nu(p('Solve: ' + pw(g, X()) + ' = ' + sp(r)), x, 'Which power of ' + g + ' gives ' + sp(r) + '?', pw(g, x) + ' = ' + sp(r) + ', so ' + X() + ' = ' + x + '.', { noStep: true });
   },
   function withFactor(l) {
     const a = pick([2, 3, 4, 5, 10]), g = pick([2, 3, 5]), x = ri(1, g === 2 ? 6 : 4), r = a * Math.pow(g, x);
+    if (l >= 2) { const c = nz(-20, 40), lhs = a + ' · ' + pw(g, X()) + (c < 0 ? ' − ' + -c : ' + ' + c);   // spicy: a number added too
+      return nu(p('Solve: ' + lhs + ' = ' + sp(r + c)), x, 'First get ' + a + ' · ' + pw(g, X()) + ' on its own, then divide by ' + a + '.', p(a + ' · ' + pw(g, X()) + ' = ' + sp(r + c) + (c > 0 ? ' − ' + c : ' + ' + -c) + ' = ' + sp(r)) + p(pw(g, X()) + ' = ' + sp(r) + ' : ' + a + ' = ' + sp(Math.pow(g, x))) + p(X() + ' = ' + x), { noStep: true }); }
     return nu(p('Solve: ' + a + ' · ' + pw(g, X()) + ' = ' + sp(r)), x, 'Divide by ' + a + ' first.', p(pw(g, X()) + ' = ' + sp(r) + ' : ' + a + ' = ' + sp(Math.pow(g, x))) + p(X() + ' = ' + x), { noStep: true });
   },
   function trialRound(l) {
@@ -192,10 +220,14 @@ G['7.5'] = [
   },
   function doublingTime(l) {
     const g = pick([1.3, 1.2, 1.1, 1.5, 1.08]), t = Math.log(2) / Math.log(g), d = 1;
+    if (l >= 2) { const q = pick([4, 6, 7, 9, 12]), g2 = 1 + q / 100, t3 = Math.log(3) / Math.log(g2);   // spicy: a percentage, and three times as much
+      return nr(p('A savings account grows by ' + q + '% per year. You start with €400. After how many years do you have three times as much? Round to 1 decimal.'), t3, 1, 'g = ' + g2 + '. Three times as much means ' + pw(g2, X('t')) + ' = 3. Try values with your calculator.', p('400 · ' + pw(g2, X('t')) + ' = 1200 gives ' + pw(g2, X('t')) + ' = 3') + p(pw(g2, rd(t3, 1)) + ' ≈ ' + rd(Math.pow(g2, rd(t3, 1)), 3) + ', so ' + X('t') + ' ≈ ' + rd(t3, 1) + ' years'), { noStep: true, tol: .06 }); }
     return nr(p('A quantity grows by ' + X('N') + ' = 25 · ' + pw(g, X('t')) + ' (' + X('t') + ' in years). After how many years has the quantity doubled? Round to 1 decimal.'), t, 1, 'Doubled means ' + X('N') + ' = 50, so ' + pw(g, X('t')) + ' = 2. Try values with your calculator (or use the table).', p('25 · ' + pw(g, X('t')) + ' = 50 gives ' + pw(g, X('t')) + ' = 2') + p(pw(g, rd(t, 1)) + ' ≈ ' + rd(Math.pow(g, rd(t, 1)), 3) + ', so ' + X('t') + ' ≈ ' + rd(t, 1) + ' years'), { noStep: true, tol: .06 });
   },
   function whenBelow(l) {
     const b = pick([180, 100, 500]), g = pick([0.9, 0.85, 0.8, 0.95]), half = b / 2; let t = 0; while (b * Math.pow(g, t) >= half) t++;
+    if (l >= 2) { const q = pick([6, 8, 12, 15]), g2 = 1 - q / 100, lim = b / 10; let t2 = 0; while (b * Math.pow(g2, t2) >= lim) t2++;   // spicy: a percentage, and less than 10% left
+      return nu(p('A barrel with ' + b + ' L leaks. Every hour ' + q + '% of the water that is still in it leaks out. After how many whole hours is less than 10% of the water left for the first time?'), t2, 'g = ' + rd(g2) + '. 10% of ' + b + ' is ' + lim + ' L. Try whole values of ' + X('t') + '.', p(X('W') + ' = ' + b + ' · ' + pw(rd(g2), X('t'))) + p(X('t') + ' = ' + (t2 - 1) + ': ' + rd(b * Math.pow(g2, t2 - 1), 1) + ' L') + p(X('t') + ' = ' + t2 + ': ' + rd(b * Math.pow(g2, t2), 1) + ' L &lt; ' + lim) + p('After ' + t2 + ' hours.'), { noStep: true }); }
     return nu(p('A barrel with ' + b + ' L leaks: ' + X('W') + ' = ' + b + ' · ' + pw(g, X('t')) + ' (' + X('t') + ' in hours). After how many whole hours is less than half of the water left for the first time?'), t, 'Half is ' + half + ' L. Try whole values of ' + X('t') + '.', p(X('t') + ' = ' + (t - 1) + ': ' + rd(b * Math.pow(g, t - 1), 1) + ' L') + p(X('t') + ' = ' + t + ': ' + rd(b * Math.pow(g, t), 1) + ' L &lt; ' + half) + p('After ' + t + ' hours.'), { noStep: true });
   }
 ];
