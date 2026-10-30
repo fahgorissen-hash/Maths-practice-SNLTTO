@@ -607,39 +607,7 @@
     }
   ];
   XG['2.2'] = [
-    /* calculating angles is not in 1HVT ch2 (Frank, 2026-10-29): extra challenge only */
-    function reflex(l) {
-      const small = l === 0 ? ri(2, 17) * 10 : ri(11, 179), toBig = Math.random() < .6;
-      return toBig ? { type: 'num', ans: 360 - small, correct: String(360 - small), html: '<p>The (small) angle between two lines is <b>' + small + '°</b>. What is the <b>reflex angle</b> on the other side?</p>',
-        hint: 'A full turn is 360°. Subtract the small angle.', steps: '360° − ' + small + '° = ' + (360 - small) + '°.' } :
-        { type: 'num', ans: small, correct: String(small), html: '<p>A reflex angle is <b>' + (360 - small) + '°</b>. What is the (small) angle on the other side?</p>',
-        hint: 'A full turn is 360°. Subtract the reflex angle from 360°.', steps: '360° − ' + (360 - small) + '° = ' + small + '°.' };
-    },
-    function complete(l) {
-      const nm = { 90: 'a right angle', 180: 'a straight angle', 360: 'a full angle' };
-      if (l === 0) {                       // two known angles, one missing
-        const T = pick([90, 180]), x = 5 * ri(2, T / 5 - 6), a = 5 * ri(2, (T - x) / 5 - 2), b = T - x - a;
-        if (b <= 0 || a <= 0) return GN('2.2', 'complete')(l);
-        return { type: 'num', ans: x, correct: String(x),
-          html: '<p>The angles <b>' + a + '°</b> and <b>' + b + '°</b> are next to each other, together with a third angle <b>x</b>. All three together make <b>' + nm[T] + '</b> (' + T + '°). How big is <b>x</b>? (Give the number of degrees.)</p>',
-          hint: 'Add the two angles you know. Then subtract the total from ' + T + '°.', steps: a + ' + ' + b + ' = ' + (a + b) + '°. Then ' + T + ' − ' + (a + b) + ' = ' + x + '°.' };
-      }
-      if (l === 1) {                       // three known angles, full turn or straight angle
-        const T = pick([180, 360]), n = T === 180 ? 2 : 3; let ang = [], sum = 0;
-        for (let i = 0; i < n; i++) { const v = ri(18, Math.floor((T - 30) / (n + 0.5))); ang.push(v); sum += v; }
-        const x = T - sum;
-        if (x < 10) return GN('2.2', 'complete')(l);
-        return { type: 'num', ans: x, correct: String(x),
-          html: '<p>Around a point (or on a straight line) the angles ' + ang.map(v => '<b>' + v + '°</b>').join(', ') + ' and one more angle <b>x</b> together make <b>' + nm[T] + '</b> (' + T + '°). How big is <b>x</b>? (Give the number of degrees.)</p>',
-          hint: 'Add all the angles you know. Then subtract the total from ' + T + '°.', steps: ang.join(' + ') + ' = ' + sum + '°. Then ' + T + ' − ' + sum + ' = ' + x + '°.' };
-      }
-      const ang = []; let sum = 0;
-      for (let i = 0; i < 3; i++) { const v = ri(31, 99); ang.push(v); sum += v; }
-      const x = 360 - sum;
-      return { type: 'num', ans: x, correct: String(x),
-        html: '<p>Four angles around a point make a <b>full angle</b> (360°). Three of them are <b>' + ang[0] + '°</b>, <b>' + ang[1] + '°</b> and <b>' + ang[2] + '°</b>. How big is the fourth angle? (Give the number of degrees.)</p>',
-        hint: 'Add the three angles. Then subtract the total from 360°.', steps: ang.join(' + ') + ' = ' + sum + '°. Then 360 − ' + sum + ' = ' + x + '°.' };
-    },
+    /* no angle calculations at all in 1HVT ch2, not even as a challenge (Frank, 2026-10-30) */
     function angleReason() {
       const kinds = [
         ['an <b>acute</b> angle', 'twice as big', 'acute, right or obtuse', 0],
@@ -667,30 +635,8 @@
         html: '<p>You face <b>' + dirs[i] + '</b>. First you turn <b>' + txt[0] + '</b>. Then you turn <b>' + txt[1] + '</b>. In which direction do you face now? (Clockwise = right.)</p>',
         hint: 'Do the turns one at a time. Between North, East, South and West there is a 90° turn; 45° is half of that.', steps: 'Start ' + dirs[i] + '. After the two turns you face ' + dirs[ans] + '.' };
     },
-    function twoArms() {
-      const a = ri(12, 90), b = Math.min(172, a + ri(21, 80)), start = Math.random() < .5 ? 'R' : 'L';
-      const A = start === 'R' ? a : 180 - a, B = start === 'R' ? b : 180 - b;
-      return { type: 'num', ans: b - a, tol: 1, correct: String(b - a),
-        html: '<p>The <b>black arm</b> and the <b>blue arm</b> are the two sides of an angle. Neither arm is on the zero line. What is the size of the angle between the black and the blue arm? (Give the number of degrees. A difference of 1° is fine.)</p>' + protractor({ start, arm: A, arm2: B }),
-        hint: 'Read both arms on the same scale. Then subtract: bigger number minus smaller number.', steps: 'On the scale that starts at the red arm: black = ' + a + '°, blue = ' + b + '°. The angle between them is ' + b + ' − ' + a + ' = ' + (b - a) + '°.' };
-    },
-    function clockAngle() {
-      const h = ri(1, 11), m = 10 * ri(0, 5);
-      const hand = (30 * h + m / 2) % 360, min = 6 * m, diff = Math.abs(hand - min), ang = diff > 180 ? 360 - diff : diff;
-      if (ang === 0 || ang === 180) return GN('2.2', 'turnSequence')();
-      const t = h + ':' + (m < 10 ? '0' : '') + m;
-      return { type: 'num', ans: ang, correct: String(ang),
-        html: '<p>A clock shows <b>' + t + '</b>. What is the <b>smaller</b> angle between the hour hand and the minute hand? (Give the number of degrees.)</p>',
-        hint: 'The minute hand turns 6° per minute. The hour hand turns 30° per hour, so 0,5° per minute.',
-        steps: 'Minute hand: ' + m + ' · 6 = ' + min + '°. Hour hand: ' + h + ' · 30 + ' + m + ' · 0,5 = ' + hand + '°. Difference: ' + diff + '°' + (diff > 180 ? ', and the smaller angle is 360° − ' + diff + '° = ' + ang + '°.' : '.') };
-    }
   ];
   XG['2.3'] = [
-    function thirdAngle(l) {
-      const a = ri(25, 90), b = ri(20, 175 - a - 10), c = 180 - a - b;
-      return { type: 'num', ans: c, correct: String(c), html: '<p>Two angles of a triangle are <b>' + a + '°</b> and <b>' + b + '°</b>. How large is the third angle?</p>',
-        hint: 'The three angles of a triangle add up to 180°.', steps: '180° − ' + a + '° − ' + b + '° = ' + c + '°.' };
-    },
     function diagonalsPattern() {   // challenge, still at most a pentagon: where do the diagonals cross?
       const V = [0, 1, 2, 3, 4].map(k => { const t = (90 + 72 * k + 144) * Math.PI / 180; return [+(5.5 * Math.cos(t)).toFixed(2), +(5.5 * Math.sin(t)).toFixed(2)]; });
       const segs = []; for (let i = 0; i < 5; i++) for (let j = i + 2; j < 5; j++) if (!(i === 0 && j === 4)) segs.push({ a: V[i], b: V[j], color: '#16803c' });
@@ -707,22 +653,6 @@
         html: '<p>Points A and C are <b>' + d + ' cm</b> apart. You draw a circle with centre A and radius <b>' + r1 + ' cm</b>, and a circle with centre C and radius <b>' + r2 + ' cm</b>. How many points do the two circles have in common?</p>',
         hint: 'Compare the distance between A and C with the sum of the two radii: ' + r1 + ' + ' + r2 + ' = ' + (r1 + r2) + ' cm.',
         steps: 'Radii together: ' + (r1 + r2) + ' cm. ' + (ans === 1 ? 'That is exactly ' + d + ' cm: the circles just touch, so 1 point.' : ans === 2 ? d + ' cm is less than ' + (r1 + r2) + ' cm (and the circles are not inside each other): they cross in 2 points.' : d + ' cm is more than ' + (r1 + r2) + ' cm: the circles do not reach each other, so 0 points.') };
-    },
-    function isosceles() {
-      const apex = pick([20, 30, 40, 50, 70, 80, 100, 110, 120, 140]), base = (180 - apex) / 2, rev = Math.random() < .5;
-      return rev ? { type: 'num', ans: apex, correct: String(apex),
-        html: '<p>Triangle ABC is <b>isosceles</b> with <b>AB = AC</b>. The angles at B and C are both <b>' + base + '°</b>. How big is angle <b>A</b>? (Give the number of degrees.)</p>',
-        hint: 'The three angles of a triangle add up to 180°.', steps: '180 − ' + base + ' − ' + base + ' = ' + apex + '°.' }
-        : { type: 'num', ans: base, correct: String(base),
-        html: '<p>Triangle ABC is <b>isosceles</b> with <b>AB = AC</b>. Angle <b>A = ' + apex + '°</b>. How big is angle <b>B</b>? (Give the number of degrees.)</p>',
-        hint: 'AB = AC, so the angles at B and C are equal. Together they make 180° − ' + apex + '°.', steps: '180 − ' + apex + ' = ' + (180 - apex) + '°. Then ' + (180 - apex) + ' : 2 = ' + base + '°.' };
-    },
-    function radiiTriangle() {
-      const th = pick([40, 50, 60, 70, 80, 100, 120, 140]), base = (180 - th) / 2;
-      return { type: 'num', ans: base, correct: String(base),
-        html: '<p>O is the centre of a circle. A and B lie on the circle and the angle <b>AOB = ' + th + '°</b>. How big is angle <b>OAB</b>? (Give the number of degrees.)</p>',
-        hint: 'OA and OB are both radii, so they are equally long. What kind of triangle is OAB? Its base angles are equal.',
-        steps: 'Triangle OAB is isosceles (OA = OB). The other two angles together: 180 − ' + th + ' = ' + (180 - th) + '°. So each is ' + (180 - th) + ' : 2 = ' + base + '°.' };
     },
   ];
   XG['2.4'] = [
@@ -770,15 +700,15 @@
   const LESSONS = [
     { id: 'L1', title: 'Lesson 1 · 2.1 Lines and distances', sub: 'Thu 1 Oct', date: '2026-10-01', gens: ALL('2.1'), xg: [['2.1', 'distParallelPoints'], ['2.1', 'throughPoint'], ['2.1', 'maxIntersect5']] },
     { id: 'L2', title: 'Lesson 2 · 2.2 Angles', sub: 'Fri 2 Oct', date: '2026-10-02',
-      gens: [['2.2', 'typeByDegrees'], ['2.2', 'typeByPicture'], ['2.2', 'clock'], ['2.2', 'compass'], ['2.2', 'vertexName']], xg: [['2.2', 'reflex'], ['2.2', 'complete'], ['2.2', 'angleReason'], ['2.2', 'clockAngle'], ['2.2', 'turnSequence']] },
+      gens: [['2.2', 'typeByDegrees'], ['2.2', 'typeByPicture'], ['2.2', 'clock'], ['2.2', 'compass'], ['2.2', 'vertexName']], xg: [['2.2', 'angleReason'], ['2.2', 'turnSequence']] },
     { id: 'L3', title: 'Lesson 3 · 2.2 Measuring and drawing angles', sub: 'Tue 6 Oct', date: '2026-10-06',
-      gens: [['2.2', 'drawAngle'], ['2.2', 'readAngle'], ['2.2', 'pickReading'], ['2.4', 'tools']], xg: [['2.2', 'twoArms'], ['2.2', 'angleReason']] },
+      gens: [['2.2', 'drawAngle'], ['2.2', 'readAngle'], ['2.2', 'pickReading'], ['2.4', 'tools']], xg: [['2.2', 'angleReason']] },
     { id: 'L4', title: 'Lesson 4 · 2.3 Triangles', sub: 'Wed 7 Oct', date: '2026-10-07',
-      gens: [['2.3', 'triByAngles'], ['2.3', 'triBySidesFromAngles'], ['2.3', 'triBySides'], ['2.3', 'triBoth']], xg: [['2.3', 'thirdAngle'], ['2.3', 'isosceles'], ['2.4', 'thirdSide']] },
+      gens: [['2.3', 'triByAngles'], ['2.3', 'triBySidesFromAngles'], ['2.3', 'triBySides'], ['2.3', 'triBoth']], xg: [['2.4', 'thirdSide']] },
     { id: 'L5', title: 'Lesson 5 · 2.3 Quadrilaterals and circles', sub: 'Thu 8 Oct', date: '2026-10-08',
-      gens: [['2.3', 'quadName'], ['2.3', 'alwaysSometimes'], ['2.3', 'circleConv'], ['2.3', 'circlesInRect'], ['2.3', 'fourthVertex'], ['2.3', 'diagonals']], xg: [['2.3', 'radiiTriangle'], ['2.3', 'circlesMeet'], ['2.3', 'diagonalsPattern']] },
+      gens: [['2.3', 'quadName'], ['2.3', 'alwaysSometimes'], ['2.3', 'circleConv'], ['2.3', 'circlesInRect'], ['2.3', 'fourthVertex'], ['2.3', 'diagonals']], xg: [['2.3', 'circlesMeet'], ['2.3', 'diagonalsPattern']] },
     { id: 'L6', title: 'Lesson 6 · 2.4 Constructing triangles', sub: 'Fri 9 Oct', date: '2026-10-09',
-      gens: [['2.4', 'tools'], ['2.4', 'compassCircle'], ['2.3', 'triBySides']], xg: [['2.4', 'canMake'], ['2.3', 'thirdAngle'], ['2.4', 'thirdSide'], ['2.3', 'isosceles']] },
+      gens: [['2.4', 'tools'], ['2.4', 'compassCircle'], ['2.3', 'triBySides']], xg: [['2.4', 'canMake'], ['2.4', 'thirdSide']] },
     { id: 'L7', title: 'Lesson 7 · 2.4 Constructing with a compass', sub: 'Tue 27 Oct', date: '2026-10-27',
       gens: [['2.4', 'tools'], ['2.4', 'compassCircle'], ['2.4', 'rhombusFacts']], xg: [['2.4', 'canMake'], ['2.3', 'circlesMeet'], ['2.4', 'thirdSide']] },
     { id: 'L8', title: 'Lesson 8 · 2.4 Reflecting in a point', sub: 'Wed 28 Oct', date: '2026-10-28',
@@ -818,7 +748,7 @@
   };
   const __wrap = L => { for (const k in L) L[k] = L[k].map(fn => { const g = l => __conv(fn(l), fn.name); Object.defineProperty(g, 'name', { value: fn.name }); return g; }); };
   __wrap(G); __wrap(XG);
-  const GOALS = [["2.1", "I can name lines, rays and segments and say how lines are related", ["nameIt", "relation", "lineSymbols", "maxIntersect", "maxIntersect5"]], ["2.1", "I can measure distances between points and lines, and draw parallel lines", ["distPointLine", "parDist", "atDistance", "clickParPerp", "distParallelPoints", "throughPoint"]], ["2.2", "I can name and classify angles", ["typeByDegrees", "typeByPicture", "reflex", "vertexName", "angleReason"]], ["2.2", "I can calculate with angles, clocks and compass directions", ["clock", "compass", "complete", "turnSequence", "clockAngle"]], ["2.2", "I can read and draw angles with a protractor", ["drawAngle", "readAngle", "pickReading", "twoArms"]], ["2.3", "I can classify triangles and quadrilaterals", ["triByAngles", "triBySidesFromAngles", "triBySides", "triBoth", "quadName", "fourthVertex", "alwaysSometimes"]], ["2.3", "I can use angle sums, circles and diagonals", ["thirdAngle", "circleConv", "circlesInRect", "diagonals", "diagonalsPattern", "circlesMeet", "isosceles", "radiiTriangle"]], ["2.4", "I can decide whether a triangle can be constructed and choose the right tool", ["canMake", "tools", "compassCircle", "thirdSide"]], ["2.4", "I can reflect points in a point or a line and find a midpoint", ["reflectPoint", "reflectLine", "midpoint", "whereIsP", "mirrorDist", "rhombusFacts", "doubleReflect"]]];
+  const GOALS = [["2.1", "I can name lines, rays and segments and say how lines are related", ["nameIt", "relation", "lineSymbols", "maxIntersect", "maxIntersect5"]], ["2.1", "I can measure distances between points and lines, and draw parallel lines", ["distPointLine", "parDist", "atDistance", "clickParPerp", "distParallelPoints", "throughPoint"]], ["2.2", "I can name and classify angles", ["typeByDegrees", "typeByPicture", "vertexName", "angleReason"]], ["2.2", "I can work with clocks and compass directions", ["clock", "compass", "turnSequence"]], ["2.2", "I can read and draw angles with a protractor", ["drawAngle", "readAngle", "pickReading"]], ["2.3", "I can classify triangles and quadrilaterals", ["triByAngles", "triBySidesFromAngles", "triBySides", "triBoth", "quadName", "fourthVertex", "alwaysSometimes"]], ["2.3", "I can use circles and diagonals", [, "circleConv", "circlesInRect", "diagonals", "diagonalsPattern", "circlesMeet"]], ["2.4", "I can decide whether a triangle can be constructed and choose the right tool", ["canMake", "tools", "compassCircle", "thirdSide"]], ["2.4", "I can reflect points in a point or a line and find a midpoint", ["reflectPoint", "reflectLine", "midpoint", "whereIsP", "mirrorDist", "rhombusFacts", "doubleReflect"]]];
   /* test preparation: one-step recall items stay in practice only (compared with the 2026-27 test and book ex 91-104) */
   const TEST = { skip: ['diagonals', 'nameIt', 'relation', 'triByAngles', 'triBySidesFromAngles', 'typeByPicture', 'vertexName', 'pickReading', 'triBySides', 'circleConv', 'tools', 'midpoint', 'whereIsP', 'mirrorDist', 'rhombusFacts', 'compassCircle'] };
   return { key: 'ch2-1hvt-plane-figures-v1', SECTIONS, LESSONS: LESSONS, G, XG, GOALS, TEST };
