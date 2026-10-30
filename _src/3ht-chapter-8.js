@@ -51,8 +51,8 @@ G['8.1'] = [
     return ch(p('Look at the differences in this table. What kind of graph is it?') + '<table class="tbl"><tr><th>' + X() + '</th>' + ys.map((_, i) => '<td>' + i + '</td>').join('') + '</tr><tr><th>' + X('y') + '</th>' + ys.map(v => '<td>' + v + '</td>').join('') + '</tr></table>', real, ['increasing positive gradient', 'decreasing positive gradient', 'increasing negative gradient', 'decreasing negative gradient'].filter(o => o !== real), 'Calculate the differences. Positive: the graph rises. Do the differences get bigger or smaller?', 'Differences: ' + diffs.map(d => (d > 0 ? '+' : '') + neg(d)).join('; ') + '. ' + (up ? 'The graph rises (positive gradient) and the differences get ' + (incr ? 'bigger: increasing.' : 'smaller: decreasing.') : 'The graph falls (negative gradient) and the differences get ' + (incr ? 'more negative: the gradient decreases.' : 'closer to 0: the gradient increases.')));
   },
   function avgSpeed(l) {
-    const k = pick([1.25, 2.5, 5, 0.5]), t1 = ri(1, 4), t2 = t1 + pick([1, 2, 0.5]), d = t => k * t * t, v = rd((d(t2) - d(t1)) / (t2 - t1), 4);
-    return nu(p('A car drives ' + X('d') + ' = ' + k + X('t') + '² metres in ' + X('t') + ' seconds. Calculate the average speed (m/s) between ' + X('t') + ' = ' + t1 + ' and ' + X('t') + ' = ' + t2 + '.'), v, 'Average speed = Δ' + X('d') + ' / Δ' + X('t') + '.', p(X('d') + '(' + t1 + ') = ' + rd(d(t1)) + ' and ' + X('d') + '(' + t2 + ') = ' + rd(d(t2))) + p('(' + rd(d(t2)) + ' − ' + rd(d(t1)) + ') / (' + t2 + ' − ' + t1 + ') = ' + rd(d(t2) - d(t1)) + ' / ' + rd(t2 - t1) + ' = ' + v + ' m/s'), { needStep: true });
+    const k = pick([1.25, 2.5, 5, 0.5]), t1 = ri(1, 4), t2 = t1 + pick([1, 2, 0.5]), c = l >= 2 ? ri(2, 9) : 0, d = t => k * t * t + c * t, v = rd((d(t2) - d(t1)) / (t2 - t1), 4);   // spicy: a second term
+    return nu(p('A car drives ' + X('d') + ' = ' + k + X('t') + '²' + (c ? ' + ' + c + X('t') : '') + ' metres in ' + X('t') + ' seconds. Calculate the average speed (m/s) between ' + X('t') + ' = ' + t1 + ' and ' + X('t') + ' = ' + t2 + '.'), v, 'Average speed = Δ' + X('d') + ' / Δ' + X('t') + '.', p(X('d') + '(' + t1 + ') = ' + rd(d(t1)) + ' and ' + X('d') + '(' + t2 + ') = ' + rd(d(t2))) + p('(' + rd(d(t2)) + ' − ' + rd(d(t1)) + ') / (' + t2 + ' − ' + t1 + ') = ' + rd(d(t2) - d(t1)) + ' / ' + rd(t2 - t1) + ' = ' + v + ' m/s'), { needStep: true });
   }
 ];
 XG['8.1'] = [
@@ -75,6 +75,8 @@ G['8.2'] = [
   },
   function codeNoRepeat(l) {
     const n = ri(3, 5), arr = desc(10, n);
+    if (l >= 2) { const a2 = [9].concat(desc(9, n - 1));   // spicy: the first digit may not be 0
+      return nu(p('A code has ' + n + ' digits (0 to 9). Every digit may be used only <b>once</b>, and the code may <b>not start with 0</b>. How many different codes are possible?'), prod(a2), 'Start with the first digit: it has 9 choices. The second digit may be 0 again, but not the first digit: also 9 choices.', prodTxt(a2) + ' = ' + sp(prod(a2)), { needStep: true }); }
     return nu(p('A PIN code has ' + n + ' digits (0 to 9). Every digit may be used only <b>once</b>. How many different codes are possible?'), prod(arr), 'The first digit has 10 choices, the next one 9, and so on.', prodTxt(arr) + ' = ' + sp(prod(arr)), { needStep: true });
   },
   function arrange(l) {
@@ -83,10 +85,14 @@ G['8.2'] = [
   },
   function roles(l) {
     const n = ri(12, 30), k = pick([2, 3, 3, 4]), roles = ['a chairperson', 'a secretary', 'a treasurer', 'a reporter'].slice(0, k), arr = desc(n, k);
+    if (l >= 2) { const g = ri(4, n - 6), k2 = Math.max(k, 3), r2 = ['a chairperson', 'a secretary', 'a treasurer', 'a reporter'].slice(0, k2), a2 = [g].concat(desc(n - 1, k2 - 1));   // spicy: an extra condition for the first job
+      return nu(p('A club has ' + n + ' members: ' + g + ' girls and ' + (n - g) + ' boys. You choose ' + r2.slice(0, -1).join(', ') + ' and ' + r2[k2 - 1] + '. One person cannot have two jobs, and the chairperson must be a <b>girl</b>. In how many ways can you do this?'), prod(a2), 'Start with the job that has a condition: the chairperson. Then the other jobs, with one person fewer each time.', prodTxt(a2) + ' = ' + sp(prod(a2)) + ' ways', { needStep: true }); }
     return nu(p('A club has ' + n + ' members. You choose ' + roles.slice(0, -1).join(', ') + ' and ' + roles[k - 1] + '. One person cannot have two jobs. In how many ways can you do this?'), prod(arr), 'The order matters (different jobs). For the second job there is one person fewer.', prodTxt(arr) + ' = ' + sp(prod(arr)) + ' ways', { needStep: true });
   },
   function plates(l) {
     const L = ri(1, 3), D = ri(1, 4), letters = pick([26, 20]), parts = Array(L).fill(letters).concat(Array(D).fill(10));
+    if (l >= 2) { const D2 = Math.max(D, 2), p2 = Array(L).fill(letters).concat([9]).concat(Array(D2 - 1).fill(10));   // spicy: the digits may not start with 0
+      return nu(p('A licence plate has ' + L + ' letter' + (L > 1 ? 's' : '') + ' followed by ' + D2 + ' digits. You can use ' + letters + ' letters' + (letters === 20 ? ' (only consonants)' : '') + ' and the digits 0 to 9, more than once, but the <b>first digit may not be 0</b>. How many plates are possible?'), prod(p2), 'Multiply the number of choices for every position. The first digit has only 9 choices.', prodTxt(p2) + ' = ' + sp(prod(p2)), { needStep: true }); }
     return nu(p('A licence plate has ' + L + ' letter' + (L > 1 ? 's' : '') + ' followed by ' + D + ' digit' + (D > 1 ? 's' : '') + '. You can use ' + letters + ' letters' + (letters === 20 ? ' (only consonants)' : '') + ' and the digits 0 to 9, more than once. How many plates are possible?'), prod(parts), 'Multiply the number of choices for every position.', prodTxt(parts) + ' = ' + sp(prod(parts)), { needStep: true });
   },
   function whichCount(l) {
@@ -138,6 +144,9 @@ G['8.3'] = [
   },
   function onGraph(l) {
     const a = pick([-4, -1, 2, 3]), b = ri(-6, 6), c = ri(-9, 9), x = nz(-6, 8), y = a * x * x + b * x + c, on = Math.random() < .5, yy = on ? y : y + pick([-1, 1, 2]);
+    if (l >= 2) {   // spicy: a missing number in the formula
+      const qc = quad(a, b, 0) + ' + ' + X('c');
+      return nu(p('The point (' + neg(x) + ', ' + neg(y) + ') lies on the graph of ' + F('f', X()) + ' = ' + qc + '. Calculate ' + X('c') + '.'), c, 'Substitute ' + X() + ' = ' + neg(x) + ' and ' + X('y') + ' = ' + neg(y) + '. Then solve for ' + X('c') + '.', neg(y) + ' = ' + subQ(a, b, 0, x) + ' + ' + X('c') + ' = ' + neg(a * x * x + b * x) + ' + ' + X('c') + ', so ' + X('c') + ' = ' + neg(c) + '.', { needStep: true }); }
     return ch(p('Does the point (' + neg(x) + ', ' + neg(yy) + ') lie on the graph of ' + F('f', X()) + ' = ' + quad(a, b, c) + '?'), on ? 'yes' : 'no', [on ? 'no' : 'yes'], 'Calculate ' + F('f', neg(x)) + ' and compare it with ' + neg(yy) + '.', F('f', neg(x)) + ' = ' + subQ(a, b, c, x) + ' = ' + neg(y) + (on ? '. This equals ' + neg(yy) + ': yes.' : ', not ' + neg(yy) + ': no.'));
   }
 ];
@@ -172,9 +181,13 @@ if (P.cls === '3VT') {
   const V2 = [
     function diceSum(l) {
       const k = ri(2, 12), pairs = []; for (let a = 1; a <= 6; a++) for (let b = 1; b <= 6; b++) if (a + b === k) pairs.push('(' + a + ', ' + b + ')');
+      if (l >= 2) { const pr = pick([4, 6, 8, 12, 18]), pp = []; for (let a = 1; a <= 6; a++) for (let b = 1; b <= 6; b++) if (a * b === pr) pp.push('(' + a + ', ' + b + ')');   // spicy: the product of the pips
+        return frq(p('You throw two dice and <b>multiply</b> the pips. What is the probability that the product is ' + pr + '?'), pp.length, 36, 'There are 6 · 6 = 36 outcomes. Make a table of products and count.', 'Product ' + pr + ': ' + pp.join(', ') + ', that is ' + pp.length + ' outcomes.<br>P = ' + fr(pp.length, 36) + (gcd(pp.length, 36) > 1 ? ' = ' + fl(pp.length, 36) : '')); }
       return frq(p('You throw two dice and add the pips. What is the probability that the sum is ' + k + '?'), pairs.length, 36, 'There are 6 · 6 = 36 outcomes. Count the outcomes with sum ' + k + ' (use a table of sums).', 'Sum ' + k + ': ' + pairs.join(', ') + ', that is ' + pairs.length + ' outcomes.<br>P(sum = ' + k + ') = ' + fr(pairs.length, 36) + (gcd(pairs.length, 36) > 1 ? ' = ' + fl(pairs.length, 36) : ''));
     },
     function diceAtMost(l) {
+      if (l >= 2) { const k2 = ri(1, 3); let c2 = 0; for (let a = 1; a <= 6; a++) for (let b = 1; b <= 6; b++) if (Math.abs(a - b) <= k2) c2++;   // spicy: the difference of the pips
+        return frq(p('You throw two dice. What is the probability that the <b>difference</b> of the pips (big − small) is <b>at most ' + k2 + '</b>?'), c2, 36, 'Make a 6 by 6 table of differences and count the outcomes with a difference of 0 to ' + k2 + '.', 'Difference 0: 6 outcomes' + [1, 2, 3].filter(d => d <= k2).map(d => ', difference ' + d + ': ' + 2 * (6 - d)).join('') + '. Together ' + c2 + '.<br>P = ' + fr(c2, 36) + (gcd(c2, 36) > 1 ? ' = ' + fl(c2, 36) : '')); }
       const most = Math.random() < .5, k = most ? ri(3, 8) : ri(6, 11); let c = 0; for (let a = 1; a <= 6; a++) for (let b = 1; b <= 6; b++) if (most ? a + b <= k : a + b >= k) c++;
       const parts = []; for (let s = most ? 2 : k; most ? s <= k : s <= 12; s++) parts.push(6 - Math.abs(s - 7));
       return frq(p('You throw two dice and add the pips. What is the probability that the sum is <b>' + (most ? 'at most ' : 'at least ') + k + '</b>?'), c, 36, 'Add the numbers of outcomes for every sum that fits. There are 36 outcomes.', 'Outcomes per sum: ' + parts.join(' + ') + ' = ' + c + '<br>P = ' + fr(c, 36) + (gcd(c, 36) > 1 ? ' = ' + fl(c, 36) : ''));
@@ -188,15 +201,22 @@ if (P.cls === '3VT') {
     function gamesWon(l) {
       const pw = pick([[1, 2], [1, 3], [2, 3], [1, 4]]), k = ri(0, 3), a = pw[0], b = pw[1], q = b - a;
       const n = C3[k] * Math.pow(a, k) * Math.pow(q, 3 - k), D = Math.pow(b, 3);
+      if (l >= 2) { const n2 = 3 * a * a * q + a * a * a;   // spicy: at least 2 of the 3 games
+        return frq(p('The probability that Sam wins a game is ' + fr(a, b) + '. Sam plays 3 games. Calculate the probability that Sam wins <b>at least 2</b> games.'), n2, D, 'At least 2 means exactly 2 or exactly 3. Calculate both and add.', 'P(2 wins) = 3 · (' + fr(a, b) + ')² · ' + fr(q, b) + ' = ' + fr(3 * a * a * q, D) + '<br>P(3 wins) = (' + fr(a, b) + ')³ = ' + fr(a * a * a, D) + '<br>P = ' + fr(n2, D) + (gcd(n2, D) > 1 ? ' = ' + fl(n2, D) : '')); }
       return frq(p('The probability that Sam wins a game is ' + fr(a, b) + '. Sam plays 3 games. Calculate the probability that Sam wins exactly ' + k + ' game' + (k === 1 ? '' : 's') + '.'), n, D, 'Each order of wins and losses has the same probability. There ' + (C3[k] === 1 ? 'is 1 order' : 'are ' + C3[k] + ' orders') + ' with ' + k + ' win' + (k === 1 ? '' : 's') + '.', C3[k] + ' · (' + fr(a, b) + ')<sup>' + k + '</sup> · (' + fr(q, b) + ')<sup>' + (3 - k) + '</sup> = ' + fr(n, D) + (gcd(n, D) > 1 ? ' = ' + fl(n, D) : ''));
     },
     function missingProb(l) {
       const d = pick([12, 20, 24, 36]); let ps; do { ps = [ri(1, d / 2), ri(1, d / 2), ri(1, d / 2)]; } while (ps.reduce((s, v) => s + v, 0) >= d);
       const last = d - ps.reduce((s, v) => s + v, 0);
+      if (l >= 2) { let q1, q2, rest; do { q1 = ri(1, d / 3); q2 = ri(1, d / 3); rest = d - q1 - q2; } while (rest <= 0 || rest % 3);   // spicy: P(X = 3) is twice P(X = 2)
+        const x = rest / 3;
+        return frq(p('This is a probability distribution. P(' + X('X') + ' = 3) is twice as big as P(' + X('X') + ' = 2). What is P(' + X('X') + ' = 3)?') + '<table class="tbl"><tr><th>' + X('x') + '</th><td>0</td><td>1</td><td>2</td><td>3</td></tr><tr><th>P(' + X('X') + ' = ' + X('x') + ')</th><td>' + fl(q1, d) + '</td><td>' + fl(q2, d) + '</td><td>' + X('p') + '</td><td>2' + X('p') + '</td></tr></table>', 2 * x, d, 'All probabilities add up to 1: ' + X('p') + ' + 2' + X('p') + ' = 3' + X('p') + ' is what is left.', '3' + X('p') + ' = 1 − ' + fl(q1, d) + ' − ' + fl(q2, d) + ' = ' + fr(rest, d) + '<br>' + X('p') + ' = ' + fr(x, d) + ', so P(' + X('X') + ' = 3) = 2' + X('p') + ' = ' + fr(2 * x, d) + (gcd(2 * x, d) > 1 ? ' = ' + fl(2 * x, d) : '')); }
       return frq(p('This is a probability distribution. What is P(' + X('X') + ' = 3)?') + '<table class="tbl"><tr><th>' + X('x') + '</th><td>0</td><td>1</td><td>2</td><td>3</td></tr><tr><th>P(' + X('X') + ' = ' + X('x') + ')</th>' + ps.map(v => '<td>' + fl(v, d) + '</td>').join('') + '<td>?</td></tr></table>', last, d, 'All probabilities in a distribution add up to 1.', '1 − ' + ps.map(v => fl(v, d)).join(' − ') + ' = ' + fr(d, d) + ' − ' + fr(ps.reduce((s, v) => s + v, 0), d) + ' = ' + fr(last, d) + (gcd(last, d) > 1 ? ' = ' + fl(last, d) : ''));
     },
     function targetProb(l) {
       const r1 = ri(2, 5), r2 = r1 + ri(2, 5), r3 = r2 + ri(2, 5), k = ri(0, 2), A = [r1 * r1, r2 * r2 - r1 * r1, r3 * r3 - r2 * r2][k], T = r3 * r3, nm = ['the inner circle', 'the middle ring', 'the outer ring'][k];
+      if (l >= 2) { const A2 = T - (r2 * r2 - r1 * r1);   // spicy: NOT the middle ring
+        return frq(p('A target has circles with radius ' + r1 + ', ' + r2 + ' and ' + r3 + ' cm. A dart hits the target at a random point. What is the probability that it does <b>not</b> hit the middle ring?'), A2, T, 'First the probability of the middle ring (area of the ring / area of the target). Then 1 minus that.', 'area of the middle ring = π · ' + r2 + '² − π · ' + r1 + '² = ' + (r2 * r2 - r1 * r1) + 'π<br>area of the target = π · ' + r3 + '² = ' + T + 'π<br>P(middle ring) = ' + fl(r2 * r2 - r1 * r1, T) + ', so P(not) = 1 − ' + fl(r2 * r2 - r1 * r1, T) + ' = ' + fl(A2, T)); }
       return frq(p('A target has circles with radius ' + r1 + ', ' + r2 + ' and ' + r3 + ' cm. A dart hits the target at a random point. What is the probability that it hits ' + nm + '?'), A, T, 'Probability = area of the part / area of the whole target. The π cancels out.', 'area of ' + nm + ' = ' + (k === 0 ? 'π · ' + r1 + '² = ' + A + 'π' : 'π · ' + [r2, r3][k - 1] + '² − π · ' + [r1, r2][k - 1] + '² = ' + A + 'π') + '<br>area of the target = π · ' + r3 + '² = ' + T + 'π<br>P = ' + fr(A + 'π', T + 'π') + ' = ' + fl(A, T));
     }
   ];
@@ -209,6 +229,8 @@ if (P.cls === '3VT') {
     familyP,
     function vertexP(l) {
       const v = nz(-6, 6), c = ri(-5, 5), pp = -2 * v;
+      if (l >= 2) { const b = pick([-12, -6, 6, 12, 24]), vv = pick([1, 2, 3, -1, -2, -3].filter(z => Number.isInteger(-b / (2 * z)))), P = -b / (2 * vv);   // spicy: the parameter is in front of x²
+        return nu(p('Given ' + X('f') + '<sub>' + X('p') + '</sub>(' + X() + ') = ' + X('p') + X() + '² ' + (b < 0 ? '− ' : '+ ') + Math.abs(b) + X() + (c ? (c < 0 ? ' − ' : ' + ') + Math.abs(c) : '') + '. For which ' + X('p') + ' is the ' + X() + '-coordinate of the vertex equal to ' + neg(vv) + '?'), P, X() + '<sub>vertex</sub> = −' + X('b') + ' / 2' + X('a') + ', with ' + X('a') + ' = ' + X('p') + '.', '−' + par(b) + ' / (2' + X('p') + ') = ' + neg(vv) + '<br>' + neg(-b) + ' = ' + neg(2 * vv) + X('p') + '<br>' + X('p') + ' = ' + neg(P)); }
       return nu(p('Given ' + X('f') + '<sub>' + X('p') + '</sub>(' + X() + ') = ' + X() + '² + ' + X('p') + X() + (c ? (c < 0 ? ' − ' : ' + ') + Math.abs(c) : '') + '. For which ' + X('p') + ' is the ' + X() + '-coordinate of the vertex equal to ' + neg(v) + '?'), pp, X() + '<sub>vertex</sub> = −' + X('b') + ' / 2' + X('a') + ' = −' + X('p') + ' / 2.', '−' + X('p') + ' / 2 = ' + neg(v) + '<br>' + X('p') + ' = ' + neg(pp));
     },
     function touchP(l) {
@@ -278,14 +300,20 @@ if (P.cls === '3VT') {
   const V6 = [
     function spaceDiagonal(l) {
       const a = ri(2, 10), b = ri(2, 10), c = ri(2, 10), s = a * a + b * b + c * c, d = rd(Math.sqrt(s), 2);
+      if (l >= 2) { const Q = pick([[1, 2, 2, 3], [2, 3, 6, 7], [1, 4, 8, 9], [4, 4, 7, 9], [2, 6, 9, 11], [6, 6, 7, 11], [3, 4, 12, 13], [2, 10, 11, 15]]), k = pick([1, 2, 3]);   // spicy: the other way round, an edge is asked
+        return nu(p('A cuboid is ' + Q[0] * k + ' by ' + Q[1] * k + ' cm at the bottom. Its space diagonal is ' + Q[3] * k + ' cm. How high is the cuboid?'), Q[2] * k, 'Space diagonal² = a² + b² + c². Fill in what you know and solve for c².', (Q[3] * k) + '² = ' + Q[0] * k + '² + ' + Q[1] * k + '² + c²<br>' + (Q[3] * k) ** 2 + ' = ' + ((Q[0] * k) ** 2 + (Q[1] * k) ** 2) + ' + c²<br>c² = ' + (Q[2] * k) ** 2 + ', c = ' + Q[2] * k + ' cm', { needStep: true }); }
       return nu(p('A cuboid is ' + a + ' by ' + b + ' by ' + c + ' cm. Calculate the length of a space diagonal. <small>(Round to 2 decimals.)</small>'), d, 'First the diagonal of the bottom face, then Pythagoras again. Or: √(a² + b² + c²).', 'bottom diagonal² = ' + a + '² + ' + b + '² = ' + (a * a + b * b) + '<br>space diagonal = √(' + (a * a + b * b) + ' + ' + c + '²) = √' + s + (Number.isInteger(Math.sqrt(s)) ? ' = ' : ' ≈ ') + d, { tol: .0051, needStep: true });
     },
     function diagonalAngle(l) {
       const a = ri(2, 10), b = ri(2, 10), c = ri(2, 10), base = Math.sqrt(a * a + b * b), ang = rd(Math.atan(c / base) * 180 / Math.PI, 1);
+      if (l >= 2) { const al = ri(20, 60), hh = rd(base * Math.tan(al * Math.PI / 180), 2);   // spicy: the angle is given, the height is asked
+        return nu(p('A cuboid is ' + a + ' by ' + b + ' cm at the bottom. A space diagonal makes an angle of ' + al + '° with the bottom face. How high is the cuboid? <small>(Round to 2 decimals.)</small>'), hh, 'The space diagonal, the bottom diagonal and a vertical edge form a right-angled triangle. Use tan.', 'bottom diagonal = √(' + a + '² + ' + b + '²) = √' + (a * a + b * b) + ' ≈ ' + rd(base, 3) + '<br>height = √' + (a * a + b * b) + ' · tan(' + al + '°) ≈ ' + hh + ' cm', { tol: .0051, needStep: true }); }
       return nu(p('A cuboid is ' + a + ' by ' + b + ' cm at the bottom and ' + c + ' cm high. Calculate the angle between a space diagonal and the bottom face. <small>(Round to 1 decimal.)</small>'), ang, 'The space diagonal, the bottom diagonal and a vertical edge form a right-angled triangle.', 'bottom diagonal = √(' + a + '² + ' + b + '²) = √' + (a * a + b * b) + '<br>tan(α) = ' + c + ' / √' + (a * a + b * b) + '<br>α ≈ ' + ang + '°', { tol: .051, needStep: true });
     },
     function frustum(l) {
       const top = pick([1.5, 2, 3]), k = pick([2, 3, 4]), bot = top * k, x = pick([3, 4, 5, 6]), h = x * (k - 1);
+      if (l >= 2) { const V = (bot * bot * (h + x) - top * top * x) / 3;   // spicy: the volume of the frustum
+        return nu(p('A frustum (a pyramid with the top cut off) has height ' + h + '. The bottom square has side ' + bot + ' and the top square has side ' + top + '. Calculate the <b>volume</b> of the frustum. <small>(Round to 1 decimal.)</small>'), rd(V, 1), 'First find the height of the original pyramid with similar triangles. Volume of the frustum = big pyramid − small pyramid.', 'small top part: x = ' + x + ' (similar triangles), original height ' + (h + x) + '<br>V = ⅓ · ' + bot + '² · ' + (h + x) + ' − ⅓ · ' + top + '² · ' + x + ' = ' + rd(bot * bot * (h + x) / 3, 2) + ' − ' + rd(top * top * x / 3, 2) + ' ≈ ' + rd(V, 1), { tol: .051, needStep: true }); }
       return nu(p('A frustum (a pyramid with the top cut off) has height ' + h + '. The bottom square has side ' + bot + ' and the top square has side ' + top + '. Calculate the height of the original pyramid.'), h + x, 'Call the height of the cut-off top part x. Similar triangles: ' + top + ' / ' + bot + ' = x / (x + ' + h + ').', top + ' · (x + ' + h + ') = ' + bot + 'x<br>' + rd(top * h) + ' = ' + rd(bot - top) + 'x<br>x = ' + x + '<br>height = ' + h + ' + ' + x + ' = ' + (h + x), { needStep: true });
     },
     function hypercube(l) {

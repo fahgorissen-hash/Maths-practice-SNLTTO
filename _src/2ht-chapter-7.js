@@ -344,6 +344,7 @@ if (P.cls === '3VT') {
     function exteriorAngle(l) {
       let a, b; do { a = ri(25, 85); b = ri(25, 85); } while (a + b >= 160);
       const n = pick(LET), ext = a + b;
+      if (l >= 2) return angQ(p('In triangle ' + n + ', ' + A_(n[0]) + ' = ' + deg(a) + '. Side ' + n[1] + n[2] + ' is extended beyond ' + n[2] + '. The exterior angle at ' + n[2] + ' is ' + deg(ext) + '. Calculate ' + A_(n[1]) + '.' + HINT_STEP), b, 'The exterior angle of a triangle equals the sum of the two opposite interior angles.', p('exterior angle at ' + n[2] + ' = ' + A_(n[0]) + ' + ' + A_(n[1]) + ' (exterior angle of a triangle)') + p(A_(n[1]) + ' = ' + ext + ' − ' + a + ' = ' + b + '°'), true);   // spicy: the other way round
       return angQ(p('In triangle ' + n + ', ' + A_(n[0]) + ' = ' + deg(a) + ' and ' + A_(n[1]) + ' = ' + deg(b) + '. Side ' + n[1] + n[2] + ' is extended beyond ' + n[2] + '. Calculate the exterior angle at ' + n[2] + '.' + HINT_STEP), ext, 'The exterior angle of a triangle equals the sum of the two opposite interior angles.', p(A_(n[2]) + ' = 180 − ' + a + ' − ' + b + ' = ' + (180 - ext) + '° (sum of the angles in a triangle)') + p('exterior angle = 180 − ' + (180 - ext) + ' = ' + ext + '° (straight angle)') + p('Check: ' + a + ' + ' + b + ' = ' + ext + '.'), true);
     },
     function defOrTheorem(l) {
@@ -393,6 +394,8 @@ if (P.cls === '3VT') {
     },
     function centroidSplit(l) {
       const m = 3 * pick([2, 3, 4, 5, 7, 2.5, 1.5]), part = pick(['AZ', 'ZD']), v = part === 'AZ' ? m * 2 / 3 : m / 3;
+      if (l >= 2) { const giv = part === 'AZ' ? 'ZD' : 'AZ', gv = part === 'AZ' ? m / 3 : m * 2 / 3;   // spicy: one part is given, the median is asked
+        return nu(p('In triangle ABC, AD is a median. Z is the centroid (where the medians meet). ' + giv + ' = ' + rd(gv, 4) + '. Calculate the length of the median AD.'), rd(m, 4), 'The centroid divides each median in the ratio 2 : 1 (the longer part is at the vertex).', p('AZ : ZD = 2 : 1, so AD is 3 parts and ' + giv + ' is ' + (giv === 'AZ' ? '2 parts' : '1 part') + '.') + p('1 part = ' + rd(m / 3, 4) + ', AD = 3 · ' + rd(m / 3, 4) + ' = ' + rd(m, 4)), { needStep: true }); }
       return nu(p('In triangle ABC, AD is a median with length ' + m + '. Z is the centroid (where the medians meet). Calculate ' + part + '.'), rd(v, 4), 'The centroid divides each median in the ratio 2 : 1 (the longer part is at the vertex).', p('AZ : ZD = 2 : 1, so AZ = ⅔ · ' + m + ' = ' + rd(m * 2 / 3, 4) + ' and ZD = ⅓ · ' + m + ' = ' + rd(m / 3, 4)) + p(part + ' = ' + rd(v, 4)), { noStep: true });
     },
     function vertexFromCentroid(l) {
@@ -412,10 +415,14 @@ if (P.cls === '3VT') {
     },
     function rightCircumcentre(l) {
       let x1, y1, x2, y2; do { x1 = ri(-6, 4); y1 = ri(-6, 4); x2 = x1 + 2 * ri(1, 5) * pick([1, -1]); y2 = y1 + 2 * ri(1, 5) * pick([1, -1]); } while (false);
+      if (l >= 2) { const u = ri(1, 3) * pick([1, -1]), w = ri(1, 3), k = 2, Bx = x1 + 2 * w, By = y1 + 2 * u, Cx = x1 - k * u, Cy = y1 + k * w;   // spicy: the legs are not along the grid, and the right angle is not named
+        return ptQ(p('Triangle ABC has A' + P2(x1, y1) + ', B' + P2(Bx, By) + ' and C' + P2(Cx, Cy) + '. The triangle is right-angled. Calculate the centre of the circumscribed circle.'), (Bx + Cx) / 2, (By + Cy) / 2, 'First find out where the right angle is (sketch it, or compare the directions of the sides). The centre is the midpoint of the hypotenuse.', p('From A to B: ' + (2 * w) + ' right and ' + (2 * u) + ' up; from A to C: ' + (-k * u) + ' right and ' + (k * w) + ' up. These are perpendicular, so the right angle is at A and BC is the hypotenuse.') + p('Midpoint of BC: ((' + N_(Bx) + ' + ' + Pa(Cx) + ') / 2, (' + N_(By) + ' + ' + Pa(Cy) + ') / 2) = ' + P2((Bx + Cx) / 2, (By + Cy) / 2))); }
       return ptQ(p('Triangle ABC has A' + P2(x1, y1) + ', B' + P2(x2, y1) + ' and C' + P2(x1, y2) + '. The angle at A is 90°. Calculate the centre of the circumscribed circle.'), (x2 + x1) / 2, (y1 + y2) / 2, 'In a right-angled triangle the centre of the circumscribed circle is the midpoint of the hypotenuse.', p('The hypotenuse is BC.') + p('Midpoint of BC: ((' + N_(x2) + ' + ' + Pa(x1) + ') / 2, (' + N_(y1) + ' + ' + Pa(y2) + ') / 2) = ' + P2((x1 + x2) / 2, (y1 + y2) / 2)));
     },
     function circumRadius(l) {
       const a = ri(2, 12), b = ri(2, 12), r = Math.hypot(a, b) / 2, rr = rd(r, 2);
+      if (l >= 2) { const t = pick([[3, 4, 5], [5, 12, 13], [8, 15, 17], [6, 8, 10], [7, 24, 25], [9, 12, 15]]), sw = Math.random() < .5, gl = sw ? t[1] : t[0], al = sw ? t[0] : t[1];   // spicy: from the radius back to a leg
+        return nu(p('A right-angled triangle has a circumscribed circle with radius ' + rd(t[2] / 2, 1) + ' cm. One leg is ' + gl + ' cm. Calculate the other leg.'), al, 'The hypotenuse is a diameter of the circumscribed circle. Then Pythagoras.', p('hypotenuse = 2 · ' + rd(t[2] / 2, 1) + ' = ' + t[2]) + p('other leg = √(' + t[2] + '² − ' + gl + '²) = √' + (t[2] ** 2 - gl ** 2) + ' = ' + al + ' cm'), { needStep: true }); }
       return nu(p('A right-angled triangle has legs of ' + a + ' cm and ' + b + ' cm. Calculate the radius of its circumscribed circle. <small>(Round to 2 decimals.)</small>'), rr, 'The hypotenuse is a diameter of the circumscribed circle. Use Pythagoras.', p('hypotenuse = √(' + a + '² + ' + b + '²) = √' + (a * a + b * b) + (Number.isInteger(2 * r) ? ' = ' : ' ≈ ') + rd(2 * r, 2)) + p('radius = hypotenuse : 2' + (rd(r, 2) === rd(r, 6) ? ' = ' : ' ≈ ') + rr + ' cm'), { tol: .006, needStep: true });
     }
   ];
