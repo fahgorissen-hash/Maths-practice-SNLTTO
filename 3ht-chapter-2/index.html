@@ -827,13 +827,13 @@ G['2.3'].push(function clickPerpBisector(l) {
 });
 G['2.3'].push(function clickAngleBisector(l) {
   const r = 7, dirs = [[[1, 0], [0, 1]], [[0, 1], [-1, 0]], [[-1, 0], [0, -1]], [[0, -1], [1, 0]]], [d1, d2] = pick(dirs), bd = [d1[0] + d2[0], d1[1] + d2[1]];
-  const V = [ri(-3, 3), ri(-3, 3)], ray = d => CLP(V, d, -r, r, -r, r), end = d => { const c = ray(d); return Math.hypot(c.a[0] - V[0], c.a[1] - V[1]) < Math.hypot(c.b[0] - V[0], c.b[1] - V[1]) ? c.b : c.a; };
+  const V = [ri(-3, 3), ri(-3, 3)], ray = d => CLP(V, d, -r, r, -r, r), end = d => { const c = ray(d); return (c.a[0] - V[0]) * d[0] + (c.a[1] - V[1]) * d[1] > 0 ? c.a : c.b; };   // the end of the ray in direction d (was: the far end, which could point the wrong way; Frank, 2026-11-05)
   const e1 = end(d1), e2 = end(d2), eb = end(bd);
   return clickQ(p('The figure shows an angle of 90° with vertex V. Click <b>two points</b> on the <b>angle bisector</b>.') + GR({ xmin: -r, xmax: r, ymin: -r, ymax: r, click: true, segs: [{ a: V, b: e1, color: '#345', w: 2.4 }, { a: V, b: e2, color: '#345', w: 2.4 }], pts: [{ x: V[0], y: V[1], label: 'V' }] }),
     [[V[0] + bd[0], V[1] + bd[1]]], { segs: [{ a: V, b: eb }], pts: [] },
     'The angle bisector cuts the angle in two equal parts: 45° and 45°. Every point on it is the same distance from both arms.',
     'The angle bisector starts at V and makes 45° with both arms: it goes one step along each arm\'s direction at the same time (green line).',
-    u => u.length === 2 && !same(u[0], u[1]) && u.every(q => { const x = q[0] - V[0], y = q[1] - V[1]; return (x * bd[1] - y * bd[0]) === 0 && (x * bd[0] + y * bd[1]) > 0; }), { ans: [[V[0] + bd[0], V[1] + bd[1]], [V[0] + 2 * bd[0], V[1] + 2 * bd[1]]] });
+    u => u.length === 2 && !same(u[0], u[1]) && u.every(q => { const x = q[0] - V[0], y = q[1] - V[1]; return (x * bd[1] - y * bd[0]) === 0 && (x * bd[0] + y * bd[1]) >= 0; }), { ans: [[V[0] + bd[0], V[1] + bd[1]], [V[0] + 2 * bd[0], V[1] + 2 * bd[1]]] });
 });
 
 const SECTIONS = [
