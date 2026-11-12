@@ -404,7 +404,7 @@ function wordNum(s) {
 function parseNum(s) {
   if (s === null || s === undefined) return NaN;
   const wn = wordNum(s); if (!isNaN(wn)) return wn;
-  s = String(s).replace(/[−–—]/g, '-').replace(/\s*(?:°|degrees?)\s*$/i, '').replace(/\s+/g, '').replace(',', '.');
+  s = String(s).replace(/[−–—]/g, '-').replace(/\s*(?:°|degrees?|%)\s*$/i, '').replace(/\s+/g, '').replace(',', '.');
   const fr_ = s.match(/^([+-]?\d+\.?\d*)\/([+-]?\d+\.?\d*)$/);
   if (fr_ && parseFloat(fr_[2]) !== 0) return parseFloat(fr_[1]) / parseFloat(fr_[2]);
   if (!/^[+-]?(\d+\.?\d*|\.\d+)$/.test(s)) return NaN;
@@ -417,7 +417,7 @@ function parsePoint(s) {
 }
 function check(q, u) {                      // -> {ok, why?, msg?}
   if (typeof q.grade === 'function') { let r = false; try { r = q.grade(u); } catch (e) { } return r && typeof r === 'object' ? r : { ok: !!r }; }   // own grading (protractor questions, roots with letters): true/false or {ok, why, msg}
-  if (q.type === 'num') { const n = parseNum(u); if (isNaN(n)) return { ok: false, why: 'parse' }; const ok = Math.abs(n - q.ans) <= (q.tol || 1e-9); const rq = /round(?:ed)?\s+(?:your answers?\s+|it\s+)?to\s+(1|2|3|one|two|three)\s+decimal/i.exec(String(q.html || '').replace(/<[^>]+>/g, '')); if (ok && rq) { const want = { one: 1, two: 2, three: 3 }[rq[1].toLowerCase()] || +rq[1], got = (String(u).trim().split(/[.,]/)[1] || '').length; if (got > want) return { ok: false, why: 'form', msg: 'Round your answer to ' + want + ' decimal' + (want > 1 ? 's' : '') + '.' }; } return { ok }; }   // more decimals than asked: right value, not finished
+  if (q.type === 'num') { const n = parseNum(u); if (isNaN(n)) return { ok: false, why: 'parse' }; if (q.pct && !/%\s*$/.test(String(u))) return { ok: false, why: 'form', msg: 'This answer is a percentage: write the % sign after it (for example 12.5%).' }; const ok = Math.abs(n - q.ans) <= (q.tol || 1e-9); const rq = /round(?:ed)?\s+(?:your answers?\s+|it\s+)?to\s+(1|2|3|one|two|three)\s+decimal/i.exec(String(q.html || '').replace(/<[^>]+>/g, '')); if (ok && rq) { const want = { one: 1, two: 2, three: 3 }[rq[1].toLowerCase()] || +rq[1], got = (String(u).trim().replace(/\s*%$/, '').split(/[.,]/)[1] || '').length; if (got > want) return { ok: false, why: 'form', msg: 'Round your answer to ' + want + ' decimal' + (want > 1 ? 's' : '') + '.' }; } return { ok }; }   // more decimals than asked: right value, not finished
   if (q.type === 'multi') { const ok = Array.isArray(u) && u.length === q.ans.length && u.every((v, i) => { const n = parseNum(v); return !isNaN(n) && Math.abs(n - q.ans[i]) <= (q.tol || 1e-9); }); return { ok }; }
   if (q.type === 'point') { const p = parsePoint(u); return { ok: !!p && Math.abs(p[0] - q.ans[0]) < 1e-9 && Math.abs(p[1] - q.ans[1]) < 1e-9 }; }
   if (q.type === 'choice') return { ok: Number(u) === q.ans };
@@ -428,7 +428,7 @@ function check(q, u) {                      // -> {ok, why?, msg?}
 const grade = (q, u) => check(q, u).ok;
 function answerText(q) {
   if (q.ansText) return q.ansText;
-  if (q.type === 'num') return fmtNum(q.ans) + (isDeg(q) ? '°' : '');
+  if (q.type === 'num') return fmtNum(q.ans) + (isDeg(q) ? '°' : q.pct ? '%' : '');
   if (q.type === 'multi') return q.ans.map(fmtNum).join(' and ');
   if (q.type === 'point') return '(' + f(q.ans[0]) + ', ' + f(q.ans[1]) + ')';
   if (q.type === 'choice') return q.opts[q.ans];
@@ -604,7 +604,7 @@ G['4.1'] = [
   },
   function relativeFreq(l) {
     const cats = shuffle(pick([['blue', 'brown', 'green', 'grey'], ['football', 'hockey', 'tennis', 'swimming'], ['bike', 'bus', 'car', 'on foot']])).slice(0, l === 0 ? 3 : 4), f = cats.map(() => ri(2, l === 0 ? 10 : 25)), i = ri(0, cats.length - 1), tot = sum(f), r = rd(f[i] / tot * 100, 1);
-    return nu(p('The table shows the results of a survey. Calculate the relative frequency of <b>' + cats[i] + '</b>. Round to 1 decimal.') + vtbl(['answer', 'frequency'], cats.map((c, k) => [c, f[k]])) + p('<small>Give the answer as a percentage, without the % sign.</small>'), r, 'Relative frequency = frequency / total · 100%.', p('total = ' + f.join(' + ') + ' = ' + tot) + p(f[i] + ' / ' + tot + ' · 100%' + ap(f[i] / tot * 100, 1) + '%'), { tol: .051 });
+    return nu(p('The table shows the results of a survey. Calculate the relative frequency of <b>' + cats[i] + '</b>. Round to 1 decimal.') + vtbl(['answer', 'frequency'], cats.map((c, k) => [c, f[k]])), r, 'Relative frequency = frequency / total · 100%.', p('total = ' + f.join(' + ') + ' = ' + tot) + p(f[i] + ' / ' + tot + ' · 100%' + ap(f[i] / tot * 100, 1) + '%'), { tol: .051 });
   },
   function fromRelative(l) {
     let tot, pc; do { tot = pick([25, 40, 50, 75, 80, 120, 150, 200, 240, 300, 360]); pc = pick([4, 5, 8, 10, 12, 15, 20, 24, 25, 28, 30, 35, 40, 45, 56, 60]); } while (!Number.isInteger(tot * pc / 100));
@@ -983,10 +983,10 @@ if (P.cls === '3VT') {
     const C = pick([['hours of sunshine', 'ice creams sold (×10)', x => 'a day with ' + x + ' hours of sunshine'], ['age of a car (years)', 'price (× €1000)', x => 'a car that is ' + x + ' years old'], ['training hours', 'points scored', x => 'a player who trains ' + x + ' hours']]);
     if (l >= 2) {   // spicy: reverse, give x for a y beyond the plot
       const xq = pick([11, 12, 13]), yq = f(xq); if (yq <= 0) return trendPredict(l);
-      return nu(p('The red trend line goes through (' + x1 + ', ' + y1 + ') and (' + x2 + ', ' + y2 + '). Use the trend line to predict the ' + C[1] + ' for ' + C[2](xq) + '. Round to 1 decimal.') + scatter(pts, [0, 10, 1], [0, 50, 5], { line: [[x1, y1], [x2, y2]], xl: C[0], yl: C[1] }), rd(yq, 1), 'The trend line does not reach ' + xq + ' in the picture: find its formula (gradient first).', p('gradient: (' + y2 + ' − ' + y1 + ') / (' + x2 + ' − ' + x1 + ')' + ap(m, 4)) + p('From x = ' + x1 + ' to x = ' + xq + ' is ' + (xq - x1) + ' steps to the right, so y changes by ' + (xq - x1) + ' · ' + (m < 0 ? '(' + neg(rd(m, 4)) + ')' : neg(rd(m, 4))) + ap((xq - x1) * m, 2) + '.') + p('y ≈ ' + y1 + (m < 0 ? ' − ' : ' + ') + rd(Math.abs((xq - x1) * m), 2) + ap(yq, 1)), { tol: .051 });
+      return nu(p('The red trend line goes through (' + x1 + ', ' + y1 + ') and (' + x2 + ', ' + y2 + '). Use the trend line to predict the ' + C[1] + ' for ' + C[2](xq) + '. Round to 1 decimal.') + scatter(pts, [0, 10, 1], [0, 50, 5], { line: [[x1, y1], [x2, y2]], xl: C[0], yl: C[1] }), rd(yq, 1), 'The trend line does not reach ' + xq + ' in the picture: find its formula (gradient first).', p('gradient: (' + y2 + ' − ' + y1 + ') / (' + x2 + ' − ' + x1 + ')' + ap(m, 4)) + p('From x = ' + x1 + ' to x = ' + xq + ' is ' + (xq - x1) + ' step' + (xq - x1 === 1 ? '' : 's') + ' to the right, so y changes by ' + (xq - x1) + ' · ' + (m < 0 ? '(' + neg(rd(m, 4)) + ')' : neg(rd(m, 4))) + ap((xq - x1) * m, 2) + '.') + p('y ≈ ' + y1 + (m < 0 ? ' − ' : ' + ') + rd(Math.abs((xq - x1) * m), 2) + ap(yq, 1)), { tol: .051 });
     }
     const xq = pick([4, 5, 6]), yq = f(xq);
-    return nu(p('The red trend line goes through (' + x1 + ', ' + y1 + ') and (' + x2 + ', ' + y2 + '). Use the trend line to predict the ' + C[1] + ' for ' + C[2](xq) + '. Round to 1 decimal.') + scatter(pts, [0, 10, 1], [0, 50, 5], { line: [[x1, y1], [x2, y2]], xl: C[0], yl: C[1] }), rd(yq, 1), l === 0 ? 'Go up from ' + xq + ' to the red line and read off, or use the gradient.' : 'Gradient = Δy / Δx; then go from (' + x1 + ', ' + y1 + ') to x = ' + xq + '.', p('gradient: (' + y2 + ' − ' + y1 + ') / (' + x2 + ' − ' + x1 + ')' + ap(m, 4)) + p('From x = ' + x1 + ' to x = ' + xq + ' is ' + (xq - x1) + ' steps to the right, so y changes by ' + (xq - x1) + ' · ' + (m < 0 ? '(' + neg(rd(m, 4)) + ')' : neg(rd(m, 4))) + ap((xq - x1) * m, 2) + '.') + p('y ≈ ' + y1 + (m < 0 ? ' − ' : ' + ') + rd(Math.abs((xq - x1) * m), 2) + ap(yq, 1)), { tol: l === 0 ? 1.01 : .051 });
+    return nu(p('The red trend line goes through (' + x1 + ', ' + y1 + ') and (' + x2 + ', ' + y2 + '). Use the trend line to predict the ' + C[1] + ' for ' + C[2](xq) + '. Round to 1 decimal.') + scatter(pts, [0, 10, 1], [0, 50, 5], { line: [[x1, y1], [x2, y2]], xl: C[0], yl: C[1] }), rd(yq, 1), l === 0 ? 'Go up from ' + xq + ' to the red line and read off, or use the gradient.' : 'Gradient = Δy / Δx; then go from (' + x1 + ', ' + y1 + ') to x = ' + xq + '.', p('gradient: (' + y2 + ' − ' + y1 + ') / (' + x2 + ' − ' + x1 + ')' + ap(m, 4)) + p('From x = ' + x1 + ' to x = ' + xq + ' is ' + (xq - x1) + ' step' + (xq - x1 === 1 ? '' : 's') + ' to the right, so y changes by ' + (xq - x1) + ' · ' + (m < 0 ? '(' + neg(rd(m, 4)) + ')' : neg(rd(m, 4))) + ap((xq - x1) * m, 2) + '.') + p('y ≈ ' + y1 + (m < 0 ? ' − ' : ' + ') + rd(Math.abs((xq - x1) * m), 2) + ap(yq, 1)), { tol: l === 0 ? 1.01 : .051 });
   });
   G['4.5'].push(function compareMeans(l) {
     const nA = ri(6, 9), nB = ri(6, 9), A = Array.from({ length: nA }, () => ri(10, 30)), B = Array.from({ length: nB }, () => ri(10, 30)), mA = sum(A) / nA, mB = sum(B) / nB;
@@ -1023,6 +1023,14 @@ if (P.cls === '3VT') {
     const what = pick(['minutes of travel to school', 'minutes of sleep after midnight', 'minutes spent on homework']);
     return mu(p('A group investigates the ' + what + ' of students who come by bike (A) and by bus (B).') + list(['A: ' + A.join(', ')]) + list(['B: ' + B.join(', ')]) + p('Give the median and the interquartile range of both groups.'), ['median A =', 'IQR A =', 'median B =', 'IQR B ='], [qa[1], rd(qa[2] - qa[0]), qb[1], rd(qb[2] - qb[0])], 'Order each group first. Q<sub>1</sub> and Q<sub>3</sub> are the medians of the lower and upper halves.', p('A in order: ' + a.join(', ')) + p('median A: ' + medTxt(a) + '; Q<sub>1</sub> = ' + neg(qa[0]) + ', Q<sub>3</sub> = ' + neg(qa[2]) + ', IQR = ' + neg(rd(qa[2] - qa[0]))) + p('B in order: ' + b.join(', ')) + p('median B: ' + medTxt(b) + '; Q<sub>1</sub> = ' + neg(qb[0]) + ', Q<sub>3</sub> = ' + neg(qb[2]) + ', IQR = ' + neg(rd(qb[2] - qb[0]))) + p('Conclusion: group ' + (qa[1] > qb[1] ? 'A' : qa[1] < qb[1] ? 'B' : 'A and B (equal)') + ' has the larger median; group ' + (qa[2] - qa[0] > qb[2] - qb[0] ? 'A' : 'B') + ' has the larger spread (IQR).'));
   });
+
+  /* ---------- steps: every typed question that needs a calculation demands the working (Frank, 2026-11-12) ---------- */
+  const PCT = new Set(['relativeFreq', 'twoWayPercent', 'combinedRows', 'holidaySurvey', 'addResponses', 'passBoth', 'readBars', 'histCount', 'axisPercent', 'combinedPass', 'scatterCount']);   /* answers that are percentages: the % sign is demanded */
+  const CALC = /\d\s*\)?\s*[−+·×\/*-]\s*\(?\s*\d/;
+  [G, XG].forEach(O => SECTIONS.forEach(S => { O[S.id] = (O[S.id] || []).map(f => {
+    const w = function (l) { const q = f(l); if (q.type === 'num' && PCT.has(f.name) && /percent|relative frequency/i.test(String(q.html).replace(/<[^>]+>/g, ' '))) q.pct = true; if ((q.type === 'num' || q.type === 'multi') && CALC.test(String(q.steps || '').replace(/<svg[\s\S]*?<\/svg>/g, '').replace(/<[^>]+>/g, ' '))) { delete q.noStep; q.needStep = true; } return q; };
+    Object.defineProperty(w, 'name', { value: f.name }); return w;
+  }); }));
 
   /* ---------- book titles, goals ---------- */
   const T = { '4.1': ['4.1 Tables', 'Qualitative and quantitative data, frequency tables, contingency tables'], '4.2': ['4.2 Charts', 'Pie charts, bar charts, line graphs, stem-and-leaf plots, choosing a chart'], '4.3': ['4.3 Grouping into classes', 'Class limits, class midpoints, histograms'], '4.4': ['4.4 Measures of centre', 'Mean, weighted mean, median, mode, modal class'], '4.5': ['4.5 Measures of spread', 'Range, quartiles, IQR, box plots, scatter plots'] };
@@ -1291,7 +1299,7 @@ function hint(){if(cur.hint){hintUsed=true;fb('hint','<b class="h">Hint</b>'+cur
 function empty(q,u){if(q.type==='proto')return u===null;if(q.type==='num'||q.type==='point'||q.type==='expr')return !String(u).trim();if(q.type==='multi')return u.some(v=>!String(v).trim());if(q.type==='choice')return u===null;return u.length===0}
 function logAnswer(q,u,ok){
   let a=ansText(q,u);if(q.type==='num'&&!/°/.test(a)&&!isNaN(E.parseNum(a))&&/°$/.test(E.answerText(q)))a+='°';attempts.push({a,ok});
-  st.log.push({t:plain(q.html).slice(0,90),a:a.slice(0,60),ok,d:todayISO()});if(st.log.length>40)st.log.splice(0,st.log.length-40);
+  st.log.push({t:plain(String(q.html).replace(/<table[\s\S]*?<\/table>/g,' [table] ').replace(/<\/p>/g,' ')).replace(/\s+/g,' ').trim().slice(0,90),a:a.slice(0,60),ok,d:todayISO()});if(st.log.length>40)st.log.splice(0,st.log.length-40);
   const h=$('#hist');if(h)h.innerHTML='<div class="at">Your answers on this question: '+attempts.map(x=>'<span class="'+(x.ok?'ok':'no')+'">'+(x.ok?'✓':'✗')+' '+esc(x.a)+'</span>').join(' ')+'</div>';
 }
 const chk=(q,u)=>E.check?E.check(q,u):{ok:E.grade(q,u)};
