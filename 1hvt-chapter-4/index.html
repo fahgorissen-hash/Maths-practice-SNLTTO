@@ -404,7 +404,7 @@ function wordNum(s) {
 function parseNum(s) {
   if (s === null || s === undefined) return NaN;
   const wn = wordNum(s); if (!isNaN(wn)) return wn;
-  s = String(s).replace(/[−–—]/g, '-').replace(/\s*(?:°|degrees?)\s*$/i, '').replace(/\s+/g, '').replace(',', '.');
+  s = String(s).replace(/[−–—]/g, '-').replace(/\s*(?:°|degrees?|%)\s*$/i, '').replace(/\s+/g, '').replace(',', '.');
   const fr_ = s.match(/^([+-]?\d+\.?\d*)\/([+-]?\d+\.?\d*)$/);
   if (fr_ && parseFloat(fr_[2]) !== 0) return parseFloat(fr_[1]) / parseFloat(fr_[2]);
   if (!/^[+-]?(\d+\.?\d*|\.\d+)$/.test(s)) return NaN;
@@ -417,7 +417,7 @@ function parsePoint(s) {
 }
 function check(q, u) {                      // -> {ok, why?, msg?}
   if (typeof q.grade === 'function') { let r = false; try { r = q.grade(u); } catch (e) { } return r && typeof r === 'object' ? r : { ok: !!r }; }   // own grading (protractor questions, roots with letters): true/false or {ok, why, msg}
-  if (q.type === 'num') { const n = parseNum(u); if (isNaN(n)) return { ok: false, why: 'parse' }; const ok = Math.abs(n - q.ans) <= (q.tol || 1e-9); const rq = /round(?:ed)?\s+(?:your answers?\s+|it\s+)?to\s+(1|2|3|one|two|three)\s+decimal/i.exec(String(q.html || '').replace(/<[^>]+>/g, '')); if (ok && rq) { const want = { one: 1, two: 2, three: 3 }[rq[1].toLowerCase()] || +rq[1], got = (String(u).trim().split(/[.,]/)[1] || '').length; if (got > want) return { ok: false, why: 'form', msg: 'Round your answer to ' + want + ' decimal' + (want > 1 ? 's' : '') + '.' }; } return { ok }; }   // more decimals than asked: right value, not finished
+  if (q.type === 'num') { const n = parseNum(u); if (isNaN(n)) return { ok: false, why: 'parse' }; if (q.pct && !/%\s*$/.test(String(u))) return { ok: false, why: 'form', msg: 'This answer is a percentage: write the % sign after it (for example 12.5%).' }; const ok = Math.abs(n - q.ans) <= (q.tol || 1e-9); const rq = /round(?:ed)?\s+(?:your answers?\s+|it\s+)?to\s+(1|2|3|one|two|three)\s+decimal/i.exec(String(q.html || '').replace(/<[^>]+>/g, '')); if (ok && rq) { const want = { one: 1, two: 2, three: 3 }[rq[1].toLowerCase()] || +rq[1], got = (String(u).trim().replace(/\s*%$/, '').split(/[.,]/)[1] || '').length; if (got > want) return { ok: false, why: 'form', msg: 'Round your answer to ' + want + ' decimal' + (want > 1 ? 's' : '') + '.' }; } return { ok }; }   // more decimals than asked: right value, not finished
   if (q.type === 'multi') { const ok = Array.isArray(u) && u.length === q.ans.length && u.every((v, i) => { const n = parseNum(v); return !isNaN(n) && Math.abs(n - q.ans[i]) <= (q.tol || 1e-9); }); return { ok }; }
   if (q.type === 'point') { const p = parsePoint(u); return { ok: !!p && Math.abs(p[0] - q.ans[0]) < 1e-9 && Math.abs(p[1] - q.ans[1]) < 1e-9 }; }
   if (q.type === 'choice') return { ok: Number(u) === q.ans };
@@ -428,7 +428,7 @@ function check(q, u) {                      // -> {ok, why?, msg?}
 const grade = (q, u) => check(q, u).ok;
 function answerText(q) {
   if (q.ansText) return q.ansText;
-  if (q.type === 'num') return fmtNum(q.ans) + (isDeg(q) ? '°' : '');
+  if (q.type === 'num') return fmtNum(q.ans) + (isDeg(q) ? '°' : q.pct ? '%' : '');
   if (q.type === 'multi') return q.ans.map(fmtNum).join(' and ');
   if (q.type === 'point') return '(' + f(q.ans[0]) + ', ' + f(q.ans[1]) + ')';
   if (q.type === 'choice') return q.opts[q.ans];
@@ -857,22 +857,20 @@ const GOALS = [
   const __has = (L, g) => (L[g[0]] || []).some(f => f.name === g[1]);
   const __LESSONS = ({
     "1HVT": [
-      {"id": "D1", "title": "Lesson · 4.1 A Data", "sub": "Thu 10 Dec · ex 1, 2, 6, 7, 8, 9", "date": "2026-12-10", "gens": [["4.1", "tableMean"], ["4.1", "listMean"], ["4.1", "totalFreq"]], "xg": [["4.1", "neededMark"]]},
-      {"id": "D2", "title": "Lesson · 4.1 B Data", "sub": "Fri 11 Dec · ex 10, 11, 12, 13, 14", "date": "2026-12-11", "gens": [["4.1", "listMean"], ["4.1", "totalFreq"], ["4.1", "missingValue"]], "xg": [["4.1", "neededMark"]]},
-      {"id": "D3", "title": "Lesson · 4.1 C Data", "sub": "Tue 15 Dec · ex 15, 16, 17, 18, 19", "date": "2026-12-15", "gens": [["4.1", "missingValue"], ["4.1", "roundNumber"], ["4.1", "roundContext"]], "xg": [["4.1", "neededMark"]]},
-      {"id": "D4", "title": "Lesson · 4.1 Data + 4.2 Ratios", "sub": "Wed 16 Dec · ex 20, 21, 25, 26, 27", "date": "2026-12-16", "gens": [["4.1", "roundNumber"], ["4.1", "roundContext"], ["4.1", "roundBounds"], ["4.2", "simplifyRatio"], ["4.2", "partWhole"], ["4.2", "share"]], "xg": [["4.1", "neededMark"], ["4.2", "whichSweeter"]]},
-      {"id": "D5", "title": "Lesson · 4.2 A Ratios", "sub": "Thu 17 Dec · ex 28, 29, 30, 31, 32", "date": "2026-12-17", "gens": [["4.2", "simplifyRatio"], ["4.2", "partWhole"], ["4.2", "share"]], "xg": [["4.2", "whichSweeter"]]},
-      {"id": "D6", "title": "Lesson · 4.2 B Ratios", "sub": "Tue 5 Jan · ex 33, 34, 35, 36, 37, 38", "date": "2027-01-05", "gens": [["4.2", "partWhole"], ["4.2", "share"], ["4.2", "scaleMap"]], "xg": [["4.2", "whichSweeter"]]},
-      {"id": "D7", "title": "Lesson · 4.2 Ratios + 4.3 Percentages", "sub": "Wed 6 Jan · ex 39, 40, 43, 44, 45", "date": "2027-01-06", "gens": [["4.2", "share"], ["4.2", "scaleMap"], ["4.2", "findScale"], ["4.3", "fracToPercent"], ["4.3", "percentOf"], ["4.3", "discount"]], "xg": [["4.2", "whichSweeter"], ["4.3", "backToWhole"]]},
-      {"id": "D8", "title": "Lesson · 4.3 A Percentages", "sub": "Thu 7 Jan · ex 46, 47, 48, 49, 50", "date": "2027-01-07", "gens": [["4.3", "fracToPercent"], ["4.3", "percentOf"], ["4.3", "discount"]], "xg": [["4.3", "backToWhole"]]},
-      {"id": "D9", "title": "Lesson · 4.3 B Percentages", "sub": "Fri 8 Jan · ex 51, 52, 53, 54, 55", "date": "2027-01-08", "gens": [["4.3", "fracToPercent"], ["4.3", "percentOf"], ["4.3", "discount"]], "xg": [["4.3", "backToWhole"]]},
-      {"id": "D10", "title": "Lesson · 4.3 C Percentages", "sub": "Tue 12 Jan · ex 56, 57, 58, 59, 60", "date": "2027-01-12", "gens": [["4.3", "percentOf"], ["4.3", "discount"], ["4.3", "vat"]], "xg": [["4.3", "backToWhole"]]},
-      {"id": "D11", "title": "Lesson · 4.3 D Percentages", "sub": "Wed 13 Jan · ex 61, 62, 63, 68", "date": "2027-01-13", "gens": [["4.3", "discount"], ["4.3", "vat"], ["4.3", "whatPercent"]], "xg": [["4.3", "backToWhole"]]},
-      {"id": "D12", "title": "Lesson · 4.4 A Graphs and charts", "sub": "Fri 15 Jan · ex 69, 70, 71, 72, 73", "date": "2027-01-15", "gens": [["4.4", "pieAngle"], ["4.4", "percentAngle"], ["4.4", "angleToCount"]], "xg": []},
-      {"id": "D13", "title": "Lesson · 4.4 B Graphs and charts", "sub": "Tue 19 Jan · ex 74, 75, 76, 77", "date": "2027-01-19", "gens": [["4.4", "angleToCount"], ["4.4", "barRead"], ["4.4", "whichDiagram"]], "xg": []},
-      {"id": "D14", "title": "Lesson · 4.5 A Relationships and graphs", "sub": "Wed 20 Jan · ex 82, 83, 84, 85, 86", "date": "2027-01-20", "gens": [["4.5", "maxRise"], ["4.5", "riseFall"], ["4.5", "axisChoice"]], "xg": []},
-      {"id": "D15", "title": "Lesson · 4.5 B Relationships and graphs", "sub": "Thu 21 Jan · ex 87, 88, 89, 90, 91", "date": "2027-01-21", "gens": [["4.5", "maxRise"], ["4.5", "riseFall"], ["4.5", "axisChoice"]], "xg": []},
-      {"id": "D16", "title": "Test prep · chapter 4", "sub": "Tue 26 Jan · ex 96, 98, 100, 102, 104, 106, 108", "date": "2027-01-26", "gens": [["4.1", "tableMean"], ["4.1", "listMean"], ["4.1", "totalFreq"], ["4.1", "missingValue"], ["4.1", "roundNumber"], ["4.1", "roundContext"], ["4.1", "roundBounds"], ["4.1", "weightedMean"], ["4.2", "simplifyRatio"], ["4.2", "partWhole"], ["4.2", "share"], ["4.2", "scaleMap"], ["4.2", "findScale"], ["4.3", "fracToPercent"], ["4.3", "percentOf"], ["4.3", "discount"], ["4.3", "vat"], ["4.3", "whatPercent"], ["4.4", "pieAngle"], ["4.4", "percentAngle"], ["4.4", "angleToCount"], ["4.4", "barRead"], ["4.4", "whichDiagram"], ["4.4", "readLine"], ["4.5", "maxRise"], ["4.5", "riseFall"], ["4.5", "axisChoice"]], "xg": [["4.1", "neededMark"], ["4.2", "whichSweeter"], ["4.3", "backToWhole"]], "rev": true}
+      {"id": "D1", "title": "Lesson · 4.1 A Data", "sub": "Tue 15 Dec · ex 1, 2, 6, 7, 8, 9", "date": "2026-12-15", "gens": [["4.1", "tableMean"], ["4.1", "listMean"], ["4.1", "totalFreq"]], "xg": [["4.1", "neededMark"], ["4.1", "meanFixError"]]},
+      {"id": "D2", "title": "Lesson · 4.1 B Data", "sub": "Wed 16 Dec · ex 10, 11, 12, 13, 14", "date": "2026-12-16", "gens": [["4.1", "listMean"], ["4.1", "totalFreq"], ["4.1", "missingValue"]], "xg": [["4.1", "neededMark"], ["4.1", "meanFixError"]]},
+      {"id": "D3", "title": "Lesson · 4.1 C Data", "sub": "Thu 17 Dec · ex 15, 16, 17, 18, 19", "date": "2026-12-17", "gens": [["4.1", "missingValue"], ["4.1", "roundNumber"], ["4.1", "roundContext"]], "xg": [["4.1", "neededMark"], ["4.1", "meanFixError"]]},
+      {"id": "D4", "title": "Lesson · 4.2 A Ratios", "sub": "Tue 5 Jan · ex 25, 26, 27, 28, 29, 30", "date": "2027-01-05", "gens": [["4.2", "simplifyRatio"], ["4.2", "partWhole"], ["4.2", "share"]], "xg": [["4.2", "whichSweeter"], ["4.2", "ratioAdd"]]},
+      {"id": "D5", "title": "Lesson · 4.2 B Ratios", "sub": "Wed 6 Jan · ex 32, 33, 34, 35, 36, 37, 38", "date": "2027-01-06", "gens": [["4.2", "partWhole"], ["4.2", "share"], ["4.2", "scaleMap"]], "xg": [["4.2", "whichSweeter"], ["4.2", "ratioAdd"]]},
+      {"id": "D6", "title": "Lesson · 4.3 A Percentages", "sub": "Thu 7 Jan · ex 43, 44, 45, 46, 47", "date": "2027-01-07", "gens": [["4.3", "fracToPercent"], ["4.3", "percentOf"], ["4.3", "discount"]], "xg": [["4.3", "backToWhole"], ["4.3", "doubleDiscount"]]},
+      {"id": "D7", "title": "Lesson · 4.3 B Percentages", "sub": "Fri 8 Jan · ex 48, 49, 50, 51", "date": "2027-01-08", "gens": [["4.3", "fracToPercent"], ["4.3", "percentOf"], ["4.3", "discount"]], "xg": [["4.3", "backToWhole"], ["4.3", "doubleDiscount"]]},
+      {"id": "D8", "title": "Lesson · 4.3 C Percentages", "sub": "Tue 12 Jan · ex 52, 53, 54, 55, 56", "date": "2027-01-12", "gens": [["4.3", "fracToPercent"], ["4.3", "percentOf"], ["4.3", "discount"]], "xg": [["4.3", "backToWhole"], ["4.3", "doubleDiscount"]]},
+      {"id": "D9", "title": "Lesson · 4.3 D Percentages", "sub": "Wed 13 Jan · ex 57, 58, 59, 60, 61", "date": "2027-01-13", "gens": [["4.3", "percentOf"], ["4.3", "discount"], ["4.3", "vat"]], "xg": [["4.3", "backToWhole"], ["4.3", "doubleDiscount"]]},
+      {"id": "D10", "title": "Lesson · 4.3 Percentages + 4.4 Graphs and charts", "sub": "Fri 15 Jan · ex 68, 69, 70, 71, 72", "date": "2027-01-15", "gens": [["4.3", "discount"], ["4.3", "vat"], ["4.3", "whatPercent"], ["4.4", "pieAngle"], ["4.4", "percentAngle"], ["4.4", "angleToCount"]], "xg": [["4.3", "backToWhole"], ["4.3", "doubleDiscount"], ["4.4", "pieMissing"], ["4.4", "barGrowth"]]},
+      {"id": "D11", "title": "Lesson · 4.4 Graphs and charts", "sub": "Tue 19 Jan · ex 73, 74, 75, 76", "date": "2027-01-19", "gens": [["4.4", "percentAngle"], ["4.4", "angleToCount"], ["4.4", "barRead"]], "xg": [["4.4", "pieMissing"], ["4.4", "barGrowth"]]},
+      {"id": "D12", "title": "Lesson · 4.5 A Relationships and graphs", "sub": "Wed 20 Jan · ex 82, 83, 84, 85", "date": "2027-01-20", "gens": [["4.5", "maxRise"], ["4.5", "riseFall"], ["4.5", "axisChoice"]], "xg": [["4.5", "meanFromGraph"], ["4.5", "monthsAbove"]]},
+      {"id": "D13", "title": "Lesson · 4.5 B Relationships and graphs", "sub": "Thu 21 Jan · ex 86, 87, 88, 89, 90, 91", "date": "2027-01-21", "gens": [["4.5", "maxRise"], ["4.5", "riseFall"], ["4.5", "axisChoice"]], "xg": [["4.5", "meanFromGraph"], ["4.5", "monthsAbove"]]},
+      {"id": "D14", "title": "Test prep · chapter 4", "sub": "Tue 26 Jan", "date": "2027-01-26", "gens": [["4.1", "tableMean"], ["4.1", "listMean"], ["4.1", "totalFreq"], ["4.1", "missingValue"], ["4.1", "roundNumber"], ["4.1", "roundContext"], ["4.1", "roundBounds"], ["4.1", "weightedMean"], ["4.2", "simplifyRatio"], ["4.2", "partWhole"], ["4.2", "share"], ["4.2", "scaleMap"], ["4.2", "findScale"], ["4.3", "fracToPercent"], ["4.3", "percentOf"], ["4.3", "discount"], ["4.3", "vat"], ["4.3", "whatPercent"], ["4.4", "pieAngle"], ["4.4", "percentAngle"], ["4.4", "angleToCount"], ["4.4", "barRead"], ["4.4", "whichDiagram"], ["4.4", "readLine"], ["4.5", "maxRise"], ["4.5", "riseFall"], ["4.5", "axisChoice"]], "xg": [["4.1", "neededMark"], ["4.1", "meanFixError"], ["4.2", "whichSweeter"], ["4.2", "ratioAdd"], ["4.3", "backToWhole"], ["4.3", "doubleDiscount"], ["4.4", "pieMissing"], ["4.4", "barGrowth"], ["4.5", "meanFromGraph"], ["4.5", "monthsAbove"]], "rev": true}
     ]
   }[P.cls] || []).map(o => Object.assign({}, o, { gens: o.gens.filter(g => __has(G, g)), xg: [...new Set(o.gens.map(g => g[0]))].reduce((a, s) => a.concat((XG[s] || []).map(f => [s, f.name])), []) })).filter(o => o.gens.length);
   /* ---------- end lessons ---------- */
@@ -1117,7 +1115,7 @@ function hint(){if(cur.hint){hintUsed=true;fb('hint','<b class="h">Hint</b>'+cur
 function empty(q,u){if(q.type==='proto')return u===null;if(q.type==='num'||q.type==='point'||q.type==='expr')return !String(u).trim();if(q.type==='multi')return u.some(v=>!String(v).trim());if(q.type==='choice')return u===null;return u.length===0}
 function logAnswer(q,u,ok){
   let a=ansText(q,u);if(q.type==='num'&&!/°/.test(a)&&!isNaN(E.parseNum(a))&&/°$/.test(E.answerText(q)))a+='°';attempts.push({a,ok});
-  st.log.push({t:plain(q.html).slice(0,90),a:a.slice(0,60),ok,d:todayISO()});if(st.log.length>40)st.log.splice(0,st.log.length-40);
+  st.log.push({t:plain(String(q.html).replace(/<table[\s\S]*?<\/table>/g,' [table] ').replace(/<\/p>/g,' ')).replace(/\s+/g,' ').trim().slice(0,90),a:a.slice(0,60),ok,d:todayISO()});if(st.log.length>40)st.log.splice(0,st.log.length-40);
   const h=$('#hist');if(h)h.innerHTML='<div class="at">Your answers on this question: '+attempts.map(x=>'<span class="'+(x.ok?'ok':'no')+'">'+(x.ok?'✓':'✗')+' '+esc(x.a)+'</span>').join(' ')+'</div>';
 }
 const chk=(q,u)=>E.check?E.check(q,u):{ok:E.grade(q,u)};
