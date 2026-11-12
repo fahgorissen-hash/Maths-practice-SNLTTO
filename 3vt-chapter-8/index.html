@@ -404,7 +404,7 @@ function wordNum(s) {
 function parseNum(s) {
   if (s === null || s === undefined) return NaN;
   const wn = wordNum(s); if (!isNaN(wn)) return wn;
-  s = String(s).replace(/[−–—]/g, '-').replace(/\s*(?:°|degrees?)\s*$/i, '').replace(/\s+/g, '').replace(',', '.');
+  s = String(s).replace(/[−–—]/g, '-').replace(/\s*(?:°|degrees?|%)\s*$/i, '').replace(/\s+/g, '').replace(',', '.');
   const fr_ = s.match(/^([+-]?\d+\.?\d*)\/([+-]?\d+\.?\d*)$/);
   if (fr_ && parseFloat(fr_[2]) !== 0) return parseFloat(fr_[1]) / parseFloat(fr_[2]);
   if (!/^[+-]?(\d+\.?\d*|\.\d+)$/.test(s)) return NaN;
@@ -417,7 +417,7 @@ function parsePoint(s) {
 }
 function check(q, u) {                      // -> {ok, why?, msg?}
   if (typeof q.grade === 'function') { let r = false; try { r = q.grade(u); } catch (e) { } return r && typeof r === 'object' ? r : { ok: !!r }; }   // own grading (protractor questions, roots with letters): true/false or {ok, why, msg}
-  if (q.type === 'num') { const n = parseNum(u); if (isNaN(n)) return { ok: false, why: 'parse' }; const ok = Math.abs(n - q.ans) <= (q.tol || 1e-9); const rq = /round(?:ed)?\s+(?:your answers?\s+|it\s+)?to\s+(1|2|3|one|two|three)\s+decimal/i.exec(String(q.html || '').replace(/<[^>]+>/g, '')); if (ok && rq) { const want = { one: 1, two: 2, three: 3 }[rq[1].toLowerCase()] || +rq[1], got = (String(u).trim().split(/[.,]/)[1] || '').length; if (got > want) return { ok: false, why: 'form', msg: 'Round your answer to ' + want + ' decimal' + (want > 1 ? 's' : '') + '.' }; } return { ok }; }   // more decimals than asked: right value, not finished
+  if (q.type === 'num') { const n = parseNum(u); if (isNaN(n)) return { ok: false, why: 'parse' }; if (q.pct && !/%\s*$/.test(String(u))) return { ok: false, why: 'form', msg: 'This answer is a percentage: write the % sign after it (for example 12.5%).' }; const ok = Math.abs(n - q.ans) <= (q.tol || 1e-9); const rq = /round(?:ed)?\s+(?:your answers?\s+|it\s+)?to\s+(1|2|3|one|two|three)\s+decimal/i.exec(String(q.html || '').replace(/<[^>]+>/g, '')); if (ok && rq) { const want = { one: 1, two: 2, three: 3 }[rq[1].toLowerCase()] || +rq[1], got = (String(u).trim().replace(/\s*%$/, '').split(/[.,]/)[1] || '').length; if (got > want) return { ok: false, why: 'form', msg: 'Round your answer to ' + want + ' decimal' + (want > 1 ? 's' : '') + '.' }; } return { ok }; }   // more decimals than asked: right value, not finished
   if (q.type === 'multi') { const ok = Array.isArray(u) && u.length === q.ans.length && u.every((v, i) => { const n = parseNum(v); return !isNaN(n) && Math.abs(n - q.ans[i]) <= (q.tol || 1e-9); }); return { ok }; }
   if (q.type === 'point') { const p = parsePoint(u); return { ok: !!p && Math.abs(p[0] - q.ans[0]) < 1e-9 && Math.abs(p[1] - q.ans[1]) < 1e-9 }; }
   if (q.type === 'choice') return { ok: Number(u) === q.ans };
@@ -428,7 +428,7 @@ function check(q, u) {                      // -> {ok, why?, msg?}
 const grade = (q, u) => check(q, u).ok;
 function answerText(q) {
   if (q.ansText) return q.ansText;
-  if (q.type === 'num') return fmtNum(q.ans) + (isDeg(q) ? '°' : '');
+  if (q.type === 'num') return fmtNum(q.ans) + (isDeg(q) ? '°' : q.pct ? '%' : '');
   if (q.type === 'multi') return q.ans.map(fmtNum).join(' and ');
   if (q.type === 'point') return '(' + f(q.ans[0]) + ', ' + f(q.ans[1]) + ')';
   if (q.type === 'choice') return q.opts[q.ans];
@@ -892,14 +892,14 @@ if (P.cls === '3VT') {
   const __has = (L, g) => (L[g[0]] || []).some(f => f.name === g[1]);
   const __LESSONS = ({
     "3HT": [
-      {"id": "D1", "title": "Lesson · 8.1 A Rate of change", "sub": "Wed 2 Jun · ex 1, 2, 3, 4, 5, 6", "date": "2027-06-02", "gens": [["8.1", "intervalNotation"], ["8.1", "avgGradient"], ["8.1", "avgFromTable"]], "xg": [["8.1", "averageCost"]]},
-      {"id": "D2", "title": "Lesson · 8.1 B Rate of change", "sub": "Thu 3 Jun · ex 7, 9, 10, 12", "date": "2027-06-03", "gens": [["8.1", "avgFromTable"], ["8.1", "gradientShape"], ["8.1", "avgSpeed"]], "xg": [["8.1", "averageCost"]]},
+      {"id": "D1", "title": "Lesson · 8.1 A Rate of change", "sub": "Wed 2 Jun · ex 1, 2, 3, 4, 5, 6", "date": "2027-06-02", "gens": [["8.1", "intervalNotation"], ["8.1", "avgGradient"], ["8.1", "avgFromTable"]], "xg": [["8.1", "averageCost"], ["8.1", "findEndpoint"]]},
+      {"id": "D2", "title": "Lesson · 8.1 B Rate of change", "sub": "Thu 3 Jun · ex 7, 9, 10, 12", "date": "2027-06-03", "gens": [["8.1", "avgFromTable"], ["8.1", "gradientShape"], ["8.1", "avgSpeed"]], "xg": [["8.1", "averageCost"], ["8.1", "findEndpoint"]]},
       {"id": "D3", "title": "Lesson · 8.2 A Counting", "sub": "Fri 4 Jun · ex 14, 15, 16, 17, 18, 19", "date": "2027-06-04", "gens": [["8.2", "menu"], ["8.2", "codeRepeat"], ["8.2", "codeNoRepeat"]], "xg": [["8.2", "routesVia"], ["8.2", "samePawns"]]},
       {"id": "D4", "title": "Lesson · 8.2 B Counting", "sub": "Wed 9 Jun · ex 20, 21, 22, 23, 24", "date": "2027-06-09", "gens": [["8.2", "codeNoRepeat"], ["8.2", "arrange"], ["8.2", "roles"], ["8.2", "plates"]], "xg": [["8.2", "routesVia"], ["8.2", "samePawns"]]},
       {"id": "D5", "title": "Lesson · 8.3 A Functions", "sub": "Thu 10 Jun · ex 29, 30, 31, 32, 33, 34", "date": "2027-06-10", "gens": [["8.3", "evalLinear"], ["8.3", "evalQuad"], ["8.3", "solveFx"]], "xg": [["8.3", "familyP"], ["8.3", "newFunction"]]},
       {"id": "D6", "title": "Lesson · 8.3 B Functions", "sub": "Fri 11 Jun · ex 35, 36, 37, 38, 39, 40", "date": "2027-06-11", "gens": [["8.3", "solveFx"], ["8.3", "difference"], ["8.3", "maxMin"], ["8.3", "maxMinFactored"]], "xg": [["8.3", "familyP"], ["8.3", "newFunction"]]},
-      {"id": "D7", "title": "Test prep · chapters 7 & 8", "sub": "Wed 16 Jun", "date": "2027-06-16", "gens": [["8.1", "intervalNotation"], ["8.1", "avgGradient"], ["8.1", "avgFromTable"], ["8.1", "gradientShape"], ["8.1", "avgSpeed"], ["8.2", "menu"], ["8.2", "codeRepeat"], ["8.2", "codeNoRepeat"], ["8.2", "arrange"], ["8.2", "roles"], ["8.2", "plates"], ["8.2", "whichCount"], ["8.3", "evalLinear"], ["8.3", "evalQuad"], ["8.3", "solveFx"], ["8.3", "difference"], ["8.3", "maxMin"], ["8.3", "maxMinFactored"], ["8.3", "onGraph"]], "xg": [["8.1", "averageCost"], ["8.2", "routesVia"], ["8.2", "samePawns"], ["8.3", "familyP"], ["8.3", "newFunction"]], "rev": true},
-      {"id": "D8", "title": "Test prep · chapters 7 & 8", "sub": "Thu 17 Jun", "date": "2027-06-17", "gens": [["8.1", "intervalNotation"], ["8.1", "avgGradient"], ["8.1", "avgFromTable"], ["8.1", "gradientShape"], ["8.1", "avgSpeed"], ["8.2", "menu"], ["8.2", "codeRepeat"], ["8.2", "codeNoRepeat"], ["8.2", "arrange"], ["8.2", "roles"], ["8.2", "plates"], ["8.2", "whichCount"], ["8.3", "evalLinear"], ["8.3", "evalQuad"], ["8.3", "solveFx"], ["8.3", "difference"], ["8.3", "maxMin"], ["8.3", "maxMinFactored"], ["8.3", "onGraph"]], "xg": [["8.1", "averageCost"], ["8.2", "routesVia"], ["8.2", "samePawns"], ["8.3", "familyP"], ["8.3", "newFunction"]], "rev": true}
+      {"id": "D7", "title": "Test prep A · chapters 7 & 8", "sub": "Wed 16 Jun", "date": "2027-06-16", "gens": [["8.1", "intervalNotation"], ["8.1", "avgGradient"], ["8.1", "avgFromTable"], ["8.1", "gradientShape"], ["8.1", "avgSpeed"], ["8.2", "menu"], ["8.2", "codeRepeat"], ["8.2", "codeNoRepeat"], ["8.2", "arrange"], ["8.2", "roles"], ["8.2", "plates"], ["8.2", "whichCount"], ["8.3", "evalLinear"], ["8.3", "evalQuad"], ["8.3", "solveFx"], ["8.3", "difference"], ["8.3", "maxMin"], ["8.3", "maxMinFactored"], ["8.3", "onGraph"]], "xg": [["8.1", "averageCost"], ["8.1", "findEndpoint"], ["8.2", "routesVia"], ["8.2", "samePawns"], ["8.3", "familyP"], ["8.3", "newFunction"]], "rev": true},
+      {"id": "D8", "title": "Test prep B · chapters 7 & 8", "sub": "Thu 17 Jun", "date": "2027-06-17", "gens": [["8.1", "intervalNotation"], ["8.1", "avgGradient"], ["8.1", "avgFromTable"], ["8.1", "gradientShape"], ["8.1", "avgSpeed"], ["8.2", "menu"], ["8.2", "codeRepeat"], ["8.2", "codeNoRepeat"], ["8.2", "arrange"], ["8.2", "roles"], ["8.2", "plates"], ["8.2", "whichCount"], ["8.3", "evalLinear"], ["8.3", "evalQuad"], ["8.3", "solveFx"], ["8.3", "difference"], ["8.3", "maxMin"], ["8.3", "maxMinFactored"], ["8.3", "onGraph"]], "xg": [["8.1", "averageCost"], ["8.1", "findEndpoint"], ["8.2", "routesVia"], ["8.2", "samePawns"], ["8.3", "familyP"], ["8.3", "newFunction"]], "rev": true}
     ]
   }[P.cls] || []).map(o => Object.assign({}, o, { gens: o.gens.filter(g => __has(G, g)), xg: [...new Set(o.gens.map(g => g[0]))].reduce((a, s) => a.concat((XG[s] || []).map(f => [s, f.name])), []) })).filter(o => o.gens.length);
   /* ---------- end lessons ---------- */
@@ -1144,7 +1144,7 @@ function hint(){if(cur.hint){hintUsed=true;fb('hint','<b class="h">Hint</b>'+cur
 function empty(q,u){if(q.type==='proto')return u===null;if(q.type==='num'||q.type==='point'||q.type==='expr')return !String(u).trim();if(q.type==='multi')return u.some(v=>!String(v).trim());if(q.type==='choice')return u===null;return u.length===0}
 function logAnswer(q,u,ok){
   let a=ansText(q,u);if(q.type==='num'&&!/°/.test(a)&&!isNaN(E.parseNum(a))&&/°$/.test(E.answerText(q)))a+='°';attempts.push({a,ok});
-  st.log.push({t:plain(q.html).slice(0,90),a:a.slice(0,60),ok,d:todayISO()});if(st.log.length>40)st.log.splice(0,st.log.length-40);
+  st.log.push({t:plain(String(q.html).replace(/<table[\s\S]*?<\/table>/g,' [table] ').replace(/<\/p>/g,' ')).replace(/\s+/g,' ').trim().slice(0,90),a:a.slice(0,60),ok,d:todayISO()});if(st.log.length>40)st.log.splice(0,st.log.length-40);
   const h=$('#hist');if(h)h.innerHTML='<div class="at">Your answers on this question: '+attempts.map(x=>'<span class="'+(x.ok?'ok':'no')+'">'+(x.ok?'✓':'✗')+' '+esc(x.a)+'</span>').join(' ')+'</div>';
 }
 const chk=(q,u)=>E.check?E.check(q,u):{ok:E.grade(q,u)};
