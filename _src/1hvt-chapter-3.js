@@ -169,8 +169,8 @@
       const order = shuffle(uniq.slice(0, 4)), correctTxt = linTxt(a, b);
       return { type: 'choice', opts: order.map(t => 'y = ' + t), ans: order.indexOf(correctTxt), correct: order.indexOf(correctTxt),
         html: '<p>Which formula belongs to this table?</p>' + tbl(xs, xs.map(x => ev(a, b, x))),
-        hint: 'Test each formula with one pair from the table, for example x = ' + f(xs[1]) + '. Test a second pair to be sure.',
-        steps: 'x = ' + f(xs[1]) + ' gives y = ' + f(ev(a, b, xs[1])) + '. Only y = ' + correctTxt + ' fits all pairs.' };
+        hint: 'Find the y-intercept b: the y-value at x = 0. Find the gradient m: how much y changes when x goes up 1. Then the formula is y = mx + b.',
+        steps: 'y-intercept: at x = 0, y = ' + f(b) + ', so b = ' + f(b) + '.<br>Gradient: from x = ' + f(xs[0]) + ' to x = ' + f(xs[0] + 1) + ', y goes from ' + f(ev(a, b, xs[0])) + ' to ' + f(ev(a, b, xs[0] + 1)) + ', so m = ' + f(ev(a, b, xs[0] + 1)) + ' − ' + par(ev(a, b, xs[0])) + ' = ' + f(a) + '.<br>So y = ' + correctTxt + '.' };
     }
   ];
 
@@ -186,10 +186,10 @@
     },
     function lineFormula(l) {
       const a = l === 0 ? pick([1, 2, 3]) : nz(-3, 3), b = l === 0 ? 0 : l === 1 ? ri(-4, 4) : nz(-5, 5), help = l < 2;   // spicy: no helper points, read them yourself
-      return { type: 'multi', fields: ['m (y goes up/down by ... when x goes up 1)', 'b (where the line crosses the y-axis)'], ans: [a, b], correct: [String(a), String(b)],
-        html: '<p>The line has the formula <b>y = mx + b</b>. Find <b>m</b> and <b>b</b>.</p>' + grid({ xmin: -5, xmax: 5, ymin: -8, ymax: 8, curves: [{ f: x => ev(a, b, x) }], pts: help ? [{ x: 0, y: b, color: '#16803c' }, { x: 1, y: a + b, color: '#16803c' }] : [] }),
-        hint: help ? 'b = the y-value at x = 0 (green point). m = how much y changes if you go 1 to the right (compare the two green points).' : 'b = the y-value where the line crosses the y-axis (x = 0). m = how much y changes if you go 1 to the right. Read two grid points on the line.',
-        steps: 'At x = 0: y = ' + f(b) + ', so b = ' + f(b) + '.<br>At x = 1: y = ' + f(a + b) + ', so m = ' + f(a + b) + ' − ' + par(b) + ' = ' + f(a) + '.<br>y = ' + linTxt(a, b) };
+      return { type: 'multi', fields: ['gradient m', 'y-intercept b'], ans: [a, b], correct: [String(a), String(b)],
+        html: '<p>The line has the formula <b>y = mx + b</b>. Find the <b>gradient m</b> and the <b>y-intercept b</b>.</p>' + grid({ xmin: -5, xmax: 5, ymin: -8, ymax: 8, curves: [{ f: x => ev(a, b, x) }], pts: help ? [{ x: 0, y: b, color: '#16803c' }, { x: 1, y: a + b, color: '#16803c' }] : [] }),
+        hint: help ? 'y-intercept b: the y-value where the line crosses the y-axis (the green point at x = 0). Gradient m: how much y goes up (or down) when you go 1 to the right (compare the two green points).' : 'y-intercept b: the y-value where the line crosses the y-axis (x = 0). Gradient m: how much y goes up (or down) when you go 1 to the right. Read two grid points on the line.',
+        steps: 'y-intercept: the line crosses the y-axis at ' + pt(0, b) + ', so b = ' + f(b) + '.<br>Gradient: from x = 0 to x = 1, y goes from ' + f(b) + ' to ' + f(a + b) + ', so m = ' + f(a + b) + ' − ' + par(b) + ' = ' + f(a) + '.<br>y = ' + linTxt(a, b) };
     },
     function plotLine(l) {
       const a = l === 0 ? ri(1, 2) : nz(-2, 2), b = l === 0 ? 0 : ri(-3, 3);
@@ -244,21 +244,25 @@
       const answer = ev(a, b, ask);
       return { type: 'num', ans: answer, correct: String(answer),
         html: '<p>The table shows a linear relation. ' + (l === 2 ? 'Calculate <b>y</b> when <b>x = 10</b>.' : 'Fill in the missing value (<b>?</b>).') + '</p>' + tbl(xs, ys),
-        hint: 'Find the change in y for each step of 1 in x. ' + (l === 2 ? 'Then count on, or first find the formula.' : 'Use that change to fill the gap.'),
-        steps: 'y changes by ' + f(a) + ' each step. At x = ' + ask + ': y = ' + f(answer) + '.' };
+        hint: 'Find the gradient: the change in y for each step of 1 in x. ' + (l === 2 ? 'Then count on, or first find the formula y = mx + b.' : 'Use it to fill the gap.'),
+        steps: 'Gradient: y changes by ' + f(a) + ' for each step of 1 in x. At x = ' + ask + ': y = ' + f(answer) + '.' };
     },
-    function findFormula(l) {
-      const a = l === 0 ? ri(1, 4) : nz(-4, 4), b = ri(-5, 6), xs = l === 0 ? [0, 1, 2, 3, 4] : l === 1 ? [1, 2, 3, 4, 5] : [2, 3, 4, 5, 6];
-      return { type: 'multi', fields: ['m (the change in y per step of 1 in x)', 'b (y when x = 0)'], ans: [a, b], correct: [String(a), String(b)],
-        html: '<p>This table belongs to a linear relation <b>y = mx + b</b>. Find <b>m</b> and <b>b</b>.</p>' + tbl(xs, xs.map(x => ev(a, b, x))),
-        hint: 'm is the change in y for each step of 1 in x. Then go back (or forward) to x = 0 to find b.',
-        steps: 'm = ' + f(a) + '. From x = ' + xs[0] + ' (y = ' + f(ev(a, b, xs[0])) + ') go back to x = 0: b = ' + f(b) + '.<br>y = ' + linTxt(a, b) };
+    function findFormula(l) {   // gradient + y-intercept (Frank, 2026-11-18: no Kern-style pattern formulas)
+      const a = l === 0 ? ri(1, 4) : nz(-4, 4), b = ri(-5, 6), xs = l === 0 ? [0, 1, 2, 3, 4] : l === 1 ? [1, 2, 3, 4, 5] : [1, 3, 5, 7, 9];   // spicy: x goes up 2 each step, and no x = 0
+      const dx = xs[1] - xs[0], x0 = xs[0], y0 = ev(a, b, x0), y1 = ev(a, b, xs[1]);
+      const grad = 'Gradient: m = change in y : change in x = (' + f(y1) + ' − ' + par(y0) + ') : (' + xs[1] + ' − ' + x0 + ') = ' + f(y1 - y0) + ' : ' + dx + ' = ' + f(a) + '.';
+      const icpt = x0 === 0 ? 'y-intercept: at x = 0, y = ' + f(b) + ', so b = ' + f(b) + '.' :
+        'y-intercept: put the point ' + pt(x0, y0) + ' in y = ' + linTxt(a, 0) + ' + b: ' + f(y0) + ' = ' + f(a * x0) + ' + b, so b = ' + f(y0) + ' − ' + par(a * x0) + ' = ' + f(b) + '.';
+      return { type: 'multi', fields: ['gradient m', 'y-intercept b'], ans: [a, b], correct: [String(a), String(b)],
+        html: '<p>This table belongs to a linear relation <b>y = mx + b</b>. Find the <b>gradient m</b> and the <b>y-intercept b</b>.</p>' + tbl(xs, xs.map(x => ev(a, b, x))),
+        hint: 'Gradient m = change in y : change in x. y-intercept b = the y-value at x = 0' + (x0 === 0 ? '.' : '. x = 0 is not in the table: put one point in y = mx + b and calculate b.'),
+        steps: grad + '<br>' + icpt + '<br>y = ' + linTxt(a, b) };
     },
     function changePer(l) {
       const a = nz(-6, 6), b = ri(-8, 8), down = l === 2 && Math.random() < .5, v = down ? 'down 1' : 'up 1';
       return { type: 'num', ans: down ? -a : a, correct: String(down ? -a : a),
         html: '<p>Given: <b>y = ' + linTxt(a, b) + '</b>. By how much does <b>y</b> change when <b>x goes ' + v + '</b>? (A decrease is a negative number.)</p>',
-        hint: 'Only the number in front of x matters.', steps: 'The number in front of x is ' + f(a) + '. ' + (down ? 'Going down 1 gives the opposite: ' + f(-a) + '.' : 'So y changes by ' + f(a) + '.') };
+        hint: 'Look at the gradient: the number in front of x.', steps: 'The gradient (the number in front of x) is ' + f(a) + '. ' + (down ? 'Going down 1 gives the opposite: ' + f(-a) + '.' : 'So y changes by ' + f(a) + '.') };
     },
     function growth(l) {
       const a = nz(-5, 5), b = ri(0, 9);
@@ -266,7 +270,7 @@
       const ans = a > 0 ? 0 : 1;
       return { type: 'choice', opts: opts.slice(0, 2), ans, correct: ans,
         html: '<p>Given: <b>y = ' + linTxt(a, b) + '</b>. When <b>x gets bigger</b>, what happens to <b>y</b>?</p>',
-        hint: 'Is the number in front of x positive or negative?', steps: 'The number in front of x is ' + f(a) + (a > 0 ? ' (positive): y increases.' : ' (negative): y decreases.') };
+        hint: 'Is the gradient (the number in front of x) positive or negative?', steps: 'The gradient is ' + f(a) + (a > 0 ? ' (positive): y increases.' : ' (negative): y decreases.') };
     }
   ];
 
@@ -277,28 +281,30 @@
     { t: (s, r) => 'A plant is ' + s + ' cm tall. It grows ' + r + ' cm every week.', v: 'w', y: 'H', xn: 'weeks', yn: 'height (cm)', sn: 'the height at the start', rn: 'the growth per week' },
     { t: (s, r) => 'A tank holds ' + s + ' litres of water. Every minute ' + r + ' litres are added.', v: 't', y: 'V', xn: 'minutes', yn: 'volume (litres)', sn: 'the water at the start', rn: 'the water added per minute' }
   ];
+  const cf = (c, s, r) => c.y + ' = ' + r + c.v + ' + ' + s;   // slope-intercept order: rate · v + start
+  const kTxt = (a, b) => (a === 1 ? '' : a) + 'k' + (b ? ' + ' + b : '');   // "2k + 5", "k + 5"
   G['3.5'] = [
     function formulaFromText(l) {
       const c = pick(CTX), s = ri(2, 12); let r = ri(2, 6); while (r === s) r = ri(2, 6);
-      const right = c.y + ' = ' + s + ' + ' + r + c.v;
-      const wrong = [c.y + ' = ' + r + ' + ' + s + c.v, c.y + ' = ' + (s + r) + c.v, c.y + ' = ' + s + c.v + ' + ' + r];
+      const right = cf(c, s, r);
+      const wrong = [c.y + ' = ' + s + c.v + ' + ' + r, c.y + ' = ' + (s + r) + c.v, c.y + ' = ' + r + c.v];
       const order = shuffle([right].concat(wrong));
       return { type: 'choice', opts: order, ans: order.indexOf(right), correct: order.indexOf(right),
         html: '<p>' + c.t(s, r) + ' Which formula gives the ' + c.yn.split(' ')[0] + ' <b>' + c.y + '</b> after <b>' + c.v + '</b> ' + c.xn + '?</p>',
-        hint: 'The part that does not change (start) is just a number. The part that grows is multiplied by ' + c.v + '.',
-        steps: 'Start: ' + s + '. Per ' + c.xn.replace(/s$/, '') + ': ' + r + '. So ' + right + '.' };
+        hint: 'Write it as ' + c.y + ' = m' + c.v + ' + b. The gradient m is the amount per ' + c.xn.replace(/s$/, '') + '. The y-intercept b is the value at the start (' + c.v + ' = 0).',
+        steps: 'Gradient (per ' + c.xn.replace(/s$/, '') + '): ' + r + '. y-intercept (start): ' + s + '. So ' + right + '.' };
     },
     function valueAt(l) {
       const c = pick(CTX), s = ri(2, 12), r = ri(2, 7), x = l === 0 ? ri(2, 5) : ri(3, 15);
       return { type: 'num', ans: s + r * x, correct: String(s + r * x),
-        html: '<p>' + c.t(s, r) + ' The formula is <b>' + c.y + ' = ' + s + ' + ' + r + c.v + '</b>. Calculate ' + c.y + ' when <b>' + c.v + ' = ' + x + '</b>.</p>',
-        hint: 'Put ' + c.v + ' = ' + x + ' in the formula. Multiply first.', steps: c.y + ' = ' + s + ' + ' + r + ' · ' + x + ' = ' + s + ' + ' + (r * x) + ' = ' + (s + r * x) };
+        html: '<p>' + c.t(s, r) + ' The formula is <b>' + cf(c, s, r) + '</b>. Calculate ' + c.y + ' when <b>' + c.v + ' = ' + x + '</b>.</p>',
+        hint: 'Put ' + c.v + ' = ' + x + ' in the formula. Multiply first.', steps: c.y + ' = ' + r + ' · ' + x + ' + ' + s + ' = ' + (r * x) + ' + ' + s + ' = ' + (s + r * x) };
     },
     function timeFor(l) {
       const c = pick(CTX), sp = l >= 2, s = ri(2, 12), r = sp ? ri(1, 6) + pick([0.25, 0.75]) : ri(2, 7), x = ri(3, 14), tot = Math.round((s + r * x) * 100) / 100;   // spicy: decimals and you write the formula yourself
       return { type: 'num', ans: x, correct: String(x), eqStep: c.v,
-        html: '<p>' + c.t(s, r) + (sp ? ' Write a formula for <b>' + c.y + '</b> with the variable <b>' + c.v + '</b>' + ' (' + c.xn + '). For which ' + c.v + ' is <b>' + c.y + ' = ' + tot + '</b>?</p>' : ' The formula is <b>' + c.y + ' = ' + s + ' + ' + r + c.v + '</b>. For which ' + c.v + ' is <b>' + c.y + ' = ' + tot + '</b>?</p>'),
-        hint: 'Solve ' + s + ' + ' + r + c.v + ' = ' + tot + '. First subtract ' + s + ' on both sides.', steps: (sp ? 'The formula is ' + c.y + ' = ' + s + ' + ' + r + c.v + '.<br>' + s + ' + ' + r + c.v + ' = ' + tot + '<br>' : '') + r + c.v + ' = ' + tot + ' − ' + s + ' = ' + Math.round((tot - s) * 100) / 100 + '<br>' + c.v + ' = ' + Math.round((tot - s) * 100) / 100 + ' : ' + r + ' = ' + x };
+        html: '<p>' + c.t(s, r) + (sp ? ' Write a formula for <b>' + c.y + '</b> with the variable <b>' + c.v + '</b>' + ' (' + c.xn + '). For which ' + c.v + ' is <b>' + c.y + ' = ' + tot + '</b>?</p>' : ' The formula is <b>' + cf(c, s, r) + '</b>. For which ' + c.v + ' is <b>' + c.y + ' = ' + tot + '</b>?</p>'),
+        hint: 'Solve ' + r + c.v + ' + ' + s + ' = ' + tot + '. First subtract ' + s + ' on both sides.', steps: (sp ? 'The formula is ' + cf(c, s, r) + '.<br>' + r + c.v + ' + ' + s + ' = ' + tot + '<br>' : '') + r + c.v + ' = ' + tot + ' − ' + s + ' = ' + Math.round((tot - s) * 100) / 100 + '<br>' + c.v + ' = ' + Math.round((tot - s) * 100) / 100 + ' : ' + r + ' = ' + x };
     },
     function meaning(l) {
       const c = pick(CTX), s = ri(2, 12), r = ri(2, 7), askStart = Math.random() < .5;
@@ -306,16 +312,16 @@
         const x = ri(3, 12), tot = s + r * x, askX = Math.random() < .5, what = 'the ' + c.yn.replace(/ \(.*\)/, '') + ' after ' + x + ' ' + c.xn;
         const o2 = [c.sn, c.rn, 'the number of ' + c.xn, what], a2 = askX ? 2 : 3;
         return { type: 'choice', opts: o2, ans: a2, correct: a2,
-          html: '<p>' + c.t(s, r) + ' The formula is <b>' + c.y + ' = ' + s + ' + ' + r + c.v + '</b>. Tom calculates <b>' + c.y + ' = ' + s + ' + ' + r + ' × ' + x + ' = ' + tot + '</b>. What does the number <b>' + (askX ? x : tot) + '</b> mean?</p>',
+          html: '<p>' + c.t(s, r) + ' The formula is <b>' + cf(c, s, r) + '</b>. Tom calculates <b>' + c.y + ' = ' + r + ' × ' + x + ' + ' + s + ' = ' + tot + '</b>. What does the number <b>' + (askX ? x : tot) + '</b> mean?</p>',
           hint: 'Look at where the number is in the formula: ' + c.v + ' stands for the number of ' + c.xn + ', ' + c.y + ' is the result.',
           steps: askX ? x + ' is put in for ' + c.v + ', so it is the number of ' + c.xn + '.' : tot + ' is the result ' + c.y + ' for ' + c.v + ' = ' + x + ', so it is ' + what + '.' };
       }
       const opts = [c.sn, c.rn, 'the total after ' + c.xn];
       const ans = askStart ? 0 : 1;
       return { type: 'choice', opts, ans, correct: ans,
-        html: '<p>' + c.t(s, r) + ' The formula is <b>' + c.y + ' = ' + s + ' + ' + r + c.v + '</b>. What does the number <b>' + (askStart ? s : r) + '</b> mean?</p>',
-        hint: askStart ? 'Which number is there when ' + c.v + ' = 0?' : 'This number is multiplied by ' + c.v + ', so it is what you get for each step.',
-        steps: (askStart ? 'When ' + c.v + ' = 0, ' + c.y + ' = ' + s + '. So ' + s + ' is ' + c.sn + '.' : r + ' is multiplied by ' + c.v + '. So it is ' + c.rn + '.') };
+        html: '<p>' + c.t(s, r) + ' The formula is <b>' + cf(c, s, r) + '</b>. What does the number <b>' + (askStart ? s : r) + '</b> mean?</p>',
+        hint: askStart ? 'This is the y-intercept: the value of ' + c.y + ' when ' + c.v + ' = 0.' : 'This is the gradient: it is multiplied by ' + c.v + ', so it is what you get for each step.',
+        steps: (askStart ? s + ' is the y-intercept: when ' + c.v + ' = 0, ' + c.y + ' = ' + s + '. So ' + s + ' is ' + c.sn + '.' : r + ' is the gradient: it is multiplied by ' + c.v + '. So it is ' + c.rn + '.') };
     },
     function breakEven(l) {
       const x0 = ri(2, 8), a1 = ri(1, 3), a2 = a1 + ri(1, 3), b2 = ri(0, 6), b1 = b2 + (a2 - a1) * x0;
@@ -323,12 +329,12 @@
         const x = ri(1, 3), ca = ev(a1, b1, x), cb = ev(a2, b2, x), cheaper = ca < cb ? 0 : 1;
         if (ca === cb) return G['3.5'][4](l);
         return { type: 'choice', opts: ['Plan A', 'Plan B'], ans: cheaper, correct: cheaper,
-          html: '<p>Plan A: <b>C = ' + b1 + ' + ' + a1 + 'k</b>. Plan B: <b>C = ' + b2 + ' + ' + a2 + 'k</b> (C in €, k in km). Which plan is cheaper for <b>k = ' + x + '</b>?</p>',
-          hint: 'Calculate C for both plans with k = ' + x + '.', steps: 'A: ' + b1 + ' + ' + a1 + ' · ' + x + ' = ' + ca + '<br>B: ' + b2 + ' + ' + a2 + ' · ' + x + ' = ' + cb };
+          html: '<p>Plan A: <b>C = ' + kTxt(a1, b1) + '</b>. Plan B: <b>C = ' + kTxt(a2, b2) + '</b> (C in €, k in km). Which plan is cheaper for <b>k = ' + x + '</b>?</p>',
+          hint: 'Calculate C for both plans with k = ' + x + '.', steps: 'A: ' + (a1 === 1 ? '' : a1 + ' · ') + x + ' + ' + b1 + ' = ' + ca + '<br>B: ' + (a2 === 1 ? '' : a2 + ' · ') + x + ' + ' + b2 + ' = ' + cb };
       }
       return { type: 'num', ans: x0, correct: String(x0),
-        html: '<p>Plan A: <b>C = ' + b1 + ' + ' + a1 + 'k</b>. Plan B: <b>C = ' + b2 + ' + ' + a2 + 'k</b>. For which <b>k</b> do both plans cost the same?</p>',
-        hint: 'Make the two costs equal: ' + b1 + ' + ' + a1 + 'k = ' + b2 + ' + ' + a2 + 'k. Or make a table for k = 1, 2, 3, … and look for equal values.',
+        html: '<p>Plan A: <b>C = ' + kTxt(a1, b1) + '</b>. Plan B: <b>C = ' + kTxt(a2, b2) + '</b>. For which <b>k</b> do both plans cost the same?</p>',
+        hint: 'Make the two costs equal: ' + kTxt(a1, b1) + ' = ' + kTxt(a2, b2) + '. Or make a table for k = 1, 2, 3, … and look for equal values.',
         steps: 'Try k = ' + x0 + ': A = ' + (b1 + a1 * x0) + ' and B = ' + (b2 + a2 * x0) + '. They are equal, so k = ' + x0 + '.' };
     },
     function squareArea(l) {
@@ -395,10 +401,10 @@
   XG['3.3'] = [
     function formulaFromPoints() {
       const a = nz(-3, 3), b = ri(-5, 5), x1 = ri(-3, 1), x2 = x1 + ri(1, 3), P = [x1, ev(a, b, x1)], Q = [x2, ev(a, b, x2)];
-      return { type: 'multi', fields: ['m', 'b'], ans: [a, b], correct: [String(a), String(b)],
-        html: '<p>A straight line <b>y = mx + b</b> goes through <b>' + pt(P[0], P[1]) + '</b> and <b>' + pt(Q[0], Q[1]) + '</b>. Find <b>m</b> and <b>b</b>.</p>' + grid({ xmin: -6, xmax: 6, ymin: -9, ymax: 9, pts: [{ x: P[0], y: P[1] }, { x: Q[0], y: Q[1] }] }),
-        hint: 'm = how much y changes when x goes up 1: (change in y) : (change in x). Then use one point to find b.',
-        steps: 'm = (' + f(Q[1]) + ' − ' + par(P[1]) + ') : (' + f(x2) + ' − ' + par(x1) + ') = ' + f(Q[1] - P[1]) + ' : ' + (x2 - x1) + ' = ' + f(a) + '. Then b = ' + f(P[1]) + ' − ' + par(a) + ' · ' + par(x1) + ' = ' + f(b) + '. So y = ' + linTxt(a, b) };
+      return { type: 'multi', fields: ['gradient m', 'y-intercept b'], ans: [a, b], correct: [String(a), String(b)],
+        html: '<p>A straight line <b>y = mx + b</b> goes through <b>' + pt(P[0], P[1]) + '</b> and <b>' + pt(Q[0], Q[1]) + '</b>. Find the <b>gradient m</b> and the <b>y-intercept b</b>.</p>' + grid({ xmin: -6, xmax: 6, ymin: -9, ymax: 9, pts: [{ x: P[0], y: P[1] }, { x: Q[0], y: Q[1] }] }),
+        hint: 'Gradient m = change in y : change in x. Then put one point in y = mx + b to find the y-intercept b.',
+        steps: 'Gradient: m = (' + f(Q[1]) + ' − ' + par(P[1]) + ') : (' + f(x2) + ' − ' + par(x1) + ') = ' + f(Q[1] - P[1]) + ' : ' + (x2 - x1) + ' = ' + f(a) + '.<br>y-intercept: put ' + pt(P[0], P[1]) + ' in y = ' + linTxt(a, 0) + ' + b: ' + f(P[1]) + ' = ' + f(a * x1) + ' + b, so b = ' + f(P[1]) + ' − ' + par(a * x1) + ' = ' + f(b) + '.<br>y = ' + linTxt(a, b) };
     },
     function whereCrossesX() {
       const a = pick([2, 4, -2, -4, 6]), x0 = (2 * ri(-5, 4) + 1) / 2, b = -a * x0;
@@ -413,8 +419,8 @@
       const a = nz(-4, 4), b = ri(-6, 6), x1 = ri(0, 3), x2 = x1 + ri(2, 4), x3 = x2 + ri(3, 6);
       return { type: 'num', ans: ev(a, b, x3), correct: String(ev(a, b, x3)),
         html: '<p>The table is <b>linear</b> (the points are on a straight line). Find the missing value.</p>' + tbl([x1, x2, x3], [ev(a, b, x1), ev(a, b, x2), null]),
-        hint: 'Find how much y changes per 1 step of x: (change in y) : (change in x). Then continue to the new x.',
-        steps: 'Per 1 in x, y changes by (' + f(ev(a, b, x2)) + ' − ' + par(ev(a, b, x1)) + ') : ' + (x2 - x1) + ' = ' + f(a) + '. From x = ' + x2 + ' to x = ' + x3 + ' is ' + (x3 - x2) + ' steps: ' + f(ev(a, b, x2)) + ' + ' + (x3 - x2) + ' · ' + par(a) + ' = ' + f(ev(a, b, x3)) + '.' };
+        hint: 'Find the gradient: (change in y) : (change in x). Then continue to the new x.',
+        steps: 'Gradient: (' + f(ev(a, b, x2)) + ' − ' + par(ev(a, b, x1)) + ') : ' + (x2 - x1) + ' = ' + f(a) + ' per 1 in x. From x = ' + x2 + ' to x = ' + x3 + ' is ' + (x3 - x2) + ' steps: ' + f(ev(a, b, x2)) + ' + ' + (x3 - x2) + ' · ' + par(a) + ' = ' + f(ev(a, b, x3)) + '.' };
     },
     function whichIsLinear() {
       const a = nz(-3, 3), b = ri(-4, 4), xs = [0, 1, 2, 3, 4], good = xs.map(x => ev(a, b, x));
@@ -430,15 +436,15 @@
     function equalCost() {
       const x0 = ri(3, 9), a1 = ri(1, 3), a2 = a1 + ri(1, 3), b2 = ri(0, 6), b1 = b2 + (a2 - a1) * x0, cost = b1 + a1 * x0;
       return { type: 'multi', fields: ['k (km)', 'cost in €'], ans: [x0, cost], correct: [String(x0), String(cost)],
-        html: '<p>Taxi A: <b>C = ' + b1 + ' + ' + a1 + 'k</b>. Taxi B: <b>C = ' + b2 + ' + ' + a2 + 'k</b> (C in €, k in km). For some distance both taxis cost the same. Find that distance and the cost.</p>',
-        hint: 'Make a table for k = 1, 2, 3, … for both taxis, or solve ' + b1 + ' + ' + a1 + 'k = ' + b2 + ' + ' + a2 + 'k.',
-        steps: 'At k = ' + x0 + ': A = ' + b1 + ' + ' + a1 + ' · ' + x0 + ' = ' + cost + ' and B = ' + b2 + ' + ' + a2 + ' · ' + x0 + ' = ' + cost + '. Same cost: €' + cost + ' at ' + x0 + ' km.' };
+        html: '<p>Taxi A: <b>C = ' + kTxt(a1, b1) + '</b>. Taxi B: <b>C = ' + kTxt(a2, b2) + '</b> (C in €, k in km). For some distance both taxis cost the same. Find that distance and the cost.</p>',
+        hint: 'Make a table for k = 1, 2, 3, … for both taxis, or solve ' + kTxt(a1, b1) + ' = ' + kTxt(a2, b2) + '.',
+        steps: 'At k = ' + x0 + ': A = ' + (a1 === 1 ? '' : a1 + ' · ') + x0 + ' + ' + b1 + ' = ' + cost + ' and B = ' + (a2 === 1 ? '' : a2 + ' · ') + x0 + ' + ' + b2 + ' = ' + cost + '. Same cost: €' + cost + ' at ' + x0 + ' km.' };
     },
     function candle() {
       const r = ri(2, 5), t1 = ri(1, 3), t2 = t1 + ri(2, 4), H0 = ri(30, 60), h1 = H0 - r * t1, h2 = H0 - r * t2;
       return { type: 'num', ans: H0, correct: String(H0),
         html: '<p>A candle burns down at a constant speed. After <b>' + t1 + ' hour' + (t1 > 1 ? 's' : '') + '</b> it is <b>' + h1 + ' cm</b> tall. After <b>' + t2 + ' hours</b> it is <b>' + h2 + ' cm</b> tall. How tall was the candle at the start (at 0 hours)? (Give the number of cm.)</p>',
-        hint: 'First find how many cm the candle loses per hour. Then go back to 0 hours.',
+        hint: 'First find the gradient: how many cm the candle loses per hour. The height at 0 hours is the y-intercept.',
         steps: 'Loss per hour: (' + h1 + ' − ' + h2 + ') : ' + (t2 - t1) + ' = ' + r + ' cm. Back to 0 hours: ' + h1 + ' + ' + t1 + ' · ' + r + ' = ' + H0 + ' cm.' };
     }
   ];
@@ -480,7 +486,7 @@
   };
   const __wrap = L => { for (const k in L) L[k] = L[k].map(fn => { const g = l => __conv(fn(l), fn.name); Object.defineProperty(g, 'name', { value: fn.name }); return g; }); };
   __wrap(G); __wrap(XG);
-  const GOALS = [["3.1", "I can read and plot points in a coordinate system", ["readPoint", "quadrant", "clickPoint", "axisDist"]], ["3.1", "I can use coordinates in shapes", ["rectangle", "mirror", "parallelogram", "twoReflections"]], ["3.2", "I can use a formula and a table", ["substitute", "table", "solveX", "matchFormula", "solveNeg"]], ["3.2", "I can check whether a point is on a graph", ["onGraph", "howManyOn"]], ["3.3", "I can read, draw and describe graphs of formulas", ["readLineY", "lineFormula", "plotLine", "vertex", "shape", "yAxisCross", "formulaFromPoints", "whereCrossesX"]], ["3.4", "I can decide whether a relation is linear and how it changes", ["isLinear", "nextValue", "findFormula", "changePer", "growth", "farValue", "whichIsLinear"]], ["3.5", "I can use formulas in context", ["formulaFromText", "valueAt", "timeFor", "meaning", "breakEven", "squareArea", "equalCost", "candle"]]];
+  const GOALS = [["3.1", "I can read and plot points in a coordinate system", ["readPoint", "quadrant", "clickPoint", "axisDist"]], ["3.1", "I can use coordinates in shapes", ["rectangle", "mirror", "parallelogram", "twoReflections"]], ["3.2", "I can use a formula and a table", ["substitute", "table", "solveX", "matchFormula", "solveNeg"]], ["3.2", "I can check whether a point is on a graph", ["onGraph", "howManyOn"]], ["3.3", "I can read, draw and describe graphs of formulas", ["readLineY", "lineFormula", "plotLine", "vertex", "shape", "yAxisCross", "formulaFromPoints", "whereCrossesX"]], ["3.4", "I can decide whether a relation is linear and find its gradient and y-intercept", ["isLinear", "nextValue", "findFormula", "changePer", "growth", "farValue", "whichIsLinear"]], ["3.5", "I can use formulas in context", ["formulaFromText", "valueAt", "timeFor", "meaning", "breakEven", "squareArea", "equalCost", "candle"]]];
   /* ---------- lessons (generated from the 2026-27 study guides) ---------- */
   const __has = (L, g) => (L[g[0]] || []).some(f => f.name === g[1]);
   const __LESSONS = ({
@@ -490,7 +496,7 @@
       {"id": "D3", "title": "Lesson · 3.1 C Coordinates", "sub": "Fri 13 Nov · ex 16, 17, 20", "date": "2026-11-13", "gens": [["3.1", "clickPoint"], ["3.1", "rectangle"], ["3.1", "axisDist"]], "xg": [["3.1", "mirror"], ["3.1", "parallelogram"], ["3.1", "twoReflections"]]},
       {"id": "D4", "title": "Lesson · 3.2 A Formulas and tables", "sub": "Tue 17 Nov · ex 22abc, 23, 24abce", "date": "2026-11-17", "gens": [["3.2", "substitute"], ["3.2", "table"], ["3.2", "solveX"]], "xg": [["3.2", "solveNeg"], ["3.2", "howManyOn"]]},
       {"id": "D5", "title": "Lesson · 3.2 B Formulas and tables", "sub": "Wed 18 Nov · ex 27, 28", "date": "2026-11-18", "gens": [["3.2", "substitute"], ["3.2", "table"], ["3.2", "solveX"]], "xg": [["3.2", "solveNeg"], ["3.2", "howManyOn"]]},
-      {"id": "D6", "title": "Lesson · 3.2 C Formulas and tables", "sub": "Thu 19 Nov · ex 29, 30", "date": "2026-11-19", "gens": [["3.2", "table"], ["3.2", "solveX"], ["3.2", "onGraph"]], "xg": [["3.2", "solveNeg"], ["3.2", "howManyOn"]]},
+      {"id": "D6", "title": "Lesson · 3.2 C Formulas and tables", "sub": "Thu 19 Nov · ex 29a, 30abd", "date": "2026-11-19", "gens": [["3.2", "table"], ["3.2", "solveX"], ["3.2", "onGraph"]], "xg": [["3.2", "solveNeg"], ["3.2", "howManyOn"]]},
       {"id": "D7", "title": "Lesson · 3.2 D Formulas and tables", "sub": "Fri 20 Nov · ex 35, 36", "date": "2026-11-20", "gens": [["3.2", "solveX"], ["3.2", "onGraph"], ["3.2", "matchFormula"]], "xg": [["3.2", "solveNeg"], ["3.2", "howManyOn"]]},
       {"id": "D8", "title": "Lesson · 3.3 A Graphs of formulas", "sub": "Tue 24 Nov · ex 37, 38, 39, 40", "date": "2026-11-24", "gens": [["3.3", "readLineY"], ["3.3", "lineFormula"], ["3.3", "plotLine"]], "xg": [["3.3", "formulaFromPoints"], ["3.3", "whereCrossesX"]]},
       {"id": "D9", "title": "Lesson · 3.3 B Graphs of formulas", "sub": "Wed 25 Nov · ex 41, 42, 43", "date": "2026-11-25", "gens": [["3.3", "readLineY"], ["3.3", "lineFormula"], ["3.3", "plotLine"]], "xg": [["3.3", "formulaFromPoints"], ["3.3", "whereCrossesX"]]},
