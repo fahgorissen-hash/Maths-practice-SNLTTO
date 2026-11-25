@@ -907,6 +907,60 @@ if (VT) {
   );
 }
 
+/* ======================= 3HT: no horizontal translations in ch3 (Frank, 25 Nov 2026) ======================= */
+/* The H3-TTO book's 3.4 practice (ex 52-62) only translates up/down and multiplies with respect to the x-axis.
+   Left/right translations are only in 'Exploring & investigating' (ex 65-66), which 3HT skips. 3VT keeps them. */
+if (!VT) {
+  const sgn = n => (n < 0 ? ' − ' : ' + ') + neg(Math.abs(n));
+  const upDown = q => 'translated ' + U(q) + ' ' + (q > 0 ? 'up' : 'down');
+  const niceVertex = l => {   // y = ax² + bx + c with a whole-number vertex
+    const a = l === 0 ? pick([1, -1, 2]) : pick([1, -1, 2, -2, 0.5, 3]), xv = l === 0 ? 0 : nz(-4, 4), yv = ri(-6, 6);
+    return { a, b: rd(-2 * a * xv), c: rd(a * xv * xv + yv), xv, yv };
+  };
+  const idx = G['3.4'].findIndex(f => f.name === 'shiftRight');
+  G['3.4'].splice(idx, 1);
+  const iMul = G['3.4'].findIndex(f => f.name === 'multiplyX');
+  G['3.4'].splice(iMul + 1, 0, function multiplyShift(l) {   // ex 59-61: multiply, then translate up/down
+    let a, b, c, k, q;
+    do { a = pick([0.5, 1, 2, -1, 1.5]); b = l === 0 ? 0 : ri(-4, 4); c = ri(-6, 6); k = l === 0 ? pick([2, 3, 4, -1]) : pick([2, 3, 4, 5, -1, -2, -4, 0.5, -0.5]); q = nz(-9, 9); } while (rd(k * c + q) === 0 && l >= 2);
+    const swap = l >= 2;   // spicy: translate first, then multiply (order matters)
+    if (swap) {
+      const r = [a * k, b * k, (c + q) * k].map(v => rd(v));
+      return ex(p('The graph of ' + Y + ' = ' + quad(a, b, c) + ' is first ' + upDown(q) + ' and then multiplied by ' + neg(k) + ' with respect to the ' + X() + '-axis. Give the new formula without brackets. <small>Type only the right side.</small>'), aq(r[0], r[1], r[2]), 'poly', 'Do the steps in the given order: first ' + (q > 0 ? 'add' : 'subtract') + ' ' + Math.abs(q) + ', then multiply the whole formula by ' + neg(k) + '.', p(Y + ' = ' + quad(a, b, c) + sgn(q) + ' = ' + quad(a, b, c + q)) + p(Y + ' = ' + neg(k) + '(' + quad(a, b, c + q) + ') = ' + quad(r[0], r[1], r[2])), { keys: ['^', '(', ')'], ansText: Y + ' = ' + quad(r[0], r[1], r[2]) });
+    }
+    const r = [a * k, b * k, c * k + q].map(v => rd(v)), m = [a * k, b * k, c * k].map(v => rd(v));
+    return ex(p('The graph of ' + Y + ' = ' + quad(a, b, c) + ' is first multiplied by ' + neg(k) + ' with respect to the ' + X() + '-axis and then ' + upDown(q) + '. Give the new formula without brackets. <small>Type only the right side.</small>'), aq(r[0], r[1], r[2]), 'poly', 'First multiply the whole formula by ' + neg(k) + ', then ' + (q > 0 ? 'add' : 'subtract') + ' ' + Math.abs(q) + '.', p(Y + ' = ' + neg(k) + '(' + quad(a, b, c) + ') = ' + quad(m[0], m[1], m[2])) + p(Y + ' = ' + quad(m[0], m[1], m[2]) + sgn(q) + ' = ' + quad(r[0], r[1], r[2])), { keys: ['^', '(', ')'], ansText: Y + ' = ' + quad(r[0], r[1], r[2]) });
+  });
+  const iV = G['3.4'].findIndex(f => f.name === 'vertexAfter');
+  G['3.4'][iV] = function vertexAfter(l) {   // vertex after translating up/down (and multiplying)
+    const P_ = niceVertex(l), q = nz(-8, 8), f0 = quad(P_.a, P_.b, P_.c), vx = 'x<sub>vertex</sub>';
+    const find = P_.xv === 0 && P_.b === 0 ? p('The vertex of ' + Y + ' = ' + f0 + ' is ' + P2(0, P_.yv) + '.') : p('<i>' + vx + '</i> = −' + X('b') + ' / 2' + X('a') + ' = ' + neg(-P_.b) + ' / ' + par(2 * P_.a) + ' = ' + neg(P_.xv)) + p(Y + ' = ' + neg(P_.yv) + ', so the vertex is ' + P2(P_.xv, P_.yv) + '.');
+    if (l >= 2) {
+      const k = pick([2, 3, -1, -2, 0.5]), yk = rd(k * P_.yv + q);
+      return pt(p('The graph of ' + Y + ' = ' + f0 + ' is multiplied by ' + neg(k) + ' with respect to the ' + X() + '-axis and then ' + upDown(q) + '. What is the vertex of the new graph?'), P_.xv, yk, 'Find the vertex first. Multiplying with respect to the ' + X() + '-axis multiplies the ' + Y + '-coordinate; translating up or down adds to it. The ' + X() + '-coordinate stays the same.', find + p('Multiplying by ' + neg(k) + ': ' + P2(P_.xv, rd(k * P_.yv)) + '.') + p('Then ' + upDown(q) + ': ' + P2(P_.xv, yk) + '.'));
+    }
+    return pt(p('The graph of ' + Y + ' = ' + f0 + ' is ' + upDown(q) + '. What is the vertex of the new graph?'), P_.xv, P_.yv + q, l === 0 ? 'The vertex of ' + Y + ' = ' + X('a') + X() + '² + ' + X('c') + ' is (0, ' + X('c') + '). Up or down only changes the ' + Y + '-coordinate.' : 'Find the vertex with ' + vx + ' = −b / 2a first. Up or down only changes the ' + Y + '-coordinate.', find + p('Translating ' + (q > 0 ? 'up' : 'down') + ' ' + Math.abs(q) + ': ' + P2(P_.xv, P_.yv + q) + '.'));
+  };
+  const iW = G['3.4'].findIndex(f => f.name === 'whichTransform');
+  const wt0 = G['3.4'][iW];
+  G['3.4'][iW] = function whichTransform(l) {
+    if (l < 2) { let o; do { o = wt0(1); } while (o.opts.some(t => /right|left/.test(t))); return o; }
+    // spicy: two transformations, the order matters
+    let a, b, c, k, q; do { a = pick([1, -1, 2, 0.5]); b = ri(-4, 4); c = nz(-6, 6); k = pick([2, 3, -1, -2, 4]); q = nz(-6, 6); } while (k === 1);
+    const to = quad(a * k, b * k, c * k + q);
+    const tr = qq => 'translate ' + U(qq) + ' ' + (qq > 0 ? 'up' : 'down'), mu_ = 'multiply by ' + neg(k) + ' with respect to the ' + X() + '-axis';
+    const right = 'first ' + mu_ + ', then ' + tr(q);
+    const w = ['first ' + tr(q) + ', then ' + mu_, 'first ' + mu_ + ', then ' + tr(-q), 'first multiply by ' + neg(-k) + ' with respect to the ' + X() + '-axis, then ' + tr(q)];
+    return ch(p('Which transformations, in this order, change ' + Y + ' = ' + quad(a, b, c) + ' into ' + Y + ' = ' + to + '?'), right, w, 'Every number is multiplied by the same factor, except the last one. Try each option.', p(neg(k) + '(' + quad(a, b, c) + ') = ' + quad(a * k, b * k, c * k)) + p(quad(a * k, b * k, c * k) + sgn(q) + ' = ' + to + ': ' + right + '.'));
+  };
+  const iX = XG['3.4'].findIndex(f => f.name === 'shiftThroughPoint');
+  XG['3.4'][iX] = function shiftThroughPoint(l) {   // multiply, then an unknown translation up/down through a point
+    const a = pick([1, 2, -1, 0.5]), b = ri(-4, 4), c = ri(-5, 5), k = pick([2, 3, -2, -1, 4]), x0 = nz(-4, 4), q = nz(-12, 12);
+    const m = [a * k, b * k, c * k].map(v => rd(v)), ym = rd(m[0] * x0 * x0 + m[1] * x0 + m[2]), y0 = rd(ym + q);
+    return nu(p('The graph of ' + Y + ' = ' + quad(a, b, c) + ' is multiplied by ' + neg(k) + ' with respect to the ' + X() + '-axis and then translated a number of units up or down. The new graph passes through the point ' + P2(x0, y0) + '. How many units was it translated <b>up</b>? <small>(Give a negative number if it went down.)</small>'), q, 'Write the new formula with an unknown ' + X('q') + ': ' + Y + ' = ' + quad(m[0], m[1], m[2]) + ' + ' + X('q') + '. Substitute the point.', p(Y + ' = ' + neg(k) + '(' + quad(a, b, c) + ') + ' + X('q') + ' = ' + quad(m[0], m[1], m[2]) + ' + ' + X('q')) + p(neg(y0) + ' = ' + sub(m[0], m[1], m[2], x0) + ' + ' + X('q') + ' = ' + neg(ym) + ' + ' + X('q')) + p(X('q') + ' = ' + neg(y0) + ' − ' + par(ym) + ' = ' + neg(q)));
+  };
+}
+
 const SECTIONS = VT ? [
   { id: '3.1', title: '3.1 Linear functions', sub: 'f(x) notation, gradient, formula of a line' },
   { id: '3.2', title: '3.2 Quadratic functions', sub: 'Vertex, vertex form, factored form' },
@@ -924,7 +978,7 @@ const GOALS = [
   ['3.1', 'I can find intercepts and the formula of a line', ['axisPoints', 'gradientTwoPoints', 'lineTwoPoints', 'parallelThrough', 'lineFromGraph', 'verticalLine'], 'm = Δy / Δx; then substitute a point to find b.'],
   ['3.2', 'I can calculate the vertex and intercepts of a parabola', ['readABC', 'maxOrMin', 'valueAt', 'vertexAbc', 'factoredZeros', 'factoredVertex', 'interceptCount'], 'x_vertex = −b / 2a'],
   ['3.3', 'I can recognise and use proportional and square root relationships', ['isDirect', 'inverseTable', 'inverseFormula', 'whichRelation', 'sqrtStart', 'sqrtValue'], 'Inverse: x · y = k. Direct: y = kx.'],
-  ['3.4', 'I can translate and multiply graphs', ['shiftUp', 'shiftRight', 'multiplyX', 'vertexAfter', 'whichTransform'], 'To the right by 3: replace x by (x − 3).'],
+  ['3.4', 'I can translate and multiply graphs', VT ? ['shiftUp', 'shiftRight', 'multiplyX', 'vertexAfter', 'whichTransform'] : ['shiftUp', 'multiplyX', 'multiplyShift', 'vertexAfter', 'whichTransform'], VT ? 'To the right by 3: replace x by (x − 3).' : 'Up 3: add 3 to the formula. Multiply by 2: multiply the whole formula by 2.'],
   ['3.5', 'I can work with periodic relationships', ['readPeriodic', 'farValue', 'dayOfWeek', 'frequency', 'heartbeat'], 'Subtract whole periods.']
 ];
 if (VT) {
@@ -944,13 +998,13 @@ if (VT) {
       {"id": "D5", "title": "Lesson · 3.2 C Quadratic relationships", "sub": "Thu 19 Nov · ex 30, 31, 32", "date": "2026-11-19", "gens": [["3.2", "vertexAbc"], ["3.2", "factoredZeros"], ["3.2", "factoredVertex"]], "xg": [["3.2", "symmetryPartner"], ["3.2", "cannonball"]]},
       {"id": "D6", "title": "Lesson · 3.3 A Other relationships", "sub": "Fri 20 Nov · ex 37, 38, 39, 40, 41, 42", "date": "2026-11-20", "gens": [["3.3", "isDirect"], ["3.3", "inverseTable"], ["3.3", "inverseFormula"]], "xg": [["3.3", "tsunami"], ["3.3", "skateTour"]]},
       {"id": "D7", "title": "Lesson · 3.3 B Other relationships", "sub": "Wed 25 Nov · ex 43, 44, 45, 46, 47", "date": "2026-11-25", "gens": [["3.3", "inverseFormula"], ["3.3", "whichRelation"], ["3.3", "sqrtStart"]], "xg": [["3.3", "tsunami"], ["3.3", "skateTour"]]},
-      {"id": "D8", "title": "Lesson · 3.4 A Transformations", "sub": "Thu 26 Nov · ex 52, 53, 54, 55", "date": "2026-11-26", "gens": [["3.4", "shiftUp"], ["3.4", "shiftRight"], ["3.4", "multiplyX"]], "xg": [["3.4", "bridgeArch"], ["3.4", "shiftThroughPoint"]]},
-      {"id": "D9", "title": "Lesson · 3.4 B Transformations", "sub": "Fri 27 Nov · ex 56, 57, 58", "date": "2026-11-27", "gens": [["3.4", "shiftUp"], ["3.4", "shiftRight"], ["3.4", "multiplyX"]], "xg": [["3.4", "bridgeArch"], ["3.4", "shiftThroughPoint"]]},
-      {"id": "D10", "title": "Lesson · 3.4 C Transformations", "sub": "Wed 2 Dec · ex 59, 60, 61", "date": "2026-12-02", "gens": [["3.4", "shiftRight"], ["3.4", "multiplyX"], ["3.4", "vertexAfter"]], "xg": [["3.4", "bridgeArch"], ["3.4", "shiftThroughPoint"]]},
+      {"id": "D8", "title": "Lesson · 3.4 A Transformations", "sub": "Thu 26 Nov · ex 52, 53, 54, 55", "date": "2026-11-26", "gens": [["3.4", "shiftUp"], ["3.4", "vertexAfter"]], "xg": [["3.4", "bridgeArch"], ["3.4", "shiftThroughPoint"]]},
+      {"id": "D9", "title": "Lesson · 3.4 B Transformations", "sub": "Fri 27 Nov · ex 56, 57, 58", "date": "2026-11-27", "gens": [["3.4", "multiplyX"], ["3.4", "whichTransform"], ["3.4", "shiftUp"]], "xg": [["3.4", "bridgeArch"], ["3.4", "shiftThroughPoint"]]},
+      {"id": "D10", "title": "Lesson · 3.4 C Transformations", "sub": "Wed 2 Dec · ex 59, 60, 61", "date": "2026-12-02", "gens": [["3.4", "multiplyShift"], ["3.4", "vertexAfter"], ["3.4", "whichTransform"]], "xg": [["3.4", "bridgeArch"], ["3.4", "shiftThroughPoint"]]},
       {"id": "D11", "title": "Lesson · 3.5 A Periodic relationships", "sub": "Thu 3 Dec · ex 67, 68, 69, 70", "date": "2026-12-03", "gens": [["3.5", "readPeriodic"], ["3.5", "farValue"], ["3.5", "dayOfWeek"], ["3.5", "frequency"], ["3.5", "heartbeat"]], "xg": [["3.5", "wheelHeight"], ["3.5", "nthLowest"]]},
       {"id": "D12", "title": "Lesson · 3.5 B Periodic relationships", "sub": "Fri 4 Dec · ex 71, 72, 73, 74", "date": "2026-12-04", "gens": [["3.5", "dayOfWeek"], ["3.5", "frequency"], ["3.5", "heartbeat"]], "xg": [["3.5", "wheelHeight"], ["3.5", "nthLowest"]]},
       {"id": "D13", "title": "Lesson · 3.5 C Periodic relationships", "sub": "Wed 9 Dec · ex 75, 76, 77", "date": "2026-12-09", "gens": [["3.5", "dayOfWeek"], ["3.5", "frequency"], ["3.5", "heartbeat"]], "xg": [["3.5", "wheelHeight"], ["3.5", "nthLowest"]]},
-      {"id": "D14", "title": "Test prep · chapter 3", "sub": "Thu 10 Dec", "date": "2026-12-10", "gens": [["3.1", "axisPoints"], ["3.1", "gradientTwoPoints"], ["3.1", "lineTwoPoints"], ["3.1", "parallelThrough"], ["3.1", "lineFromGraph"], ["3.1", "verticalLine"], ["3.2", "readABC"], ["3.2", "maxOrMin"], ["3.2", "valueAt"], ["3.2", "vertexAbc"], ["3.2", "factoredZeros"], ["3.2", "factoredVertex"], ["3.2", "interceptCount"], ["3.3", "isDirect"], ["3.3", "inverseTable"], ["3.3", "inverseFormula"], ["3.3", "whichRelation"], ["3.3", "sqrtStart"], ["3.3", "sqrtValue"], ["3.4", "shiftUp"], ["3.4", "shiftRight"], ["3.4", "multiplyX"], ["3.4", "vertexAfter"], ["3.4", "whichTransform"], ["3.5", "readPeriodic"], ["3.5", "farValue"], ["3.5", "dayOfWeek"], ["3.5", "frequency"], ["3.5", "heartbeat"]], "xg": [["3.1", "tankDrain"], ["3.1", "shoeSize"], ["3.2", "symmetryPartner"], ["3.2", "cannonball"], ["3.3", "tsunami"], ["3.3", "skateTour"], ["3.4", "bridgeArch"], ["3.4", "shiftThroughPoint"], ["3.5", "wheelHeight"], ["3.5", "nthLowest"]], "rev": true}
+      {"id": "D14", "title": "Test prep · chapter 3", "sub": "Thu 10 Dec", "date": "2026-12-10", "gens": [["3.1", "axisPoints"], ["3.1", "gradientTwoPoints"], ["3.1", "lineTwoPoints"], ["3.1", "parallelThrough"], ["3.1", "lineFromGraph"], ["3.1", "verticalLine"], ["3.2", "readABC"], ["3.2", "maxOrMin"], ["3.2", "valueAt"], ["3.2", "vertexAbc"], ["3.2", "factoredZeros"], ["3.2", "factoredVertex"], ["3.2", "interceptCount"], ["3.3", "isDirect"], ["3.3", "inverseTable"], ["3.3", "inverseFormula"], ["3.3", "whichRelation"], ["3.3", "sqrtStart"], ["3.3", "sqrtValue"], ["3.4", "shiftUp"], ["3.4", "multiplyX"], ["3.4", "multiplyShift"], ["3.4", "vertexAfter"], ["3.4", "whichTransform"], ["3.5", "readPeriodic"], ["3.5", "farValue"], ["3.5", "dayOfWeek"], ["3.5", "frequency"], ["3.5", "heartbeat"]], "xg": [["3.1", "tankDrain"], ["3.1", "shoeSize"], ["3.2", "symmetryPartner"], ["3.2", "cannonball"], ["3.3", "tsunami"], ["3.3", "skateTour"], ["3.4", "bridgeArch"], ["3.4", "shiftThroughPoint"], ["3.5", "wheelHeight"], ["3.5", "nthLowest"]], "rev": true}
     ],
     "3VT": [
       {"id": "D1", "title": "Lesson · 3.1 A Linear functions", "sub": "Thu 26 Nov · ex 7, 8, 9, 10, 11, 12", "date": "2026-11-26", "gens": [["3.1", "fValue"], ["3.1", "fSolve"], ["3.1", "axisPoints"]], "xg": [["3.1", "tankDrain"], ["3.1", "shoeSize"]]},
